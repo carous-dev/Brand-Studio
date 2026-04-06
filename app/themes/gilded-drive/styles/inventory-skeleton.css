@@ -1,0 +1,109 @@
+/* uses theme tokens defined in `app/globals.css`: --skeleton-bg, --skeleton-highlight, --skeleton-shimmer */
+
+.skeleton-card{
+  display:flex;
+  flex-direction:column;
+  gap:0.75rem;
+  background:rgba(255,255,255,0.02);
+  border-radius:8px;
+  padding:12px;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+  min-height:220px;
+  animation: glow 2.8s infinite ease-in-out;
+}
+
+.skeleton-media{
+  width:100%;
+  height:120px;
+  border-radius:6px;
+  background:var(--skeleton-bg);
+  background-image: var(--skeleton-shimmer);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+.skeleton-body{ display:flex; flex-direction:column; gap:6px }
+.skeleton-line{ height:12px; border-radius:6px; background:var(--skeleton-bg); background-image:var(--skeleton-shimmer); background-size:200% 100%; animation:shimmer 1.6s infinite linear }
+.skeleton-line.title{ width:60%; height:18px }
+.skeleton-line.subtitle{ width:40%; height:12px }
+.skeleton-line.short{ width:80%; height:10px; margin-top:6px }
+
+.skeleton-row{ display:flex; gap:8px; margin-top:6px }
+.skeleton-badge{ width:48px; height:20px; border-radius:6px; background:var(--skeleton-bg); background-image:var(--skeleton-shimmer); background-size:200% 100%; animation:shimmer 1.6s infinite linear }
+.skeleton-badge.small{ width:28px; height:18px }
+
+@keyframes shimmer{
+  0%{ background-position:200% 0 }
+  100%{ background-position:-200% 0 }
+}
+
+@keyframes glow{
+  0%{ box-shadow: 0 6px 18px rgba(2,6,23,0.5) }
+  50%{ box-shadow: 0 10px 30px rgba(2,6,23,0.8) }
+  100%{ box-shadow: 0 6px 18px rgba(2,6,23,0.5) }
+}
+
+/* Light-theme overrides when inside the inventory page to match card visuals
+   and prevent layout shift (media heights and background tones). */
+.used-page .skeleton-card{
+  background: var(--inventory-card-bg);
+  border: 1px solid rgba(16,24,32,0.06);
+  box-shadow: none;
+  min-height: 260px; /* match media (180px) + body lines to reduce CLS */
+  animation: none;
+}
+.used-page .skeleton-media{
+  height: 180px; /* match .used-page .car-card .media */
+  border-radius: 12px 12px 0 0;
+  background: linear-gradient(90deg, var(--inventory-card-bg) 0%, var(--inventory-card-body-bg) 50%, var(--inventory-card-bg) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite linear;
+}
+.used-page .skeleton-line,
+.used-page .skeleton-badge{
+  background: var(--inventory-card-body-bg);
+  background-image: linear-gradient(90deg, var(--inventory-card-body-bg) 0%, rgba(16,24,32,0.03) 50%, var(--inventory-card-body-bg) 100%);
+  animation: shimmer 1.2s infinite linear;
+}
+.used-page .skeleton-line.title{ height:18px }
+.used-page .skeleton-line.subtitle{ height:12px }
+.used-page .skeleton-line.short{ height:10px }
+
+/* Grid responsiveness - keeps skeleton cards styling consistent with existing grid */
+.grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:1rem }
+
+/* Empty inventory state */
+.inventory-empty{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:0.5rem;
+  padding:3rem 1rem;
+  width:100%;
+  /* ensure the empty state is visually centred within the grid area */
+  min-height:28rem;
+  box-sizing:border-box;
+}
+.inventory-empty-icon{ color:var(--accent); opacity:0.95 }
+.inventory-empty-message{ font-size:1.125rem; font-weight:600; margin:0; color:var(--fg); max-width:64ch }
+.inventory-empty-sub{ margin:0; color:var(--muted, rgba(255,255,255,0.6)); font-size:0.95rem; max-width:72ch }
+
+@media (max-width:600px){
+  .inventory-empty{ padding:2rem 1rem; min-height:20rem }
+  .inventory-empty-message{ font-size:1rem }
+  .inventory-empty-icon{ width:56px; height:56px }
+}
+
+/* wrapper to keep empty state out of the grid layout and full width */
+.inventory-empty-wrapper{ width:100%; display:flex; justify-content:center }
+
+/* Full-width loader wrapper used on initial load */
+.loader-fullwidth-wrapper{ width:100%; display:flex; justify-content:center; padding:3rem 1rem; box-sizing:border-box }
+
+/* Generic loader styles (used by `Loader.tsx`) */
+.loader { display:inline-block; width:48px; height:48px; border-radius:50%; border:5px solid rgba(255,255,255,0.06); border-top-color:var(--accent); animation: spinner 1s linear infinite }
+.loader-overlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.4); z-index:9999 }
+
+@keyframes spinner{ to { transform: rotate(360deg) } }

@@ -1,0 +1,1032 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - Carous Limited{% endblock %}
+
+{% block content %}
+<!-- Settings Content with Tabs -->
+<section class="dashboard-section">
+    <div class="settings-container">
+        <!-- Tab Navigation -->
+        <div class="settings-tabs">
+            <button class="tab-button active" data-tab="domains" onclick="switchTab('domains')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M2 12h20"></path>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                Domains
+            </button>
+            <button class="tab-button" data-tab="general" onclick="switchTab('general')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M12 1v6m0 6v6m4.22-13.22l4.24 4.24M1.54 9.96l4.24 4.24M20.46 14.04l-4.24 4.24M7.78 7.78L3.54 3.54"></path>
+                </svg>
+                General
+            </button>
+            <button class="tab-button" data-tab="advanced" onclick="switchTab('advanced')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+                Advanced
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="settings-content">
+            <!-- Domains Tab -->
+            <div class="tab-pane active" id="domains-tab">
+                <div class="tab-header">
+                    <h2>Domain Management</h2>
+                    <p class="tab-description">Add and manage domains that will be used to create brand previews. These domains serve as the foundation for your dealership websites.</p>
+                </div>
+
+                <!-- Domains Table -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3>Managed Domains</h3>
+                        <div class="card-actions">
+                            <span class="badge" id="domainCount">0 domains</span>
+                            <button class="btn-primary btn-sm" onclick="openDomainModal()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                Add Domain
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div id="domainsTableContainer" class="domains-table-container">
+                            <table class="domains-table" id="domainsTable">
+                                <thead>
+                                    <tr>
+                                        <th class="col-domain">Domain</th>
+                                        <th class="col-description">Description</th>
+                                        <th class="col-status">Status</th>
+                                        <th class="col-date">Added</th>
+                                        <th class="col-actions">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="domainsTableBody">
+                                    <tr class="table-empty-row">
+                                        <td colspan="5">
+                                            <div class="empty-state">
+                                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                                    <circle cx="12" cy="12" r="10"></circle>
+                                                    <path d="M2 12h20"></path>
+                                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                                </svg>
+                                                <h4>No domains added yet</h4>
+                                                <p>Add your first domain using the "Add Domain" button to get started with creating brand previews.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- General Tab -->
+            <div class="tab-pane" id="general-tab">
+                <div class="tab-header">
+                    <h2>General Settings</h2>
+                    <p class="tab-description">Configure general application settings and preferences.</p>
+                </div>
+                <div class="settings-card">
+                    <div class="card-content">
+                        <div class="coming-soon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <h4>Coming Soon</h4>
+                            <p>General settings will be available in a future update.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Tab -->
+            <div class="tab-pane" id="advanced-tab">
+                <div class="tab-header">
+                    <h2>Advanced Settings</h2>
+                    <p class="tab-description">Advanced configuration options for power users.</p>
+                </div>
+                <div class="settings-card">
+                    <div class="card-content">
+                        <div class="coming-soon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                            </svg>
+                            <h4>Coming Soon</h4>
+                            <p>Advanced settings will be available in a future update.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Domain Modal -->
+<div id="domainModal" class="modal">
+    <div class="modal-backdrop" onclick="closeDomainModal()"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="domainModalTitle">Add New Domain</h3>
+            <button class="modal-close" onclick="closeDomainModal()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="addDomainForm" class="modal-form">
+                <div class="form-group">
+                    <label for="modalDomainName">Domain Name</label>
+                    <input type="text" id="modalDomainName" name="domainName" placeholder="example.com" required>
+                    <small class="form-help">Enter the domain name without www or protocol (e.g., example.com)</small>
+                </div>
+                <div class="form-group">
+                    <label for="modalDomainDescription">Description (Optional)</label>
+                    <textarea id="modalDomainDescription" name="domainDescription" placeholder="Brief description of this domain's purpose..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="modalDomainStatus">Status</label>
+                    <select id="modalDomainStatus" name="domainStatus">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-secondary" onclick="closeDomainModal()">Cancel</button>
+            <button type="submit" form="addDomainForm" class="btn-primary" id="domainModalSubmitButton">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span id="domainModalSubmitLabel">Add Domain</span>
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module">
+import { ApiService } from '/static/modules/api-service.js';
+
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+    document.getElementById(`${tabName}-tab`).classList.add('active');
+}
+
+function openDomainModal(domainId = null) {
+    if (window.domainManager) {
+        window.domainManager.openModal(domainId);
+    }
+}
+
+function closeDomainModal() {
+    if (window.domainManager) {
+        window.domainManager.closeModal();
+    }
+}
+
+class DomainManager {
+    constructor() {
+        this.domains = [];
+        this.editingDomainId = null;
+        this.isSubmitting = false;
+
+        this.tableBody = document.getElementById('domainsTableBody');
+        this.countBadge = document.getElementById('domainCount');
+        this.form = document.getElementById('addDomainForm');
+        this.modal = document.getElementById('domainModal');
+        this.modalTitle = document.getElementById('domainModalTitle');
+        this.submitButton = document.getElementById('domainModalSubmitButton');
+        this.submitLabel = document.getElementById('domainModalSubmitLabel');
+        this.domainInput = document.getElementById('modalDomainName');
+        this.descriptionInput = document.getElementById('modalDomainDescription');
+        this.statusInput = document.getElementById('modalDomainStatus');
+    }
+
+    async init() {
+        this.bindEvents();
+        this.renderLoadingState();
+        await this.fetchDomains();
+    }
+
+    bindEvents() {
+        if (!this.form) {
+            return;
+        }
+        this.form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            await this.submitForm();
+        });
+    }
+
+    extractError(error, fallback) {
+        if (error && typeof error.message === 'string' && error.message.trim()) {
+            return error.message;
+        }
+        return fallback;
+    }
+
+    escapeHtml(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    setSubmitting(isSubmitting) {
+        this.isSubmitting = isSubmitting;
+        if (!this.submitButton) {
+            return;
+        }
+        this.submitButton.disabled = isSubmitting;
+        this.submitButton.style.opacity = isSubmitting ? '0.7' : '1';
+        this.submitButton.style.cursor = isSubmitting ? 'not-allowed' : '';
+    }
+
+    openModal(domainId = null) {
+        if (!this.modal || !this.form) {
+            return;
+        }
+
+        const domain = this.domains.find((item) => Number(item.id) === Number(domainId));
+        this.editingDomainId = domain ? Number(domain.id) : null;
+        
+        // Check if there's already an active domain
+        const activeDomain = this.domains.find(d => d.status === 'active');
+
+        if (domain) {
+            this.modalTitle.textContent = 'Edit Domain';
+            this.submitLabel.textContent = 'Save Changes';
+            this.domainInput.value = domain.domain || '';
+            this.descriptionInput.value = domain.description || '';
+            this.statusInput.value = domain.status === 'inactive' ? 'inactive' : 'active';
+            
+            // If this domain is active, disable status field (only one can be active)
+            // If there's another active domain, disable status field to prevent conflicts
+            if (domain.status === 'active' || (activeDomain && activeDomain.id !== domain.id)) {
+                this.statusInput.disabled = true;
+                this.statusInput.style.opacity = '0.5';
+                this.statusInput.style.cursor = 'not-allowed';
+            } else {
+                this.statusInput.disabled = false;
+                this.statusInput.style.opacity = '1';
+                this.statusInput.style.cursor = '';
+            }
+        } else {
+            this.modalTitle.textContent = 'Add New Domain';
+            this.submitLabel.textContent = 'Add Domain';
+            this.form.reset();
+            
+            // If there's already an active domain, set new domain to inactive and disable status field
+            if (activeDomain) {
+                this.statusInput.value = 'inactive';
+                this.statusInput.disabled = true;
+                this.statusInput.style.opacity = '0.5';
+                this.statusInput.style.cursor = 'not-allowed';
+            } else {
+                this.statusInput.value = 'active';
+                this.statusInput.disabled = false;
+                this.statusInput.style.opacity = '1';
+                this.statusInput.style.cursor = '';
+            }
+        }
+
+        this.modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        this.domainInput.focus();
+    }
+
+    closeModal() {
+        if (!this.modal || !this.form) {
+            return;
+        }
+        this.modal.classList.remove('active');
+        document.body.style.overflow = '';
+        this.editingDomainId = null;
+        this.form.reset();
+        this.statusInput.value = 'active';
+        this.statusInput.disabled = false;
+        this.statusInput.style.opacity = '1';
+        this.statusInput.style.cursor = '';
+        this.modalTitle.textContent = 'Add New Domain';
+        this.submitLabel.textContent = 'Add Domain';
+        this.setSubmitting(false);
+    }
+
+    formatDate(value) {
+        if (!value) {
+            return 'N/A';
+        }
+        const parsed = new Date(value);
+        if (Number.isNaN(parsed.getTime())) {
+            return this.escapeHtml(value);
+        }
+        return parsed.toLocaleDateString();
+    }
+
+    async fetchDomains() {
+        try {
+            const response = await ApiService.get('/settings/domains');
+            this.domains = Array.isArray(response?.domains) ? response.domains : [];
+            this.renderDomains();
+        } catch (error) {
+            this.domains = [];
+            this.renderDomains();
+            this.showAlert(this.extractError(error, 'Failed to load domains'), 'error');
+        }
+    }
+
+    async submitForm() {
+        if (this.isSubmitting) {
+            return;
+        }
+
+        const domain = this.domainInput.value.trim();
+        const description = this.descriptionInput.value.trim();
+        const status = this.statusInput.value === 'inactive' ? 'inactive' : 'active';
+
+        if (!domain) {
+            this.showAlert('Please enter a domain name', 'error');
+            return;
+        }
+
+        this.setSubmitting(true);
+        try {
+            if (this.editingDomainId === null) {
+                const result = await ApiService.post('/settings/domains', { domain, description, status });
+                const templateFile = result?.vhost_template?.file;
+                const suffix = templateFile ? ` and vhost template "${templateFile}" generated` : '';
+                this.showAlert(`Domain added successfully${suffix}`, 'success');
+            } else {
+                const result = await ApiService.put(`/settings/domains/${this.editingDomainId}`, { domain, description, status });
+                const templateFile = result?.vhost_template?.file;
+                const suffix = templateFile ? ` and vhost template "${templateFile}" synced` : '';
+                this.showAlert(`Domain updated successfully${suffix}`, 'success');
+            }
+
+            await this.fetchDomains();
+            this.closeModal();
+        } catch (error) {
+            this.showAlert(this.extractError(error, 'Failed to save domain'), 'error');
+        } finally {
+            this.setSubmitting(false);
+        }
+    }
+
+    async removeDomain(domainId) {
+        const domain = this.domains.find((item) => Number(item.id) === Number(domainId));
+        const label = domain?.domain || `ID ${domainId}`;
+
+        if (!confirm(`Are you sure you want to remove "${label}"?`)) {
+            return;
+        }
+
+        try {
+            await ApiService.delete(`/settings/domains/${domainId}`);
+            this.showAlert('Domain removed successfully', 'success');
+            await this.fetchDomains();
+        } catch (error) {
+            this.showAlert(this.extractError(error, 'Failed to remove domain'), 'error');
+        }
+    }
+
+    renderLoadingState() {
+        this.countBadge.textContent = '0 domains';
+        this.tableBody.innerHTML = `
+            <tr>
+                <td colspan="5" class="table-loading">
+                    Loading domains...
+                </td>
+            </tr>
+        `;
+    }
+
+    renderDomains() {
+        const total = this.domains.length;
+        this.countBadge.textContent = `${total} domain${total !== 1 ? 's' : ''}`;
+
+        if (total === 0) {
+            this.tableBody.innerHTML = `
+                <tr class="table-empty-row">
+                    <td colspan="5">
+                        <div class="empty-state">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M2 12h20"></path>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                            <h4>No domains added yet</h4>
+                            <p>Add your first domain using the "Add Domain" button to get started with creating brand previews.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        const rows = this.domains.map((domain) => {
+            const safeStatus = domain.status === 'inactive' ? 'inactive' : 'active';
+            return `
+                <tr>
+                    <td class="col-domain">
+                        <div class="domain-cell">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M2 12h20"></path>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                            ${this.escapeHtml(domain.domain)}
+                        </div>
+                    </td>
+                    <td class="col-description">
+                        ${domain.description ? this.escapeHtml(domain.description) : '<span class="text-muted">No description</span>'}
+                    </td>
+                    <td class="col-status">
+                        <span class="status-badge status-${safeStatus}">${safeStatus}</span>
+                    </td>
+                    <td class="col-date">
+                        ${this.formatDate(domain.created_at)}
+                    </td>
+                    <td class="col-actions">
+                        <div class="action-buttons">
+                            <button class="btn-secondary btn-sm" onclick="openDomainModal(${Number(domain.id)})">
+                                Edit
+                            </button>
+                            <button class="btn-danger btn-sm" onclick="domainManager.removeDomain(${Number(domain.id)})">
+                                Remove
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+
+        this.tableBody.innerHTML = rows.join('');
+    }
+
+    showAlert(message, type = 'info') {
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type}`;
+        alert.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                ${type === 'success'
+                    ? '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>'
+                    : type === 'error'
+                        ? '<circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line>'
+                        : '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>'}
+            </svg>
+            ${this.escapeHtml(message)}
+        `;
+
+        const container = document.getElementById('alertContainer');
+        if (!container) {
+            return;
+        }
+
+        container.appendChild(alert);
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.parentNode.removeChild(alert);
+            }
+        }, 3000);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    window.domainManager = new DomainManager();
+    await window.domainManager.init();
+});
+
+window.switchTab = switchTab;
+window.openDomainModal = openDomainModal;
+window.closeDomainModal = closeDomainModal;
+</script>
+
+<style>
+/* Settings Page Styles */
+.settings-container {
+    margin: 0 auto;
+}
+
+.settings-tabs {
+    display: flex;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 0;
+    gap: 0;
+    overflow: hidden;
+}
+
+.tab-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    position: relative;
+}
+
+.tab-button:last-child {
+    border-right: none;
+}
+
+.tab-button:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-button.active {
+    color: #10b981;
+    background: var(--bg-card);
+    border-bottom: 2px solid #10b981;
+}
+
+.tab-button.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #10b981;
+}
+
+.settings-content {
+    min-height: 400px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 2rem;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.tab-header {
+    margin-bottom: 2rem;
+}
+
+.tab-header h2 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+}
+
+.tab-description {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.settings-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-header h3 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.card-content {
+    padding: 1.5rem 0;
+}
+
+.settings-form {
+    max-width: 500px;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-help {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.domains-list {
+    min-height: 200px;
+}
+
+.domain-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+    background: var(--bg-primary);
+}
+
+.domain-info {
+    flex: 1;
+}
+
+.domain-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.domain-description {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.domain-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-active {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.status-inactive {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.domain-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 1rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    margin: 0 2rem 2rem 2rem;
+}
+
+.empty-state svg {
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+}
+
+.empty-state p {
+    margin: 0;
+}
+
+.coming-soon {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-secondary);
+}
+
+.coming-soon svg {
+    margin-bottom: 1rem;
+    opacity: 0.3;
+}
+
+.coming-soon h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+}
+
+.coming-soon p {
+    margin: 0;
+}
+
+.badge {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .settings-tabs {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .tab-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+    
+    .domain-item {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .domain-actions {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .domain-actions button {
+        width: 100%;
+    }
+
+    .action-buttons {
+        justify-content: stretch;
+    }
+
+    .action-buttons button {
+        width: 100%;
+    }
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+}
+
+.modal-form {
+    max-width: none;
+}
+
+/* Table Styles */
+.domains-table-container {
+    overflow-x: auto;
+}
+
+.domains-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.domains-table th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 2px solid #10b981;
+    border-right: 1px solid var(--border-color);
+    background: #1e293b;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.domains-table th:last-child {
+    border-right: none;
+}
+
+.domains-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.domains-table td:last-child {
+    border-right: none;
+}
+
+.domains-table tr:last-child td {
+    border-bottom: none;
+}
+
+.col-domain {
+    font-weight: 500;
+    width: 25%;
+}
+
+.col-description {
+    width: 35%;
+}
+
+.col-status {
+    width: 15%;
+}
+
+.col-date {
+    width: 15%;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.col-actions {
+    width: 18%;
+    text-align: right;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.domain-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.text-muted {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.table-empty-row td {
+    padding: 0;
+}
+
+.table-empty-row .empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+}
+
+.table-loading {
+    text-align: center;
+    padding: 2rem 1rem !important;
+    color: var(--text-secondary);
+}
+
+/* Card Actions */
+.card-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,50 @@
+{
+  "name": "preview-builder",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Preview Builder - Create, edit, and preview dealership brand sites (Next.js + Flask + SQLite).",
+  "keywords": [
+    "preview-builder",
+    "brand-builder",
+    "brand-preview",
+    "dealership",
+    "used-cars",
+    "multi-tenant",
+    "nextjs",
+    "flask",
+    "sqlite"
+  ],
+  "author": "Carous Limited",
+  "scripts": {
+    "theme:sync": "node tools/sync-theme-contracts.mjs",
+    "dev": "npm run theme:sync && next dev",
+    "build": "npm run theme:sync && next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@types/nodemailer": "^7.0.4",
+    "dotenv": "^17.2.3",
+    "framer-motion": "^12.23.25",
+    "lucide-react": "^0.556.0",
+    "mysql2": "^3.15.3",
+    "next": "16.0.7",
+    "nodemailer": "^7.0.11",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "stream-chat": "^9.27.0",
+    "stream-chat-react": "^13.13.0",
+    "ws": "^8.13.0",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.7",
+    "typescript": "^5",
+    "ts-node": "^10.9.1"
+  }
+}

@@ -1,0 +1,377 @@
+/* Vehicle side-panel styles (uses variables from base.css) */
+
+.vehicle-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: rgba(var(--brand-text-rgb), 0.35);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.28s ease;
+}
+
+.vehicle-backdrop.visible {
+    opacity: 1;
+}
+
+.vehicle-panel {
+    width: min(720px, 95vw);
+    max-height: 92vh;
+    background: var(--brand-background);
+    color: var(--brand-text);
+    border-radius: 28px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 40px 80px rgba(var(--brand-text-rgb), 0.15);
+    overflow: hidden;
+    transform: translateY(40px);
+    transition: transform 0.28s ease, opacity 0.28s ease;
+}
+
+.vehicle-panel.open {
+    transform: translateY(0);
+}
+
+.vehicle-panel-header {
+    padding: 24px 32px 20px;
+    position: relative;
+    background: #f5f5f7;
+}
+
+.vehicle-panel-headline {
+    margin-bottom: 8px;
+}
+
+#vehiclePanelTitle {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(24px, 3vw, 32px);
+    margin: 0;
+    color: var(--brand-text);
+}
+
+.vehicle-panel-price {
+    font-family: var(--font-display);
+    color: var(--brand-accent);
+    font-weight: 700;
+    font-size: 24px;
+    margin-top: 8px;
+}
+
+.vehicle-close {
+    background: var(--brand-background);
+    border: 1px solid rgba(var(--brand-text-rgb), 0.1);
+    color: var(--brand-text);
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.vehicle-close:hover {
+    border-color: var(--brand-text);
+}
+
+/* subtle divider under price similar to screenshot */
+.vehicle-panel-header::after {
+    content: "";
+    display: block;
+    height: 1px;
+    background: rgba(var(--brand-background-rgb), 0.03);
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: -6px
+}
+
+.vehicle-panel-body {
+    flex: 1;
+    padding: 24px 32px 30px;
+    overflow: auto;
+    max-height: calc(92vh - 160px);
+    background: var(--brand-background);
+}
+
+.vehicle-panel-body::-webkit-scrollbar {
+    width: 8px;
+    height: 8px
+}
+
+.vehicle-panel-body::-webkit-scrollbar-track {
+    background: transparent
+}
+
+.vehicle-panel-body::-webkit-scrollbar-thumb {
+    background: rgba(var(--brand-text-rgb), 0.64);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: padding-box
+}
+
+.vehicle-panel-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--brand-text-rgb), 1)
+}
+
+/* Optional: hide scrollbars completely by adding `.no-scrollbar` to the panel or body */
+.vehicle-panel.no-scrollbar .vehicle-panel-body,
+.vehicle-panel-body.no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overflow: auto
+}
+
+.vehicle-panel.no-scrollbar .vehicle-panel-body::-webkit-scrollbar,
+.vehicle-panel-body.no-scrollbar::-webkit-scrollbar {
+    display: none
+}
+
+.vehicle-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(var(--brand-text-rgb), 0.08);
+}
+
+.vehicle-meta-row strong {
+    color: var(--brand-text);
+    font-weight: 700;
+}
+
+.vehicle-meta-row span {
+    color: var(--brand-text);
+    font-weight: 600;
+}
+
+.vehicle-valuations {
+    padding: 12px 6px;
+    margin-top: 12px
+}
+
+.vehicle-valuations h4 {
+    margin: 0 0 8px 6px;
+    color: var(--text);
+    font-weight: 700
+}
+
+.val-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 6px;
+    background: transparent;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-weight: 600
+}
+
+.val-row span:last-child {
+    color: var(--primary);
+    font-weight: 700
+}
+
+.vehicle-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px
+}
+
+.vehicle-actions .btn {
+    width: 100%
+}
+
+/* responsive */
+@media (max-width:900px) {
+    .vehicle-panel {
+        width: 100vw;
+        max-width: 100%;
+        border-radius: 0;
+        /* ensure full-screen panel still sits above all content */
+        z-index: 99999;
+    }
+
+    .vehicle-panel-body {
+        padding: 12px
+    }
+}
+
+/* Sell form styles inside panel */
+.sell-form-collapse {
+    margin-top: 12px
+}
+
+.sell-form-collapse summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 10px 6px;
+    font-weight: 700;
+    color: var(--text);
+    background: transparent;
+    border-radius: 6px
+}
+
+.sell-form-collapse summary::-webkit-details-marker {
+    display: none
+}
+
+.sell-form-inner {
+    padding: 6px 6px 18px 6px
+}
+
+.panel-sell-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+}
+
+.panel-sell-form .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.panel-sell-form input[type="text"],
+.panel-sell-form input[type="email"],
+.panel-sell-form input[type="tel"],
+.panel-sell-form textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: var(--brand-background);
+    border: 1px solid rgba(var(--brand-text-rgb), 0.15);
+    color: var(--brand-text);
+    font-size: 14px;
+    font-family: var(--font-display);
+    resize: vertical;
+    min-height: 48px;
+    margin-bottom: 14px;
+    display: block
+}
+
+.panel-sell-form input[type="text"]::placeholder,
+.panel-sell-form input[type="email"]::placeholder,
+.panel-sell-form input[type="tel"]::placeholder,
+.panel-sell-form textarea::placeholder {
+    opacity: 1
+}
+
+.panel-sell-form input[type="text"]:focus,
+.panel-sell-form input[type="email"]:focus,
+.panel-sell-form input[type="tel"]:focus,
+.panel-sell-form textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 6px rgba(var(--brand-text-rgb), 0.06)
+}
+
+.panel-sell-form textarea {
+    min-height: 92px
+}
+
+.panel-sell-form textarea,
+.panel-sell-form .cond-group,
+.panel-sell-form .btn-submit {
+    grid-column: 1 / -1;
+}
+
+.cond-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px
+}
+
+.cond-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    background: #f5f5f7;
+    border: 1px solid rgba(var(--brand-text-rgb), 0.15);
+    color: var(--brand-text);
+    cursor: pointer;
+    font-family: var(--font-display);
+}
+
+.cond-btn.active {
+    background: var(--brand-text);
+    color: var(--brand-background);
+    border-color: var(--brand-text);
+}
+
+.panel-sell-form .btn-submit {
+    width: 100%;
+    background: var(--brand-primary);
+    border: none;
+    color:var(--brand-background);
+    padding: 12px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.panel-sell-form .btn-submit:hover {
+    transform: translateY(-1px);
+}
+
+/* Button loading state: small inline spinner on the right */
+.panel-sell-form .btn-submit.loading {
+    position: relative;
+    opacity: 0.9;
+    pointer-events: none;
+}
+.panel-sell-form .btn-submit.loading::after {
+    content: "";
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(var(--brand-background-rgb), 0.22);
+    border-top-color: rgba(var(--brand-background-rgb), 0.9);
+    border-radius: 50%;
+    animation: vp-spin .8s linear infinite;
+}
+
+@keyframes vp-spin { to { transform: translateY(-50%) rotate(360deg); } }
+
+/* small helper to match screenshot spacing */
+.panel-sell-form .label {
+    display: block;
+    margin-bottom: 6px;
+    color: rgba(var(--brand-text-rgb), 1);
+    font-weight: 700
+}
+
+/* Recent lookups list (clipped to a few rows with show more) */
+/* recent rows removed */
+
+/* Collapsible meta rows (show up to colour row, rest hidden) */
+.meta-collapsed {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height .28s ease;
+    padding: 0 6px
+}
+
+.meta-collapsed.open {
+    max-height: 420px;
+    padding-top: 8px;
+    padding-bottom: 8px
+}
+

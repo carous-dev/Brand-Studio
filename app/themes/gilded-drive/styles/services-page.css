@@ -1,0 +1,348 @@
+/* Services Section */
+.services-section {
+  --primary-red: var(--brand-primary);
+  --primary-red-dark: var(--brand-accent);
+  --white: var(--brand-background);
+  --dark-gray: var(--brand-text);
+  --medium-gray: rgba(var(--brand-text-rgb), 0.72);
+  --light-gray: rgba(var(--brand-text-rgb), 0.06);
+  --font-family-body: var(--font-ui);
+  --font-family-sans: var(--font-brand);
+  --font-weight-black: 900;
+  --font-weight-bold: 700;
+  --font-weight-medium: 600;
+
+  padding: 100px 0;
+  background-color: #0f141a;
+  background-image: url("https://images.unsplash.com/photo-1755288348835-dc6c29852299?auto=format&fit=crop&w=2200&q=80");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  font-family: var(--font-family-body);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.services-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 20, 26, 0.72);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.services-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Services Header */
+.services-header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.services-title {
+  font-family: var(--font-family-sans);
+  font-size: 48px;
+  font-weight: var(--font-weight-black);
+  color: var(--white);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+}
+
+.services-divider {
+  width: 100px;
+  height: 4px;
+  background: var(--primary-red);
+  margin: 0 auto 30px;
+  border-radius: 2px;
+}
+
+.services-subtitle {
+  font-family: var(--font-family-body);
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Services Grid */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 40px;
+  margin-bottom: 0;
+}
+
+/* Service Card */
+.service-card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 40px 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.service-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--primary-red);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.service-card:hover::before {
+  transform: scaleX(1);
+}
+
+.service-card:hover {
+  transform: translateY(-15px);
+  box-shadow: 0 25px 60px rgba(var(--brand-primary-rgb), 0.2);
+}
+
+/* Service Icon */
+.service-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--light-gray);
+  border: 1px solid rgba(var(--brand-primary-rgb), 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 30px;
+  transition: all 0.4s ease;
+  position: relative;
+}
+
+.service-icon::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 50%;
+  background: var(--primary-red);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.4s ease;
+}
+
+.service-card:hover .service-icon::before {
+  opacity: 0.3;
+}
+
+.service-card:hover .service-icon {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 15px 35px rgba(var(--brand-primary-rgb), 0.28);
+  background: var(--primary-red);
+  border-color: transparent;
+}
+
+.service-icon:hover {
+  background: var(--primary-red);
+  border-color: transparent;
+}
+
+.app-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.service-icon i,
+.service-icon svg {
+  font-size: 28px;
+  color: var(--primary-red) !important;
+  transition: transform 0.9s ease;
+}
+
+.service-icon svg {
+  fill: none !important;
+}
+
+.service-card:hover .service-icon i,
+.service-card:hover .service-icon svg {
+  transform: rotate(270deg);
+  color: var(--white) !important;
+}
+
+.service-icon:hover i,
+.service-icon:hover svg {
+  color: var(--white) !important;
+}
+
+/* Service Content */
+.service-title {
+  font-family: var(--font-family-sans);
+  font-size: 24px;
+  font-weight: var(--font-weight-bold);
+  color: var(--dark-gray);
+  margin-bottom: 20px;
+  transition: color 0.3s ease;
+}
+
+.service-card:hover .service-title {
+  color: var(--primary-red);
+}
+
+.service-description {
+  font-family: var(--font-family-body);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--medium-gray);
+  margin-bottom: 30px;
+  min-height: 100px;
+}
+
+/* Service Link */
+.service-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-family-body);
+  color: var(--primary-red);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  font-size: 16px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.service-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary-red);
+  transition: width 0.3s ease;
+}
+
+.service-link:hover::after {
+  width: 100%;
+}
+
+.service-link:hover {
+  color: var(--primary-red-dark);
+  transform: translateX(5px);
+}
+
+.service-link i {
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.service-link:hover i {
+  transform: translateX(3px);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .services-section {
+    background-attachment: scroll;
+  }
+}
+
+@media (max-width: 768px) {
+  .services-section {
+    padding: 80px 0;
+  }
+
+  .services-title {
+    font-size: 36px;
+  }
+
+  .services-subtitle {
+    font-size: 16px;
+  }
+
+  .services-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+  }
+
+  .service-card {
+    padding: 30px 20px;
+  }
+
+  .service-icon {
+    width: 62px;
+    height: 62px;
+  }
+
+  .service-icon i {
+    font-size: 24px;
+  }
+
+  .service-title {
+    font-size: 20px;
+  }
+
+  .service-description {
+    font-size: 15px;
+    min-height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .services-section {
+    padding: 60px 0;
+  }
+
+  .services-container {
+    padding: 0 15px;
+  }
+
+  .services-title {
+    font-size: 28px;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .service-card {
+    padding: 25px 15px;
+  }
+
+  .service-icon {
+    width: 54px;
+    height: 54px;
+  }
+
+  .service-icon i {
+    font-size: 22px;
+  }
+
+  .service-title {
+    font-size: 18px;
+  }
+
+  .service-description {
+    font-size: 14px;
+    min-height: 60px;
+  }
+}

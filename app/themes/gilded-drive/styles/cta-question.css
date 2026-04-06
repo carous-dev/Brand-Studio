@@ -1,0 +1,154 @@
+/* Split CTA Section */
+.split-cta-section {
+  --split-cta-font-body: var(--font-ui-family);
+  --split-cta-font-heading: var(--font-brand-family);
+  --split-cta-text: var(--text-inverse, var(--brand-background));
+  --split-cta-text-muted: rgba(var(--brand-background-rgb), 0.92);
+
+  --split-cta-buy-overlay-start: rgba(var(--brand-text-rgb), 0.78);
+  --split-cta-buy-overlay-mid: rgba(var(--brand-text-rgb), 0.62);
+  --split-cta-buy-overlay-end: rgba(var(--brand-text-rgb), 0.5);
+
+  --split-cta-sell-overlay-start: rgba(var(--accent-primary-rgb), 0.76);
+  --split-cta-sell-overlay-mid: rgba(var(--accent-primary-rgb), 0.62);
+  --split-cta-sell-overlay-end: rgba(var(--accent-primary-rgb), 0.42);
+
+  --split-cta-btn-primary-bg: var(--btn-primary-bg, var(--brand-primary));
+  --split-cta-btn-primary-text: var(--btn-primary-text, var(--brand-background));
+  --split-cta-btn-primary-hover: var(--btn-primary-hover, var(--brand-secondary));
+
+  --split-cta-btn-secondary-bg: var(--brand-background);
+  --split-cta-btn-secondary-text: var(--btn-primary-bg, var(--brand-primary));
+  --split-cta-btn-secondary-border: var(--brand-background);
+  --split-cta-btn-secondary-hover-bg: transparent;
+  --split-cta-btn-secondary-hover-text: var(--brand-background);
+
+  --split-cta-buy-image: url("https://images.unsplash.com/photo-1714348938110-d3692bc3716a?auto=format&fit=crop&w=2400&h=1400&q=80");
+  --split-cta-sell-image: url("https://images.unsplash.com/photo-1565376901308-37344a4b06ea?auto=format&fit=crop&w=2400&h=1400&q=80");
+
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 380px;
+}
+
+.split-cta-panel {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.split-cta-content {
+  position: relative;
+  z-index: 2;
+  max-width: 620px;
+  padding: 70px 56px;
+  color: var(--split-cta-text);
+  font-family: var(--split-cta-font-body);
+}
+
+.split-cta-content h2 {
+  margin: 0 0 18px;
+  font-family: var(--split-cta-font-heading);
+  font-size: clamp(30px, 2.2vw, 42px);
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--split-cta-text);
+}
+
+.split-cta-content p {
+  margin: 0 0 24px;
+  color: var(--split-cta-text-muted);
+  font-size: clamp(18px, 1.2vw, 26px);
+  line-height: 1.45;
+}
+
+.split-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 28px;
+  text-decoration: none;
+  font-family: var(--split-cta-font-body);
+  font-size: 18px;
+  font-weight: 500;
+  border: 2px solid transparent;
+  transition: all 0.25s ease;
+}
+
+.split-cta-buy {
+  background-image:
+    linear-gradient(
+      90deg,
+      var(--split-cta-buy-overlay-start) 0%,
+      var(--split-cta-buy-overlay-mid) 58%,
+      var(--split-cta-buy-overlay-end) 100%
+    ),
+    var(--split-cta-buy-image);
+  background-size: cover;
+  background-position: center;
+}
+
+.split-cta-btn-red {
+  background: var(--split-cta-btn-primary-bg);
+  color: var(--split-cta-btn-primary-text);
+}
+
+.split-cta-btn-red:hover {
+  background: var(--split-cta-btn-primary-hover);
+}
+
+.split-cta-sell {
+  background-color: var(--split-cta-btn-primary-bg);
+  background-image: var(--split-cta-sell-image);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.split-cta-sell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    var(--split-cta-sell-overlay-start) 0%,
+    var(--split-cta-sell-overlay-mid) 56%,
+    var(--split-cta-sell-overlay-end) 100%
+  );
+}
+
+.split-cta-btn-white {
+  background: var(--split-cta-btn-secondary-bg);
+  color: var(--split-cta-btn-secondary-text);
+}
+
+.split-cta-btn-white:hover {
+  background: var(--split-cta-btn-secondary-hover-bg);
+  border-color: var(--split-cta-btn-secondary-border);
+  color: var(--split-cta-btn-secondary-hover-text);
+}
+
+.split-cta-btn:focus-visible {
+  outline: 2px solid var(--split-cta-btn-primary-bg);
+  outline-offset: 3px;
+}
+
+@media (max-width: 980px) {
+  .split-cta-section {
+    grid-template-columns: 1fr;
+  }
+
+  .split-cta-panel {
+    min-height: 320px;
+  }
+
+  .split-cta-content {
+    padding: 46px 24px;
+  }
+
+  .split-cta-sell {
+    background-size: cover;
+  }
+}

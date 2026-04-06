@@ -1,0 +1,44 @@
+.snackbar{
+  position:fixed;
+  right:var(--snack-right);
+  bottom:var(--snack-bottom);
+  min-width:var(--snack-min-width);
+  max-width:var(--snack-max-width);
+  padding:var(--snack-padding);
+  border-radius:var(--snack-radius);
+  color:var(--snack-color);
+  box-shadow:var(--snack-shadow);
+  background:linear-gradient(90deg,#222, #2b2b2b);
+  opacity:0;
+  transform:translateY(12px) scale(.985);
+  transition:opacity .28s cubic-bezier(.2,.9,.2,1), transform .28s cubic-bezier(.2,.9,.2,1);
+  pointer-events:none;
+  z-index:9999;
+  display:block;
+  font-family:inherit;
+  font-size:0.95rem;
+  line-height:1.2;
+}
+
+.snackbar--visible{
+  opacity:1;
+  transform:translateY(0) scale(1);
+  pointer-events:auto;
+}
+
+.snackbar--success{
+  background:linear-gradient(90deg,#0f9d58 0%, #0bb27a 100%);
+}
+
+.snackbar--error{
+  background:linear-gradient(90deg,#d9534f 0%, #e66b61 100%);
+}
+
+/* Slightly smaller spacing on very small screens */
+@media (max-width:420px){
+  :root{ --snack-right:12px; --snack-bottom:12px; --snack-max-width:calc(100% - 40px); }
+  .snackbar{ min-width:200px; }
+}
+
+/* Result box used inside Sell Your Car form */
+#sellResult{ margin-top:12px; padding:10px; border-radius:6px; background:#f6f7f9; border:1px solid #e6e8eb; color:#111; }

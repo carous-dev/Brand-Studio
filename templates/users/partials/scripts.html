@@ -1,0 +1,674 @@
+<script>
+// User Management Module
+const UserManagement = {
+    // State
+    currentPage: 1,
+    currentSearch: '',
+    currentRoleFilter: '',
+    currentEditingUserId: null,
+    
+    // Initialize
+    init() {
+        this.bindEvents();
+        this.loadUsers();
+        this.initPasswordToggles();
+    },
+    
+    // Password toggle functionality
+    initPasswordToggles() {
+        const passwordToggles = document.querySelectorAll('.password-toggle');
+        passwordToggles.forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const targetId = this.dataset.target;
+                const passwordInput = document.getElementById(targetId);
+                const eyeIcon = this.querySelector('.eye-icon');
+                const eyeOffIcon = this.querySelector('.eye-off-icon');
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    eyeIcon.style.display = 'none';
+                    eyeOffIcon.style.display = 'block';
+                } else {
+                    passwordInput.type = 'password';
+                    eyeIcon.style.display = 'block';
+                    eyeOffIcon.style.display = 'none';
+                }
+            });
+        });
+    },
+    
+    // Event Bindings
+    bindEvents() {
+        // Modal keyboard events
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeModal();
+            }
+        });
+        
+        // Prevent modal auto-open
+        const modal = document.getElementById('roleModal');
+        if (modal && modal.style.display !== 'none') {
+            modal.style.display = 'none';
+        }
+    },
+    
+    // API Methods
+    async loadUsers(page = 1, search = '', roleFilter = '') {
+        console.log('=== loadUsers called ===');
+        console.log('page:', page, 'search:', search, 'roleFilter:', roleFilter);
+        
+        this.currentPage = page;
+        this.currentSearch = search;
+        this.currentRoleFilter = roleFilter;
+        
+        this.showLoading();
+        
+        try {
+            const params = new URLSearchParams({
+                page: page,
+                limit: 20,
+                search: search,
+                role: roleFilter
+            });
+            
+            const response = await fetch(`/api/users?${params}`);
+            const data = await response.json();
+            
+            console.log('loadUsers response data:', data);
+            
+            // Check if password hashes are present in the response
+            if (data.users && data.users.length > 0) {
+                console.log('=== USER LIST ANALYSIS ===');
+                console.log('Backend security: password_hash field is', data.users[0].password_hash ? 'INCLUDED' : 'EXCLUDED');
+                
+                data.users.slice(0, 2).forEach((user, index) => {
+                    console.log(`User ${index + 1}:`, {
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                        password_hash: user.password_hash ? 'Present' : 'Excluded (security)',
+                        has_password_field: 'password_hash' in user
+                    });
+                });
+                
+                if (!data.users[0].password_hash) {
+                    console.log('ℹ️  INFO: Backend excludes password hashes from user list for security reasons');
+                    console.log('ℹ️  INFO: Password updates ARE working, but hashes cannot be displayed in the UI');
+                }
+            }
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            this.renderUsers(data.users);
+            this.renderPagination(data.pagination);
+            this.updateUserCount(data.pagination.total);
+            
+        } catch (error) {
+            console.error('Error loading users:', error);
+            this.showError('Error loading users: ' + error.message);
+        }
+    },
+    
+    async updateUserInfo(userId, userData) {
+        try {
+            const response = await fetch(`/api/users/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData)
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            // Return the full response data so the caller can access success message and updated user data
+            return data;
+        } catch (error) {
+            console.error('Error updating user info:', error);
+            // Don't show alert here - let the caller handle error display
+            throw error;
+        }
+    },
+
+    async updateUserRole(userId, newRole, closeAfterUpdate = true) {
+        try {
+            const response = await fetch(`/api/users/${userId}/role`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ role: newRole })
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            // Return response data so caller decides how to proceed
+            return data;
+        } catch (error) {
+            console.error('Error updating user role:', error);
+            this.showAlert(error.message, 'error');
+            throw error;
+        }
+    },
+    
+    async deleteUser(userId) {
+        try {
+            // Confirm deletion with user
+            const confirmed = confirm('Are you sure you want to delete this user? This action cannot be undone.');
+            if (!confirmed) {
+                return;
+            }
+            
+            const response = await fetch(`/api/users/${userId}`, {
+                method: 'DELETE'
+            });
+            
+            const data = await response.json();
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            this.showAlert(data.message || 'User deleted successfully', 'success');
+            this.loadUsers(this.currentPage, this.currentSearch, this.currentRoleFilter);
+            
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            this.showAlert(error.message, 'error');
+        }
+    },
+
+    async toggleUserStatus(userId) {
+        try {
+            const response = await fetch(`/api/users/${userId}/toggle-status`, {
+                method: 'PUT'
+            });
+            
+            const data = await response.json();
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            this.showAlert(data.message, 'success');
+            this.loadUsers(this.currentPage, this.currentSearch, this.currentRoleFilter);
+            
+        } catch (error) {
+            console.error('Error toggling user status:', error);
+            this.showAlert(error.message, 'error');
+        }
+    },
+    
+    // Rendering Methods
+    renderUsers(users) {
+        const list = document.getElementById('usersList');
+        
+        if (users.length === 0) {
+            list.innerHTML = `
+                <div class="no-users">
+                    No users found
+                </div>
+            `;
+            return;
+        }
+        
+        list.innerHTML = users.map(user => `
+            <div class="user-row">
+                <div class="user-cell">
+                    <strong>${user.name}</strong> <small>${user.email}</small>
+                </div>
+                <div class="user-cell">
+                    <span class="role-badge ${user.role.toLowerCase()}">${user.role}</span>
+                </div>
+                <div class="user-cell">
+                    <span class="status-badge ${user.is_active ? 'active' : 'inactive'}">
+                        ${user.is_active ? 'Active' : 'Inactive'}
+                    </span>
+                </div>
+                <div class="user-cell">
+                    ${user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never'}
+                </div>
+                <div class="user-cell">
+                    ${new Date(user.created_at).toLocaleDateString()}
+                </div>
+                <div class="user-cell">
+                    <button class="btn-action edit" onclick="UserManagement.editUserRole(${user.id})" title="Edit User">✏️</button>
+                    <button class="btn-action toggle" onclick="UserManagement.toggleUserStatus(${user.id})" title="${user.is_active ? 'Deactivate' : 'Activate'}">${user.is_active ? '🔒' : '🔓'}</button>
+                    <button class="btn-action delete" onclick="UserManagement.deleteUser(${user.id})" title="Delete User">🗑️</button>
+                </div>
+            </div>
+        `).join('');
+    },
+    
+    renderPagination(pagination) {
+        const container = document.getElementById('paginationContainer');
+        
+        if (pagination.pages <= 1) {
+            container.innerHTML = '';
+            return;
+        }
+        
+        let paginationHTML = `
+            <div class="pagination-info">
+                Showing ${((pagination.page - 1) * pagination.limit) + 1} to ${Math.min(pagination.page * pagination.limit, pagination.total)} of ${pagination.total} users
+            </div>
+            <div class="pagination-controls">
+        `;
+        
+        // Previous button
+        paginationHTML += `
+            <button class="pagination-btn" onclick="UserManagement.loadUsers(${pagination.page - 1}, '${this.currentSearch}', '${this.currentRoleFilter}')" ${pagination.page <= 1 ? 'disabled' : ''}>
+                Previous
+            </button>
+        `;
+        
+        // Page numbers
+        for (let i = 1; i <= pagination.pages; i++) {
+            if (i === 1 || i === pagination.pages || (i >= pagination.page - 2 && i <= pagination.page + 2)) {
+                paginationHTML += `
+                    <button class="pagination-btn ${i === pagination.page ? 'active' : ''}" onclick="UserManagement.loadUsers(${i}, '${this.currentSearch}', '${this.currentRoleFilter}')">
+                        ${i}
+                    </button>
+                `;
+            } else if (i === pagination.page - 3 || i === pagination.page + 3) {
+                paginationHTML += '<span>...</span>';
+            }
+        }
+        
+        // Next button
+        paginationHTML += `
+            <button class="pagination-btn" onclick="UserManagement.loadUsers(${pagination.page + 1}, '${this.currentSearch}', '${this.currentRoleFilter}')" ${pagination.page >= pagination.pages ? 'disabled' : ''}>
+                Next
+            </button>
+        `;
+        
+        paginationHTML += '</div>';
+        container.innerHTML = paginationHTML;
+    },
+    
+    // UI Methods
+    showLoading() {
+        const list = document.getElementById('usersList');
+        list.innerHTML = `
+            <div class="loading-row">
+                <div class="loading-spinner"></div>
+                <p>Loading users...</p>
+            </div>
+        `;
+    },
+    
+    showError(message) {
+        const list = document.getElementById('usersList');
+        list.innerHTML = `
+            <div class="no-users">
+                ${message}
+            </div>
+        `;
+    },
+    
+    updateUserCount(total) {
+        const countElement = document.getElementById('userCount');
+        if (countElement) {
+            countElement.textContent = `${total} user${total !== 1 ? 's' : ''}`;
+        }
+    },
+    
+    // User Actions
+    async editUserRole(userId) {
+        console.log('editUserRole called with userId:', userId);
+        
+        if (!userId) {
+            this.showAlert('Invalid user ID', 'error');
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api/users?limit=1000');
+            const data = await response.json();
+            
+            const user = data.users.find(u => u.id === userId);
+            if (!user) {
+                this.showAlert('User not found', 'error');
+                return;
+            }
+            
+            console.log('Setting currentEditingUserId to:', userId);
+            this.currentEditingUserId = userId;
+            document.getElementById('modalUsername').value = user.name;
+            document.getElementById('modalEmail').value = user.email;
+            document.getElementById('modalRole').value = user.role;
+            document.getElementById('modalStatus').value = user.is_active ? '1' : '0';
+            // Clear password fields when opening edit modal
+            const pwdInput = document.getElementById('modalPassword');
+            const confirmPwdInput = document.getElementById('modalConfirmPassword');
+            if (pwdInput) pwdInput.value = '';
+            if (confirmPwdInput) confirmPwdInput.value = '';
+            
+            this.showModal();
+            
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            this.showAlert('Error loading user data', 'error');
+        }
+    },
+    
+    async saveUserRole() {
+        console.log('=== saveUserRole called ===');
+        console.log('this.currentEditingUserId:', this.currentEditingUserId);
+        console.log('typeof this.currentEditingUserId:', typeof this.currentEditingUserId);
+        console.log('UserManagement object:', this);
+        
+        // TEMPORARY FIX: Try to get userId from modal if currentEditingUserId is null
+        let userId = this.currentEditingUserId;
+        if (!userId) {
+            // Try to extract from the modal username field (as a fallback)
+            const usernameElement = document.getElementById('modalUsername');
+            if (usernameElement && usernameElement.value) {
+                console.log('Attempting to find user by username:', usernameElement.value);
+                // This is a fallback - ideally we should fix the root cause
+                this.showAlert('Error: User ID lost. Please close and reopen the edit modal.', 'error');
+                return;
+            }
+        }
+        
+        if (!userId) {
+            console.error('CRITICAL: No currentEditingUserId set!');
+            this.showAlert('No user selected for editing. Please try selecting a user again.', 'error');
+            return;
+        }
+        
+        // Get all form values
+        const name = document.getElementById('modalUsername').value.trim();
+        const email = document.getElementById('modalEmail').value.trim();
+        const newRole = document.getElementById('modalRole').value;
+        const newStatus = document.getElementById('modalStatus').value;
+        const passwordInput = document.getElementById('modalPassword');
+        const confirmPasswordInput = document.getElementById('modalConfirmPassword');
+        const newPassword = passwordInput ? passwordInput.value : '';
+        const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : '';
+        
+        // Validation
+        if (!name) {
+            this.showAlert('Name is required', 'error');
+            return;
+        }
+        
+        if (!email) {
+            this.showAlert('Email is required', 'error');
+            return;
+        }
+        
+        // Email format validation
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailPattern.test(email)) {
+            this.showAlert('Invalid email format', 'error');
+            return;
+        }
+        
+        // Password validation if password is being changed
+        if (newPassword && newPassword.length > 0) {
+            if (newPassword.length < 6) {
+                this.showAlert('Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                this.showAlert('Passwords do not match', 'error');
+                return;
+            }
+        } else if (confirmPassword && confirmPassword.length > 0) {
+            // If confirm password is filled but password is empty
+            this.showAlert('Please enter a password to confirm', 'error');
+            return;
+        }
+        
+        console.log('Updating user:', userId, 'with data:', { name, email, role: newRole, status: newStatus });
+        
+        try {
+            // Store userId before any operations that might reset it
+            const userIdForPassword = this.currentEditingUserId;
+            console.log('Stored userIdForPassword:', userIdForPassword);
+            
+            // Update user basic info (name, email, role, status)
+            const updateResult = await this.updateUserInfo(userId, { name, email, role: newRole, is_active: newStatus === '1' });
+            
+            // Show success message for user info update
+            this.showAlert(updateResult.message || 'User information updated successfully', 'success');
+
+            // If a new password was entered, update it as well
+            console.log('Password input element:', passwordInput);
+            console.log('New password entered:', newPassword ? 'Yes (' + newPassword.length + ' chars)' : 'No');
+            
+            if (newPassword && newPassword.length > 0) {
+                console.log('About to update password for user:', userId);
+                console.log('this.currentEditingUserId at this moment:', this.currentEditingUserId);
+                console.log('userId === this.currentEditingUserId:', userId === this.currentEditingUserId);
+                
+                // Use the stored userId to avoid any scoping issues
+                const finalUserId = userIdForPassword;
+                console.log('Final userId being used:', finalUserId);
+                console.log('API URL will be:', `/api/users/${finalUserId}/password`);
+                
+                await this.updateUserPassword(finalUserId, newPassword);
+                
+                // After successful password update, the updateUserPassword method
+                // should have already closed the modal and refreshed the user list
+                // So we don't need to do anything else here
+            } else {
+                console.log('No password to update');
+                // Close modal and refresh users if no password update needed
+                this.closeModal();
+                this.loadUsers(this.currentPage, this.currentSearch, this.currentRoleFilter);
+            }
+        } catch (error) {
+            console.error('Error saving user:', error);
+            // Show the error message from the API or a generic one
+            const errorMessage = error.message || 'Failed to update user information';
+            this.showAlert(errorMessage, 'error');
+            // Don't close modal on error to allow user to retry
+            return;
+        }
+    },
+
+    async updateUserPassword(userId, password) {
+        console.log('=== updateUserPassword called ===');
+        console.log('userId:', userId);
+        console.log('typeof userId:', typeof userId);
+        console.log('password length:', password ? password.length : 'null/undefined');
+        
+        if (!password || password.length < 6) {
+            this.showAlert('Password must be at least 6 characters', 'error');
+            return;
+        }
+        
+        const apiUrl = `/api/users/${userId}/password`;
+        console.log('API URL:', apiUrl);
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ password: password })
+            });
+
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+
+            const data = await response.json();
+            console.log('=== PASSWORD UPDATE API RESPONSE ===');
+            console.log('Full response:', data);
+            console.log('Success message:', data.message);
+            console.log('Response status:', response.status);
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+                this.showAlert(data.message || 'Password updated', 'success');
+                console.log('Password update successful - backend confirmed the update');
+
+                // Close modal and refresh users after successful password update
+                this.closeModal();
+                this.loadUsers(this.currentPage, this.currentSearch, this.currentRoleFilter);
+
+        } catch (error) {
+            console.error('Error updating password:', error);
+            this.showAlert(error.message || 'Failed to update password', 'error');
+                throw error;
+        }
+    },
+    
+    // Modal Methods
+    showModal() {
+        const modal = document.getElementById('roleModal');
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    },
+    
+    closeModal() {
+        const modal = document.getElementById('roleModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+        this.currentEditingUserId = null;
+    },
+    
+    // Add User Modal Methods
+    showAddUserModal() {
+        const modal = document.getElementById('addUserModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            // Reset form
+            document.getElementById('addUserName').value = '';
+            document.getElementById('addUserEmail').value = '';
+            document.getElementById('addUserPassword').value = '';
+            document.getElementById('addUserRole').value = '';
+        }
+    },
+    
+    closeAddUserModal() {
+        const modal = document.getElementById('addUserModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    },
+    
+    async addUser() {
+        const name = document.getElementById('addUserName').value.trim();
+        const email = document.getElementById('addUserEmail').value.trim();
+        const password = document.getElementById('addUserPassword').value;
+        const role = document.getElementById('addUserRole').value;
+        
+        // Validation
+        if (!name) {
+            this.showAlert('Name is required', 'error');
+            return;
+        }
+        
+        if (!email) {
+            this.showAlert('Email is required', 'error');
+            return;
+        }
+        
+        if (!password) {
+            this.showAlert('Password is required', 'error');
+            return;
+        }
+        
+        if (!role) {
+            this.showAlert('Role is required', 'error');
+            return;
+        }
+        
+        if (password.length < 6) {
+            this.showAlert('Password must be at least 6 characters', 'error');
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: password,
+                    role: role
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            this.showAlert(data.message, 'success');
+            this.closeAddUserModal();
+            this.loadUsers(this.currentPage, this.currentSearch, this.currentRoleFilter);
+            
+        } catch (error) {
+            console.error('Error adding user:', error);
+            this.showAlert(error.message, 'error');
+        }
+    },
+    
+    // Filter Methods
+    filterUsers() {
+        const roleFilter = document.getElementById('roleFilter').value;
+        this.loadUsers(1, '', roleFilter);
+    },
+    
+    refreshUsers() {
+        document.getElementById('roleFilter').value = '';
+        this.loadUsers(1, '', '');
+    },
+    
+    // Alert System
+    showAlert(message, type = 'info') {
+        const alertContainer = document.getElementById('alertContainer');
+        if (!alertContainer) return;
+        
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type}`;
+        alert.textContent = message;
+        
+        alertContainer.appendChild(alert);
+        
+        setTimeout(() => {
+            alert.remove();
+        }, 5000);
+    }
+};
+
+// Global Functions for onclick handlers
+window.refreshUsers = () => UserManagement.refreshUsers();
+window.filterUsers = () => UserManagement.filterUsers();
+window.editUserRole = (id) => UserManagement.editUserRole(id);
+window.saveUserRole = () => UserManagement.saveUserRole();
+window.toggleUserStatus = (id) => UserManagement.toggleUserStatus(id);
+window.deleteUser = (id) => UserManagement.deleteUser(id);
+window.closeRoleModal = () => UserManagement.closeModal();
+
+// Initialize on DOM load
+document.addEventListener('DOMContentLoaded', function() {
+    UserManagement.init();
+});
+</script>

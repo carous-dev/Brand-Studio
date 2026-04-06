@@ -1,0 +1,979 @@
+/* Modern Futuristic Homepage Styles */
+/* Using site native colors: --accent: #b8924a, --accent-2: #d1b67a */
+
+/* ===== HERO SECTION - DARK THEME ===== */
+.hero-futuristic {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: var(--bg);
+  padding: 40px 24px;
+}
+
+.hero-futuristic::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--classic-hero-image, url('/images/hero-home.webp'));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  z-index: 1;
+}
+
+.hero-futuristic::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(6, 8, 12, 0.85) 0%, 
+    rgba(6, 8, 12, 0.75) 25%,
+    rgba(6, 8, 12, 0.65) 50%,
+    rgba(6, 8, 12, 0.75) 75%,
+    rgba(6, 8, 12, 0.85) 100%
+  );
+  z-index: 2;
+}
+
+.hero-futuristic .container {
+  position: relative;
+  z-index: 10;
+}
+
+.hero-content-futuristic {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: center;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+}
+
+.hero-main-futuristic {
+  width: 100%;
+}
+
+.hero-badge-futuristic {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
+  border-radius: 999px;
+  color: var(--accent-2);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 32px;
+  backdrop-filter: blur(10px);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hero-title-futuristic {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 7vw, 72px);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #ffffff;
+  margin: 0 0 32px;
+  letter-spacing: -0.02em;
+}
+
+.hero-title-futuristic .accent-text {
+  color: var(--accent);
+  display: block;
+}
+
+.hero-description-futuristic {
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0 0 40px;
+}
+
+.hero-actions-futuristic {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.btn-futuristic-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 32px;
+  background: var(--accent);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-futuristic-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-futuristic-primary:hover::before {
+  left: 100%;
+}
+
+.btn-futuristic-primary:hover {
+  transform: translateY(-2px);
+}
+
+.btn-futuristic-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 32px;
+  background: transparent;
+  color: var(--bg);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+
+.hero-futuristic .btn-futuristic-secondary {
+  color: #ffffff;
+}
+
+.btn-futuristic-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.hero-features-futuristic {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 60px;
+}
+
+.feature-card-futuristic {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.feature-card-futuristic:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(var(--accent-rgb), 0.3);
+}
+
+.feature-icon-futuristic {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--accent-rgb), 0.1);
+  border-radius: 12px;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.feature-title-futuristic {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px;
+}
+
+.feature-description-futuristic {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Hero Brands Section */
+.hero-visual-futuristic {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.hero-brands-futuristic {
+  padding: 32px;
+  backdrop-filter: blur(10px);
+  text-align: center;
+}
+
+.brands-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 24px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.brands-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 16px;
+}
+
+.brand-item-futuristic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.brand-item-futuristic:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(var(--accent-rgb), 0.3);
+  transform: translateY(-2px);
+}
+
+.brand-logo {
+  filter: brightness(0) invert(1);
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.brand-item-futuristic:hover .brand-logo {
+  opacity: 1;
+  filter: brightness(0) invert(1) sepia(1) saturate(100) hue-rotate(320deg);
+}
+
+/* ===== SERVICES SECTION - LIGHT THEME ===== */
+.services-futuristic {
+  padding: 120px 0;
+  background: var(--surface-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.services-futuristic::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(40px);
+}
+
+.services-header-futuristic {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 80px;
+  position: relative;
+  z-index: 2;
+}
+
+.services-title-futuristic {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 6vw, 56px);
+  font-weight: 800;
+  color: var(--bg);
+  margin: 0 0 24px;
+  letter-spacing: -0.02em;
+}
+
+.services-subtitle-futuristic {
+  font-size: clamp(18px, 2.5vw, 22px);
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0;
+}
+
+.services-grid-futuristic {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.service-item-futuristic {
+  background: #ffffff;
+  border: 1px solid rgba(var(--accent-rgb), 0.1);
+  border-radius: 20px;
+  padding: 40px 32px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.service-item-futuristic::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.service-item-futuristic:hover::before {
+  transform: scaleX(1);
+}
+
+.service-item-futuristic:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(var(--accent-rgb), 0.15);
+  border-color: var(--accent);
+}
+
+.service-icon-futuristic {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--accent-rgb), 0.08);
+  border-radius: 16px;
+  color: var(--accent);
+  margin-bottom: 24px;
+  font-size: 28px;
+}
+
+.service-item-title-futuristic {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--bg);
+  margin: 0 0 16px;
+}
+
+.service-item-description-futuristic {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0 0 24px;
+}
+
+.service-link-futuristic {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  transition: gap 0.3s ease;
+}
+
+.service-link-futuristic:hover {
+  gap: 12px;
+}
+
+/* ===== FEATURED VEHICLES - DARK THEME ===== */
+.featured-futuristic {
+  padding: 120px 0;
+  background: var(--panel) url('/images/bg2.jpg') center/cover no-repeat;
+  position: relative;
+  overflow: hidden;
+}
+
+.featured-futuristic::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at 30% 20%, rgba(var(--accent-rgb), 0.06) 0%, transparent 40%),
+    radial-gradient(ellipse at 70% 80%, rgba(var(--accent-2-rgb), 0.04) 0%, transparent 40%),
+    rgba(6, 8, 12, 0.85);
+  z-index: 1;
+}
+
+.featured-header-futuristic {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 60px;
+  position: relative;
+  z-index: 2;
+}
+
+.featured-title-futuristic {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 6vw, 56px);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 24px;
+  letter-spacing: -0.02em;
+}
+
+.featured-subtitle-futuristic {
+  font-size: clamp(18px, 2.5vw, 22px);
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0;
+}
+
+.carousel-futuristic {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  z-index: 2;
+}
+
+.carousel-track-futuristic {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0 60px;
+}
+
+.carousel-track-futuristic::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-prev-futuristic,
+.carousel-next-futuristic {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  z-index: 3;
+}
+
+.carousel-prev-futuristic {
+  left: 0;
+}
+
+.carousel-next-futuristic {
+  right: 0;
+}
+
+.carousel-prev-futuristic:hover,
+.carousel-next-futuristic:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(var(--accent-rgb), 0.5);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.vehicle-card-futuristic {
+  flex: 0 0 380px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  overflow: hidden;
+  scroll-snap-align: start;
+  transition: all 0.3s ease;
+}
+
+.vehicle-card-futuristic:hover {
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(var(--accent-rgb), 0.3);
+}
+
+.vehicle-image-futuristic {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  background: var(--card);
+}
+
+.vehicle-content-futuristic {
+  padding: 24px;
+}
+
+.vehicle-title-futuristic {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 12px;
+}
+
+.vehicle-specs-futuristic {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.vehicle-spec-futuristic {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.vehicle-price-futuristic {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--accent);
+  margin: 0;
+}
+
+/* ===== CTA SECTION - ACCENT THEME ===== */
+.cta-futuristic {
+  padding: 120px 0;
+  background: var(--accent);
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-futuristic::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(40px);
+}
+
+.cta-futuristic::after {
+  content: '';
+  position: absolute;
+  bottom: -20%;
+  right: -10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(30px);
+}
+
+.cta-content-futuristic {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.cta-title-futuristic {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 6vw, 56px);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 24px;
+  letter-spacing: -0.02em;
+}
+
+.cta-description-futuristic {
+  font-size: clamp(18px, 2.5vw, 22px);
+  line-height: 1.6;
+  color: rgba(11, 11, 11, 0.8);
+  margin: 0 0 40px;
+}
+
+.cta-actions-futuristic {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-cta-futuristic {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 32px;
+  background: var(--bg);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.btn-cta-futuristic:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(11, 11, 11, 0.2);
+}
+
+.btn-cta-secondary-futuristic {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 32px;
+  background: transparent;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.btn-cta-secondary-futuristic:hover {
+  background: #ffffff;
+  color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(255, 255, 255, 0.2);
+}
+
+/* ===== ABOUT SECTION - LIGHT THEME ===== */
+.about-futuristic {
+  padding: 120px 0;
+  background: var(--surface-light);
+  position: relative;
+}
+
+.about-content-futuristic {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.about-text-futuristic {
+  max-width: 100%;
+}
+
+.about-title-futuristic {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 6vw, 56px);
+  font-weight: 800;
+  color: var(--bg);
+  margin: 0 0 24px;
+  letter-spacing: -0.02em;
+}
+
+.about-description-futuristic {
+  font-size: clamp(18px, 2.5vw, 22px);
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0 0 40px;
+}
+
+.about-features-futuristic {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.about-feature-futuristic {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+}
+
+.about-feature-icon-futuristic {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--accent-rgb), 0.1);
+  border-radius: 12px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.about-feature-text-futuristic {
+  flex: 1;
+}
+
+.about-feature-title-futuristic {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--bg);
+  margin: 0 0 4px;
+}
+
+.about-feature-description-futuristic {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.about-actions-futuristic {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1200px) {
+  .hero-futuristic {
+    padding: 32px 20px;
+  }
+  
+  .hero-content-futuristic {
+    gap: 32px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero-futuristic {
+    padding: 28px 18px;
+    min-height: 90vh;
+  }
+  
+  .hero-features-futuristic {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .hero-content-futuristic {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .about-content-futuristic {
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-futuristic {
+    padding: 24px 16px;
+    min-height: 85vh;
+  }
+  
+  .hero-futuristic::before {
+    background-attachment: scroll;
+    background-position: center 20%;
+  }
+  
+  .hero-futuristic::after {
+    background: linear-gradient(135deg, 
+      rgba(6, 8, 12, 0.9) 0%, 
+      rgba(6, 8, 12, 0.8) 50%,
+      rgba(6, 8, 12, 0.9) 100%
+    );
+  }
+  
+  .hero-futuristic,
+  .services-futuristic,
+  .featured-futuristic,
+  .cta-futuristic,
+  .about-futuristic {
+    padding: 80px 16px;
+  }
+  
+  .hero-actions-futuristic,
+  .cta-actions-futuristic {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .btn-futuristic-primary,
+  .btn-futuristic-secondary,
+  .btn-cta-futuristic,
+  .btn-cta-secondary-futuristic {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+  }
+  
+  .vehicle-card-futuristic {
+    flex: 0 0 300px;
+  }
+  
+  .carousel-track-futuristic {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-futuristic {
+    padding: 20px 12px;
+    min-height: 80vh;
+  }
+  
+  .hero-content-futuristic {
+    gap: 24px;
+  }
+  
+  .hero-title-futuristic {
+    font-size: clamp(32px, 8vw, 48px);
+  }
+  
+  .hero-description-futuristic {
+    font-size: clamp(16px, 4vw, 18px);
+  }
+  
+  .hero-brands-futuristic {
+    padding: 24px 16px;
+  }
+  
+  .brands-grid {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-futuristic {
+    padding: 16px 8px;
+    min-height: 75vh;
+  }
+  
+  .hero-title-futuristic,
+  .services-title-futuristic,
+  .featured-title-futuristic,
+  .cta-title-futuristic,
+  .about-title-futuristic {
+    font-size: clamp(28px, 10vw, 42px);
+  }
+  
+  .service-item-futuristic {
+    padding: 32px 24px;
+  }
+  
+  .vehicle-content-futuristic {
+    padding: 20px;
+  }
+  
+  .brands-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  
+  .brand-item-futuristic {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero-futuristic {
+    padding: 12px 6px;
+  }
+  
+  .hero-content-futuristic {
+    gap: 20px;
+  }
+  
+  .hero-actions-futuristic {
+    gap: 12px;
+  }
+  
+  .btn-futuristic-primary,
+  .btn-futuristic-secondary {
+    padding: 14px 20px;
+    font-size: 14px;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ===== UTILITY CLASSES ===== */
+.text-gradient {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.accent-border {
+  border-color: var(--accent);
+}
+
+.accent-text {
+  color: var(--accent);
+}
+
+/* Remove all gradients and box shadows as requested */
+.no-gradient {
+  background: transparent !important;
+}
+
+.no-shadow {
+  box-shadow: none !important;
+}

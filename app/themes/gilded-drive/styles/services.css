@@ -1,0 +1,1764 @@
+/* Modern Hero Section - Dark Theme */
+.services-hero-modern {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: var(--bg);
+}
+
+.hero-background {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.hero-gradient {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at top right, rgba(var(--accent-rgb), 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom left, rgba(var(--accent-2-rgb), 0.05) 0%, transparent 50%),
+                linear-gradient(180deg, var(--bg) 0%, var(--panel) 100%);
+}
+
+.hero-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(var(--accent-rgb), 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 75% 75%, rgba(var(--accent-2-rgb), 0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.5;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(var(--accent-rgb), 0.1);
+    border: 1px solid rgba(var(--accent-rgb), 0.2);
+    border-radius: 999px;
+    color: var(--accent-2);
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    backdrop-filter: blur(10px);
+}
+
+.badge-icon {
+    color: var(--accent);
+}
+
+.hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 8vw, 72px);
+    font-weight: 800;
+    line-height: 1.1;
+    color: #ffffff;
+    margin: 0 0 24px;
+    letter-spacing: -0.02em;
+}
+
+.title-highlight {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+    margin-top: 8px;
+}
+
+.hero-description {
+    font-size: clamp(18px, 2vw, 20px);
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 800px;
+    margin: 0 auto 48px;
+}
+
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    max-width: 600px;
+    margin: 0 auto 48px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+}
+
+.stat-icon {
+    color: var(--accent);
+    opacity: 0.8;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #f3f3f3;
+    font-family: var(--font-display);
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border: none;
+    font-size: 16px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: var(--bg);
+    box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(var(--accent-rgb), 0.4);
+}
+
+.services-hero-modern .btn-secondary {
+    background: rgba(var(--accent-rgb), 0.1);
+    color: var(--accent-2);
+    border: 1px solid rgba(var(--accent-rgb), 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.services-hero-modern .btn-secondary:hover {
+    background: rgba(var(--accent-rgb), 0.15);
+    border-color: rgba(var(--accent-rgb), 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-arrow {
+    transition: transform 0.3s ease;
+}
+
+.btn:hover .btn-arrow {
+    transform: translateX(4px);
+}
+
+.btn-large {
+    padding: 20px 40px;
+    font-size: 18px;
+}
+
+@media (max-width: 768px) {
+    .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+    
+    .hero-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+}
+
+/* Modern Services Section - Light Theme */
+.services-modern {
+    padding: 120px 0;
+    background: var(--surface-light);
+    position: relative;
+}
+
+.section-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 80px;
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 48px);
+    font-weight: 800;
+    color: var(--bg);
+    margin: 0 0 16px;
+    letter-spacing: -0.02em;
+}
+
+.section-subtitle {
+    font-size: clamp(16px, 2vw, 18px);
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 0;
+}
+
+.services-grid-modern {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.service-card-modern {
+    position: relative;
+    background: #ffffff;
+    border: 1px solid rgba(var(--accent-rgb), 0.1);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.service-card-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--service-color, var(--accent));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.service-card-modern:hover::before {
+    transform: scaleX(1);
+}
+
+.service-card-modern:hover {
+    transform: translateY(-8px);
+    background: #ffffff;
+    border-color: var(--accent);
+    box-shadow: 0 20px 60px rgba(var(--accent-rgb), 0.15);
+}
+
+.service-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.service-icon-wrapper {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    background: rgba(var(--accent-rgb), 0.08);
+    border: 1px solid rgba(var(--accent-rgb), 0.15);
+}
+
+.service-icon {
+    color: var(--service-color, var(--accent));
+    z-index: 2;
+    position: relative;
+}
+
+.icon-glow {
+    position: absolute;
+    inset: -8px;
+    background: radial-gradient(circle, var(--service-color, var(--accent)) 0%, transparent 70%);
+    opacity: 0.2;
+    filter: blur(8px);
+    z-index: 1;
+}
+
+.service-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--bg);
+    margin: 0;
+}
+
+.service-description {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 0 0 24px;
+}
+
+.service-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--bg);
+    opacity: 0.8;
+}
+
+.feature-check {
+    color: var(--service-color, var(--accent));
+    flex-shrink: 0;
+}
+
+.service-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--service-color, var(--accent));
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.service-link:hover {
+    gap: 12px;
+}
+
+.link-arrow {
+    transition: transform 0.3s ease;
+}
+
+.service-link:hover .link-arrow {
+    transform: translateX(4px);
+}
+
+.card-decoration {
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, var(--service-color, var(--accent)) 0%, transparent 70%);
+    opacity: 0.03;
+    pointer-events: none;
+}
+
+@media (max-width: 1024px) {
+    .services-grid-modern {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .services-modern {
+        padding: 80px 0;
+    }
+    
+    .services-grid-modern {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    
+    .service-card-modern {
+        padding: 24px;
+    }
+}
+
+/* Modern CTA Section - Dark Theme */
+.cta-modern {
+    position: relative;
+    padding: 120px 0;
+    overflow: hidden;
+    background: var(--panel);
+}
+
+.cta-background {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.cta-gradient {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(var(--accent-rgb), 0.08) 0%, transparent 50%),
+                linear-gradient(180deg, var(--panel) 0%, var(--bg) 100%);
+}
+
+.cta-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(45deg, rgba(var(--accent-rgb), 0.02) 25%, transparent 25%, transparent 50%, rgba(var(--accent-rgb), 0.02) 50%, rgba(var(--accent-rgb), 0.02) 75%, transparent 75%, transparent);
+    background-size: 60px 60px;
+    opacity: 0.3;
+}
+
+.cta-content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.cta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(var(--accent-rgb), 0.1);
+    border: 1px solid rgba(var(--accent-rgb), 0.2);
+    border-radius: 999px;
+    color: var(--accent-2);
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    backdrop-filter: blur(10px);
+}
+
+.cta-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.1;
+    color: #f3f3f3;
+    margin: 0 0 24px;
+    letter-spacing: -0.02em;
+}
+
+.cta-description {
+    font-size: clamp(16px, 2vw, 18px);
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 700px;
+    margin: 0 auto 48px;
+}
+
+.cta-features {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+}
+
+.cta-feature {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.feature-icon {
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.cta-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .cta-modern {
+        padding: 80px 0;
+    }
+    
+    .cta-features {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .cta-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .cta-actions .btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+}
+
+/* FAQ typography: use display font for question labels and base font for panel text */
+.faq-futuristic .faq-toggle,
+.faq-futuristic .faq-title {
+    font-family: var(--font-base);
+    /* badge font for compact geometric labels */
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 700;
+	font-family: var(--font-base);
+	/* badge font for compact geometric labels */
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	font-weight: 700;
+}
+
+.faq-futuristic .section-title {
+	font-family: var(--font-display);
+}
+
+.faq-futuristic .faq-panel {
+	font-family: var(--font-base);
+	color: var(--muted);
+	font-size: 15px;
+	line-height: 1.6;
+}
+
+.services-faq {
+	padding: 28px 20px
+}
+
+.faq-list details {
+	background: rgba(255, 255, 255, 0.03);
+	padding: 14px;
+	border-radius: 10px;
+	margin-bottom: 10px
+}
+
+.faq-list summary {
+	font-weight: 700;
+	cursor: pointer
+}
+
+.faq-list p {
+	margin: 8px 0 0;
+	color: rgba(255, 255, 255, 0.9)
+}
+
+/* Futuristic FAQ accordion */
+.faq-futuristic {
+	padding: 28px 0
+}
+
+.faq-header {
+	max-width: 900px;
+	margin: 0 auto 14px;
+	text-align: center
+}
+
+.faq-controls {
+	display: none
+}
+
+/* Use base dark panel and accent colors from `base.css` for FAQ items */
+.faq-item {
+	background: var(--panel);
+	border-radius: 12px;
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	box-shadow: 0 10px 28px rgba(2, 6, 23, 0.12);
+	overflow: hidden
+}
+
+.faq-toggle {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 16px;
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+	font-weight: 700;
+	color: #fff
+}
+
+.faq-toggle:focus {
+	outline: none;
+	box-shadow: 0 8px 30px rgba(var(--accent-rgb), 0.08);
+}
+
+.faq-title {
+	display: block;
+	text-align: left
+}
+
+.faq-caret {
+	opacity: 0.9;
+	transform: rotate(0deg);
+	transition: transform .22s ease;
+	color: var(--accent)
+}
+
+.faq-toggle[aria-expanded="true"] .faq-caret {
+	transform: rotate(180deg)
+}
+
+.faq-panel {
+	padding: 0 16px 16px;
+	color: var(--muted);
+	font-size: 15px;
+	line-height: 1.5;
+	transition: height .28s ease
+}
+
+.faq-panel[hidden] {
+	display: none
+}
+
+.faq-accordion {
+	max-width: 1140px;
+	margin: 0 auto;
+	padding: 0 16px;
+	display: grid;
+	gap: 12px
+}
+
+/* Dark-panel FAQ visuals: use base theme variables for consistent contrast */
+.faq-item {
+	background: var(--panel);
+	border-radius: 12px;
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	box-shadow: 0 10px 28px rgba(2, 6, 23, 0.12);
+	overflow: hidden
+}
+
+.faq-toggle {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 16px;
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+	font-weight: 700;
+	color: inherit
+}
+
+.faq-toggle:focus {
+	outline: none;
+	box-shadow: 0 8px 30px rgba(var(--accent-rgb), 0.08);
+}
+
+.faq-title {
+	display: block;
+	text-align: left;
+	color: inherit;
+	font-size: 14px;
+	line-height: 1.25
+}
+
+.faq-caret {
+	opacity: 0.95;
+	transform: rotate(0deg);
+	transition: transform .22s ease;
+	color: var(--accent)
+}
+
+.faq-toggle[aria-expanded="true"] .faq-caret {
+	transform: rotate(180deg)
+}
+
+.faq-panel {
+	padding: 0 16px 16px;
+	color: var(--muted);
+	font-size: 15px;
+	line-height: 1.5;
+	transition: height .28s ease
+}
+
+.faq-panel[hidden] {
+	display: none
+}
+
+@media (max-width:700px) {
+	.faq-accordion {
+		gap: 10px
+	}
+
+	.faq-toggle {
+		padding: 12px
+	}
+
+	.faq-panel {
+		padding: 0 12px 12px
+	}
+}
+
+@media (max-width:1100px) {
+	.services-grid {
+		grid-template-columns: repeat(2, 1fr)
+	}
+}
+
+@media (max-width:700px) {
+	.services-grid {
+		grid-template-columns: 1fr
+	}
+
+	.hero-title {
+		font-size: 22px;
+		/* padding: 0 8px */
+	}
+
+	.services-cta .cta-inner {
+		flex-direction: column;
+		align-items: flex-start
+	}
+}
+
+.services-futuristic {
+	padding: 80px 0;
+	background: linear-gradient(rgba(0, 0, 0, 0.82), rgba(6, 6, 8, 0.62)), url("https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1800&q=80") center/cover no-repeat;
+	color: var(--muted)
+}
+
+.services-futuristic .services-header {
+	max-width: 900px;
+	margin: 0 auto 28px;
+	text-align: center
+}
+
+.services-futuristic .section-title {
+	color: var(--accent);
+	letter-spacing: 0.02em
+}
+
+.services-futuristic .section-sub {
+	color: var(--muted);
+	opacity: 0.9;
+	margin-top: 8px
+}
+
+/* Use Orbitron (display font) for services headings and strong labels */
+.services-futuristic h2,
+.services-futuristic .section-title,
+.services-futuristic strong,
+.services h2,
+.services .section-title,
+.services strong {
+	font-family: var(--font-display);
+}
+
+/* Two-column layout: left for text/cta, right for the mosaic */
+.services-content {
+	display: grid;
+	grid-template-columns: 340px minmax(0, 1fr);
+	gap: 20px;
+	align-items: stretch
+}
+
+/* Ensure both grid columns stretch to equal height: make direct children fill the grid row
+	and use flex column inside each to allow vertical spacing and `margin-top:auto` usage. */
+.services-content>* {
+	height: 100%
+}
+
+.services-left,
+.services-right {
+	display: flex;
+	flex-direction: column;
+	height: 100%
+}
+
+.services-left {
+	/* pure glassmorphism: translucent surface with strong blur and subtle border */
+	background: rgba(255, 255, 255, 0.06);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 14px;
+	backdrop-filter: blur(12px) saturate(140%);
+	-webkit-backdrop-filter: blur(12px) saturate(140%);
+	box-shadow: 0 12px 30px rgba(2, 6, 23, 0.45);
+	color: rgba(255, 255, 255, 0.95);
+	/* entry animation initial state */
+	opacity: 0;
+	transform: translateX(-22px);
+	transition: opacity .6s ease, transform .6s cubic-bezier(.2, .9, .2, 1), backdrop-filter .4s ease;
+	opacity: 1;
+	transition: opacity .14s cubic-bezier(.2, .9, .2, 1), transform .14s cubic-bezier(.2, .9, .2, 1);
+	/* keep left column a fixed width to prevent layout shifts when tab content changes */
+	min-width: 340px;
+	max-width: 340px;
+}
+
+.service-card figcaption::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	/* stronger dark overlay to improve caption legibility against images */
+	background: linear-gradient(180deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.6));
+	opacity: 0.74;
+	transition: opacity .18s ease, transform .18s ease;
+	z-index: 0;
+	pointer-events: none;
+}
+
+.service-card figcaption>* {
+	position: relative;
+	z-index: 1
+}
+
+/* show a small translucent overlay on hover/focus */
+.service-card:hover figcaption::before,
+.service-card:focus-within figcaption::before {
+	opacity: 1;
+	transform: translateZ(0);
+}
+
+/* Mobile: make the figcaption overlay fully opaque for better contrast */
+@media (max-width:700px) {
+	.service-card figcaption::before {
+		opacity: 1 !important;
+	}
+}
+
+.services-left {
+	display: flex;
+	flex-direction: column;
+	min-height: 500px;
+	height: fit-content;
+	margin: auto;
+}
+
+/* Tabs */
+.services-tabs {
+	display: flex;
+	gap: 0; /* connected segmented control - no gap between pills */
+ 	align-items: stretch;
+ 	background: #fff; /* tabs container is white */
+ 	width: 100%;
+}
+
+
+.tab-btn {
+	background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	padding: 10px 14px;
+	/* make each button share the row equally */
+	border-radius: 0;
+	color: #000;
+	font-weight: 700;
+	cursor: pointer;
+	transition: transform .14s ease, box-shadow .18s ease, background .12s ease;
+	flex: 1 1 0; /* each button fills half the container when there are two */
+	text-align: center;
+	min-width: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	z-index: 1;
+	padding: 15px 12px;
+}
+
+/* Icon inside tab buttons */
+.tab-btn .tab-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    flex: 0 0 auto;
+    color: inherit; /* inherit text color so icon matches label */
+}
+
+.tab-btn .tab-label {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* First button: round left corners */
+.tab-btn:first-child {
+	border-bottom-left-radius: 0px;
+	background: var(--accent);
+	color: #fff;
+	border-color: rgba(255,255,255,0.06);
+	border-bottom-right-radius: 0px; /* make bottom-right square for left tab */
+}
+
+/* Last button: round right corners */
+.tab-btn:last-child {
+	border-top-right-radius: 10px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px; /* make bottom-right square */
+}
+
+/* Remove double borders between adjacent buttons */
+.tab-btn + .tab-btn {
+	border-left: none; /* collapse border between segments */
+}
+
+.tab-btn.active {
+	background: #fff;
+	color: #000;
+	z-index: 2; /* bring active pill above its sibling so it visually connects */
+}
+
+.tab-btn:focus {
+	outline: none;
+	box-shadow: 0 8px 28px rgba(var(--accent-rgb), 0.12);
+	z-index: 3;
+}
+
+/* Concave join: create a circular notch where the active pill meets its neighbour */
+.tab-btn.active:first-child::after,
+.tab-btn.active:last-child::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.06); /* match .services-left background */
+	z-index: 4;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.06) inset;
+}
+
+.tab-btn.active:first-child::after {
+	right: -11px; /* half width overlaps the connecting edge */
+}
+
+.tab-btn.active:last-child::after {
+	left: -11px;
+}
+
+/* Slight adjustment so the notch scales down on small screens */
+@media (max-width:700px) {
+	.tab-btn.active:first-child::after,
+	.tab-btn.active:last-child::after {
+		width: 16px;
+		height: 16px;
+		right: -8px;
+		left: -8px;
+	}
+}
+
+/* Slightly reduce pill size on small screens */
+@media (max-width:700px) {
+	.tab-btn { min-width: 0; padding: 8px 12px; font-size: 14px }
+}
+
+/* Tab panels layout: take remaining height */
+.tab-panels {
+	position: relative;
+	display: block;
+	flex: 1;
+	/* Fixed panel height prevents layout shift when switching tabs.
+	   Use the CSS variable `--services-tab-height` to adjust easily. */
+	height: var(--services-tab-height, 360px);
+	background-color: var(--accent);
+	/* top corners should be flush with the tabs above */
+	border-radius: 0 0 12px 12px;
+	overflow: hidden; /* panels will be absolutely stacked and scroll internally */
+}
+
+/* Each panel is stacked absolutely so switching only affects opacity/transform,
+   not layout. Panels handle their own internal scrolling. */
+.tab-panel {
+	position: absolute;
+	inset: 0; /* fill the .tab-panels area */
+	padding: 20px;
+	overflow: auto;
+	box-sizing: border-box;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(6px) scale(.998);
+	transition: opacity .28s ease, transform .28s cubic-bezier(.2,.9,.2,1), visibility .28s;
+	pointer-events: none;
+}
+
+.tab-panel.active {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0) scale(1);
+	pointer-events: auto;
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+	.tab-panel,
+	.tab-panel.active {
+		transition: none;
+		transform: none;
+	}
+}
+
+/* Responsive: when layout stacks on smaller screens, use normal flow so panels expand naturally */
+@media (max-width:1000px) {
+	.tab-panels {
+		height: auto;
+		overflow: visible;
+	}
+
+	.tab-panel {
+		position: static;
+		inset: auto;
+		padding: 20px;
+		opacity: 1;
+		visibility: visible;
+		transform: none;
+		pointer-events: auto;
+	}
+}
+
+/* Only show the active panel; hide others for proper tab behaviour */
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* Make the tab panels inherit the visual appearance of the active tab.
+   Use explicit class toggles from React: `.services-tabs.active-overview` or
+   `.services-tabs.active-sell` to control panel and pill appearance. This is
+   more compatible and reliable than relying on `:has()` which may not be
+   supported by some tooling. */
+
+.services-tabs.active-overview + .tab-panels {
+	background: var(--accent);
+	color: var(--bg);
+}
+
+.services-tabs.active-sell + .tab-panels {
+	background: #fff;
+	color: var(--bg);
+}
+
+/* When Sell is active: make the Overview tab (first child) transparent with white text
+   so it reads like an inactive pill over the glass left column, while the Sell tab
+   (last-child) becomes the white active pill. */
+.services-tabs.active-sell .tab-btn:first-child {
+	color: #fff;
+	background: transparent;
+}
+
+/* Keep the sell tab styled as the white active pill (last-child). */
+.services-tabs.active-sell .tab-btn:last-child {
+	background: #fff;
+	color: var(--bg);
+	border-top-left-radius: 20px;
+}
+
+/* Hover for the overview (transparent) tab when sell active: subtle light tint */
+.services-tabs.active-sell .tab-btn:first-child:hover:not(.active) {
+	background: rgba(255,255,255,0.03);
+}
+
+/* When the LAST tab is active: make it white and round its top-left corner, and give the other tab the bottom-right radius.
+	 The panel will inherit the white background via the rule above. */
+.services-tabs.active-overview .tab-btn:first-child {
+	background: var(--accent);
+	color: var(--bg);
+	border-top-right-radius: 20px;
+}
+
+.services-tabs.active-overview .tab-btn:last-child {
+	border-bottom-left-radius: 20px;
+}
+
+.services-tabs.active-sell .tab-btn:last-child {
+	background: #fff;
+	color: var(--bg);
+	border-top-left-radius: 20px;
+}
+
+.services-tabs.active-sell .tab-btn:first-child {
+	border-bottom-right-radius: 20px;
+}
+
+/* Futuristic visual refresh for tab pills */
+.services-tabs {
+	background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+	padding: 0; /* remove outer padding so tabs sit flush */
+	border-radius: 14px;
+}
+
+.tab-btn {
+	border-radius: 10px;
+	/* Inactive tabs: transparent with white text for consistent contrast on dark glass panel */
+	color: #fff;
+	background: transparent;
+	padding: 16px 10px; /* reduce padding so buttons are more compact */
+}
+
+/* Remove border from buttons when they are not active to create seamless pills */
+.tab-btn:not(.active) {
+	border: none !important;
+}
+
+.tab-btn.active {
+	background: linear-gradient(90deg, rgba(var(--accent-rgb),0.98), rgba(255,255,255,0.96));
+	color: var(--bg);
+}
+
+/* Keep the left tab's text white even when active so it remains readable on the accent background */
+.tab-btn:first-child.active {
+	color: #fff !important;
+}
+
+
+.tab-btn:hover:not(.active) {
+	background: rgba(255,255,255,0.02);
+}
+
+/* Sell form: futuristic inputs */
+.sell-form {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	margin-top: 8px;
+	padding: 20px;
+	border-radius: 12px;
+	background: rgba(255, 255, 255, 0.95);
+	border: 1px solid rgba(8, 10, 12, 0.08);
+	backdrop-filter: blur(8px);
+}
+
+.sell-form-header {
+	text-align: center;
+	margin-bottom: 8px;
+}
+
+.sell-form-header h3 {
+	font-size: 18px;
+	font-weight: 700;
+	color: rgba(8, 10, 12, 0.9);
+	margin: 0 0 4px 0;
+}
+
+.sell-form-header p {
+	font-size: 14px;
+	color: rgba(8, 10, 12, 0.6);
+	margin: 0;
+}
+
+.sell-form .form-row {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	align-items: flex-start;
+}
+
+.sell-form label {
+	font-size: 14px;
+	color: rgba(8, 10, 12, 0.9);
+	font-weight: 600;
+	margin-bottom: 2px;
+	text-align: start !important;
+}
+
+/* When the Sell panel is active (white background), make form labels dark for contrast */
+.services-tabs.active-sell + .tab-panels #panel-sell .sell-form label {
+	color: rgba(8,10,12,0.9);
+}
+
+.sell-form input {
+	background: rgba(255, 255, 255, 0.98);
+	border: 1px solid rgba(8, 10, 12, 0.12);
+	padding: 14px 16px;
+	border-radius: 8px;
+	color: rgba(8, 10, 12, 0.9);
+	font-size: 15px;
+	box-shadow: 0 2px 8px rgba(2, 6, 23, 0.04);
+	transition: all .2s ease;
+	font-family: inherit;
+}
+
+.sell-form input::placeholder {
+	color: rgba(8, 10, 12, 0.4);
+	font-size: 14px;
+}
+
+.sell-form input:focus {
+	outline: none;
+	border-color: var(--accent);
+	box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1), 0 4px 16px rgba(2, 6, 23, 0.08);
+	transform: translateY(-1px);
+}
+
+.sell-form .form-actions {
+	display: flex;
+	gap: 12px;
+	margin-top: 8px;
+}
+
+.sell-form .form-actions .btn {
+	width: 100%;
+	padding: 14px 20px;
+	border-radius: 8px;
+	font-weight: 700;
+	text-transform: none;
+	letter-spacing: 0.3px;
+	background: linear-gradient(135deg, var(--accent), var(--accent-2));
+	color: #fff;
+	border: none;
+	box-shadow: 0 4px 16px rgba(var(--accent-rgb), 0.2);
+	transition: all .2s ease;
+	font-size: 15px;
+	cursor: pointer;
+}
+
+.sell-form .form-actions .btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.3);
+	background: linear-gradient(135deg, var(--accent-2), var(--accent));
+}
+
+/* Responsive form grid */
+@media (max-width: 768px) {
+	.sell-form-header h3 {
+		font-size: 16px;
+	}
+
+	.sell-form {
+		padding: 16px;
+		margin-top: 4px;
+	}
+}
+
+@media (max-width:1000px) {
+	.services-content {
+		grid-template-columns: 1fr;
+	}
+
+	.services-left {
+		order: 1
+	}
+}
+
+.services-left .services-header {
+	max-width: 460px;
+	text-align: left;
+	margin: 0
+}
+
+.services-left .section-title {
+	font-size: 30px;
+	margin-bottom: 8px;
+	color: rgba(255, 255, 255, 0.96)
+}
+
+.services-left .section-sub {
+	margin-bottom: 12px;
+	color: var(--muted);
+	opacity: 0.95
+}
+
+.services-left .lead {
+	color: var(--muted);
+	margin-bottom: 18px
+}
+
+/* Overview tab: make lead and subsection text pure white for maximum contrast */
+.tab-panel#panel-overview .services-header .lead,
+.tab-panel#panel-overview .services-header .section-sub {
+	color: #fff;
+}
+
+/* Make the overview CTA full-width and center its label */
+.overview-full {
+	display: block;
+	width: 100%;
+	text-align: center;
+	padding: 12px 16px;
+	border-radius: 12px
+}
+
+.overview-full .btn-icon {
+	margin-right: 8px
+}
+
+.services-left .section-title {
+	font-size: 30px;
+	margin-bottom: 8px;
+	color: rgba(255, 255, 255, 0.96)
+}
+
+.services-left .section-sub {
+	margin-bottom: 12px;
+	color: var(--muted);
+	opacity: 0.95
+}
+
+.services-left .lead {
+	color: var(--muted);
+	margin-bottom: 18px
+}
+
+.services-left .services-cta {
+	display: flex;
+	gap: 12px;
+	margin-top: 10px
+}
+
+.services-left .services-cta .btn {
+	display: inline-flex;
+	width: 100%;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 16px;
+	border-radius: 10px;
+	font-weight: 700;
+	color: #fff;
+	text-decoration: none;
+	transition: background .22s ease, transform .12s ease, box-shadow .22s ease;
+	box-shadow: 0 8px 18px rgba(2, 6, 23, 0.12)
+}
+
+.services-left .services-cta .btn.btn-iconed .btn-icon {
+	width: 16px;
+	height: 16px;
+	flex: 0 0 16px
+}
+
+.services-left .services-cta .btn.primary {
+	background: linear-gradient(90deg, var(--accent), var(--accent-2));
+	border: none
+}
+
+.services-left .services-cta .btn.primary:hover,
+.services-left .services-cta .btn.primary:focus {
+	background: linear-gradient(90deg, var(--accent-2), var(--accent));
+	transform: translateY(-2px);
+	box-shadow: 0 22px 42px rgba(8, 112, 255, 0.14)
+}
+
+.services-left .services-cta .btn.secondary {
+	background: transparent;
+	border: 1px solid rgba(12, 18, 28, 0.06);
+	color: var(--accent-2)
+}
+
+.services-left .services-cta .btn.secondary:hover,
+.services-left .services-cta .btn.secondary:focus {
+	background: rgba(12, 18, 28, 0.02);
+	transform: translateY(-2px)
+}
+
+.services-right {
+	padding-left: 8px
+}
+
+.services-mosaic {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	align-items: start;
+	gap: 6px
+}
+
+.service-card-link {
+	position: absolute;
+	inset: 0;
+	z-index: 3;
+	display: block;
+	text-decoration: none;
+	color: inherit;
+	cursor: pointer;
+}
+
+.service-card-link:focus-visible {
+	outline: 2px solid rgba(184, 146, 74, 0.85);
+	outline-offset: -2px;
+}
+
+.service-card {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	--parallax: 0px;
+	border-radius: 0
+}
+
+.service-card img {
+	width: 100%;
+	height: 300px;
+	object-fit: cover;
+	border-radius: 0;
+	display: block;
+	border: 0;
+	box-shadow: none;
+	filter: brightness(0.7);
+	transition: transform .45s cubic-bezier(.2, .9, .2, 1), filter .45s ease, box-shadow .35s ease;
+	will-change: transform, filter;
+	--init: 0px;
+	--scale: 0.995
+}
+
+.service-card figcaption .caption-icon {
+	width: 32px;
+	height: 32px;
+	flex: 0 0 auto;
+	stroke: var(--accent-2);
+	opacity: 0.98;
+	margin: 0 0 6px 0
+}
+
+.service-card figcaption strong {
+	display: block;
+	font-weight: 700;
+	font-size: 200%;
+	margin: 0;
+	line-height: 1;
+	text-align: center
+}
+
+/* Checker-style vertical offsets creates overlapping mosaic (2-column layout). Tweaked for larger cards */
+.service-card:nth-child(2n+1) {
+	transform: none;
+	z-index: auto
+}
+
+.service-card:nth-child(2n) {
+	transform: none;
+	z-index: auto
+}
+
+/* Keyframes fallback for slide-in reveal: use when transitions do not play */
+@keyframes services-slide-in {
+	from {
+		opacity: 0;
+		transform: translateX(-22px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.service-card:hover img,
+.service-card:focus-within img {
+	transform: translateY(calc(var(--init) + var(--parallax) - 8px)) scale(1.04);
+	filter: brightness(1.02);
+}
+
+/* Reveal card (opacity) and animate inner image from initial offset to resting position */
+.service-card {
+	opacity: 0;
+	transition: opacity .6s ease
+}
+
+.service-card.in-view {
+	opacity: 1
+}
+
+.service-card.in-view img {
+	--init: 0px;
+	--scale: 1;
+	transform: translateY(calc(var(--parallax))) scale(var(--scale))
+}
+
+/* captions as a small top-center badge (absolute) */
+.service-card figcaption {
+	position: absolute;
+	top: 30%;
+	left: 50%;
+	transform: translateX(-50%);
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	padding: 10px 14px;
+	color: #fff;
+	text-align: center;
+	opacity: 1;
+	z-index: 2;
+	pointer-events: auto;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	border-radius: 8px;
+}
+
+/* Enhanced micro-animations and interactions */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.4; }
+}
+
+@keyframes slide-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.service-icon-wrapper {
+    animation: float 6s ease-in-out infinite;
+}
+
+.service-icon-wrapper:nth-child(2) {
+    animation-delay: 1.5s;
+}
+
+.service-icon-wrapper:nth-child(3) {
+    animation-delay: 3s;
+}
+
+.service-icon-wrapper:nth-child(4) {
+    animation-delay: 4.5s;
+}
+
+.icon-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.hero-badge {
+    animation: slide-in-up 0.8s ease-out;
+}
+
+.stat-item {
+    animation: slide-in-up 0.6s ease-out backwards;
+}
+
+.stat-item:nth-child(1) { animation-delay: 0.1s; }
+.stat-item:nth-child(2) { animation-delay: 0.2s; }
+.stat-item:nth-child(3) { animation-delay: 0.3s; }
+.stat-item:nth-child(4) { animation-delay: 0.4s; }
+
+/* Enhanced hover effects */
+.service-card-modern {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.service-card-modern:hover {
+    transform: translateY(-8px) rotateX(2deg);
+}
+
+.service-card-modern .service-icon-wrapper {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-card-modern:hover .service-icon-wrapper {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 8px 25px rgba(var(--service-color, var(--accent)), 0.3);
+}
+
+/* Button ripple effect */
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Loading animations */
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+.loading-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* Enhanced focus states for accessibility */
+.btn:focus-visible,
+.service-link:focus-visible,
+.tab-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    outline-style: solid;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .service-icon-wrapper,
+    .icon-glow,
+    .hero-badge,
+    .stat-item {
+        animation: none;
+    }
+    
+    .service-card-modern:hover {
+        transform: translateY(-8px);
+    }
+    
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* Enhanced mobile interactions */
+@media (max-width: 768px) {
+    .service-card-modern:active {
+        transform: scale(0.98);
+    }
+    
+    .btn:active {
+        transform: scale(0.95);
+    }
+    
+    .service-icon-wrapper {
+        animation: none;
+    }
+}
+
+/* Performance optimizations */
+.service-card-modern,
+.btn,
+.service-icon-wrapper {
+    will-change: transform;
+}
+
+.service-card-modern:hover,
+.btn:hover {
+    will-change: auto;
+}
+
+.services-mosaic .service-card:nth-child(2) {
+	transition-delay: 0.14s
+}
+
+.services-mosaic .service-card:nth-child(3) {
+	transition-delay: 0.22s
+}
+
+.services-mosaic .service-card:nth-child(4) {
+	transition-delay: 0.30s
+}
+
+@media (prefers-reduced-motion:reduce) {
+
+	.services-left,
+	.service-card {
+		transition: none;
+		transform: none;
+		opacity: 1
+	}
+
+	.services-left.in-view {
+		animation: none
+	}
+}
+
+@media (max-width:640px) {
+	.services-mosaic {
+		grid-template-columns: 1fr
+	}
+
+	/* Ensure equal left/right padding on mobile so items don't touch the viewport edge */
+	.services-mosaic {
+		padding: 12px 12px 0 0;
+		box-sizing: border-box;
+	}
+
+	.service-card {
+		transform: none
+	}
+
+	.service-card img {
+		height: 160px;
+		border-radius: 0
+	}
+
+	.service-card:nth-child(odd) {
+		transform: none
+	}
+
+	.service-card:nth-child(even) {
+		transform: none
+	}
+
+	/* mobile: keep caption as a top-centered badge with a translucent background for legibility */
+	.service-card figcaption {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		width: 100%;
+		height: inherit;
+		display: flex;
+		padding: 6px 10px;
+		color: #fff;
+		opacity: 1;
+		z-index: 2;
+		border-radius: 0;
+		margin-top: -3rem;
+	}
+}
+
+@media (prefers-reduced-motion:reduce) {
+
+	.service-card,
+	img {
+		transition: none
+	}
+}
+
+/* Desktop-only parallax: fixed background for a subtle effect */
+@media (min-width:1001px) {
+	.services-futuristic {
+		background-attachment: fixed;
+		background-position: center;
+	}
+}

@@ -1,0 +1,198 @@
+.brand-search,
+.brand-search *,
+.brand-search *::before,
+.brand-search *::after {
+  box-sizing: border-box;
+}
+
+.brands-partners-section.brand-search {
+  --brand-bg: linear-gradient(
+    135deg,
+    var(--btn-primary-bg, var(--brand-primary)),
+    var(--btn-primary-hover, var(--brand-secondary))
+  );
+  --brand-text: var(--text-inverse, var(--brand-background));
+  --brand-stroke: rgba(var(--brand-background-rgb), 0.42);
+  --brand-glow: rgba(var(--brand-background-rgb), 0.26);
+  --brand-surface: rgba(var(--brand-background-rgb), 0.98);
+  --brand-scroll-thumb: rgba(var(--brand-background-rgb), 0.45);
+  --brand-scroll-track: rgba(var(--brand-background-rgb), 0.16);
+
+  padding: 22px 12px 28px;
+  background: var(--brand-bg);
+  border-top: 1px solid rgba(var(--brand-background-rgb), 0.24);
+  border-bottom: 1px solid rgba(var(--brand-background-rgb), 0.18);
+  font-family: var(--font-brand);
+}
+
+.brand-search__inner {
+  max-width: 1640px;
+  margin: 0 auto;
+}
+
+.brand-search__title {
+  margin: 0 0 16px;
+  color: var(--brand-text);
+  text-shadow: 0 2px 8px rgba(var(--brand-text-rgb), 0.2);
+  text-align: center;
+  font-size: clamp(1.6rem, 6.2vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: 0.01em;
+}
+
+.brand-search__row {
+  display: block;
+}
+
+.brand-search__list {
+  list-style: none;
+  margin: 0;
+  padding: 2px 4px 8px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.brand-search__list li {
+  flex: 0 0 auto;
+}
+
+.brand-pill {
+  --logo-size: 58%;
+
+  width: 84px;
+  aspect-ratio: 1;
+  display: block;
+  position: relative;
+  border-radius: 999px;
+  border: 1.5px solid var(--brand-stroke);
+  background: var(--brand-surface);
+  transition: transform 260ms ease, border-color 260ms ease, box-shadow 260ms ease;
+}
+
+.brand-search__list::-webkit-scrollbar {
+  height: 8px;
+}
+
+.brand-search__list::-webkit-scrollbar-thumb {
+  background: var(--brand-scroll-thumb);
+  border-radius: 999px;
+}
+
+.brand-search__list::-webkit-scrollbar-track {
+  background: var(--brand-scroll-track);
+  border-radius: 999px;
+}
+
+.brand-pill::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 var(--brand-glow);
+  transition: box-shadow 260ms ease;
+}
+
+.brand-pill:hover,
+.brand-pill:focus-visible {
+  border-color: rgba(var(--brand-background-rgb), 0.76);
+  box-shadow: 0 8px 20px rgba(var(--shadow-color), 0.14);
+  transform: translateY(-4px);
+  outline: none;
+}
+
+.brand-pill:hover::before,
+.brand-pill:focus-visible::before {
+  box-shadow: 0 0 0 6px rgba(var(--brand-background-rgb), 0.22);
+}
+
+.brand-pill__logo {
+  width: var(--logo-size);
+  height: var(--logo-size);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+  opacity: 0.96;
+}
+
+.brand-pill--mercedes {
+  --logo-size: 56%;
+}
+
+.brand-pill--landrover {
+  --logo-size: 64%;
+}
+
+.brand-pill--porsche {
+  --logo-size: 70%;
+}
+
+.brand-pill--audi {
+  --logo-size: 70%;
+}
+
+.brand-pill--astonmartin {
+  --logo-size: 68%;
+}
+
+.brand-pill--volkswagen {
+  --logo-size: 59%;
+}
+
+.brand-pill--ford {
+  --logo-size: 66%;
+}
+
+.brand-pill--bmw {
+  --logo-size: 58%;
+}
+
+@media (min-width: 640px) {
+  .brands-partners-section.brand-search {
+    padding: 24px 18px 34px;
+  }
+
+  .brand-search__title {
+    margin-bottom: 18px;
+    font-size: clamp(1.9rem, 4.8vw, 2.7rem);
+  }
+
+  .brand-pill {
+    width: 90px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .brands-partners-section.brand-search {
+    padding: clamp(26px, 3vw, 38px) clamp(18px, 6vw, 122px) clamp(44px, 6vw, 64px);
+  }
+
+  .brand-search__list {
+    justify-content: center;
+    overflow-x: visible;
+    padding: 10px 0 14px;
+  }
+
+  .brand-search__title {
+    margin-bottom: clamp(18px, 2vw, 24px);
+    font-size: clamp(2rem, 2.35vw, 3.2rem);
+  }
+
+  .brand-pill {
+    width: clamp(90px, 5vw, 102px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-pill,
+  .brand-pill::before {
+    transition: none;
+  }
+}

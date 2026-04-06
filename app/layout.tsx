@@ -1,0 +1,136 @@
+import type { Metadata } from 'next';
+import React from 'react';
+import { getBrandForRequest } from './lib/brandDetection.server';
+import { getThemeContextBundle } from '@/app/themes/context-registry';
+import { ThemeShell } from '@/app/themes/ThemeShell';
+import { resolveThemeIdFromBrand } from '@/app/themes/theme-selection';
+import './globals.css';
+import './styles/font-standardization.css';
+
+export const dynamic = 'force-dynamic';
+export const dynamicMetadata = 'force-dynamic';
+
+async function getBrandOnce() {
+  const brandResult = await getBrandForRequest();
+  if (!brandResult) {
+    return null;
+  }
+
+  return { brand: brandResult.brand, brandResult };
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const brandResult = await getBrandOnce();
+  
+  if (!brandResult) {
+    return {
+      title: '404 - Not Found',
+      description: 'The page you are looking for does not exist.',
+      robots: 'noindex, nofollow',
+    };
+  }
+  
+  const { brand } = brandResult;
+  const siteUrl = (brand?.domain || 'http://localhost:3000').replace(/\/$/, '');
+  const iconUrl = brand.favicon || brand.logo || '/favicon.ico';
+  
+  // Add cache-busting timestamp for favicon to force updates
+  const faviconTimestamp = Date.now();
+  const iconUrlWithTimestamp = iconUrl.includes('?') 
+    ? `${iconUrl}&t=${faviconTimestamp}` 
+    : `${iconUrl}?t=${faviconTimestamp}`;
+
+  return {
+    title: brand.name,
+    description: brand.seo.description,
+    keywords: brand.seo.keywords,
+    openGraph: {
+      title: brand.name,
+      description: brand.seo.description,
+      url: siteUrl,
+      siteName: brand.name,
+      images: [{
+        url: brand.logo,
+        width: 1200,
+        height: 630,
+        alt: `${brand.name}`
+      }],
+      locale: 'en_GB',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: brand.name,
+      description: brand.seo.description,
+      images: [brand.logo],
+      creator: brand.seo.twitterHandle,
+      site: brand.seo.twitterHandle
+    },
+    icons: {
+      icon: iconUrlWithTimestamp,
+      shortcut: iconUrlWithTimestamp,
+      apple: iconUrlWithTimestamp,
+    },
+    alternates: {
+      canonical: siteUrl
+    }
+  };
+}
+
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // Use cached brand result to avoid duplicate calls
+  const brandResult = await getBrandOnce();
+  
+  if (!brandResult) {
+    // Return 404 page if brand not found
+    return (
+      <html lang="en">
+        <body>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            minHeight: '100vh',
+            flexDirection: 'column',
+            textAlign: 'center',
+            padding: '2rem'
+          }}>
+            <h1>404 - Brand Not Found</h1>
+            <p>The domain you're accessing is not configured for this service.</p>
+            <p>Please check the domain configuration or contact support.</p>
+          </div>
+        </body>
+      </html>
+    );
+  }
+
+  const { brand } = brandResult;
+  const themeId = resolveThemeIdFromBrand(brand);
+  const {
+    BrandClientWrapper,
+    BrandStyles,
+    AuthProvider,
+    DynamicFavicon,
+  } = getThemeContextBundle(themeId);
+
+  return (
+    <html lang="en">
+      <body data-theme-id={themeId}>
+        {/* Inject brand-specific CSS variables */}
+        <BrandStyles brand={brand} />
+        {/* Client wrapper that provides brand to all components */}
+        <BrandClientWrapper brand={brand}>
+          <AuthProvider>
+            {/* Dynamic favicon that updates with cache-busting */}
+            <DynamicFavicon />
+            <ThemeShell themeId={themeId}>{children}</ThemeShell>
+          </AuthProvider>
+        </BrandClientWrapper>
+      </body>
+    </html>
+  );
+}

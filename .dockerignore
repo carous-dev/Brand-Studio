@@ -1,0 +1,31 @@
+.git
+.gitignore
+
+# Node / Next build artifacts
+node_modules
+.next
+out
+coverage
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Local IDE / OS noise
+.DS_Store
+Thumbs.db
+.windsurf
+
+# Python artifacts / virtualenvs (install in image instead)
+venv
+.venv
+__pycache__
+*.pyc
+
+# Secrets (provide via environment)
+.env*
+
+# Temporary / backup files
+*.tsbuildinfo
+*.backup
+*.tmp

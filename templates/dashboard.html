@@ -1,0 +1,426 @@
+{% extends "base.html" %}
+
+<!-- Full Page Loader for Preview Deletion -->
+<div id="deleteLoader" class="full-page-loader" style="display: none;">
+    <div class="loader-backdrop"></div>
+    <div class="loader-content">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">Deleting preview...</div>
+        <div class="loader-subtext">Please wait while we remove the preview</div>
+        
+        <!-- Real-time log display -->
+        <div class="loader-logs" id="loaderLogs" style="display: none;">
+            <div class="logs-header">
+                <h4>Live Progress</h4>
+                <button class="btn-toggle-logs" onclick="toggleLoaderLogs()">Hide Logs</button>
+            </div>
+            <div class="logs-container" id="logsContainer"></div>
+        </div>
+    </div>
+</div>
+
+{% block content %}
+<!-- Modern Dashboard Section -->
+<section class="dashboard-section">
+    <!-- Recent Activity Section -->
+    <div class="recent-activity">
+        <div class="activity-header">
+            <div class="greeting-section">
+                <h2 id="greetingTitle">Good Morning</h2>
+                <div id="motivationQuote" class="motivation-quote">
+                    <div class="skeleton-loader">
+                        <div class="skeleton-bar"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="activity-search">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+                    </svg>
+                    <input 
+                        type="search" 
+                        id="brandSearchInput" 
+                        class="search-input" 
+                        placeholder="Search previews by name, slug, domain, or location" 
+                        aria-label="Search previews" 
+                        autocomplete="off"
+                    >
+                </div>
+            </div>
+            <div class="activity-actions">
+                <a href="/create" class="btn-primary btn-sm">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Create Preview
+                </a>
+                <button class="btn-secondary btn-sm" onclick="window.location.reload()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 4v6h-6"></path>
+                        <path d="M1 20v-6h6"></path>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    Refresh
+                </button>
+            </div>
+        </div>
+        
+        <!-- Modern Previews Table -->
+        <div class="brands-table-container">
+            <div class="table-wrapper">
+                <table class="modern-brands-table" id="brandsTable">
+                    <thead>
+                        <tr>
+                            <th class="col-brand">Preview</th>
+                            <th class="col-slug">Slug</th>
+                            <th class="col-domain">Domain</th>
+                            <th class="col-location">Location</th>
+                            <th class="col-theme">Theme</th>
+                            <th class="col-status">Status</th>
+                            <th class="col-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="brandsList" class="table-loading">
+                        {% for _ in range(6) %}
+                        <tr class="table-skeleton-row" aria-hidden="true">
+                            <td><div class="skeleton-line w-70"></div></td>
+                            <td><div class="skeleton-line w-50"></div></td>
+                            <td><div class="skeleton-line w-60"></div></td>
+                            <td><div class="skeleton-line w-55"></div></td>
+                            <td><div class="skeleton-line w-40"></div></td>
+                            <td><div class="skeleton-line w-35"></div></td>
+                            <td><div class="skeleton-line w-45"></div></td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="table-loading-row" aria-hidden="true">
+                            <td colspan="7">
+                                <div class="table-loading-hint">Loading previews…</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination (client-side, 6 per page) -->
+            <div id="dashboardPagination" class="table-pagination" aria-label="Dashboard pagination" style="display:none"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Username determination for JavaScript -->
+<script>
+    // Determine username from template data
+    {% if current_user %}
+        {% if current_user.username %}
+            var currentUser = '{{ current_user.username }}';
+        {% elif current_user.name %}
+            var currentUser = '{{ current_user.name }}';
+        {% elif current_user.email %}
+            var currentUser = '{{ current_user.email }}'.split('@')[0];
+        {% else %}
+            var currentUser = 'User';
+        {% endif %}
+    {% else %}
+        var currentUser = 'User';
+    {% endif %}
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script type="module">
+import { ApiService } from '/static/modules/api-service.js';
+import { BrandService } from '/static/modules/brand-service.js';
+import { StorageService } from '/static/modules/storage-service.js';
+import { UIComponents } from '/static/modules/ui-components.js';
+import { sseService } from '/static/modules/sse-service.js';
+
+// Import the main app module
+import('/static/modules/app.js').then(module => {
+    // Initialize the app (module handles duplicate prevention)
+    if (module.default) {
+        window.brandApp = new module.default();
+    }
+}).catch(error => {
+    console.error('Failed to load app module:', error);
+});
+
+// Full Page Loader Controller with SSE Integration
+const DeleteLoader = {
+    sseConnected: false,
+    currentSlug: null,
+    logsVisible: false,
+    
+    show() {
+        const loader = document.getElementById('deleteLoader');
+        const logsContainer = document.getElementById('loaderLogs');
+        
+        if (loader) {
+            loader.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // Show logs section
+            if (logsContainer) {
+                logsContainer.style.display = 'block';
+                this.logsVisible = true;
+            }
+        }
+    },
+    
+    hide() {
+        const loader = document.getElementById('deleteLoader');
+        const logsContainer = document.getElementById('loaderLogs');
+        
+        if (loader) {
+            loader.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        
+        // Hide logs section
+        if (logsContainer) {
+            logsContainer.style.display = 'none';
+            this.logsVisible = false;
+        }
+        
+        // Disconnect SSE if connected
+        if (this.sseConnected) {
+            sseService.disconnect();
+            this.sseConnected = false;
+        }
+        
+        // Clear logs
+        this.clearLogs();
+    },
+    
+    connectSSE(slug) {
+        console.log('🔌 Connecting to SSE for slug:', slug);
+        
+        if (this.sseConnected) {
+            console.log('🔌 Disconnecting existing SSE connection');
+            sseService.disconnect();
+        }
+        
+        this.currentSlug = slug;
+        
+        sseService.connect('/api/logs/stream', {
+            onOpen: () => {
+                console.log('✅ SSE connected for delete operation');
+                this.sseConnected = true;
+                this.addLogEntry('info', 'Connected to progress stream', 'sse');
+            },
+            onMessage: (data) => {
+                console.log('📨 SSE message received:', data);
+                // Show all logs initially for debugging
+                if (data.type === 'log') {
+                    if (data.source === 'delete' && data.metadata?.slug === slug) {
+                        console.log('✅ Matching delete log entry for current slug:', data);
+                        this.addLogEntry(data.level, data.message, data.source);
+                    } else if (data.source === 'sse') {
+                        // Always show SSE connection logs
+                        console.log('✅ SSE connection log:', data);
+                        this.addLogEntry(data.level, data.message, data.source);
+                    } else {
+                        console.log('⏭️ Skipping log entry - not matching:', {
+                            type: data.type,
+                            source: data.source,
+                            expectedSource: 'delete',
+                            slug: data.metadata?.slug,
+                            expectedSlug: slug
+                        });
+                    }
+                }
+            },
+            onError: (error) => {
+                console.error('❌ SSE error:', error);
+                this.addLogEntry('error', 'Connection error: ' + JSON.stringify(error), 'sse');
+            },
+            onClose: () => {
+                console.log('🔌 SSE connection closed');
+                this.sseConnected = false;
+                this.addLogEntry('info', 'Connection closed', 'sse');
+            },
+            reconnect: false // Don't auto-reconnect during delete
+        });
+    },
+    
+    addLogEntry(level, message, source) {
+        const logsContainer = document.getElementById('logsContainer');
+        if (!logsContainer) return;
+        
+        const logEntry = document.createElement('div');
+        logEntry.className = 'log-entry';
+        
+        const timestamp = new Date().toLocaleTimeString();
+        
+        logEntry.innerHTML = `
+            <div class="log-level ${level}">${level.toUpperCase()}</div>
+            <div class="log-timestamp">${timestamp}</div>
+            <div class="log-message">${this.escapeHtml(message)}</div>
+        `;
+        
+        logsContainer.appendChild(logEntry);
+        
+        // Auto-scroll to bottom
+        logsContainer.scrollTop = logsContainer.scrollHeight;
+        
+        // Limit number of logs to prevent memory issues
+        const entries = logsContainer.querySelectorAll('.log-entry');
+        if (entries.length > 50) {
+            entries[0].remove();
+        }
+    },
+    
+    clearLogs() {
+        const logsContainer = document.getElementById('logsContainer');
+        if (logsContainer) {
+            logsContainer.innerHTML = '';
+        }
+    },
+    
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    },
+    
+    // Enhanced delete function with real-time logs
+    async deletePreview(previewId, previewName) {
+        if (!confirm(`Are you sure you want to delete "${previewName}"? This action cannot be undone.`)) {
+            return false;
+        }
+        
+        this.show();
+        this.connectSSE(previewId);
+        
+        // Update loader text
+        const loaderText = document.querySelector('.loader-text');
+        const loaderSubtext = document.querySelector('.loader-subtext');
+        if (loaderText) loaderText.textContent = `Deleting ${previewName}...`;
+        if (loaderSubtext) loaderSubtext.textContent = 'Monitoring real-time progress';
+        
+        try {
+            const response = await fetch(`/api/previews/${previewId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrf_token]')?.value || ''
+                }
+            });
+            
+            if (response.ok) {
+                this.addLogEntry('info', 'Delete operation completed successfully', 'delete');
+                
+                // Wait a moment to show the success message
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Success - reload the page
+                window.location.reload();
+            } else {
+                const error = await response.json();
+                this.addLogEntry('error', error.message || 'Failed to delete preview', 'delete');
+                throw new Error(error.message || 'Failed to delete preview');
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            this.addLogEntry('error', `Delete failed: ${error.message}`, 'delete');
+            
+            // Show error but keep loader visible for a moment
+            if (loaderText) loaderText.textContent = 'Delete Failed';
+            if (loaderSubtext) loaderSubtext.textContent = error.message;
+            
+            setTimeout(() => {
+                this.hide();
+            }, 3000);
+        }
+    }
+};
+
+// Toggle logs visibility
+window.toggleLoaderLogs = function() {
+    const logsContainer = document.getElementById('loaderLogs');
+    const toggleBtn = document.querySelector('.btn-toggle-logs');
+    
+    if (logsContainer && toggleBtn) {
+        const isVisible = logsContainer.style.display !== 'none';
+        logsContainer.style.display = isVisible ? 'none' : 'block';
+        toggleBtn.textContent = isVisible ? 'Show Logs' : 'Hide Logs';
+        DeleteLoader.logsVisible = !isVisible;
+    }
+};
+
+// Hook into existing delete buttons
+document.addEventListener('DOMContentLoaded', function() {
+    // Find all delete buttons and enhance them
+    const deleteButtons = document.querySelectorAll('[data-delete-preview]');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const previewId = this.dataset.deletePreview;
+            const previewName = this.dataset.deleteName || 'this preview';
+            DeleteLoader.deletePreview(previewId, previewName);
+        });
+    });
+});
+
+// Dynamic greeting and motivation quote functionality
+function updateGreeting() {
+    const hour = new Date().getHours();
+    const greetingTitle = document.getElementById('greetingTitle');
+    const motivationQuote = document.getElementById('motivationQuote');
+    
+    if (greetingTitle) {
+        let greeting;
+        if (hour < 12) {
+            greeting = 'Good Morning';
+        } else if (hour < 17) {
+            greeting = 'Good Afternoon';
+        } else {
+            greeting = 'Good Evening';
+        }
+        
+        greetingTitle.textContent = `${greeting}, ${currentUser}`;
+    }
+    
+    if (motivationQuote) {
+        const quotes = [
+            "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+            "The only way to do great work is to love what you do.",
+            "Believe you can and you're halfway there.",
+            "Your limitation—it's only your imagination.",
+            "Great things never come from comfort zones.",
+            "Dream it. Wish it. Do it.",
+            "Success doesn't just find you. You have to go out and get it.",
+            "The harder you work for something, the greater you'll feel when you achieve it.",
+            "Don't stop when you're tired. Stop when you're done.",
+            "Wake up with determination. Go to bed with satisfaction.",
+            "Do something today that your future self will thank you for.",
+            "Little things make big days.",
+            "It's going to be hard, but hard does not mean impossible.",
+            "Don't wait for opportunity. Create it.",
+            "Sometimes we're tested not to show our weaknesses, but to discover our strengths.",
+            "The key to success is to focus on goals, not obstacles.",
+            "Dream bigger. Do bigger.",
+            "Success doesn't just find you. You have to go out and get it.",
+            "The only impossible journey is the one you never begin.",
+            "In the middle of difficulty lies opportunity."
+        ];
+        
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+        
+        // Replace skeleton loader with the actual quote
+        motivationQuote.innerHTML = randomQuote;
+        motivationQuote.style.fontStyle = 'italic';
+    }
+}
+
+// Update greeting on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateGreeting();
+    
+    // Update greeting every minute to keep it current
+    setInterval(updateGreeting, 60000);
+});
+</script>
+{% endblock %}

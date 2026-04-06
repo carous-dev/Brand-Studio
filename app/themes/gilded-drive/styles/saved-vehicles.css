@@ -1,0 +1,988 @@
+/* Wishlist & Compare Pages - Flat Layout */
+.saved-vehicles-section {
+    --white: var(--brand-background);
+    --dark-gray: var(--brand-text);
+    --medium-gray: rgba(var(--brand-text-rgb), 0.72);
+    --primary-red: var(--accent-primary);
+    --primary-red-dark: var(--accent-secondary);
+    --font-family-sans: var(--font-brand);
+
+    padding: 72px 0 96px;
+    background: var(--white);
+    min-height: 100vh;
+    border-top: 1px solid #ecf0f4;
+}
+
+.saved-vehicles-section::before {
+    content: none;
+}
+
+.saved-vehicles-shell {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 28px;
+}
+
+.saved-vehicles-head {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.saved-vehicles-head h1 {
+    margin: 0 0 10px;
+    font-family: var(--font-family-sans);
+    font-size: clamp(32px, 4vw, 50px);
+    line-height: 1.1;
+    color: var(--dark-gray);
+    font-weight: 800;
+}
+
+.saved-vehicles-head p {
+    margin: 0 auto;
+    max-width: 680px;
+    color: var(--medium-gray);
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.saved-vehicles-tabs {
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    border-bottom: 1px solid #dbe2ea;
+    padding-bottom: 6px;
+}
+
+.saved-vehicles-tabs a {
+    position: relative;
+    padding: 6px 0;
+    text-decoration: none;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.saved-vehicles-tabs a::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -7px;
+    height: 2px;
+    background: var(--primary-red);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.saved-vehicles-tabs a:hover {
+    color: var(--primary-red);
+}
+
+.saved-vehicles-tabs a.is-active {
+    color: var(--primary-red);
+}
+
+.saved-vehicles-tabs a.is-active::before {
+    opacity: 1;
+}
+
+.saved-vehicles-tabs span {
+    position: relative;
+    z-index: 1;
+}
+
+.saved-vehicles-loading {
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #d7dee7;
+    border-radius: 12px;
+}
+
+.saved-vehicles-empty {
+    border: 1px solid #dbe2ea;
+    border-radius: 12px;
+    padding: 46px 28px;
+    text-align: center;
+}
+
+.saved-vehicles-empty h2 {
+    margin: 0 0 8px;
+    font-family: var(--font-family-sans);
+    color: var(--dark-gray);
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.saved-vehicles-empty p {
+    margin: 0 auto 20px;
+    max-width: 560px;
+    color: var(--medium-gray);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.saved-vehicles-empty a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 10px;
+    border: 1px solid var(--primary-red);
+    color: var(--primary-red);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.saved-vehicles-empty a:hover {
+    color: var(--primary-red-dark);
+    border-color: var(--primary-red-dark);
+    background-color: #fff5f5;
+}
+
+.saved-vehicles-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+    padding: 12px 0;
+    border-top: 1px solid #e3e9f0;
+    border-bottom: 1px solid #e3e9f0;
+}
+
+.saved-vehicles-toolbar p {
+    margin: 0;
+    color: var(--dark-gray);
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.saved-vehicles-toolbar-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-red);
+}
+
+.saved-vehicles-toolbar-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.saved-vehicles-toolbar button {
+    border: 1px solid #f3c0c0;
+    background: transparent;
+    color: #b91c1c;
+    border-radius: 10px;
+    min-height: 38px;
+    padding: 0 14px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+
+.saved-vehicles-toolbar button:hover {
+    border-color: #ef4444;
+    color: #991b1b;
+    background-color: #fff6f6;
+}
+
+.saved-vehicles-snackbar {
+    position: fixed;
+    left: 50%;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    z-index: 2300;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(15, 23, 42, 0.94);
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 14px 30px rgba(2, 6, 23, 0.3);
+    animation: saved-snackbar-in 0.2s ease;
+}
+
+@keyframes saved-snackbar-in {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.saved-vehicles-grid {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+}
+
+.saved-wishlist-list {
+    display: grid;
+    gap: 12px;
+}
+
+.saved-wishlist-row {
+    border: 1px solid #dbe2ea;
+    border-radius: 12px;
+    padding: 12px;
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+}
+
+.saved-wishlist-media {
+    display: block;
+    width: 160px;
+    aspect-ratio: 16 / 10;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.saved-wishlist-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.saved-wishlist-main {
+    min-width: 0;
+}
+
+.saved-wishlist-main h2 {
+    margin: 0;
+    font-family: var(--font-family-sans);
+    font-size: 20px;
+    line-height: 1.25;
+    font-weight: 700;
+}
+
+.saved-wishlist-main h2 a {
+    color: var(--dark-gray);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.saved-wishlist-main h2 a:hover {
+    color: var(--primary-red);
+}
+
+.saved-wishlist-specs {
+    margin: 8px 0 0;
+    color: var(--medium-gray);
+    font-size: 13px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+}
+
+.saved-wishlist-specs span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.saved-wishlist-spec-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.saved-wishlist-spec-icon svg {
+    width: 14px;
+    height: 14px;
+}
+
+.saved-wishlist-side {
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.saved-wishlist-price {
+    margin: 0;
+    color: var(--primary-red);
+    font-size: 28px;
+    line-height: 1;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.saved-wishlist-price-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.saved-wishlist-price-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.saved-wishlist-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.saved-wishlist-actions a,
+.saved-wishlist-actions button {
+    border: 1px solid #dbe2ea;
+    border-radius: 10px;
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 108px;
+    background: transparent;
+}
+
+.saved-wishlist-actions a {
+    border-color: #f4b4b4;
+    color: var(--primary-red);
+}
+
+.saved-wishlist-actions a:hover {
+    border-color: var(--primary-red);
+    color: var(--primary-red-dark);
+    background-color: #fff6f6;
+}
+
+.saved-wishlist-actions button {
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+
+.saved-wishlist-actions button:hover {
+    color: #1e40af;
+    border-color: #93c5fd;
+    background-color: #f4f8ff;
+}
+
+.saved-wishlist-actions button.is-danger {
+    color: #b91c1c;
+    border-color: #fecaca;
+}
+
+.saved-wishlist-actions button.is-danger:hover {
+    color: #991b1b;
+    border-color: #fda4af;
+    background-color: #fff6f6;
+}
+
+.saved-vehicle-card {
+    border: 1px solid #dbe2ea;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+}
+
+.saved-vehicle-card::before {
+    content: none;
+}
+
+.saved-vehicle-card:hover {
+    border-color: #cbd5e1;
+}
+
+.saved-vehicle-media {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+}
+
+.saved-vehicle-media::after {
+    content: none;
+}
+
+.saved-vehicle-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.saved-vehicle-body {
+    padding: 18px;
+}
+
+.saved-vehicle-body h2 {
+    margin: 0;
+    font-family: var(--font-family-sans);
+    font-size: 20px;
+    line-height: 1.3;
+    font-weight: 700;
+}
+
+.saved-vehicle-body h2 a {
+    color: var(--dark-gray);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.saved-vehicle-body h2 a:hover {
+    color: var(--primary-red);
+}
+
+.saved-vehicle-price {
+    margin: 10px 0 0;
+    font-size: 24px;
+    line-height: 1.2;
+    font-weight: 800;
+    color: var(--primary-red);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.saved-vehicle-price-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.saved-vehicle-price-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.saved-vehicle-spec {
+    margin: 8px 0 0;
+    color: var(--medium-gray);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.saved-vehicle-spec span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.saved-vehicle-spec-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.saved-vehicle-spec-icon svg {
+    width: 15px;
+    height: 15px;
+}
+
+.saved-vehicle-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.saved-vehicle-actions a,
+.saved-vehicle-actions button {
+    border: 1px solid #dbe2ea;
+    border-radius: 10px;
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+}
+
+.saved-vehicle-actions a {
+    border-color: #f4b4b4;
+    color: var(--primary-red);
+}
+
+.saved-vehicle-actions a:hover {
+    border-color: var(--primary-red);
+    color: var(--primary-red-dark);
+    background-color: #fff6f6;
+}
+
+.saved-vehicle-actions button {
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+
+.saved-vehicle-actions button:hover {
+    color: #1e40af;
+    border-color: #93c5fd;
+    background-color: #f4f8ff;
+}
+
+.saved-vehicle-actions button.is-danger {
+    color: #b91c1c;
+    border-color: #fecaca;
+}
+
+.saved-vehicle-actions button.is-danger:hover {
+    color: #991b1b;
+    border-color: #fda4af;
+    background-color: #fff6f6;
+}
+
+.saved-compare-wrap {
+    margin-top: 28px;
+    border: 1px solid #dbe2ea;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.saved-compare-insights {
+    margin-top: 24px;
+    border: 1px solid #dbe2ea;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.saved-compare-insights h2 {
+    margin: 0;
+    font-family: var(--font-family-sans);
+    font-size: 20px;
+    line-height: 1.2;
+    color: var(--dark-gray);
+    font-weight: 700;
+}
+
+.saved-compare-insights p {
+    margin: 8px 0 0;
+    color: var(--medium-gray);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.saved-compare-insight-grid {
+    margin-top: 14px;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.saved-compare-insight-item {
+    border: 1px solid #e8edf2;
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.saved-compare-insight-item span {
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.3;
+}
+
+.saved-compare-insight-item strong {
+    color: var(--dark-gray);
+    font-size: 18px;
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+.saved-compare-price-list {
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid #e8edf2;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.saved-compare-price-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid #eef2f6;
+    font-size: 13px;
+    color: #475569;
+}
+
+.saved-compare-price-list li:last-child {
+    border-bottom: none;
+}
+
+.saved-compare-price-list li strong {
+    color: var(--dark-gray);
+}
+
+.saved-compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.saved-compare-table thead {
+    background: transparent;
+}
+
+.saved-compare-table thead th {
+    color: var(--dark-gray);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 16px 14px;
+    border-bottom: 1px solid #dbe2ea;
+    text-align: left;
+}
+
+.saved-compare-table th,
+.saved-compare-table td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #e8edf2;
+    vertical-align: top;
+}
+
+.saved-compare-table tbody th {
+    width: 200px;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.45px;
+    background: transparent;
+}
+
+.saved-compare-table td {
+    color: var(--dark-gray);
+    font-size: 14px;
+    line-height: 1.55;
+    font-weight: 500;
+}
+
+.saved-compare-hint {
+    margin: 20px 0 0;
+    border-radius: 10px;
+    border: 1px dashed #cbd5e1;
+    color: #475569;
+    padding: 14px 16px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+@media (max-width: 1200px) {
+    .saved-vehicles-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
+
+    .saved-wishlist-side {
+        min-width: 280px;
+    }
+
+    .saved-compare-insight-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .saved-vehicles-section {
+        padding: 56px 0 76px;
+    }
+
+    .saved-vehicles-shell {
+        padding: 0 20px;
+    }
+
+    .saved-vehicles-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+    }
+
+    .saved-vehicles-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .saved-vehicles-toolbar button {
+        width: 100%;
+    }
+
+    .saved-wishlist-row {
+        grid-template-columns: 128px minmax(0, 1fr);
+        align-items: start;
+    }
+
+    .saved-wishlist-media {
+        width: 128px;
+    }
+
+    .saved-wishlist-side {
+        grid-column: 1 / -1;
+        min-width: 0;
+        width: 100%;
+        border-top: 1px solid #e8edf2;
+        padding-top: 10px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .saved-wishlist-price {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 700px) {
+    .saved-vehicles-section {
+        padding: 38px 0 56px;
+    }
+
+    .saved-vehicles-shell {
+        padding: 0 14px;
+    }
+
+    .saved-vehicles-head p {
+        font-size: 15px;
+    }
+
+    .saved-vehicles-tabs {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .saved-vehicles-tabs a {
+        font-size: 13px;
+    }
+
+    .saved-compare-insights {
+        padding: 12px;
+    }
+
+    .saved-compare-insights h2 {
+        font-size: 18px;
+    }
+
+    .saved-compare-insight-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .saved-compare-price-list li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .saved-vehicles-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .saved-vehicle-body {
+        padding: 16px;
+    }
+
+    .saved-vehicle-price {
+        font-size: 22px;
+    }
+
+    .saved-vehicle-actions {
+        flex-direction: column;
+    }
+
+    .saved-vehicle-actions a,
+    .saved-vehicle-actions button {
+        width: 100%;
+    }
+
+    .saved-wishlist-row {
+        grid-template-columns: 1fr;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .saved-wishlist-media {
+        width: 100%;
+    }
+
+    .saved-wishlist-main h2 {
+        font-size: 18px;
+    }
+
+    .saved-wishlist-side {
+        border-top: none;
+        padding-top: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .saved-wishlist-price {
+        font-size: 22px;
+    }
+
+    .saved-wishlist-actions {
+        justify-content: stretch;
+    }
+
+    .saved-wishlist-actions a,
+    .saved-wishlist-actions button {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .saved-vehicles-empty {
+        padding: 36px 20px;
+    }
+
+    .saved-vehicles-empty h2 {
+        font-size: 24px;
+    }
+
+    .saved-vehicles-snackbar {
+        width: calc(100% - 24px);
+        max-width: 460px;
+        min-height: 40px;
+        padding: 8px 14px;
+        text-align: center;
+        line-height: 1.4;
+        bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
+@media (max-width: 480px) {
+    .saved-vehicles-head h1 {
+        font-size: 30px;
+    }
+}
+
+.app-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 1;
+    vertical-align: middle;
+    font-style: normal;
+}
+
+.app-icon > svg {
+    display: block;
+    shape-rendering: geometricPrecision;
+}
+
+.loader-spinner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: rgba(var(--brand-text-rgb), 0.65);
+}
+
+.loader-spinner-ring {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(var(--brand-text-rgb), 0.2);
+    border-top-color: rgba(var(--brand-text-rgb), 0.8);
+    animation: subtle-spinner-rotate 0.78s linear infinite;
+}
+
+.loader-spinner.is-sm .loader-spinner-ring {
+    width: 14px;
+    height: 14px;
+    border-width: 2px;
+}
+
+.loader-spinner.is-md .loader-spinner-ring {
+    width: 18px;
+    height: 18px;
+}
+
+.loader-spinner.is-lg .loader-spinner-ring {
+    width: 24px;
+    height: 24px;
+    border-width: 2px;
+}
+
+.loader-spinner.is-light {
+    color: rgba(var(--brand-background-rgb), 0.9);
+}
+
+.loader-spinner.is-light .loader-spinner-ring {
+    border-color: rgba(var(--brand-background-rgb), 0.25);
+    border-top-color: rgba(var(--brand-background-rgb), 0.95);
+}
+
+.loader-spinner-text {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.loader-spinner.is-sm .loader-spinner-text {
+    font-size: 12px;
+}
+
+.loader-spinner.is-lg .loader-spinner-text {
+    font-size: 14px;
+}
+
+.loader-spinner-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+@keyframes subtle-spinner-rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

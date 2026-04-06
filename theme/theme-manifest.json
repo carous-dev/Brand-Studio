@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "defaultTheme": "classic-dealer",
+  "themes": [
+    {
+      "id": "classic-dealer",
+      "name": "Classic Dealer",
+      "description": "Current production-compatible theme.",
+      "status": "stable"
+    },
+    {
+      "id": "editorial-showroom",
+      "name": "Editorial Showroom",
+      "description": "Independent magazine-style preview theme.",
+      "status": "experimental"
+    },
+    {
+      "id": "gilded-drive",
+      "name": "Gilded Drive",
+      "description": "Futuristic showroom theme adapted for brand tokens.",
+      "status": "experimental"
+    }
+  ]
+}

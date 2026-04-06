@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Users & Roles — Carous{% endblock %}
+
+{% block content %}
+<!-- Modern User Management Section -->
+<section class="dashboard-section">
+    <!-- Page Header -->
+    {% include 'users/partials/header.html' %}
+    
+    <!-- Filters and Controls -->
+    {% include 'users/partials/filters.html' %}
+    
+    <!-- Users List -->
+    {% include 'users/partials/users_list.html' %}
+</section>
+
+<!-- Role Edit Modal -->
+{% include 'users/partials/modal.html' %}
+
+<!-- Styles -->
+{% include 'users/partials/styles.html' %}
+
+<!-- JavaScript -->
+{% include 'users/partials/scripts.html' %}
+{% endblock %}

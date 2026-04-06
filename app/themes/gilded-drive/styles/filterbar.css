@@ -1,0 +1,44 @@
+@import url('base.css');
+ 
+/* Filter bar styles matching the screenshot */
+
+.vf-search-section{width:100%;}
+.vf-wrapper.vf-container{display:flex;align-items:stretch;width:100%;margin:0 auto}
+.vf-wrapper{display:flex;align-items:stretch;background:var(--dark-center);color:#fff;border-radius:0;overflow:hidden}
+.vf-side.gold{background:var(--gold);flex:0 0 220px;display:flex;align-items:center;justify-content:center;padding:22px}
+.vf-side.gold.left{justify-content:flex-start;padding-left:38px}
+.vf-side.gold.right{justify-content:flex-end;padding-right:38px}
+.vf-left-content{display:flex;align-items:center;gap:14px;color:#fff;font-weight:600}
+.vf-left-content .vf-icon{opacity:0.95}
+.vf-left-content .vf-label{font-size:20px}
+
+.vf-center{flex:1;padding:22px 36px}
+.vf-fields{display:flex;gap:20px;align-items:center;flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px}
+.vf-field{min-width:180px;flex:0 0 220px}
+.vf-field-label{display:block;font-size:12px;margin-bottom:6px;color:#ddd}
+
+.vf-select{position:relative}
+.vf-select select{appearance:none;-webkit-appearance:none;-moz-appearance:none;background:var(--field-bg);height:var(--field-height);width:100%;border-radius:6px;padding:0 48px 0 16px;color:#fff;border:0;font-size:15px}
+.vf-select select:focus{outline:none;box-shadow:0 0 0 3px rgba(184,135,70,0.08)}
+.vf-chevron{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#d0d0d0;pointer-events:none}
+
+.vf-search-btn{display:flex;align-items:center;gap:12px;background:transparent;border:0;color:#fff;font-size:18px;padding:10px 22px;cursor:pointer}
+.vf-search-btn svg{opacity:0.95}
+
+/* Responsive */
+@media (max-width:900px){
+  .vf-side.gold{flex:0 0 160px;padding:14px}
+  .vf-left-content .vf-label{font-size:16px}
+  .vf-fields{gap:12px}
+  .vf-field{flex:0 0 200px}
+}
+
+@media (max-width:720px){
+  /* Keep layout horizontal but reduce side panel width and enable scrolling */
+  .vf-side.gold{flex:0 0 120px;padding:12px}
+  .vf-center{padding:10px}
+  .vf-fields{gap:12px}
+  .vf-field{flex:0 0 160px;min-width:160px}
+}
+
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}

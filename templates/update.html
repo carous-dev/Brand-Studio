@@ -1,0 +1,2770 @@
+{% extends "base.html" %}
+
+{% block title %}Update {{ brand_data.name if brand_data else 'Brand' }} - Brand Configuration{% endblock %}
+
+{% block content %}
+<div class="dashboard-section">
+    <!-- Page Header -->
+    <div class="section-header">
+        <div class="section-header-content">
+            <div class="section-header-left">
+                <div class="section-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="section-title">Update Brand Configuration</h1>
+                    <p class="section-subtitle">Edit {{ brand_data.name if brand_data else 'brand' }} settings and preferences</p>
+                </div>
+            </div>
+            <div class="section-header-right">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if brand_data %}
+    {% set aa_approved_raw = (brand_data.aaApprovedDealer if brand_data and (brand_data.aaApprovedDealer is defined) else (brand_data.aa_approved_dealer if brand_data and (brand_data.aa_approved_dealer is defined) else false)) %}
+    {% set aa_approved = (aa_approved_raw in [true, 1]) or ((aa_approved_raw|string|lower) in ['1', 'true', 'yes', 'on']) %}
+    <form id="updateBrandForm" class="brand-form" data-brand-slug="{{ brand_data.slug }}">
+        <!-- Hidden field for brand slug -->
+        <input type="hidden" name="slug" value="{{ brand_data.slug }}">
+        
+        <!-- Form Tabs -->
+        <div class="form-tabs">
+            <div class="tab-nav">
+                <button type="button" class="tab-btn active" data-tab="basic">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"></path>
+                    </svg>
+                    Basic Info
+                </button>
+                <button type="button" class="tab-btn" data-tab="contact">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    Contact & Location
+                </button>
+                <button type="button" class="tab-btn" data-tab="seo">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    SEO & Metadata
+                </button>
+                <button type="button" class="tab-btn" data-tab="colors">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="13.5" cy="6.5" r=".5"></circle>
+                        <circle cx="17.5" cy="10.5" r=".5"></circle>
+                        <circle cx="8.5" cy="7.5" r=".5"></circle>
+                        <circle cx="6.5" cy="12.5" r=".5"></circle>
+                    </svg>
+                    Theme Colors
+                </button>
+                <button type="button" class="tab-btn" data-tab="content">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    Page Content
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Basic Info Tab -->
+                <div class="tab-pane active" id="basic-tab">
+                    <div class="form-section">
+                        <h3>📋 Basic Information</h3>
+                        <div class="form-grid three-columns">
+                            <div class="form-group">
+                                <label for="name">Brand Name *</label>
+                                <input type="text" id="name" name="name" value="{{ brand_data.name or '' }}" readonly aria-readonly="true" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tagline">Brand Tagline *</label>
+                                <input type="text" id="tagline" name="tagline" value="{{ brand_data.tagline or '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="domain">Domain *</label>
+                                <input type="url" id="domain" name="domain" value="{{ brand_data.domain or '' }}" readonly required>
+                            </div>
+                        </div>
+                        <div class="form-grid two-columns">
+                            <div class="form-group">
+                                <label for="themeDisplay">Theme</label>
+                                <input
+                                    type="text"
+                                    id="themeDisplay"
+                                    value="{{ brand_data.theme.id if brand_data.theme and brand_data.theme.id else (brand_data.themeId if brand_data.themeId else 'classic-dealer') }}"
+                                    readonly
+                                    aria-readonly="true"
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="aaApprovedDealer">AA Approved</label>
+                                <label class="form-switch-control" for="aaApprovedDealer">
+                                    <span class="form-switch">
+                                        <input
+                                            type="checkbox"
+                                            id="aaApprovedDealer"
+                                            name="aaApprovedDealer"
+                                            value="1"
+                                            role="switch"
+                                            {% if aa_approved %}checked{% endif %}
+                                        >
+                                        <span class="form-switch-track">
+                                            <span class="form-switch-thumb"></span>
+                                        </span>
+                                    </span>
+                                    <span class="form-switch-state" aria-hidden="true"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Brand Assets Section -->
+                    <div class="form-section">
+                        <h3>🎨 Brand Assets</h3>
+                        <div class="form-grid three-columns">
+                            <div class="form-group">
+                                <label>Logo File (PNG, JPG, SVG)</label>
+                                <div class="file-upload-area" data-field="logoFile">
+                                    <input type="file" id="logoFile" name="logoFile" accept="image/png,image/jpeg,image/gif,image/svg+xml,image/webp" hidden data-file-type="logo">
+                                    <div class="file-upload-content">
+                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="17,8 12,3 7,8"></polyline>
+                                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        </svg>
+                                        <p class="file-upload-text">Click to upload or drag and drop</p>
+                                        <p class="file-upload-subtitle">PNG, JPG, GIF, SVG (max. 16MB)</p>
+                                    </div>
+                                    <div class="file-upload-preview" id="logoPreview" style="display: none;">
+                                        <img src="" alt="Logo preview" class="preview-image">
+                                        <button type="button" class="remove-file" onclick="clearFile('logoFile')">×</button>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="logo" name="logo" value="{{ brand_data.logo or '' }}">
+                            </div>
+                            <div class="form-group">
+                                <label>Favicon File (PNG, ICO)</label>
+                                <div class="file-upload-area" data-field="faviconFile">
+                                    <input type="file" id="faviconFile" name="faviconFile" accept="image/png,image/x-icon,image/vnd.microsoft.icon" hidden data-file-type="favicon">
+                                    <div class="file-upload-content">
+                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="17,8 12,3 7,8"></polyline>
+                                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        </svg>
+                                        <p class="file-upload-text">Click to upload or drag and drop</p>
+                                        <p class="file-upload-subtitle">PNG, ICO (max. 16MB)</p>
+                                    </div>
+                                    <div class="file-upload-preview" id="faviconPreview" style="display: none;">
+                                        <img src="" alt="Favicon preview" class="preview-image">
+                                        <button type="button" class="remove-file" onclick="clearFile('faviconFile')">×</button>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="favicon" name="favicon" value="{{ brand_data.favicon or '' }}">
+                            </div>
+                            <div class="form-group">
+                                <label>Hero Background Image (PNG, JPG)</label>
+                                <div class="file-upload-area" data-field="heroImageFile">
+                                    <input type="file" id="heroImageFile" name="heroImageFile" accept="image/png,image/jpeg,image/gif,image/svg+xml,image/webp" hidden data-file-type="heroImage">
+                                    <div class="file-upload-content">
+                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="17,8 12,3 7,8"></polyline>
+                                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        </svg>
+                                        <p class="file-upload-text">Click to upload or drag and drop</p>
+                                        <p class="file-upload-subtitle">PNG, JPG, GIF, SVG (max. 16MB)</p>
+                                    </div>
+                                    <div class="file-upload-preview" id="heroImagePreview" style="display: none;">
+                                        <img src="" alt="Hero image preview" class="preview-image">
+                                        <button type="button" class="remove-file" onclick="clearFile('heroImageFile')">×</button>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="heroImage" name="heroImage" value="{{ brand_data.heroImage or '' }}">
+                            </div>
+                            <div class="form-group">
+                                <label>Inventory File (JSON)</label>
+                                <div class="file-upload-area" data-field="inventoryFile">
+                                    <input type="file" id="inventoryFile" name="inventoryFile" accept=".json" hidden data-file-type="inventory">
+                                    <div class="file-upload-content">
+                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="17,8 12,3 7,8"></polyline>
+                                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        </svg>
+                                        <p class="file-upload-text">Click to upload or drag and drop</p>
+                                        <p class="file-upload-subtitle">JSON file (max. 16MB)</p>
+                                    </div>
+                                    <div class="file-upload-preview" id="inventoryPreview" style="display: none;">
+                                        <div style="padding: 12px; background: var(--bg-primary); border-radius: var(--radius-sm); border: 1px solid var(--border-primary);">
+                                            <p style="margin: 0; color: var(--text-primary); font-weight: 500;">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; vertical-align: middle; margin-right: 8px;">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                                <span id="inventoryFileName">inventory.json</span>
+                                            </p>
+                                        </div>
+                                        <button type="button" class="remove-file" onclick="clearFile('inventoryFile')">×</button>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="inventory" name="inventory" value="{{ brand_data.inventory or '' }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Tab -->
+                <div class="tab-pane" id="contact-tab">
+                    <div class="form-section">
+                        <h3>📍 Contact Information</h3>
+                        <div class="form-grid three-columns">
+                            <div class="form-group">
+                                <label for="phone">Phone *</label>
+                                <input type="tel" id="phone" name="phone" value="{{ brand_data.location.phone if brand_data.location else '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" value="{{ brand_data.location.email if brand_data.location else '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" id="city" name="city" value="{{ brand_data.location.address.city if brand_data.location and brand_data.location.address else '' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="postcode">Postcode</label>
+                                <input type="text" id="postcode" name="postcode" value="{{ brand_data.location.address.postcode if brand_data.location and brand_data.location.address else '' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="facebook">Facebook</label>
+                                <input type="url" id="facebook" name="facebook" value="{{ brand_data.socialLinks.facebook if brand_data.socialLinks else '' }}" placeholder="https://facebook.com/dealership">
+                            </div>
+                            <div class="form-group">
+                                <label for="instagram">Instagram</label>
+                                <input type="url" id="instagram" name="instagram" value="{{ brand_data.socialLinks.instagram if brand_data.socialLinks else '' }}" placeholder="https://instagram.com/dealership">
+                            </div>
+                        </div>
+                        <div class="form-grid three-columns">
+                            <div class="form-group">
+                                <label for="youtube">YouTube</label>
+                                <input type="url" id="youtube" name="youtube" value="{{ brand_data.socialLinks.youtube if brand_data.socialLinks else '' }}" placeholder="https://youtube.com/@dealership">
+                            </div>
+                            <div class="form-group">
+                                <label for="linkedin">LinkedIn</label>
+                                <input type="url" id="linkedin" name="linkedin" value="{{ brand_data.socialLinks.linkedin if brand_data.socialLinks else '' }}" placeholder="https://linkedin.com/company/dealership">
+                            </div>
+                            <div class="form-group">
+                                <label for="mondayHours">Monday</label>
+                                <input type="text" id="mondayHours" name="mondayHours" value="{{ brand_data.openingHours.monday if brand_data.openingHours else '09:00 - 18:00' }}" placeholder="09:00 - 18:00">
+                            </div>
+                            <div class="form-group">
+                                <label for="tuesdayHours">Tuesday</label>
+                                <input type="text" id="tuesdayHours" name="tuesdayHours" value="{{ brand_data.openingHours.tuesday if brand_data.openingHours else '09:00 - 18:00' }}" placeholder="09:00 - 18:00">
+                            </div>
+                            <div class="form-group">
+                                <label for="wednesdayHours">Wednesday</label>
+                                <input type="text" id="wednesdayHours" name="wednesdayHours" value="{{ brand_data.openingHours.wednesday if brand_data.openingHours else '09:00 - 18:00' }}" placeholder="09:00 - 18:00">
+                            </div>
+                            <div class="form-group">
+                                <label for="thursdayHours">Thursday</label>
+                                <input type="text" id="thursdayHours" name="thursdayHours" value="{{ brand_data.openingHours.thursday if brand_data.openingHours else '09:00 - 18:00' }}" placeholder="09:00 - 18:00">
+                            </div>
+                            <div class="form-group">
+                                <label for="fridayHours">Friday</label>
+                                <input type="text" id="fridayHours" name="fridayHours" value="{{ brand_data.openingHours.friday if brand_data.openingHours else '09:00 - 18:00' }}" placeholder="09:00 - 18:00">
+                            </div>
+                            <div class="form-group">
+                                <label for="saturdayHours">Saturday</label>
+                                <input type="text" id="saturdayHours" name="saturdayHours" value="{{ brand_data.openingHours.saturday if brand_data.openingHours else '10:00 - 16:00' }}" placeholder="10:00 - 16:00">
+                            </div>
+                            <div class="form-group">
+                                <label for="sundayHours">Sunday</label>
+                                <input type="text" id="sundayHours" name="sundayHours" value="{{ brand_data.openingHours.sunday if brand_data.openingHours else 'Closed' }}" placeholder="Closed">
+                            </div>
+                        </div>
+                        <div class="form-grid three-columns">
+                            <div class="form-group full-width">
+                                <label for="address">Address *</label>
+                                <input type="text" id="address" name="address" value="{{ brand_data.location.fullAddress if brand_data.location else '' }}" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEO Tab -->
+                <div class="tab-pane" id="seo-tab">
+                    <div class="form-section">
+                        <h3>🔍 SEO Configuration</h3>
+                        <div class="form-grid three-columns">
+                            <div class="form-group">
+                                <label for="seoTitle">SEO Title *</label>
+                                <input type="text" id="seoTitle" name="seoTitle" value="{{ brand_data.seo.title if brand_data.seo else '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="twitterHandle">Twitter Handle</label>
+                                <input type="text" id="twitterHandle" name="twitterHandle" value="{{ brand_data.seo.twitterHandle if brand_data.seo else '' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <select id="country" name="country">
+                                    <option value="GB" {% if brand_data.seo and brand_data.seo.country == 'GB' %}selected{% endif %}>United Kingdom</option>
+                                    <option value="US" {% if brand_data.seo and brand_data.seo.country == 'US' %}selected{% endif %}>United States</option>
+                                    <option value="CA" {% if brand_data.seo and brand_data.seo.country == 'CA' %}selected{% endif %}>Canada</option>
+                                    <option value="AU" {% if brand_data.seo and brand_data.seo.country == 'AU' %}selected{% endif %}>Australia</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-grid three-columns">
+                            <div class="form-group full-width">
+                                <label for="seoDescription">SEO Description *</label>
+                                <textarea id="seoDescription" name="seoDescription" rows="3" required>{{ brand_data.seo.description if brand_data.seo else '' }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-grid three-columns">
+                            <div class="form-group full-width">
+                                <label for="seoKeywordsInput">SEO Keywords *</label>
+                                <div class="keywords-input-container">
+                                    <div id="seoKeywordsChipsContainer" class="keywords-chips-container"></div>
+                                    <input type="text" id="seoKeywordsInput" placeholder="Type a keyword and press Enter" autocomplete="off" inputmode="text">
+                                    <input type="hidden" id="seoKeywords" name="seoKeywords" value="{{ brand_data.seo.keywords | join(', ') if brand_data.seo and brand_data.seo.keywords else '' }}" required>
+                                </div>
+                                <small>Press Enter (or comma) to add a keyword.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colors Tab -->
+                <div class="tab-pane" id="colors-tab">
+                    <div class="form-section">
+                        <h3>🎨 Theme Colors</h3>
+                        <div class="color-swatch-grid">
+                            <!-- Primary Color Swatch -->
+                            <div class="color-swatch-card" data-color="primaryColor">
+                                <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.primaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.primaryColor else '#2563eb' }}">
+                                    <div class="swatch-overlay">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                        <span>Click to change</span>
+                                    </div>
+                                </div>
+                                <div class="swatch-info">
+                                    <div class="swatch-header">
+                                        <h4>Primary Color</h4>
+                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('primaryColor')">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <p class="color-value">{{ brand_data.theme.colors.primaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.primaryColor else '#2563eb' }}</p>
+                                    <span class="color-description">Main brand color</span>
+                                </div>
+                                <input type="hidden" id="primaryColor" name="primaryColor" value="{{ brand_data.theme.colors.primaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.primaryColor else '#2563eb' }}">
+                                <input type="color" class="color-picker-hidden" id="primaryColorPicker" value="{{ brand_data.theme.colors.primaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.primaryColor else '#2563eb' }}">
+                            </div>
+
+                            <!-- Secondary Color Swatch -->
+                            <div class="color-swatch-card" data-color="secondaryColor">
+                                <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.secondaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.secondaryColor else '#64748b' }}">
+                                    <div class="swatch-overlay">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                        <span>Click to change</span>
+                                    </div>
+                                </div>
+                                <div class="swatch-info">
+                                    <div class="swatch-header">
+                                        <h4>Secondary Color</h4>
+                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('secondaryColor')">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <p class="color-value">{{ brand_data.theme.colors.secondaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.secondaryColor else '#64748b' }}</p>
+                                    <span class="color-description">Secondary brand color</span>
+                                </div>
+                                <input type="hidden" id="secondaryColor" name="secondaryColor" value="{{ brand_data.theme.colors.secondaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.secondaryColor else '#64748b' }}">
+                                <input type="color" class="color-picker-hidden" id="secondaryColorPicker" value="{{ brand_data.theme.colors.secondaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.secondaryColor else '#64748b' }}">
+                            </div>
+
+                            <!-- Accent Color Swatch -->
+                            <div class="color-swatch-card" data-color="accentColor">
+                                <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.accentColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.accentColor else '#f59e0b' }}">
+                                    <div class="swatch-overlay">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                        <span>Click to change</span>
+                                    </div>
+                                </div>
+                                <div class="swatch-info">
+                                    <div class="swatch-header">
+                                        <h4>Accent Color</h4>
+                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('accentColor')">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <p class="color-value">{{ brand_data.theme.colors.accentColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.accentColor else '#f59e0b' }}</p>
+                                    <span class="color-description">Highlight color</span>
+                                </div>
+                                <input type="hidden" id="accentColor" name="accentColor" value="{{ brand_data.theme.colors.accentColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.accentColor else '#f59e0b' }}">
+                                <input type="color" class="color-picker-hidden" id="accentColorPicker" value="{{ brand_data.theme.colors.accentColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.accentColor else '#f59e0b' }}">
+                            </div>
+
+                            <!-- Background Color Swatch -->
+                            <div class="color-swatch-card" data-color="backgroundColor">
+                                <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.backgroundColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.backgroundColor else '#ffffff' }}">
+                                    <div class="swatch-overlay">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                        <span>Click to change</span>
+                                    </div>
+                                </div>
+                                <div class="swatch-info">
+                                    <div class="swatch-header">
+                                        <h4>Background Color</h4>
+                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('backgroundColor')">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <p class="color-value">{{ brand_data.theme.colors.backgroundColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.backgroundColor else '#ffffff' }}</p>
+                                    <span class="color-description">Main background</span>
+                                </div>
+                                <input type="hidden" id="backgroundColor" name="backgroundColor" value="{{ brand_data.theme.colors.backgroundColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.backgroundColor else '#ffffff' }}">
+                                <input type="color" class="color-picker-hidden" id="backgroundColorPicker" value="{{ brand_data.theme.colors.backgroundColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.backgroundColor else '#ffffff' }}">
+                            </div>
+
+                            <!-- Text Color Swatch -->
+                            <div class="color-swatch-card" data-color="textColor">
+                                <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.textColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.textColor else '#1f2937' }}">
+                                    <div class="swatch-overlay">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                        <span>Click to change</span>
+                                    </div>
+                                </div>
+                                <div class="swatch-info">
+                                    <div class="swatch-header">
+                                        <h4>Text Color</h4>
+                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('textColor')">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <p class="color-value">{{ brand_data.theme.colors.textColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.textColor else '#1f2937' }}</p>
+                                    <span class="color-description">Main text color</span>
+                                </div>
+                                <input type="hidden" id="textColor" name="textColor" value="{{ brand_data.theme.colors.textColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.textColor else '#1f2937' }}">
+                                <input type="color" class="color-picker-hidden" id="textColorPicker" value="{{ brand_data.theme.colors.textColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.textColor else '#1f2937' }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>ðŸ”¤ Theme Fonts</h3>
+                        <div class="form-grid three-columns">
+                            <div class="form-group full-width">
+                                <label for="fontPack">Font Pack</label>
+                                <select id="fontPack" name="fontPack">
+                                    <option value="modern-trust">Modern Trust</option>
+                                    <option value="luxury-premium">Luxury Premium</option>
+                                    <option value="sport-performance">Sport Performance</option>
+                                    <option value="clean-minimal">Clean Minimal</option>
+                                    <option value="tech-ev">Tech / EV</option>
+                                    <option value="classic-traditional">Classic Traditional</option>
+                                    <option value="custom">Custom</option>
+                                </select>
+                                <small>Select a curated font set. Custom reveals manual stacks.</small>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="fontUi" name="fontUi" value="{{ brand_data.theme.fonts.ui if brand_data.theme and brand_data.theme.fonts and brand_data.theme.fonts.ui else 'Inter, system-ui, sans-serif' }}">
+                        <input type="hidden" id="fontBrand" name="fontBrand" value="{{ brand_data.theme.fonts.brand if brand_data.theme and brand_data.theme.fonts and brand_data.theme.fonts.brand else 'Lora, serif' }}">
+                        <input type="hidden" id="fontMono" name="fontMono" value="{{ brand_data.theme.fonts.mono if brand_data.theme and brand_data.theme.fonts and brand_data.theme.fonts.mono else 'JetBrains Mono, Consolas, monospace' }}">
+                        <input type="hidden" id="themeId" name="themeId" value="{{ brand_data.theme.id if brand_data.theme and brand_data.theme.id else 'classic-dealer' }}">
+
+                        <div class="form-grid three-columns" id="customFontInputs" style="display:none;">
+                            <div class="form-group">
+                                <label for="fontUiCustom">UI Font (CSS stack)</label>
+                                <input type="text" id="fontUiCustom" placeholder="Inter, system-ui, sans-serif">
+                                <small>Used for most text + UI.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="fontBrandCustom">Brand Font (CSS stack)</label>
+                                <input type="text" id="fontBrandCustom" placeholder="Lora, serif">
+                                <small>Used for hero/headers.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="fontMonoCustom">Mono Font (CSS stack)</label>
+                                <input type="text" id="fontMonoCustom" placeholder="JetBrains Mono, Consolas, monospace">
+                                <small>Used for prices, mileage, stats.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Tab -->
+                <div class="tab-pane" id="content-tab">
+                    <div class="form-section">
+                        <h3>📄 Page Content</h3>
+                        <div class="form-grid three-columns">
+                            <div class="form-group">
+                                <label for="homeHeroTitle">Home Hero Title</label>
+                                <input type="text" id="homeHeroTitle" name="homeHeroTitle" value="Welcome to {{ brand_data.name or 'Your Dealership' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="aboutTitle">About Page Title</label>
+                                <input type="text" id="aboutTitle" name="aboutTitle" value="About {{ brand_data.name or 'Us' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="aboutHeadline">About Headline</label>
+                                <input type="text" id="aboutHeadline" name="aboutHeadline" value="{{ brand_data.aboutUs.headline if brand_data.aboutUs else 'Your trusted dealership' }}">
+                            </div>
+                        </div>
+                        <div class="form-grid three-columns">
+                            <div class="form-group">
+                                <label for="whyChooseUsTitle">Why Choose Us Title</label>
+                                <input type="text" id="whyChooseUsTitle" name="whyChooseUsTitle" value="{{ brand_data.whyChooseUs.title if brand_data.whyChooseUs else 'Why Choose ' + (brand_data.name or 'Us') + '?' }}">
+                            </div>
+                        </div>
+                        <div class="form-grid three-columns">
+                            <div class="form-group">
+                                <label for="homeHeroDescription">Home Hero Description</label>
+                                <textarea id="homeHeroDescription" name="homeHeroDescription" rows="2">{{ brand_data.tagline or 'Quality vehicles you can trust' }}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="aboutDescription">About Page Description</label>
+                                <textarea id="aboutDescription" name="aboutDescription" rows="2">{{ brand_data.aboutUs.description if brand_data.aboutUs else brand_data.tagline or 'Your trusted dealership' }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-grid three-columns">
+                            <div class="form-group">
+                                <label for="servicesTitle">Services Title</label>
+                                <input type="text" id="servicesTitle" name="servicesTitle" value="{{ brand_data.services.title if brand_data.services else 'Our Services' }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Why Choose Us Section -->
+                    <div class="form-section">
+                        <h3>⭐ Why Choose Us</h3>
+                        <div id="whyChooseUsFeatures" class="repeater-section">
+                            <div class="repeater-header">
+                                <h4>Features</h4>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="addFeature()">+ Add Feature</button>
+                            </div>
+                            <div id="featuresList" class="repeater-list">
+                                {% if brand_data.whyChooseUs and brand_data.whyChooseUs.features %}
+                                    {% for feature in brand_data.whyChooseUs.features %}
+                                    <div class="repeater-item feature-item" data-index="{{ loop.index0 }}">
+                                        <div class="repeater-content">
+                                            <input type="text" name="feature{{ loop.index0 }}Title" value="{{ feature.title }}" placeholder="Feature title">
+                                            <textarea name="feature{{ loop.index0 }}Description" rows="2" placeholder="Feature description">{{ feature.description }}</textarea>
+                                        </div>
+                                        <button type="button" class="btn btn-danger btn-sm repeater-remove" onclick="removeFeature({{ loop.index0 }})">×</button>
+                                    </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Services Section -->
+                    <div class="form-section">
+                        <h3>🔧 Services</h3>
+                        <div id="servicesFeatures" class="repeater-section">
+                            <div class="repeater-header">
+                                <h4>Services</h4>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="addService()">+ Add Service</button>
+                            </div>
+                            <div id="servicesList" class="repeater-list">
+                                {% if brand_data.services and brand_data.services['items'] %}
+                                    {% for service in brand_data.services['items'] %}
+                                    <div class="repeater-item service-item" data-index="{{ loop.index0 }}">
+                                        <div class="repeater-content">
+                                            <input type="text" name="service{{ loop.index0 }}Title" value="{{ service.title }}" placeholder="Service title">
+                                            <textarea name="service{{ loop.index0 }}Description" rows="2" placeholder="Service description">{{ service.description }}</textarea>
+                                        </div>
+                                        <button type="button" class="btn btn-danger btn-sm repeater-remove" onclick="removeService({{ loop.index0 }})">×</button>
+                                    </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonials Section -->
+                    <div class="form-section">
+                        <h3>💬 Customer Testimonials</h3>
+                        <div id="testimonialsFeatures" class="repeater-section">
+                            <div class="repeater-header">
+                                <h4>Testimonials</h4>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="addTestimonial()">+ Add Testimonial</button>
+                            </div>
+                            <div id="testimonialsList" class="repeater-list">
+                                {% if brand_data.testimonials %}
+                                    {% for testimonial in brand_data.testimonials %}
+                                    <div class="repeater-item testimonial-item" data-index="{{ loop.index0 }}">
+                                        <div class="repeater-content">
+                                            <input type="text" name="testimonial{{ loop.index0 }}Name" value="{{ testimonial.name }}" placeholder="Customer name">
+                                            <input type="text" name="testimonial{{ loop.index0 }}Rating" value="{{ testimonial.rating }}" placeholder="Rating (1-5)">
+                                            <textarea name="testimonial{{ loop.index0 }}Review" rows="2" placeholder="Review text">{{ testimonial.review }}</textarea>
+                                        </div>
+                                        <button type="button" class="btn btn-danger btn-sm repeater-remove" onclick="removeTestimonial({{ loop.index0 }})">×</button>
+                                    </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Section -->
+                    <div class="form-section">
+                        <h3>❓ Frequently Asked Questions</h3>
+                        <div id="faqFeatures" class="repeater-section">
+                            <div class="repeater-header">
+                                <h4>FAQs</h4>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="addFaq()">+ Add FAQ</button>
+                            </div>
+                            <div id="faqList" class="repeater-list">
+                                {% if brand_data.faq %}
+                                    {% for faq_item in brand_data.faq %}
+                                    <div class="repeater-item faq-item" data-index="{{ loop.index0 }}">
+                                        <div class="repeater-content">
+                                            <input type="text" name="faq{{ loop.index0 }}Question" value="{{ faq_item.question }}" placeholder="Question">
+                                            <textarea name="faq{{ loop.index0 }}Answer" rows="2" placeholder="Answer">{{ faq_item.answer }}</textarea>
+                                        </div>
+                                        <button type="button" class="btn btn-danger btn-sm repeater-remove" onclick="removeFaq({{ loop.index0 }})">×</button>
+                                    </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-navigation">
+            <button type="submit" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Update Brand
+            </button>
+            <button type="button" class="btn btn-secondary" id="previewBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                Preview Changes
+            </button>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+        </div>
+        <h2>Brand Not Found</h2>
+        <p>The brand you're trying to update doesn't exist or couldn't be loaded.</p>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+/* Update Form Styling - Dark Theme */
+.dashboard-section {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+    margin: 0;
+}
+
+.section-header {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-primary);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.section-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+}
+
+.section-header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.section-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-radius: var(--radius-lg);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.section-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.section-subtitle {
+    color: var(--text-muted);
+    margin: 0.5rem 0 0 0;
+    font-size: 1rem;
+}
+
+.brand-form {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+.form-tabs {
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.tab-nav {
+    display: flex;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-primary);
+    overflow-x: auto;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-bottom: 2px solid transparent;
+    transition: all var(--transition-normal);
+    white-space: nowrap;
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+}
+
+.tab-btn.active {
+    color: var(--primary);
+    background: var(--bg-secondary);
+    border-bottom-color: var(--primary);
+}
+
+.tab-content {
+    padding: 2rem;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-section h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.form-grid.three-columns {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+/* Fluid layout: single form-group in a grid row spans full width */
+.form-grid.three-columns > .form-group:only-child,
+.form-grid.three-columns > .form-group:nth-child(3n+1):last-child,
+.form-grid.three-columns > .form-group:nth-child(3n+1):nth-last-child(2) ~ .form-group:nth-child(3n+2):last-child {
+    grid-column: 1 / -1;
+}
+
+/* When there are 2 items in the last row, make them span 2 columns each */
+.form-grid.three-columns > .form-group:nth-child(3n+1):nth-last-child(2) {
+    grid-column: 1 / 2;
+}
+
+.form-grid.three-columns > .form-group:nth-child(3n+2):last-child {
+    grid-column: 2 / 3;
+}
+
+@media (max-width: 1024px) {
+    .form-grid.three-columns {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .form-grid.three-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    letter-spacing: -0.01em;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: all var(--transition-normal);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: var(--font-family-mono);
+}
+
+/* Content tab textareas should span full width and ignore grid columns */
+#content-tab .form-group textarea {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    position: relative;
+}
+
+/* Ensure textarea containers also span full width */
+#content-tab .form-group:has(textarea) {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+}
+
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.color-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.color-input-wrapper {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.color-swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.color-swatch-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.color-swatch-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+}
+
+.color-swatch-card.selected {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.swatch-preview {
+    width: 100%;
+    height: 80px;
+    border-radius: var(--radius-md);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+    border: 2px solid var(--border-primary);
+    transition: all var(--transition-normal);
+}
+
+.color-swatch-card:hover .swatch-preview {
+    border-color: var(--primary);
+    transform: scale(1.02);
+}
+
+.swatch-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+    color: white;
+    gap: 0.5rem;
+}
+
+.color-swatch-card:hover .swatch-overlay {
+    opacity: 1;
+}
+
+.swatch-overlay svg {
+    color: white;
+}
+
+.swatch-overlay span {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.swatch-info h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.swatch-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.copy-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    padding: 0;
+}
+
+.copy-icon-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    transform: scale(1.05);
+}
+
+.copy-icon-btn:active {
+    transform: scale(0.95);
+}
+
+.copy-icon-btn.copied {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.color-value {
+    font-family: var(--font-family-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--primary);
+    background: var(--bg-primary);
+    padding: 0.2rem 0.4rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-primary);
+    margin: 0 0 0.25rem 0;
+    display: inline-block;
+}
+
+.color-description {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.color-picker-hidden {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .color-swatch-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .color-swatch-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .color-swatch-card {
+        padding: 0.75rem;
+    }
+    
+    .swatch-preview {
+        height: 60px;
+    }
+}
+
+.form-navigation {
+    padding: 2rem;
+    background: var(--bg-tertiary);
+    border-top: 1px solid var(--border-primary);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+}
+
+.btn-secondary:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-primary);
+}
+
+.btn-outline:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    margin: 0 2rem 2rem 2rem;
+}
+
+.empty-icon {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.empty-state h2 {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+/* Repeater Sections */
+.repeater-section {
+    margin-top: 1.5rem;
+}
+
+.repeater-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.repeater-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.repeater-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.repeater-item {
+    display: flex;
+    align-items: flex-start;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    border: 1px solid var(--border-primary);
+}
+
+.repeater-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.repeater-content input,
+.repeater-content textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-sm);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.repeater-content input:focus,
+.repeater-content textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.repeater-remove {
+    margin-left: 0.75rem;
+    margin-top: 0.25rem;
+    background: var(--danger, #dc3545);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.8rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.repeater-remove:hover {
+    background: var(--danger, #c82333);
+}
+
+/* Opening Hours Grid */
+.opening-hours-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.hour-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.hour-item label {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.hour-item input {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-sm);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.hour-item input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* File Upload Areas */
+.file-upload-area {
+    border: 2px dashed var(--border-primary);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--bg-tertiary);
+    min-height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.file-upload-area:hover {
+    border-color: var(--primary);
+    background: var(--bg-hover);
+}
+
+.file-upload-area.dragover {
+    border-color: var(--primary);
+    background: rgba(59, 130, 246, 0.05);
+    transform: scale(1.02);
+}
+
+.file-upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.file-upload-content svg {
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+}
+
+.file-upload-area:hover .file-upload-content svg {
+    color: var(--primary);
+}
+
+.file-upload-text {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.file-upload-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.file-upload-preview {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 120px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+}
+
+.remove-file {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--danger, #dc3545);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.remove-file:hover {
+    background: var(--danger, #c82333);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .section-header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .tab-nav {
+        overflow-x: auto;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .color-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-navigation {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .brand-form {
+        margin: 0 1rem 1rem 1rem;
+    }
+    
+    .section-header {
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state {
+        margin: 0 1rem 1rem 1rem;
+        padding: 2rem 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .tab-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .form-section h3 {
+        font-size: 1rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Restore form data from localStorage first
+    restoreUpdateFormData();
+    
+    // Fetch brand data and populate form
+    fetchBrandDataAndPopulateForm();
+    
+    // Initialize file upload functionality
+    initializeFileUpload();
+
+    // Initialize interactive color swatches (copy-to-clipboard UI)
+    initializeColorSwatches();
+
+    // Initialize SEO keywords chips UI
+    initializeSeoKeywordChips();
+
+    // Initialize theme font packs UI
+    initializeFontPacks();
+    
+    // Enable autosave for update form
+    const updateForm = document.getElementById('updateBrandForm');
+    if (updateForm) {
+        let saveTimer = null;
+        const scheduleSave = () => {
+            if (saveTimer) clearTimeout(saveTimer);
+            saveTimer = setTimeout(() => saveUpdateFormData(), 500);
+        };
+        
+        // Add event listeners for autosave
+        updateForm.addEventListener('input', scheduleSave);
+        updateForm.addEventListener('change', scheduleSave);
+        
+        // Also save when repeater items are added/removed
+        const observer = new MutationObserver(scheduleSave);
+        observer.observe(updateForm, { 
+            childList: true, 
+            subtree: true,
+            attributes: false,
+            characterData: false
+        });
+    }
+    
+    // Tab switching functionality
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const targetTab = this.dataset.tab;
+            
+            // Remove active class from all tabs and panes
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabPanes.forEach(p => p.classList.remove('active'));
+            
+            // Add active class to clicked tab and corresponding pane
+            this.classList.add('active');
+            document.getElementById(targetTab + '-tab').classList.add('active');
+        });
+    });
+    
+    // Color input synchronization
+    const colorGroups = document.querySelectorAll('.color-input-wrapper');
+    colorGroups.forEach(group => {
+        const colorInput = group.querySelector('input[type="color"]');
+        const textInput = group.querySelector('input[type="text"]');
+        
+        if (colorInput && textInput) {
+            colorInput.addEventListener('change', function() {
+                textInput.value = this.value;
+            });
+            
+            textInput.addEventListener('input', function() {
+                if (/^#[0-9A-Fa-f]{6}$/.test(this.value)) {
+                    colorInput.value = this.value;
+                }
+            });
+        }
+    });
+    
+    // Form submission
+    const form = document.getElementById('updateBrandForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const brandSlug = this.dataset.brandSlug;
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg> Updating...';
+            submitBtn.disabled = true;
+            
+            // Include repeaters as JSON in multipart/form-data so files can be uploaded too
+            formData.set('features', JSON.stringify(collectRepeaterData('feature')));
+            formData.set('services', JSON.stringify(collectRepeaterData('service')));
+            formData.set('testimonials', JSON.stringify(collectRepeaterData('testimonial')));
+            formData.set('faq', JSON.stringify(collectRepeaterData('faq')));
+            
+            // Send update request
+            fetch(`/api/brands/${brandSlug}/update`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    showAlert('Brand updated successfully!', 'success');
+                    // Force a hard refresh to update cached brand data and images
+                    setTimeout(() => {
+                        // Check if we have logo/favicon updates that need cache busting
+                        const hasImageUpdates = formData.has('logoFile') || formData.has('faviconFile') || formData.has('heroImageFile');
+                        if (hasImageUpdates) {
+                            // Force hard refresh to clear image cache and brand data
+                            window.location.reload();
+                        } else {
+                            // Regular redirect for non-image updates
+                            window.location.href = '/dashboard';
+                        }
+                    }, 2000);
+                } else {
+                    showAlert(result.error || 'Failed to update brand', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('An error occurred while updating the brand', 'error');
+            })
+            .finally(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        });
+    }
+    
+    // Preview button functionality
+    const previewBtn = document.getElementById('previewBtn');
+    if (previewBtn) {
+        previewBtn.addEventListener('click', function() {
+            // This would open a preview window or modal
+            showAlert('Preview functionality coming soon!', 'info');
+        });
+    }
+});
+
+function initializeSeoKeywordChips() {
+    const input = document.getElementById('seoKeywordsInput');
+    const hidden = document.getElementById('seoKeywords');
+    const chips = document.getElementById('seoKeywordsChipsContainer');
+    if (!input || !hidden || !chips) return;
+
+    const render = () => {
+        const keywords = getSeoKeywordsArrayFromHidden(hidden);
+        chips.innerHTML = keywords
+            .map((kw) => {
+                const safe = escapeHtml(kw);
+                return `<div class="keyword-chip"><span class="keyword-text">${safe}</span><button type="button" class="keyword-remove" data-keyword="${encodeURIComponent(kw)}">×</button></div>`;
+            })
+            .join('');
+
+        chips.querySelectorAll('.keyword-remove').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const kw = decodeURIComponent(btn.getAttribute('data-keyword') || '');
+                const next = getSeoKeywordsArrayFromHidden(hidden).filter((k) => k !== kw);
+                setSeoKeywordsHidden(hidden, next);
+                render();
+            });
+        });
+    };
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            const value = (input.value || '').trim().replace(/,$/, '').trim();
+            if (!value) return;
+            const existing = getSeoKeywordsArrayFromHidden(hidden);
+            if (!existing.includes(value)) {
+                existing.push(value);
+                setSeoKeywordsHidden(hidden, existing);
+                render();
+            }
+            input.value = '';
+            return;
+        }
+
+        if (e.key === 'Backspace' && !(input.value || '').length) {
+            const existing = getSeoKeywordsArrayFromHidden(hidden);
+            if (existing.length) {
+                existing.pop();
+                setSeoKeywordsHidden(hidden, existing);
+                render();
+            }
+        }
+    });
+
+    input.addEventListener('paste', (e) => {
+        const text = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+        if (!text || !/[,\n]/.test(text)) return;
+        e.preventDefault();
+
+        const parts = text
+            .split(/[,\\n]+/)
+            .map((s) => s.trim())
+            .filter(Boolean);
+        if (!parts.length) return;
+
+        const existing = getSeoKeywordsArrayFromHidden(hidden);
+        parts.forEach((p) => {
+            if (!existing.includes(p)) existing.push(p);
+        });
+        setSeoKeywordsHidden(hidden, existing);
+        render();
+        input.value = '';
+    });
+
+    render();
+
+    window.syncSeoKeywordChipsFromHidden = () => {
+        render();
+    };
+}
+
+function getSeoKeywordsArrayFromHidden(hiddenInput) {
+    const raw = (hiddenInput.value || '').trim();
+    if (!raw) return [];
+    const parts = raw
+        .split(/[,\\n]+/)
+        .map((s) => s.trim())
+        .filter(Boolean);
+    const seen = new Set();
+    const out = [];
+    for (const p of parts) {
+        const key = p.toLowerCase();
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push(p);
+    }
+    return out;
+}
+
+function setSeoKeywordsHidden(hiddenInput, keywords) {
+    hiddenInput.value = (keywords || []).join(', ');
+    hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+    hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+function escapeHtml(text) {
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function initializeFontPacks() {
+    const select = document.getElementById('fontPack');
+    const hiddenUi = document.getElementById('fontUi');
+    const hiddenBrand = document.getElementById('fontBrand');
+    const hiddenMono = document.getElementById('fontMono');
+    const customWrap = document.getElementById('customFontInputs');
+    const customUi = document.getElementById('fontUiCustom');
+    const customBrand = document.getElementById('fontBrandCustom');
+    const customMono = document.getElementById('fontMonoCustom');
+    if (!select || !hiddenUi || !hiddenBrand || !hiddenMono) return;
+
+    const packs = getFontPacks();
+
+    const applyPack = (packId) => {
+        const pack = packs.find((p) => p.id === packId);
+        if (!pack) return false;
+        hiddenUi.value = pack.fonts.ui.cssStack;
+        hiddenBrand.value = pack.fonts.brand.cssStack;
+        hiddenMono.value = pack.fonts.mono.cssStack;
+        hiddenUi.dispatchEvent(new Event('input', { bubbles: true }));
+        hiddenBrand.dispatchEvent(new Event('input', { bubbles: true }));
+        hiddenMono.dispatchEvent(new Event('input', { bubbles: true }));
+        return true;
+    };
+
+    const showCustom = (show) => {
+        if (!customWrap) return;
+        customWrap.style.display = show ? '' : 'none';
+    };
+
+    const applyCustomFromInputs = () => {
+        if (!customUi || !customBrand || !customMono) return;
+        hiddenUi.value = (customUi.value || '').trim();
+        hiddenBrand.value = (customBrand.value || '').trim();
+        hiddenMono.value = (customMono.value || '').trim();
+        hiddenUi.dispatchEvent(new Event('input', { bubbles: true }));
+        hiddenBrand.dispatchEvent(new Event('input', { bubbles: true }));
+        hiddenMono.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+
+    const detectPackFromHidden = () => {
+        const ui = (hiddenUi.value || '').trim();
+        const brand = (hiddenBrand.value || '').trim();
+        const mono = (hiddenMono.value || '').trim();
+        const match = packs.find(
+            (p) =>
+                p.fonts.ui.cssStack === ui &&
+                p.fonts.brand.cssStack === brand &&
+                p.fonts.mono.cssStack === mono
+        );
+        return match ? match.id : 'custom';
+    };
+
+    window.syncFontPackFromHidden = () => {
+        const id = detectPackFromHidden();
+        select.value = id;
+        if (id === 'custom') {
+            showCustom(true);
+            if (customUi) customUi.value = hiddenUi.value || '';
+            if (customBrand) customBrand.value = hiddenBrand.value || '';
+            if (customMono) customMono.value = hiddenMono.value || '';
+        } else {
+            showCustom(false);
+        }
+    };
+
+    select.addEventListener('change', () => {
+        const id = select.value;
+        if (id === 'custom') {
+            showCustom(true);
+            if (customUi) customUi.value = hiddenUi.value || '';
+            if (customBrand) customBrand.value = hiddenBrand.value || '';
+            if (customMono) customMono.value = hiddenMono.value || '';
+            return;
+        }
+
+        showCustom(false);
+        applyPack(id);
+    });
+
+    if (customUi) customUi.addEventListener('input', applyCustomFromInputs);
+    if (customBrand) customBrand.addEventListener('input', applyCustomFromInputs);
+    if (customMono) customMono.addEventListener('input', applyCustomFromInputs);
+
+    window.syncFontPackFromHidden();
+}
+
+function getFontPacks() {
+    return [
+        {
+            id: 'modern-trust',
+            label: 'Modern Trust',
+            fonts: {
+                ui: { name: 'Inter', cssStack: "Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" },
+                brand: { name: 'Lora', cssStack: "Lora, Georgia, 'Times New Roman', serif" },
+                mono: { name: 'JetBrains Mono', cssStack: "'JetBrains Mono', Consolas, 'Courier New', monospace" },
+            },
+        },
+        {
+            id: 'luxury-premium',
+            label: 'Luxury Premium',
+            fonts: {
+                ui: { name: 'Inter', cssStack: 'Inter, system-ui, sans-serif' },
+                brand: { name: 'Playfair Display', cssStack: "'Playfair Display', Georgia, serif" },
+                mono: { name: 'JetBrains Mono', cssStack: "'JetBrains Mono', Consolas, monospace" },
+            },
+        },
+        {
+            id: 'sport-performance',
+            label: 'Sport Performance',
+            fonts: {
+                ui: { name: 'Manrope', cssStack: 'Manrope, Inter, system-ui, sans-serif' },
+                brand: { name: 'Oswald', cssStack: "Oswald, 'Arial Narrow', sans-serif" },
+                mono: { name: 'JetBrains Mono', cssStack: "'JetBrains Mono', Consolas, monospace" },
+            },
+        },
+        {
+            id: 'clean-minimal',
+            label: 'Clean Minimal',
+            fonts: {
+                ui: { name: 'Source Sans 3', cssStack: "'Source Sans 3', system-ui, sans-serif" },
+                brand: { name: 'Source Serif 4', cssStack: "'Source Serif 4', Georgia, serif" },
+                mono: { name: 'JetBrains Mono', cssStack: "'JetBrains Mono', monospace" },
+            },
+        },
+        {
+            id: 'tech-ev',
+            label: 'Tech / EV',
+            fonts: {
+                ui: { name: 'Inter', cssStack: 'Inter, system-ui, sans-serif' },
+                brand: { name: 'Space Grotesk', cssStack: "'Space Grotesk', Inter, sans-serif" },
+                mono: { name: 'JetBrains Mono', cssStack: "'JetBrains Mono', monospace" },
+            },
+        },
+        {
+            id: 'classic-traditional',
+            label: 'Classic Traditional',
+            fonts: {
+                ui: { name: 'Roboto', cssStack: 'Roboto, system-ui, sans-serif' },
+                brand: { name: 'Merriweather', cssStack: 'Merriweather, Georgia, serif' },
+                mono: { name: 'JetBrains Mono', cssStack: "'JetBrains Mono', Consolas, monospace" },
+            },
+        },
+    ];
+}
+
+// Fetch brand data and populate form fields
+function fetchBrandDataAndPopulateForm() {
+    const form = document.getElementById('updateBrandForm');
+    if (!form) return;
+    
+    const brandSlug = form.dataset.brandSlug;
+    if (!brandSlug) return;
+    
+    fetch(`/api/brands/${brandSlug}`)
+        .then(response => response.json())
+        .then(result => {
+            const brand = result.preview || result.brand;
+            if (brand) {
+                populateFormFields(brand);
+            } else {
+                showAlert('Failed to load brand data', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching brand data:', error);
+            showAlert('Error loading brand data', 'error');
+        });
+}
+
+function isTruthyFlag(value) {
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'number') return value === 1;
+    if (typeof value === 'string') {
+        return ['1', 'true', 'yes', 'on'].includes(value.trim().toLowerCase());
+    }
+    return false;
+}
+
+function setCheckboxValue(fieldId, value) {
+    const field = document.getElementById(fieldId);
+    if (!field || field.type !== 'checkbox') return;
+    field.checked = isTruthyFlag(value);
+    field.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+// Populate all form fields with brand data
+function populateFormFields(brand) {
+    // Basic Info
+    setFieldValue('name', brand.name);
+    setFieldValue('tagline', brand.tagline);
+    setFieldValue('domain', brand.domain);
+    setFieldValue('themeDisplay', brand.themeId || brand.theme?.id || brand.theme?.themeId || 'classic-dealer');
+    setCheckboxValue('aaApprovedDealer', brand.aaApprovedDealer ?? brand.aa_approved_dealer);
+    setFieldValue('logo', brand.logo);
+    setFieldValue('favicon', brand.favicon);
+    setFieldValue('heroImage', brand.heroImage);
+    
+    // Contact Information
+    if (brand.location) {
+        setFieldValue('phone', brand.location.phone);
+        setFieldValue('email', brand.location.email);
+        setFieldValue('address', brand.location.fullAddress);
+        if (brand.location.address) {
+            setFieldValue('city', brand.location.address.city);
+            setFieldValue('postcode', brand.location.address.postcode);
+        }
+    }
+    
+    // Social Links
+    if (brand.socialLinks) {
+        setFieldValue('facebook', brand.socialLinks.facebook);
+        setFieldValue('instagram', brand.socialLinks.instagram);
+        setFieldValue('youtube', brand.socialLinks.youtube);
+        setFieldValue('linkedin', brand.socialLinks.linkedin);
+    }
+    
+    // Opening Hours
+    if (brand.openingHours) {
+        setFieldValue('mondayHours', brand.openingHours.monday);
+        setFieldValue('tuesdayHours', brand.openingHours.tuesday);
+        setFieldValue('wednesdayHours', brand.openingHours.wednesday);
+        setFieldValue('thursdayHours', brand.openingHours.thursday);
+        setFieldValue('fridayHours', brand.openingHours.friday);
+        setFieldValue('saturdayHours', brand.openingHours.saturday);
+        setFieldValue('sundayHours', brand.openingHours.sunday);
+    }
+    
+    // SEO
+    if (brand.seo) {
+        setFieldValue('seoTitle', brand.seo.title);
+        setFieldValue('seoDescription', brand.seo.description);
+        if (brand.seo.keywords) {
+            setFieldValue('seoKeywords', brand.seo.keywords.join(', '));
+        }
+        setFieldValue('twitterHandle', brand.seo.twitterHandle);
+        setFieldValue('country', brand.seo.country);
+
+        if (typeof window.syncSeoKeywordChipsFromHidden === 'function') {
+            window.syncSeoKeywordChipsFromHidden();
+        }
+    }
+    
+    // Theme Colors
+    if (brand.theme && brand.theme.colors) {
+        setFieldValue('primaryColor', brand.theme.colors.primaryColor);
+        setFieldValue('secondaryColor', brand.theme.colors.secondaryColor);
+        setFieldValue('accentColor', brand.theme.colors.accentColor);
+        setFieldValue('backgroundColor', brand.theme.colors.backgroundColor);
+        setFieldValue('textColor', brand.theme.colors.textColor);
+        
+        // Sync color text inputs
+        syncColorInputs('primaryColor', brand.theme.colors.primaryColor);
+        syncColorInputs('secondaryColor', brand.theme.colors.secondaryColor);
+        syncColorInputs('accentColor', brand.theme.colors.accentColor);
+        syncColorInputs('backgroundColor', brand.theme.colors.backgroundColor);
+        syncColorInputs('textColor', brand.theme.colors.textColor);
+    }
+
+    // Theme Fonts
+    if (brand.theme && brand.theme.fonts) {
+        setFieldValue('fontUi', brand.theme.fonts.ui);
+        setFieldValue('fontBrand', brand.theme.fonts.brand);
+        setFieldValue('fontMono', brand.theme.fonts.mono);
+    }
+
+    if (typeof window.syncFontPackFromHidden === 'function') {
+        window.syncFontPackFromHidden();
+    }
+    
+    // Page Content
+    if (brand.pages) {
+        // Home page content
+        if (brand.pages.home) {
+            setFieldValue('homeHeroTitle', brand.pages.home.hero?.title);
+            setFieldValue('homeHeroDescription', brand.pages.home.hero?.description);
+        }
+        
+        // About page content
+        if (brand.pages.about) {
+            setFieldValue('aboutTitle', brand.pages.about.hero?.title);
+            setFieldValue('aboutHeadline', brand.pages.about.hero?.description);
+            setFieldValue('aboutDescription', brand.pages.about.story?.paragraphs?.join(' '));
+        }
+        
+        // Services content
+        if (brand.pages.services) {
+            setFieldValue('servicesTitle', brand.pages.services.hero?.title);
+        }
+    }
+    
+    // About Us
+    if (brand.aboutUs) {
+        setFieldValue('aboutTitle', brand.aboutUs.title);
+        setFieldValue('aboutHeadline', brand.aboutUs.headline);
+        setFieldValue('aboutDescription', brand.aboutUs.description);
+    }
+    
+    // Why Choose Us
+    if (brand.whyChooseUs) {
+        setFieldValue('whyChooseUsTitle', brand.whyChooseUs.title);
+        // Populate features repeater
+        if (brand.whyChooseUs.features) {
+            populateFeaturesRepeater(brand.whyChooseUs.features);
+        }
+    }
+    
+    // Services
+    if (brand.services) {
+        setFieldValue('servicesTitle', brand.services.title);
+        // Populate services repeater
+        if (brand.services.items) {
+            populateServicesRepeater(brand.services.items);
+        }
+    }
+    
+    // Testimonials
+    if (brand.testimonials) {
+        populateTestimonialsRepeater(brand.testimonials);
+    }
+    
+    // FAQ
+    console.log('FAQ Data:', brand.faq); // Debug log
+    if (brand.faq) {
+        populateFaqRepeater(brand.faq);
+    }
+    
+    // Load existing images
+    loadExistingImage('logoFile');
+    loadExistingImage('faviconFile');
+    loadExistingImage('heroImageFile');
+}
+
+// Helper function to set field value
+function setFieldValue(fieldId, value) {
+    const field = document.getElementById(fieldId);
+    if (field && (field.type === 'checkbox' || field.type === 'radio')) {
+        field.checked = isTruthyFlag(value);
+    } else if (field && value !== undefined && value !== null) {
+        field.value = value;
+    }
+}
+
+// Helper function to sync color inputs
+function syncColorInputs(colorId, value) {
+    const colorInput = document.getElementById(colorId);
+    const textInput = document.getElementById(colorId + 'Text');
+    if (colorInput && textInput && value) {
+        colorInput.value = value;
+        textInput.value = value;
+    }
+}
+
+// Populate features repeater
+function populateFeaturesRepeater(features) {
+    const featuresList = document.getElementById('featuresList');
+    if (!featuresList || !features || features.length === 0) return;
+    
+    featuresList.innerHTML = '';
+    features.forEach((feature, index) => {
+        const item = document.createElement('div');
+        item.className = 'repeater-item feature-item';
+        item.dataset.index = index;
+        item.innerHTML = `
+            <div class="repeater-content">
+                <input type="text" name="feature${index}Title" value="${feature.title || ''}" placeholder="Feature title">
+                <textarea name="feature${index}Description" rows="2" placeholder="Feature description">${feature.description || ''}</textarea>
+            </div>
+            <button type="button" class="btn btn-danger btn-sm repeater-remove" onclick="removeFeature(${index})">×</button>
+        `;
+        featuresList.appendChild(item);
+    });
+    
+    // Update feature index
+    window.featureIndex = features.length;
+}
+
+// Populate services repeater
+function populateServicesRepeater(services) {
+    const servicesList = document.getElementById('servicesList');
+    if (!servicesList || !services || services.length === 0) return;
+    
+    servicesList.innerHTML = '';
+    services.forEach((service, index) => {
+        const item = document.createElement('div');
+        item.className = 'repeater-item service-item';
+        item.dataset.index = index;
+        item.innerHTML = `
+            <div class="repeater-content">
+                <input type="text" name="service${index}Title" value="${service.title || ''}" placeholder="Service title">
+                <textarea name="service${index}Description" rows="2" placeholder="Service description">${service.description || ''}</textarea>
+            </div>
+            <button type="button" class="btn btn-danger btn-sm repeater-remove" onclick="removeService(${index})">×</button>
+        `;
+        servicesList.appendChild(item);
+    });
+    
+    // Update service index
+    window.serviceIndex = services.length;
+}
+
+// Populate testimonials repeater
+function populateTestimonialsRepeater(testimonials) {
+    const testimonialsList = document.getElementById('testimonialsList');
+    if (!testimonialsList || !testimonials || testimonials.length === 0) return;
+    
+    testimonialsList.innerHTML = '';
+    testimonials.forEach((testimonial, index) => {
+        const item = document.createElement('div');
+        item.className = 'repeater-item testimonial-item';
+        item.dataset.index = index;
+        item.innerHTML = `
+            <div class="repeater-content">
+                <input type="text" name="testimonial${index}Name" value="${testimonial.name || ''}" placeholder="Customer name">
+                <input type="text" name="testimonial${index}Rating" value="${testimonial.rating || ''}" placeholder="Rating (1-5)">
+                <textarea name="testimonial${index}Review" rows="2" placeholder="Review text">${testimonial.review || ''}</textarea>
+            </div>
+            <button type="button" class="btn btn-danger btn-sm repeater-remove" onclick="removeTestimonial(${index})">×</button>
+        `;
+        testimonialsList.appendChild(item);
+    });
+    
+    // Update testimonial index
+    window.testimonialIndex = testimonials.length;
+}
+
+// Populate FAQ repeater
+function populateFaqRepeater(faq) {
+    console.log('populateFaqRepeater called with:', faq); // Debug log
+    const faqList = document.getElementById('faqList');
+    console.log('FAQ List element:', faqList); // Debug log
+    
+    if (!faqList || !faq || faq.length === 0) {
+        console.log('FAQ population skipped - missing data or empty'); // Debug log
+        return;
+    }
+    
+    console.log('Populating', faq.length, 'FAQ items'); // Debug log
+    faqList.innerHTML = '';
+    faq.forEach((faqItem, index) => {
+        console.log('FAQ Item', index, ':', faqItem); // Debug log
+        const item = document.createElement('div');
+        item.className = 'repeater-item faq-item';
+        item.dataset.index = index;
+        item.innerHTML = `
+            <div class="repeater-content">
+                <input type="text" name="faq${index}Question" value="${faqItem.question || ''}" placeholder="Question">
+                <textarea name="faq${index}Answer" rows="2" placeholder="Answer">${faqItem.answer || ''}</textarea>
+            </div>
+            <button type="button" class="btn btn-danger btn-sm repeater-remove" onclick="removeFaq(${index})">×</button>
+        `;
+        faqList.appendChild(item);
+    });
+    
+    // Update FAQ index
+    window.faqIndex = faq.length;
+    console.log('FAQ population completed'); // Debug log
+}
+
+// Color Swatch Card Functions
+function initializeColorSwatches() {
+    const swatchCards = document.querySelectorAll('.color-swatch-card');
+    
+    swatchCards.forEach(card => {
+        const colorName = card.dataset.color;
+        const hiddenInput = document.getElementById(colorName);
+        const colorPicker = document.getElementById(colorName + 'Picker');
+        const preview = card.querySelector('.swatch-preview');
+        const colorValue = card.querySelector('.color-value');
+        
+        // Click on swatch card to open color picker (but not on copy button)
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('.copy-icon-btn') && !e.target.closest('.color-value')) {
+                if (colorPicker) {
+                    colorPicker.click();
+                }
+            }
+        });
+        
+        // Color picker change handler
+        if (colorPicker) {
+            colorPicker.addEventListener('input', (e) => {
+                const newColor = e.target.value;
+                updateSwatchColor(card, newColor);
+                
+                // Update hidden input
+                if (hiddenInput) {
+                    hiddenInput.value = newColor;
+                }
+                
+                // Update color value display
+                if (colorValue) {
+                    colorValue.textContent = newColor;
+                }
+            });
+        }
+        
+        // Copy color value on click (keep existing functionality)
+        if (colorValue) {
+            colorValue.addEventListener('click', (e) => {
+                e.stopPropagation();
+                copySwatchColor(colorName);
+            });
+        }
+    });
+}
+
+function updateSwatchColor(card, color) {
+    const preview = card.querySelector('.swatch-preview');
+    if (preview) {
+        preview.style.backgroundColor = color;
+    }
+}
+
+function copySwatchColor(colorName) {
+    const hiddenInput = document.getElementById(colorName);
+    const copyBtn = document.querySelector(`[onclick="copySwatchColor('${colorName}')"]`);
+    
+    if (hiddenInput) {
+        const colorValue = hiddenInput.value;
+        
+        navigator.clipboard.writeText(colorValue).then(() => {
+            // Visual feedback for copy button
+            if (copyBtn) {
+                copyBtn.classList.add('copied');
+                const originalHTML = copyBtn.innerHTML;
+                copyBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                `;
+                
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.innerHTML = originalHTML;
+                }, 2000);
+            }
+            
+            // Also update color value display if clicked
+            const colorValueDisplay = document.querySelector(`.color-swatch-card[data-color="${colorName}"] .color-value`);
+            if (colorValueDisplay && !copyBtn) {
+                const originalText = colorValueDisplay.textContent;
+                const originalBg = colorValueDisplay.style.background;
+                const originalColor = colorValueDisplay.style.color;
+                
+                colorValueDisplay.textContent = 'Copied!';
+                colorValueDisplay.style.background = 'var(--success)';
+                colorValueDisplay.style.color = 'white';
+                
+                setTimeout(() => {
+                    colorValueDisplay.textContent = originalText;
+                    colorValueDisplay.style.background = originalBg;
+                    colorValueDisplay.style.color = originalColor;
+                }, 1500);
+            }
+        }).catch(err => {
+            console.error('Failed to copy color: ', err);
+        });
+    }
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).catch(err => {
+        console.error('Failed to copy text: ', err);
+    });
+}
+
+// File Upload Functions
+function initializeFileUpload() {
+    const fileUploadAreas = document.querySelectorAll('.file-upload-area');
+    
+    fileUploadAreas.forEach(area => {
+        const fieldName = area.dataset.field;
+        const input = area.querySelector('input[type="file"]');
+        
+        if (!input) return;
+        if (input.dataset.fileUploadBound === 'true') return;
+        input.dataset.fileUploadBound = 'true';
+        
+        // Click to upload
+        area.addEventListener('click', (e) => {
+            if (e.target.type !== 'file') {
+                input.click();
+            }
+        });
+        
+        // File change handler
+        input.addEventListener('change', (e) => {
+            handleFileSelect(e.target, fieldName);
+        });
+        
+        // Drag and drop
+        area.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            area.classList.add('dragover');
+        });
+        
+        area.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            area.classList.remove('dragover');
+        });
+        
+        area.addEventListener('drop', (e) => {
+            e.preventDefault();
+            area.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                input.files = files;
+                handleFileSelect(input, fieldName);
+            }
+        });
+        
+        // Load existing images if available
+        loadExistingImage(fieldName);
+    });
+}
+
+function handleFileSelect(input, fieldName) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    // Validate file size (16MB max)
+    const maxSize = 16 * 1024 * 1024;
+    if (file.size > maxSize) {
+        showAlert('File size must be less than 16MB', 'error');
+        return;
+    }
+    
+    const previewId = fieldName.replace('File', 'Preview');
+    const previewContainer = document.getElementById(previewId);
+    const uploadArea = document.querySelector(`[data-field="${fieldName}"]`);
+    const uploadContent = uploadArea?.querySelector('.file-upload-content');
+    const hiddenInput = document.getElementById(fieldName.replace('File', ''));
+    
+    if (previewContainer && uploadContent) {
+        // Handle different file types
+        if (fieldName === 'inventoryFile') {
+            // Handle JSON inventory file
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    // Validate JSON
+                    const jsonData = JSON.parse(e.target.result);
+                    
+                    // Update hidden input with JSON data
+                    if (hiddenInput) {
+                        hiddenInput.setAttribute('data-file-changed', 'true');
+                        hiddenInput.value = e.target.result;
+                    }
+                    
+                    // Show preview with file name
+                    const fileNameElement = document.getElementById('inventoryFileName');
+                    if (fileNameElement) {
+                        fileNameElement.textContent = file.name;
+                    }
+                    
+                    uploadContent.style.display = 'none';
+                    previewContainer.style.display = 'flex';
+                    
+                    showAlert('Inventory file loaded successfully', 'success');
+                } catch (error) {
+                    showAlert('Invalid JSON file. Please upload a valid inventory JSON file.', 'error');
+                    console.error('JSON parsing error:', error);
+                }
+            };
+            
+            reader.readAsText(file);
+        } else {
+            // Handle image files
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const previewImage = previewContainer.querySelector('.preview-image');
+                if (previewImage) {
+                    previewImage.src = e.target.result;
+                }
+                
+                // Store both the file data and the eventual path
+                if (hiddenInput) {
+                    // Store the actual file data for persistence
+                    hiddenInput.setAttribute('data-file-changed', 'true');
+                    
+                    // Store the eventual path for display purposes
+                    const ext = (file.name.split('.').pop() || 'png').toLowerCase();
+                    const baseSlug = `{{ brand_data.slug or 'brand' }}`;
+                    const kind = fieldName.replace('File', '');
+                    const filename = kind === 'heroImage' ? `${baseSlug}-hero.${ext}` : `${baseSlug}-${kind}.${ext}`;
+                    hiddenInput.value = `/images/${filename}`;
+                }
+                
+                uploadContent.style.display = 'none';
+                previewContainer.style.display = 'flex';
+                
+                showAlert(`${file.name} uploaded successfully`, 'success');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    }
+}
+
+function clearFile(fieldName) {
+    const input = document.getElementById(fieldName);
+    const previewId = fieldName.replace('File', 'Preview');
+    const previewContainer = document.getElementById(previewId);
+    const uploadArea = document.querySelector(`[data-field="${fieldName}"]`);
+    const uploadContent = uploadArea?.querySelector('.file-upload-content');
+    const hiddenInput = document.getElementById(fieldName.replace('File', ''));
+    
+    if (input) input.value = '';
+    if (previewContainer) {
+        previewContainer.style.display = 'none';
+        const previewImage = previewContainer.querySelector('.preview-image');
+        if (previewImage) previewImage.src = '';
+    }
+    if (uploadContent) uploadContent.style.display = 'flex';
+    if (hiddenInput) hiddenInput.value = '';
+}
+
+function loadExistingImage(fieldName) {
+    const hiddenInput = document.getElementById(fieldName.replace('File', ''));
+    const previewId = fieldName.replace('File', 'Preview');
+    const previewContainer = document.getElementById(previewId);
+    const uploadArea = document.querySelector(`[data-field="${fieldName}"]`);
+    const uploadContent = uploadArea?.querySelector('.file-upload-content');
+    const brandUpdatedAt = "{{ brand_data._updated_at if brand_data else '' }}";
+    const cacheToken = (brandUpdatedAt || Date.now().toString()).replace(/[^0-9T:\.\-Z]/g, '');
+    const appendCacheBust = (url) => {
+        if (!url) return url;
+        if (/^data:/i.test(url)) return url;
+        const [base, hash] = url.split('#');
+        const joiner = base.includes('?') ? '&' : '?';
+        const next = `${base}${joiner}t=${encodeURIComponent(cacheToken)}`;
+        return hash ? `${next}#${hash}` : next;
+    };
+    
+    if (hiddenInput && hiddenInput.value && previewContainer && uploadContent) {
+        if (fieldName === 'inventoryFile') {
+            // Handle existing inventory file
+            const fileNameElement = document.getElementById('inventoryFileName');
+            if (fileNameElement) {
+                // Try to extract filename from the stored data or use default
+                let fileName = 'inventory.json';
+                try {
+                    const data = JSON.parse(hiddenInput.value);
+                    if (data && typeof data === 'object') {
+                        fileName = 'inventory.json (loaded)';
+                    }
+                } catch (e) {
+                    // If it's not JSON, treat as filename
+                    fileName = hiddenInput.value.split('/').pop() || 'inventory.json';
+                }
+                fileNameElement.textContent = fileName;
+            }
+            
+            uploadContent.style.display = 'none';
+            previewContainer.style.display = 'flex';
+        } else {
+            // Handle existing images
+            const previewImage = previewContainer.querySelector('.preview-image');
+            if (previewImage) {
+                const isAbsolute = /^https?:\/\//i.test(hiddenInput.value);
+                const base = window.location.origin;
+                const rawSrc = isAbsolute ? hiddenInput.value : `${base}${hiddenInput.value}`;
+                previewImage.src = appendCacheBust(rawSrc);
+                uploadContent.style.display = 'none';
+                previewContainer.style.display = 'flex';
+            }
+        }
+    }
+}
+
+// Helper function to show alerts
+function showAlert(message, type = 'info') {
+    const alertContainer = document.getElementById('alertContainer');
+    if (!alertContainer) return;
+    
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type}`;
+    alert.innerHTML = `
+        <div class="alert-content">
+            <span class="alert-message">${message}</span>
+            <button class="alert-close" onclick="this.parentElement.parentElement.remove()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    `;
+    
+    alertContainer.appendChild(alert);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (alert.parentElement) {
+            alert.remove();
+        }
+    }, 5000);
+}
+
+// Repeater management functions
+let featureIndex = document.querySelectorAll('.feature-item').length;
+let serviceIndex = document.querySelectorAll('.service-item').length;
+let testimonialIndex = document.querySelectorAll('.testimonial-item').length;
+let faqIndex = document.querySelectorAll('.faq-item').length;
+
+function addFeature() {
+    const container = document.getElementById('featuresList');
+    const item = document.createElement('div');
+    item.className = 'repeater-item feature-item';
+    item.dataset.index = featureIndex;
+    item.innerHTML = `
+        <div class="repeater-content">
+            <input type="text" name="feature${featureIndex}Title" placeholder="Feature title">
+            <textarea name="feature${featureIndex}Description" rows="2" placeholder="Feature description"></textarea>
+        </div>
+        <button type="button" class="btn btn-danger btn-sm repeater-remove" onclick="removeFeature(${featureIndex})">×</button>
+    `;
+    container.appendChild(item);
+    featureIndex++;
+}
+
+function removeFeature(index) {
+    const item = document.querySelector(`.feature-item[data-index="${index}"]`);
+    if (item) item.remove();
+}
+
+function addService() {
+    const container = document.getElementById('servicesList');
+    const item = document.createElement('div');
+    item.className = 'repeater-item service-item';
+    item.dataset.index = serviceIndex;
+    item.innerHTML = `
+        <div class="repeater-content">
+            <input type="text" name="service${serviceIndex}Title" placeholder="Service title">
+            <textarea name="service${serviceIndex}Description" rows="2" placeholder="Service description"></textarea>
+        </div>
+        <button type="button" class="btn btn-danger btn-sm repeater-remove" onclick="removeService(${serviceIndex})">×</button>
+    `;
+    container.appendChild(item);
+    serviceIndex++;
+}
+
+function removeService(index) {
+    const item = document.querySelector(`.service-item[data-index="${index}"]`);
+    if (item) item.remove();
+}
+
+function addTestimonial() {
+    const container = document.getElementById('testimonialsList');
+    const item = document.createElement('div');
+    item.className = 'repeater-item testimonial-item';
+    item.dataset.index = testimonialIndex;
+    item.innerHTML = `
+        <div class="repeater-content">
+            <input type="text" name="testimonial${testimonialIndex}Name" placeholder="Customer name">
+            <input type="text" name="testimonial${testimonialIndex}Rating" placeholder="Rating (1-5)">
+            <textarea name="testimonial${testimonialIndex}Review" rows="2" placeholder="Review text"></textarea>
+        </div>
+        <button type="button" class="btn btn-danger btn-sm repeater-remove" onclick="removeTestimonial(${testimonialIndex})">×</button>
+    `;
+    container.appendChild(item);
+    testimonialIndex++;
+}
+
+function removeTestimonial(index) {
+    const item = document.querySelector(`.testimonial-item[data-index="${index}"]`);
+    if (item) item.remove();
+}
+
+function addFaq() {
+    const container = document.getElementById('faqList');
+    const item = document.createElement('div');
+    item.className = 'repeater-item faq-item';
+    item.dataset.index = faqIndex;
+    item.innerHTML = `
+        <div class="repeater-content">
+            <input type="text" name="faq${faqIndex}Question" placeholder="Question">
+            <textarea name="faq${faqIndex}Answer" rows="2" placeholder="Answer"></textarea>
+        </div>
+        <button type="button" class="btn btn-danger btn-sm repeater-remove" onclick="removeFaq(${faqIndex})">×</button>
+    `;
+    container.appendChild(item);
+    faqIndex++;
+}
+
+function removeFaq(index) {
+    const item = document.querySelector(`.faq-item[data-index="${index}"]`);
+    if (item) item.remove();
+}
+
+function collectRepeaterData(type) {
+    const items = [];
+    const elements = document.querySelectorAll(`.${type}-item`);
+    
+    elements.forEach(element => {
+        const index = element.dataset.index;
+        const item = {};
+        
+        if (type === 'feature' || type === 'service') {
+            item.title = document.querySelector(`input[name="${type}${index}Title"]`)?.value || '';
+            item.description = document.querySelector(`textarea[name="${type}${index}Description"]`)?.value || '';
+        } else if (type === 'testimonial') {
+            item.name = document.querySelector(`input[name="testimonial${index}Name"]`)?.value || '';
+            item.rating = document.querySelector(`input[name="testimonial${index}Rating"]`)?.value || '';
+            item.review = document.querySelector(`textarea[name="testimonial${index}Review"]`)?.value || '';
+        } else if (type === 'faq') {
+            item.question = document.querySelector(`input[name="faq${index}Question"]`)?.value || '';
+            item.answer = document.querySelector(`textarea[name="faq${index}Answer"]`)?.value || '';
+        }
+        
+        items.push(item);
+    });
+    
+    return items;
+}
+
+// Restore update form data from localStorage
+function restoreUpdateFormData() {
+    try {
+        const storageKey = 'updateBrandFormData';
+        const stored = localStorage.getItem(storageKey);
+        if (!stored) return;
+
+        const data = JSON.parse(stored);
+        
+        // Check if data is recent (within 2 hours for update mode)
+        const maxAge = 2 * 60 * 60 * 1000; // 2 hours
+        if (Date.now() - data.timestamp > maxAge) {
+            localStorage.removeItem(storageKey);
+            return;
+        }
+
+        // Restore form fields
+        Object.keys(data.formData).forEach(key => {
+            const input = document.getElementById(key);
+            if (input && input.type !== 'file') {
+                if (input.type === 'checkbox' || input.type === 'radio') {
+                    input.checked = isTruthyFlag(data.formData[key]);
+                } else {
+                    input.value = data.formData[key];
+                }
+            }
+        });
+
+        // Restore repeaters
+        if (data.repeaters) {
+            Object.keys(data.repeaters).forEach(type => {
+                const items = data.repeaters[type];
+                if (Array.isArray(items)) {
+                    // Clear existing items
+                    const container = document.querySelector(`[data-repeater="${type}"]`);
+                    if (container) {
+                        container.innerHTML = '';
+                        // Add items back
+                        items.forEach(item => {
+                            if (type === 'feature') addFeature(item);
+                            else if (type === 'service') addService(item);
+                            else if (type === 'testimonial') addTestimonial(item);
+                            else if (type === 'faq') addFaq(item);
+                        });
+                    }
+                }
+            });
+        }
+
+        // Restore media file previews from localStorage
+        loadExistingImage('logoFile');
+        loadExistingImage('faviconFile');
+        loadExistingImage('heroImageFile');
+
+        console.log('Update form data restored from localStorage');
+    } catch (error) {
+        console.warn('Failed to restore update form data:', error);
+    }
+}
+
+// Save update form data to localStorage
+function saveUpdateFormData() {
+    try {
+        const form = document.getElementById('updateBrandForm');
+        if (!form) return;
+
+        const formData = {};
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            if (input.type !== 'file') {
+                if (input.type === 'checkbox' || input.type === 'radio') {
+                    formData[input.id] = input.checked;
+                } else {
+                    formData[input.id] = input.value;
+                }
+            }
+        });
+
+        const repeaters = {
+            features: collectRepeaterData('feature'),
+            services: collectRepeaterData('service'),
+            testimonials: collectRepeaterData('testimonial'),
+            faq: collectRepeaterData('faq')
+        };
+
+        const data = {
+            formData,
+            repeaters,
+            timestamp: Date.now()
+        };
+
+        localStorage.setItem('updateBrandFormData', JSON.stringify(data));
+    } catch (error) {
+        console.warn('Failed to save update form data:', error);
+    }
+}
+
+</script>
+{% endblock %}

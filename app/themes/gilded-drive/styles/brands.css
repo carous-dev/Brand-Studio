@@ -1,0 +1,202 @@
+@import url('base.css');
+
+/* Brands styles for futuristic 'Search by' block */
+/* Base shared styles for brand list and items (specific variants override sizing/padding as needed) */
+.brand-list {
+	display: flex;
+	gap: 12px;
+	scroll-behavior: smooth;
+}
+.brand-strip {
+	display: flex;
+	gap: 14px;
+	align-items: center;
+	justify-content: center;
+	padding: 18px 0;
+}
+.brand-item {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #fff;
+	border: 0;
+	color: var(--muted);
+	cursor: pointer;
+	border-radius: 18px;
+	font-family: var(--font-ui);
+}
+.brand-item:hover {
+	transform: translateY(-6px);
+	box-shadow: 0 20px 40px rgba(2,6,12,0.35);
+}
+.brand-item:focus {
+	outline: none;
+	box-shadow: 0 0 0 4px rgba(184,134,45,0.08);
+}
+.brand-nav {
+	background: transparent;
+	border: none;
+	color: var(--muted);
+	font-size: 18px;
+	cursor: pointer;
+	padding: 8px;
+}
+
+.futuristic-brands .brands-panel {
+	background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(6,6,6,0.16));
+	border-radius: 12px;
+	padding: 18px;
+	backdrop-filter: blur(6px) saturate(1.05);
+	border: 1px solid rgba(255,255,255,0.03);
+	position: relative;
+	overflow: visible;
+}
+.futuristic-brands .brands-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 18px;
+	margin-bottom: 18px;
+}
+.futuristic-brands .search-by-left { flex: 1 }
+.futuristic-brands .search-by-controls { flex: 0 0 auto }
+
+/* If using the compact "search-by" header (hero), stack the pill toggle above the brands */
+.futuristic-brands .brands-header.search-by { flex-direction: column; align-items: flex-start; gap: 10px }
+.futuristic-brands .brands-header.search-by .pill-toggle { order: 0 }
+.futuristic-brands .brands-header.search-by .hero-brands { order: 1; width: 100% }
+.futuristic-brands .section-title.large { font-size: 56px; line-height: 1; letter-spacing: 0.02em; margin: 0; color: #fff; font-family: var(--font-display); font-weight: 400 }
+.futuristic-brands .pill-toggle { background: transparent; border-radius: 40px; padding: 6px; border: 1px solid rgba(255,255,255,0.06); display:flex; gap:6px; align-items:center }
+.futuristic-brands .pill-toggle .pill { background: transparent; border: none; padding: 10px 22px; border-radius: 28px; color: rgba(255,255,255,0.85); cursor: pointer; font-weight: 600 }
+.futuristic-brands .pill-toggle .pill.active { background: linear-gradient(90deg,#b8862d,#a86f2a); color: #fff; box-shadow: 0 6px 18px rgba(184,134,45,0.12); border:1px solid rgba(0,0,0,0.06) }
+.futuristic-brands .brands-row { display:flex; align-items:center; gap:12px }
+
+/* futuristic variant: larger gap, padded, and fixed-size items */
+.futuristic-brands .brand-list {
+	gap: 20px;
+	overflow-x: auto;
+	padding: 12px 8px;
+	align-items: center;
+	-ms-overflow-style: none; /* IE 10+ */
+	scrollbar-width: none; /* Firefox */
+}
+.futuristic-brands .brand-list::-webkit-scrollbar { display:none; height:0; width:0 }
+.futuristic-brands .brand-item {
+	--size: 110px;
+	flex: 0 0 auto;
+	width: var(--size);
+	height: var(--size);
+	position: relative;
+	box-shadow: 0 8px 28px rgba(2,6,12,0.32);
+	transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s ease;
+}
+.futuristic-brands .brand-logo-img { width: 56px; height:56px; object-fit:contain; display:block }
+.futuristic-brands .brand-item .brand-name { display:none }
+.futuristic-brands .brand-item img { filter:none; opacity:1; max-width:72%; max-height:72% }
+.futuristic-brands .brand-nav { display:flex; align-items:center; justify-content:center; padding:8px }
+
+/* Right-side decorative accent panel */
+@media (max-width:900px){ .futuristic-brands .section-title.large { font-size:40px } }
+@media (max-width:700px){ .futuristic-brands .brand-item { --size: 80px } .futuristic-brands .brands-header{ flex-direction: column; align-items:center; text-align:center; gap:12px } .futuristic-brands .brands-panel:after{ display:none } }
+/* Reduce brands panel padding on small screens to improve space */
+@media (max-width:700px){
+	.futuristic-brands .brands-panel{ padding:6px }
+}
+
+/* Compact hero brand strip overrides */
+.hero-brands { display:grid; align-items:center; gap:8px; margin-top:6px; width:100% }
+.hero-brands {
+	/* let the brand-scroll wrapper handle horizontal scrolling - keep hero container visible */
+	overflow-x: visible;
+}
+
+.hero-brands .brand-list {
+	gap: 12px;
+	/* size to content and let .brand-scroll provide scrolling */
+	flex: 0 0 auto;
+	width: max-content;
+	overflow: visible;
+	scroll-behavior: smooth;
+	scroll-snap-type: x proximity;
+	--hero-brand-size: 72px;
+	min-height: calc(var(--hero-brand-size) + 20px);
+	box-sizing: border-box;
+	white-space: nowrap;
+}
+.hero-brands .brand-list::-webkit-scrollbar{ display:none; height:0; width:0 }
+.hero-brands .brand-item { flex: 0 0 auto; width:72px; height:72px; padding:10px; box-shadow:0 8px 20px rgba(2,6,12,0.32); border-radius:12px }
+.hero-brands .brand-logo-img { width:44px; height:44px; max-width:100%; height:auto }
+.hero-brands .brand-nav { padding:6px }
+.hero-brands .brand-item.placeholder { visibility:hidden; pointer-events:none }
+
+/* Hide nav controls on small screens (mobile) */
+@media (max-width:600px){ .hero-brands .brand-nav{ display:none !important } }
+
+/* Debug outlines: enable by running in console:
+	 document.body.classList.add('debug-brands')
+	 and remove with:
+	 document.body.classList.remove('debug-brands')
+ */
+.debug-brands .hero { outline: 2px solid rgba(255,0,0,0.9); }
+.debug-brands .hero-left { outline: 2px dashed rgba(255,165,0,0.9); }
+.debug-brands .hero-brands { outline: 2px solid rgba(0,123,255,0.9); }
+.debug-brands .hero-brands .brand-list { outline: 2px dotted rgba(0,200,120,0.9); }
+.debug-brands .hero-brands .brand-item { outline: 1px solid rgba(255,255,0,0.6); }
+
+/* Brand scroll container constraints and debug scrollbar helper
+	 - Keeps the scroll wrapper within the hero width
+	 - Default: allow auto overflow (scrollbar appears when needed)
+	 - Add `.debug-scrollbar` to `.brand-scroll` to force a visible, styled scrollbar for debugging
+*/
+.brand-scroll{
+	max-width:100%;
+	box-sizing:border-box;
+	overflow-x:auto; /* allow scrolling when content wider than container */
+	-webkit-overflow-scrolling:touch;
+	touch-action: pan-x; /* allow horizontal touch panning */
+}
+
+/* Force-visible, styled scrollbar for debugging */
+.brand-scroll.debug-scrollbar{
+	overflow-x: scroll !important;
+	scrollbar-width: thin; /* Firefox */
+	scrollbar-color: rgba(200,200,200,0.8) transparent;
+}
+.brand-scroll.debug-scrollbar::-webkit-scrollbar{ height:12px }
+.brand-scroll.debug-scrollbar::-webkit-scrollbar-track{ background: transparent }
+.brand-scroll.debug-scrollbar::-webkit-scrollbar-thumb{ background: rgba(200,200,200,0.9); border-radius:8px }
+
+/* On larger screens show multiple brands per 'slide' using flex-wrap so 8 items fit on each row */
+@media (min-width:901px){
+	.hero-brands{ display:flex; align-items:center; gap:12px }
+	.hero-brands .brand-list{
+		display:flex;
+		flex-wrap:wrap;
+		gap:12px;
+		width:100%;
+		overflow:visible;
+		scroll-snap-type: none;
+		white-space:normal;
+		min-height: auto;
+		box-sizing: border-box;
+		justify-content:flex-start;
+	}
+
+	/* 8 items per row: subtract total gaps (7 * 12px = 84px) then divide remaining space by 8 */
+	.hero-brands .brand-item{
+		flex: 0 0 calc((100% - 84px) / 8);
+		width: calc((100% - 84px) / 8);
+		height: auto;
+		aspect-ratio: 1/1;
+		padding:12px;
+		border-radius:12px;
+		box-shadow: 0 8px 20px rgba(2,6,12,0.32);
+	}
+
+	.hero-brands .brand-logo-img{ width:54%; height:auto; max-width:100% }
+	.hero-brands .brand-nav{ display:flex }
+}
+
+
+
+

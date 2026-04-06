@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Carous Limited - Dealership Brand Management{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='brand-form.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Modern Dashboard Header - Full Width -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="header-brand">
+                        <img src="/static/images/carous-logo.png" alt="Carous Limited Logo" class="header-logo">
+                        <div class="header-brand-text">
+                            <h1>Carous Limited</h1>
+                            <p class="brand-tagline">Dealership Brand Management</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- User Profile Section -->
+                <div class="header-right">
+                    <div class="user-profile" onclick="toggleUserDropdown(event)">
+                        <div class="user-initials">
+                            {{ (current_user.name or current_user.username)[0].upper() }}
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name">{{ current_user.name or current_user.username }}</span>
+                            <span class="user-role">{{ current_user.role.title() if current_user.role else 'User' }}</span>
+                        </div>
+                        <div class="dropdown-arrow">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="user-dropdown-menu" id="userDropdown">
+                            <a href="{{ url_for('dashboard') }}" class="dropdown-item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="14" width="7" height="7"></rect>
+                                    <rect x="3" y="14" width="7" height="7"></rect>
+                                </svg>
+                                Dashboard
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <form action="{{ url_for('auth.logout') }}" method="post" style="display: inline;" onclick="event.stopPropagation()">
+                                <button type="submit" class="dropdown-item logout-item">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                        <polyline points="16 17 21 12 16 7"/>
+                                        <line x1="21" y1="12" x2="9" y2="12"/>
+                                    </svg>
+                                    Sign Out
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout Container -->
+        <div class="layout-container">
+            <!-- Modern Sidebar - Below Header -->
+            <aside class="sidebar" id="sidebar">
+                <nav class="sidebar-nav" aria-label="Main navigation">
+                    <a href="{{ url_for('dashboard') }}" class="nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}" data-tooltip="Dashboard" aria-label="Dashboard" title="Dashboard">
+                        <div class="nav-icon" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                        </div>
+                        <span class="nav-label">Dashboard</span>
+                    </a>
+
+                    <a href="{{ url_for('create') }}" class="nav-item {% if request.endpoint == 'create' %}active{% endif %}" data-tooltip="Create Preview" aria-label="Create Preview" title="Create Preview">
+                        <div class="nav-icon" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            </svg>
+                        </div>
+                        <span class="nav-label">Create Preview</span>
+                    </a>
+
+                    <a href="{{ url_for('templates') }}" class="nav-item {% if request.endpoint == 'templates' %}active{% endif %}" data-tooltip="Templates" aria-label="Templates" title="Templates">
+                        <div class="nav-icon" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <span class="nav-label">Templates</span>
+                    </a>
+
+                    <a href="{{ url_for('theme_documentation') }}" class="nav-item {% if request.endpoint == 'theme_documentation' %}active{% endif %}" data-tooltip="Theme Docs" aria-label="Theme Documentation" title="Theme Documentation">
+                        <div class="nav-icon" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <path d="M9 13h6"></path>
+                                <path d="M9 17h4"></path>
+                            </svg>
+                        </div>
+                        <span class="nav-label">Theme Docs</span>
+                    </a>
+
+                    <a href="{{ url_for('admin_users') }}" class="nav-item {% if request.endpoint == 'admin_users' %}active{% endif %}" data-tooltip="Users & Roles" aria-label="Users and Roles" title="Users and Roles">
+                        <div class="nav-icon" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                        </div>
+                        <span class="nav-label">Users & Roles</span>
+                    </a>
+
+                    <a href="{{ url_for('settings') }}" class="nav-item {% if request.endpoint == 'settings' %}active{% endif %}" data-tooltip="Settings" aria-label="Settings" title="Settings">
+                        <div class="nav-icon" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                            </svg>
+                        </div>
+                        <span class="nav-label">Settings</span>
+                    </a>
+
+                    <div class="nav-spacer"></div>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="main-wrapper">
+                <!-- Alert Container -->
+                <div id="alertContainer" class="alert-container"></div>
+                
+                <!-- Main Content -->
+                <div class="main-content">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DNS confirmation modal (used by create-brand flow) -->
+    <div id="dnsConfirmModal" class="dns-modal" hidden>
+        <div class="dns-modal-backdrop" data-dns-modal-action="cancel"></div>
+        <div class="dns-modal-content" role="dialog" aria-modal="true" aria-labelledby="dnsConfirmTitle">
+            <div class="dns-modal-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            </div>
+            <div class="dns-modal-header">
+                <h3 id="dnsConfirmTitle">DNS Configuration Required</h3>
+                <p class="dns-modal-subtitle">Before creating your brand, please confirm DNS setup</p>
+            </div>
+            <div class="dns-modal-body">
+                <p class="dns-modal-message">Before creating your brand, please verify that the DNS record for this domain is already configured:</p>
+                <div class="dns-modal-domain">
+                    <span id="dnsConfirmDomain"></span>
+                </div>
+                <label class="dns-modal-checkbox">
+                    <input type="checkbox" id="dnsConfirmCheckbox">
+                    <span class="checkmark"></span>
+                    <span class="label-text">I confirm the DNS record is active and working</span>
+                </label>
+            </div>
+            <div class="dns-modal-actions">
+                <button type="button" class="dns-modal-btn dns-modal-btn-cancel" data-dns-modal-action="cancel">Cancel</button>
+                <button type="button" class="dns-modal-btn dns-modal-btn-confirm" id="dnsConfirmProceed" disabled>Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="{{ url_for('static', filename='script-module.js') }}"></script>
+    <script>
+        // User Dropdown Toggle
+        function toggleUserDropdown(event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('show');
+                console.log('Dropdown toggled, classes:', dropdown.className);
+            } else {
+                console.log('Dropdown not found');
+            }
+        }
+
+        // Handle Logout Form Submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutForm = document.querySelector('form[action*="logout"]');
+            if (logoutForm) {
+                logoutForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    try {
+                        const response = await fetch(logoutForm.action, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success && data.redirect) {
+                            window.location.href = data.redirect;
+                        } else {
+                            // Fallback: redirect to login page
+                            window.location.href = '/auth/login';
+                        }
+                    } catch (error) {
+                        console.error('Logout error:', error);
+                        // Fallback: redirect to login page
+                        window.location.href = '/auth/login';
+                    }
+                });
+            }
+
+            // Check if current page is showing auth error JSON
+            checkPageForAuthError();
+        });
+
+        // Check if current page contains auth error
+        function checkPageForAuthError() {
+            // Check if page is displaying JSON auth error
+            const pageText = document.body.innerText.trim();
+            
+            // Try to parse as JSON to check for auth errors
+            try {
+                const jsonData = JSON.parse(pageText);
+                if (jsonData.code === 'AUTH_REQUIRED' || 
+                    jsonData.error === 'Authentication required' ||
+                    jsonData.redirect === '/auth/login') {
+                    window.location.href = jsonData.redirect || '/auth/login';
+                    return;
+                }
+            } catch (e) {
+                // Not JSON, continue with other checks
+            }
+            
+            // Check for auth error indicators in plain text
+            const authErrorPatterns = [
+                /"code":\s*"AUTH_REQUIRED"/,
+                /"error":\s*"Authentication required"/,
+                /"redirect":\s*"\/auth\/login"/,
+                /AUTH_REQUIRED/,
+                /Authentication required/
+            ];
+            
+            const hasAuthError = authErrorPatterns.some(pattern => 
+                pattern.test(pageText)
+            );
+            
+            if (hasAuthError) {
+                window.location.href = '/auth/login';
+            }
+        }
+
+        // Global fetch interceptor to handle auth errors
+        const originalFetch = window.fetch;
+        window.fetch = async function(...args) {
+            try {
+                const response = await originalFetch.apply(this, args);
+                
+                // Check if response is 401 or contains auth error
+                if (response.status === 401) {
+                    try {
+                        const data = await response.clone().json();
+                        if (data.redirect) {
+                            window.location.href = data.redirect;
+                        } else {
+                            window.location.href = '/auth/login';
+                        }
+                    } catch (e) {
+                        window.location.href = '/auth/login';
+                    }
+                }
+                
+                return response;
+            } catch (error) {
+                return originalFetch.apply(this, args);
+            }
+        };
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userDropdown');
+            const toggle = event.target.closest('.dropdown-toggle');
+            
+            if (!toggle && dropdown && dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Close dropdown on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const dropdown = document.getElementById('userDropdown');
+                if (dropdown && dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        });
+
+        (function () {
+            const modal = document.getElementById('dnsConfirmModal');
+            if (!modal) return;
+
+            const domainEl = document.getElementById('dnsConfirmDomain');
+            const checkbox = document.getElementById('dnsConfirmCheckbox');
+            const proceedBtn = document.getElementById('dnsConfirmProceed');
+            const focusableSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+            let resolver = null;
+            let previouslyFocused = null;
+
+            const close = (result) => {
+                if (!resolver) return;
+                modal.hidden = true;
+                document.body.style.overflow = '';
+                const resolve = resolver;
+                resolver = null;
+                if (previouslyFocused && typeof previouslyFocused.focus === 'function') {
+                    previouslyFocused.focus();
+                }
+                resolve(!!result);
+            };
+
+            const open = (domain) => {
+                previouslyFocused = document.activeElement;
+                if (domainEl) domainEl.textContent = domain || '';
+                if (checkbox) checkbox.checked = false;
+                if (proceedBtn) proceedBtn.disabled = true;
+
+                modal.hidden = false;
+                document.body.style.overflow = 'hidden';
+
+                // Focus first focusable element inside modal
+                const first = modal.querySelector(focusableSelector);
+                if (first) first.focus();
+            };
+
+            modal.addEventListener('click', (e) => {
+                const action = e.target && e.target.getAttribute && e.target.getAttribute('data-dns-modal-action');
+                if (action === 'cancel') close(false);
+            });
+
+            if (checkbox && proceedBtn) {
+                checkbox.addEventListener('change', () => {
+                    proceedBtn.disabled = !checkbox.checked;
+                });
+            }
+
+            if (proceedBtn) {
+                proceedBtn.addEventListener('click', () => close(true));
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (!resolver) return;
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    close(false);
+                    return;
+                }
+                if (e.key === 'Tab') {
+                    const focusables = modal.querySelectorAll(focusableSelector);
+                    if (!focusables || focusables.length === 0) return;
+                    const first = focusables[0];
+                    const last = focusables[focusables.length - 1];
+                    if (e.shiftKey && document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    } else if (!e.shiftKey && document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                }
+            });
+
+            window.confirmDnsConfigured = function confirmDnsConfigured(domain) {
+                return new Promise((resolve) => {
+                    resolver = resolve;
+                    open(domain);
+                });
+            };
+        })();
+    </script>
+    
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="full-page-loader" style="display: none;">
+        <div class="loader-backdrop"></div>
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <div class="loading-text">Processing...</div>
+        </div>
+    </div>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

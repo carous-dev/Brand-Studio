@@ -1,0 +1,682 @@
+:root {
+  /* =================================================
+     CORE BRAND COLORS – 5 Foundation Variables
+     These will be set dynamically by BrandStyles component
+     ================================================= */
+
+  /* ===============================
+     Core Brand Colors (from Dashboard)
+     These are placeholders - BrandStyles will set actual values
+     =============================== */
+  --brand-primary: #666666;           /* Will be overridden by BrandStyles */
+  --brand-secondary: #555555;         /* Will be overridden by BrandStyles */
+  --brand-accent: #444444;             /* Will be overridden by BrandStyles */
+  --brand-background: #ffffff;        /* Will be overridden by BrandStyles */
+  --brand-text: #1f2933;              /* Will be overridden by BrandStyles */
+
+  /* RGB versions - BrandStyles will set these */
+  --brand-primary-rgb: 102, 102, 102;
+  --brand-secondary-rgb: 85, 85, 85;
+  --brand-accent-rgb: 68, 68, 68;
+  --brand-background-rgb: 255, 255, 255;
+  --brand-text-rgb: 31, 41, 51;
+
+  /* ===============================
+     Font Families – Brand Standardized
+     =============================== */
+  --font-ui-family: var(--font-ui-family-override, 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif);
+  --font-brand-family: var(--font-brand-family-override, 'Lora', 'Georgia', serif);
+  --font-mono-family: var(--font-mono-family-override, 'JetBrains Mono', 'Consolas', monospace);
+  
+  /* Font shortcuts */
+  --font-ui: var(--font-ui-family);
+  --font-brand: var(--font-brand-family);
+  --font-mono: var(--font-mono-family);
+  
+  /* Legacy aliases used by older stylesheets */
+  --font-base: var(--font-ui-family);
+  --font-display: var(--font-brand-family);
+  --font-badge: var(--font-ui-family);
+
+  /* ===============================
+     Spacing System
+     =============================== */
+  --gap-xs: 4px;
+  --gap-sm: 8px;
+  --gap-md: 16px;
+  --gap-lg: 24px;
+  --gap-xl: 32px;
+
+  /* ===============================
+     Border Radius System
+     =============================== */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  /* ===============================
+     Transition System
+     =============================== */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+
+  /* ===============================
+     Shadow System
+     =============================== */
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.16);
+
+  /* ===============================
+     Background System
+     =============================== */
+  --bg-primary: var(--brand-background);
+  --bg-secondary: var(--brand-background);
+  --bg-tertiary: var(--brand-background);
+  --bg-elevated: var(--brand-background);
+  --bg-glass: rgba(var(--brand-background-rgb), 0.92);
+  --bg-accent: var(--brand-primary);
+
+  /* ===============================
+     Typography System
+     =============================== */
+  --text-primary: var(--brand-text);
+  --text-secondary: var(--brand-text);
+  --text-muted: var(--brand-text);
+  --text-inverse: var(--brand-background);
+  --text-accent: var(--brand-accent);
+
+  /* ===============================
+     Brand Accent System
+     =============================== */
+  --accent-primary: var(--brand-primary);
+  --accent-primary-rgb: var(--brand-primary-rgb);
+  --accent-secondary: var(--brand-secondary);
+  --accent-secondary-rgb: var(--brand-secondary-rgb);
+  --accent-accent: var(--brand-accent);
+  --accent-accent-rgb: var(--brand-accent-rgb);
+  --accent-hover: var(--brand-secondary);
+  --accent-active: var(--brand-accent);
+  --accent-soft: var(--brand-primary);
+  --accent-chrome: var(--brand-secondary);
+  --accent-ivory: var(--brand-background);
+  --accent-line: rgba(var(--brand-primary-rgb), 0.5);
+
+  /* ===============================
+     Status Colors (Derived from Brand)
+     =============================== */
+  --success: rgba(var(--brand-primary-rgb), 0.8);
+  --warning: rgba(var(--brand-accent-rgb), 0.9);
+  --danger: rgba(var(--brand-text-rgb), 0.8);
+  --info: rgba(var(--brand-secondary-rgb), 0.8);
+
+  /* ===============================
+     Border System
+     =============================== */
+  --border-primary: rgba(var(--brand-text-rgb), 0.05);
+  --border-secondary: rgba(var(--brand-text-rgb), 0.12);
+  --border-accent: var(--brand-primary);
+  --border-subtle: rgba(var(--brand-text-rgb), 0.05);
+  --border-default: rgba(var(--brand-text-rgb), 0.12);
+  --border-strong: rgba(var(--brand-text-rgb), 0.22);
+
+  /* ===============================
+     Form & Input System
+     =============================== */
+  --field-bg: var(--brand-background);
+  --field-bg-focus: var(--brand-background);
+  --field-border: rgba(var(--brand-text-rgb), 0.2);
+  --field-border-hover: var(--brand-secondary);
+  --field-border-focus: var(--brand-primary);
+  --field-text: var(--brand-text);
+  --field-placeholder: rgba(var(--brand-text-rgb), 0.6);
+
+  --field-height: 56px;
+  --field-radius: 14px;
+
+  /* ===============================
+     Button System
+     =============================== */
+  --btn-primary-bg: var(--brand-primary);
+  --btn-primary-text: var(--brand-background);
+  --btn-primary-hover: var(--brand-secondary);
+  --btn-primary-active: var(--brand-accent);
+
+  --btn-secondary-bg: transparent;
+  --btn-secondary-text: var(--brand-text);
+  --btn-secondary-border: rgba(var(--brand-text-rgb), 0.2);
+
+  --btn-accent-bg: var(--brand-accent);
+  --btn-accent-text: var(--brand-background);
+  --btn-accent-hover: var(--brand-primary);
+
+  --btn-ghost-text: var(--brand-text);
+  --btn-ghost-hover: rgba(var(--brand-primary-rgb), 0.08);
+
+  --btn-radius: 14px;
+  --btn-padding: 16px 36px;
+
+  /* ===============================
+     Layout System
+     =============================== */
+  --nav-height: 92px;
+  --container-max-width: 1440px;
+  --section-padding: clamp(64px, 6vw, 100px);
+  --component-padding: 40px;
+
+  --gap-xs: 8px;
+  --gap-sm: 14px;
+  --gap-md: 24px;
+  --gap-lg: 40px;
+  --gap-xl: 64px;
+
+  /* ===============================
+     Radius Scale
+     =============================== */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+
+  /* ===============================
+     Shadows & Depth
+     =============================== */
+  --shadow-color: var(--brand-text-rgb);
+
+  --shadow-soft:
+    0 6px 20px rgba(var(--shadow-color), 0.08);
+
+  --shadow-medium:
+    0 18px 42px rgba(var(--shadow-color), 0.12);
+
+  --shadow-strong:
+    0 30px 68px rgba(var(--shadow-color), 0.16);
+
+  --accent-glow:
+    0 0 32px rgba(var(--brand-primary-rgb), 0.25);
+
+  /* ===============================
+     Overlays
+     =============================== */
+  --overlay-dark: rgba(var(--brand-text-rgb), 0.45);
+  --overlay-gold: rgba(var(--brand-primary-rgb), 0.12);
+
+  /* ===============================
+     Motion
+     =============================== */
+  --transition-fast: 0.15s ease-out;
+  --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+/* Light Theme Class - Using Brand Variables Only */
+.light-theme {
+  --bg: var(--brand-background);
+  --panel: var(--brand-background);
+  --card: var(--brand-background);
+  --text: var(--brand-text);
+  --muted: rgba(var(--brand-text-rgb), 0.7);
+  --border: rgba(var(--brand-text-rgb), 0.1);
+  --field-bg: var(--brand-background);
+  --field-border: rgba(var(--brand-text-rgb), 0.2);
+  --field-text: var(--brand-text);
+  --field-placeholder: rgba(var(--brand-text-rgb), 0.6);
+  --skeleton-bg: rgba(var(--brand-text-rgb), 0.1);
+  --skeleton-highlight: rgba(var(--brand-text-rgb), 0.05);
+  --skeleton-shimmer: rgba(var(--brand-primary-rgb), 0.1);
+  --surface-light: var(--brand-background);
+}
+
+
+/* Fonts use CSS stacks (no build-time network fetch). */
+
+* {
+  box-sizing: border-box
+}
+
+html,
+body {
+  min-height: 100%;
+  /* Prevent temporary horizontal scrollbars caused by transform-based animations */
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-ui-family);
+  background: var(--brand-background);
+  color: var(--brand-text);
+  -webkit-font-smoothing: antialiased;
+  /* prevent accidental horizontal scroll from animated elements */
+  overscroll-behavior-x: contain;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-ui-family);
+}
+
+.site-header .nav-links a {
+  font-family: var(--font-ui-family);
+}
+
+/* Hero title uses brand font for automotive headlines */
+.hero-title {
+  font-family: var(--font-brand-family);
+  letter-spacing: 0.02em;
+  color: var(--brand-text);
+}
+
+/* Section titles use UI font but remain prominent */
+.section-title {
+  font-family: var(--font-ui-family);
+  font-weight: 700;
+  color: var(--brand-text);
+}
+
+/* Stats and numbers use mono font for technical feel */
+.stat-number, .price, .mileage {
+  font-family: var(--font-mono-family);
+  color: var(--brand-text);
+}
+
+/* Badges and small caption text */
+.badge, .service-card figcaption {
+  font-family: var(--font-ui-family);
+  color: var(--brand-text);
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* Ensure key full-width sections clip horizontal transforms to avoid page overflow */
+.hero,
+.featured,
+.services-futuristic,
+.hero-cta,
+.about {
+  overflow-x: hidden;
+}
+
+/* Carousel viewport should hide transform overflows from sliding tracks */
+.carousel-viewport {
+  overflow: hidden;
+}
+
+/* Custom thin, themed scrollbar (WebKit + Firefox) */
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--brand-primary-rgb), 0.5) rgba(var(--brand-background-rgb), 0.1);
+}
+
+/* WebKit browsers (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(var(--brand-text-rgb), 0.1);
+  border-radius: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(var(--brand-primary-rgb), 0.4);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--brand-primary-rgb), 0.6);
+}
+
+/* Light theme scrollbar */
+.light-theme * {
+  scrollbar-color: rgba(var(--brand-primary-rgb), 0.4) rgba(var(--brand-text-rgb), 0.1);
+}
+
+.light-theme *::-webkit-scrollbar-track {
+  background: rgba(var(--brand-text-rgb), 0.1);
+}
+
+.light-theme *::-webkit-scrollbar-thumb {
+  background: rgba(var(--brand-primary-rgb), 0.3);
+}
+
+.light-theme *::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--brand-primary-rgb), 0.5);
+}
+
+/* Make sure focused elements that scroll remain visible when keyboard navigating */
+*:focus {
+  scroll-margin: 12px;
+}
+
+/* Button styles are now centralized in base.css to avoid conflicts */
+
+/* Global select / dropdown styling: use brand colors */
+select {
+  background: var(--field-bg);
+  color: var(--field-text);
+  border: 1px solid var(--field-border);
+  padding: 8px 10px;
+  border-radius: var(--field-radius);
+  min-height: 38px;
+  transition: border-color 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Base option styling: theme-aware background */
+select option,
+select optgroup {
+  background: var(--field-bg) !important;
+  color: var(--field-text) !important;
+}
+
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--brand-primary-rgb), 0.2);
+  border-color: var(--field-border-focus);
+}
+
+/* Light theme form styles */
+.light-theme select {
+  background: var(--brand-background);
+  color: var(--brand-text);
+  border-color: rgba(var(--brand-text-rgb), 0.2);
+}
+
+.light-theme select option,
+.light-theme select optgroup {
+  background: var(--brand-background) !important;
+  color: var(--brand-text) !important;
+}
+
+.light-theme select:focus {
+  border-color: var(--brand-primary);
+}
+
+/* Keep native dropdown arrow on most platforms; provide a fallback for IE/Edge */
+select::-ms-expand {
+  color: var(--field-text);
+}
+
+/* Hover/active/checked/focus states for options — use !important to increase precedence.
+   Note: many browsers/OSes (notably macOS native controls and some mobile browsers)
+   will ignore option styling; where supported these rules will apply. */
+select option:hover,
+select option:active,
+select option:focus,
+select option:checked,
+select optgroup option:hover,
+select optgroup option:active,
+select optgroup option:focus,
+select optgroup option:checked {
+  background: var(--brand-primary) !important;
+  color: var(--brand-background) !important;
+}
+
+/* For webkit-based browsers that still apply system blue selection inside option lists, try forcing selection color */
+select option::selection,
+select optgroup option::selection {
+  background: var(--brand-primary) !important;
+  color: var(--brand-background) !important;
+}
+
+/* Global LQIP blur-up placeholder styles (used by JS) */
+img.lqip {
+  filter: blur(12px);
+  transform: scale(1.02);
+  transition: filter .6s ease, transform .6s ease
+}
+
+img.loaded {
+  filter: none;
+  transform: none;
+  transition: filter .45s ease, transform .45s ease
+}
+
+/* Reveal/entry animations for sections (scroll into view) */
+:root {
+  --reveal-ease: cubic-bezier(.2, .9, .2, 1)
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .62s var(--reveal-ease), transform .62s var(--reveal-ease);
+  will-change: opacity, transform;
+}
+
+.reveal.in-view {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal--slide-left {
+  transform: translateX(-18px);
+}
+
+.reveal--slide-left.in-view {
+  transform: none;
+}
+
+.reveal--slide-right {
+  transform: translateX(18px);
+}
+
+.reveal--slide-right.in-view {
+  transform: none;
+}
+
+.reveal--zoom {
+  transform: scale(.96);
+}
+
+.reveal--zoom.in-view {
+  transform: none;
+}
+
+.reveal--fade {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important
+  }
+}
+
+/* Debug panel for reveal observer (only shown when debug enabled via JS) */
+.reveal-debug-panel {
+  position: fixed;
+  right: 12px;
+  top: 12px;
+  width: 320px;
+  max-height: 60vh;
+  overflow: auto;
+  background: var(--brand-background);
+  color: var(--brand-text);
+  font-size: 13px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-secondary);
+  box-shadow: var(--shadow-medium);
+  padding: 8px;
+  z-index: 99999;
+}
+
+.reveal-debug-panel h4 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--brand-primary);
+}
+
+.reveal-debug-entry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.reveal-debug-entry button {
+  background: var(--brand-primary);
+  color: var(--brand-background);
+  border: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.reveal-debug-entry button:hover {
+  background: var(--brand-secondary);
+}
+
+.reveal-debug-entry .status {
+  margin-left: auto;
+  font-weight: 700;
+  font-size: 12px;
+  color: rgba(var(--brand-text-rgb), 0.7);
+}
+
+.reveal-debug-log {
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.9;
+  color: rgba(var(--brand-text-rgb), 0.7);
+}
+
+.reveal-debug-log p {
+  margin: 6px 0;
+}
+
+/* Remove native number input spin buttons (caret up/down) for a cleaner UI */
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Tablet responsive styles */
+@media (max-width: 1024px) {
+
+  /* Reduce font sizes for tablet */
+  h1 { font-size: clamp(28px, 4vw, 42px); }
+  h2 { font-size: clamp(24px, 3.5vw, 32px); }
+  h3 { font-size: clamp(20px, 3vw, 28px); }
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  /* Further reduce font sizes for mobile */
+  h1 { font-size: clamp(24px, 5vw, 32px); line-height: 1.2; }
+  h2 { font-size: clamp(20px, 4vw, 28px); line-height: 1.3; }
+  h3 { font-size: clamp(18px, 3.5vw, 24px); line-height: 1.4; }
+  
+  /* Improve touch targets for mobile */
+  button, .btn, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Reduce gaps for mobile */
+  .services-grid,
+  .testimonials-track,
+  .feature-grid {
+    gap: var(--gap-sm);
+  }
+}
+
+/* Small mobile responsive styles */
+@media (max-width: 480px) {
+  /* Even smaller padding for very small screens */
+  .container {
+    padding: 0 12px;
+  }
+  
+  section {
+    padding: 32px 0;
+  }
+  
+  /* Adjust text for very small screens */
+  h1 { font-size: clamp(20px, 6vw, 28px); }
+  h2 { font-size: clamp(18px, 5vw, 24px); }
+  h3 { font-size: clamp(16px, 4vw, 20px); }
+  
+  /* Ensure buttons don't overflow */
+  .btn, button {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+/* Large desktop optimizations */
+@media (min-width: 1400px) {
+  .container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+  }
+}
+
+/* Prevent horizontal scroll */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* Responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive tables */
+table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+  white-space: nowrap;
+}
+
+/* Responsive form elements */
+input, select, textarea {
+  width: 100%;
+  max-width: 100%;
+  font-size: 16px; /* Prevent zoom on iOS */
+}
+
+/* Focus states for better accessibility */
+:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Improved touch feedback */
+@media (hover: none) and (pointer: coarse) {
+  button, .btn, a {
+    -webkit-tap-highlight-color: rgba(var(--brand-primary-rgb), 0.1);
+  }
+}

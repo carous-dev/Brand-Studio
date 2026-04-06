@@ -1,0 +1,607 @@
+/* Modern glassmorphic topbar */
+:where(body[data-theme-id="gilded-drive"]) .topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  /* ensure header sits above hero decorations but below mobile panels */
+  pointer-events: auto;
+  --header-text: var(--brand-text, #ffffff);
+  --header-text-rgb: var(--brand-text-rgb, 255, 255, 255);
+  --header-primary: var(--brand-primary, #b8924a);
+  --header-primary-rgb: var(--brand-primary-rgb, 185, 146, 74);
+  --header-secondary: var(--brand-secondary, #d1b67a);
+  --header-secondary-rgb: var(--brand-secondary-rgb, 209, 182, 122);
+  --header-accent: var(--brand-accent, var(--brand-primary, #b8924a));
+  --header-accent-rgb: var(--brand-accent-rgb, var(--brand-primary-rgb, 185, 146, 74));
+}
+
+:where(body[data-theme-id="gilded-drive"]) .topbar {
+  /* slightly more opaque so header remains readable over bright hero images */
+  background: rgba(var(--brand-background-rgb, 6, 8, 10), 0.72);
+  backdrop-filter: blur(6px);
+}
+
+/* Non-sticky pages: opaque, no blur, static in flow */
+:where(body[data-theme-id="gilded-drive"]) .topbar.no-sticky {
+  position: static;
+  /* keep it in normal flow */
+  background: rgba(var(--brand-background-rgb, 16, 18, 22), 0.96);
+  backdrop-filter: none;
+  border-bottom: 1px solid rgba(var(--header-text-rgb), 0.12);
+  box-shadow: none;
+}
+
+:where(body[data-theme-id="gilded-drive"]) .topbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  height: var(--nav-height);
+  transition: all 220ms ease;
+  width: 100%
+}
+
+:where(body[data-theme-id="gilded-drive"]) .brand {
+  display: flex;
+  align-items: center;
+  gap: 12px
+}
+
+/* When brand text is intentionally hidden, remove the gap so the logo centers properly */
+:where(body[data-theme-id="gilded-drive"]) .brand--no-text {
+  gap: 0
+}
+
+:where(body[data-theme-id="gilded-drive"]) .brand--no-text .brand-text {
+  display: none !important
+}
+
+:where(body[data-theme-id="gilded-drive"]) .logo-img {
+  width: 140px;
+  height: auto;
+  max-height: 60px;
+  object-fit: contain;
+  display: block
+}
+
+/* Visually hide the brand text while keeping it available to screen readers */
+:where(body[data-theme-id="gilded-drive"]) .brand-text {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Use display font for brand text and UI font for nav links */
+:where(body[data-theme-id="gilded-drive"]) .brand-text {
+  font-family: var(--font-display)
+}
+
+:where(body[data-theme-id="gilded-drive"]) .nav-links a {
+  font-family: var(--font-ui)
+}
+
+/* navigation links */
+:where(body[data-theme-id="gilded-drive"]) .nav-links {
+  display: flex;
+  gap: 18px;
+  align-items: center
+}
+
+:where(body[data-theme-id="gilded-drive"]) .nav-links a {
+  color: var(--header-text);
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+:where(body[data-theme-id="gilded-drive"]) .nav-links a:hover {
+  color: var(--header-secondary);
+  background: rgba(var(--header-secondary-rgb), 0.12)
+}
+
+:where(body[data-theme-id="gilded-drive"]) .nav-links a:focus {
+  outline: none;
+  color: var(--header-accent);
+  background: rgba(var(--header-accent-rgb), 0.12)
+}
+
+/* Icons for desktop nav links */
+:where(body[data-theme-id="gilded-drive"]) .nav-links a .link-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+  stroke: currentColor
+}
+
+:where(body[data-theme-id="gilded-drive"]) .nav-links a .link-icon[aria-hidden] {
+  opacity: 0.95
+}
+
+/* Neon underline / active animation */
+:where(body[data-theme-id="gilded-drive"]) .nav-links a {
+  position: relative;
+  overflow: visible
+}
+
+:where(body[data-theme-id="gilded-drive"]) .nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -4px;
+  height: 2px;
+  background: var(--header-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  border-radius: 6px;
+  box-shadow: 0 6px 22px rgba(var(--header-accent-rgb), 0.16);
+  transition: transform 280ms cubic-bezier(.2, .9, .2, 1), opacity 220ms ease;
+  opacity: 0.95;
+}
+
+:where(body[data-theme-id="gilded-drive"]) .nav-links a:hover::after,
+:where(body[data-theme-id="gilded-drive"]) .nav-links a:focus::after {
+  transform: scaleX(1);
+  opacity: 1
+}
+
+:where(body[data-theme-id="gilded-drive"]) .nav-links a.active::after {
+  transform: scaleX(1);
+  opacity: 1
+}
+
+:where(body[data-theme-id="gilded-drive"]) .nav-links a.active,
+:where(body[data-theme-id="gilded-drive"]) .nav-links a.active:hover,
+:where(body[data-theme-id="gilded-drive"]) .nav-links a.active:focus {
+  color: var(--header-accent);
+  background: transparent;
+}
+
+/* right-side actions (search / account / CTA) */
+:where(body[data-theme-id="gilded-drive"]) .nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px
+}
+
+:where(body[data-theme-id="gilded-drive"]) .nav-actions .icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(var(--header-primary-rgb), 0.24);
+  background: rgba(var(--header-primary-rgb), 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--header-primary);
+  cursor: pointer
+}
+
+:where(body[data-theme-id="gilded-drive"]) .nav-actions .icon-btn:hover {
+  color: var(--header-secondary);
+  background: rgba(var(--header-secondary-rgb), 0.16)
+}
+
+:where(body[data-theme-id="gilded-drive"]) .nav-actions .cta {
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--header-primary), var(--header-secondary));
+  color: var(--brand-background, #0b0b0b);
+  font-weight: 700;
+  box-shadow: 0 10px 24px rgba(var(--header-primary-rgb), 0.22);
+  border: 1px solid rgba(var(--header-primary-rgb), 0.25)
+}
+
+/* mobile hamburger */
+:where(body[data-theme-id="gilded-drive"]) .hamburger {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(var(--header-primary-rgb), 0.24);
+  background: rgba(var(--header-primary-rgb), 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--header-primary)
+}
+
+:where(body[data-theme-id="gilded-drive"]) .hamburger:hover {
+  color: var(--header-secondary)
+}
+
+/* sticky state: keep header non-fixed (disabled sticky behavior) */
+:where(body[data-theme-id="gilded-drive"]) .topbar.sticky {
+  position: absolute;
+  /* do not fix to viewport - keep it above hero but not sticky */
+  background: rgba(var(--brand-background-rgb, 16, 18, 22), 0.96);
+  backdrop-filter: none;
+  border-bottom: 1px solid rgba(var(--header-text-rgb), 0.12);
+  box-shadow: none;
+}
+
+/* mobile side panel + overlay */
+:where(body[data-theme-id="gilded-drive"]) .mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(var(--header-text-rgb), 0.42);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .32s cubic-bezier(.2, .9, .2, 1);
+  z-index: 100000;
+  /* sit below the mobile panel but above other content */
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-overlay.open {
+  opacity: 1;
+  pointer-events: auto
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 320px;
+  max-width: 92vw;
+  background: rgba(var(--brand-background-rgb, 8, 10, 12), 0.96);
+  backdrop-filter: blur(10px);
+  border-left: 1px solid rgba(var(--header-text-rgb), 0.12);
+  padding: 24px 16px;
+  box-shadow: 0 30px 80px rgba(var(--header-primary-rgb), 0.28);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transform: translateX(100%);
+  transition: transform .36s cubic-bezier(.2, .9, .2, 1);
+  z-index: 100001;
+  /* ensure the panel sits above the overlay and all other site elements */
+  overflow-y: auto;
+}
+
+/* Hide mobile menu by default unless explicitly opened (keeps it off-screen on load) */
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu:not(.open) {
+  transform: translateX(100%);
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu.open {
+  transform: translateX(0);
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Futuristic sidebar visuals */
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(var(--header-text-rgb), 0.12)
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-logo {
+  height: 40px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 6px 18px rgba(var(--header-primary-rgb), 0.18))
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-brand-text {
+  font-weight: 700;
+  color: var(--header-text);
+  font-family: var(--font-display);
+  letter-spacing: 0.02em
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-close {
+  background: transparent;
+  border: none;
+  color: var(--header-text);
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-close:hover {
+  background: rgba(var(--header-text-rgb), 0.08)
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 0
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu-nav .menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: var(--header-text);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu-nav .menu-item svg {
+  stroke: currentColor
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu-nav .menu-item:hover {
+  background: linear-gradient(90deg, rgba(var(--header-accent-rgb), 0.12), rgba(var(--header-accent-rgb), 0.06));
+  color: var(--header-text)
+}
+
+/* Stylish CTA in footer */
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu-footer {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(var(--header-text-rgb), 0.12)
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu-footer .btn {
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--header-primary), var(--header-secondary));
+  color: var(--brand-background, #0b0b0b);
+  font-weight: 700;
+  border: 1px solid rgba(var(--header-primary-rgb), 0.25)
+}
+
+/* Staggered reveal of menu items when panel opens */
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu .menu-item {
+  opacity: 0;
+  transform: translateX(10px);
+  transition: opacity .36s cubic-bezier(.2, .9, .2, 1), transform .36s cubic-bezier(.2, .9, .2, 1)
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu.open .menu-item {
+  opacity: 1;
+  transform: none
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu.open .menu-item:nth-child(1) {
+  transition-delay: .06s
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu.open .menu-item:nth-child(2) {
+  transition-delay: .10s
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu.open .menu-item:nth-child(3) {
+  transition-delay: .14s
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu.open .menu-item:nth-child(4) {
+  transition-delay: .18s
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu.open .menu-item:nth-child(5) {
+  transition-delay: .22s
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu.open .menu-item:nth-child(6) {
+  transition-delay: .26s
+}
+
+:where(body[data-theme-id="gilded-drive"]) .mobile-menu.open {
+  transform: translateX(0%)
+}
+
+/* responsive adjustments */
+@media (max-width:900px) {
+  :where(body[data-theme-id="gilded-drive"]) .nav-links {
+    display: none
+  }
+
+  :where(body[data-theme-id="gilded-drive"]) .nav-actions .cta {
+    display: none
+  }
+
+  :where(body[data-theme-id="gilded-drive"]) .hamburger {
+    display: flex
+  }
+
+  /* Reduce header logo size on smaller screens */
+  :where(body[data-theme-id="gilded-drive"]) .logo-img {
+    height: 58px
+  }
+}
+
+@media (max-width:600px) {
+  :where(body[data-theme-id="gilded-drive"]) .mobile-menu {
+    width: 100vw;
+    left: 0;
+    right: 0;
+    max-width: none;
+    padding: 20px;
+    border-left: none;
+    box-shadow: 0 18px 40px rgba(var(--header-primary-rgb), 0.28);
+  }
+}
+
+/* Prevent body scrolling when mobile panel is open */
+:where(body[data-theme-id="gilded-drive"]) body.mobile-open {
+  overflow: hidden;
+  touch-action: none
+}
+
+/* small transition for smooth background change */
+:where(body[data-theme-id="gilded-drive"]) .topbar-inner,
+:where(body[data-theme-id="gilded-drive"]) .topbar {
+  transition: background 220ms ease, box-shadow 220ms ease, border-bottom 220ms ease
+}
+
+/* Entry animations for header elements */
+@keyframes topbarEnter {
+  from {
+    transform: translateY(-14px);
+    opacity: 0
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1
+  }
+}
+
+@keyframes logoEnter {
+  from {
+    transform: translateY(-6px) scale(.92);
+    opacity: 0
+  }
+
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1
+  }
+}
+
+@keyframes linkEnter {
+  from {
+    transform: translateY(-6px) scale(.98);
+    opacity: 0
+  }
+
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1
+  }
+}
+
+@keyframes actionEnter {
+  from {
+    transform: translateY(-6px) scale(.98);
+    opacity: 0
+  }
+
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1
+  }
+}
+
+/* apply animations when motion is allowed */
+@media (prefers-reduced-motion: no-preference) {
+  :where(body[data-theme-id="gilded-drive"]) .topbar {
+    will-change: transform, opacity;
+    animation: topbarEnter 640ms cubic-bezier(.16, .8, .2, 1) both
+  }
+
+  :where(body[data-theme-id="gilded-drive"]) .logo {
+    will-change: transform, opacity;
+    animation: logoEnter 640ms cubic-bezier(.2, .9, .2, 1) both .06s
+  }
+
+  :where(body[data-theme-id="gilded-drive"]) .brand-text {
+    animation: logoEnter 640ms cubic-bezier(.2, .9, .2, 1) both .1s
+  }
+
+  :where(body[data-theme-id="gilded-drive"]) .nav-links a {
+    opacity: 0;
+    transform: translateY(-6px) scale(.98);
+    animation: linkEnter 420ms cubic-bezier(.2, .9, .2, 1) both
+  }
+
+  :where(body[data-theme-id="gilded-drive"]) .nav-links a:nth-child(1) {
+    animation-delay: .16s
+  }
+
+  :where(body[data-theme-id="gilded-drive"]) .nav-links a:nth-child(2) {
+    animation-delay: .22s
+  }
+
+  :where(body[data-theme-id="gilded-drive"]) .nav-links a:nth-child(3) {
+    animation-delay: .28s
+  }
+
+  :where(body[data-theme-id="gilded-drive"]) .nav-links a:nth-child(4) {
+    animation-delay: .34s
+  }
+
+  :where(body[data-theme-id="gilded-drive"]) .nav-links a:nth-child(5) {
+    animation-delay: .40s
+  }
+
+  :where(body[data-theme-id="gilded-drive"]) .nav-links a:nth-child(6) {
+    animation-delay: .46s
+  }
+
+  :where(body[data-theme-id="gilded-drive"]) .nav-actions .icon-btn,
+  :where(body[data-theme-id="gilded-drive"]) .hamburger {
+    opacity: 0;
+    transform: translateY(-6px) scale(.98);
+    animation: actionEnter 420ms cubic-bezier(.2, .9, .2, 1) both .52s
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+
+  :where(body[data-theme-id="gilded-drive"]) .topbar,
+  :where(body[data-theme-id="gilded-drive"]) .logo,
+  :where(body[data-theme-id="gilded-drive"]) .brand-text,
+  :where(body[data-theme-id="gilded-drive"]) .nav-links a,
+  :where(body[data-theme-id="gilded-drive"]) .nav-actions .icon-btn,
+  :where(body[data-theme-id="gilded-drive"]) .hamburger {
+    animation: none;
+    transition: none;
+    opacity: 1;
+    transform: none
+  }
+}
+
+/* Boxed header layout on large screens: centered, rounded, and shadowed */
+@media (min-width:901px) {
+
+  /* make the topbar itself transparent so the inner container appears boxed */
+  :where(body[data-theme-id="gilded-drive"]) .topbar {
+    background: transparent
+  }
+
+  :where(body[data-theme-id="gilded-drive"]) .topbar-inner {
+    width: calc(100% - 40px);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 12px 20px;
+  }
+
+  /* slight inward spacing so logo/nav don't touch rounded edges */
+  :where(body[data-theme-id="gilded-drive"]) .topbar-inner .brand,
+  :where(body[data-theme-id="gilded-drive"]) .topbar-inner .nav-links,
+  :where(body[data-theme-id="gilded-drive"]) .topbar-inner .nav-actions {
+    z-index: 2
+  }
+}

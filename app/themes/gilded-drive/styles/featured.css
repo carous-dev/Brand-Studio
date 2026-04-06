@@ -1,0 +1,95 @@
+@import url('base.css');
+
+:root{
+	--carousel-control-size:56px;
+	--carousel-gap:18px;
+}
+
+.featured .section-title{font-size:26px;text-align:center;margin:8px 0 12px;color:#fff}
+.featured .section-sub{max-width:900px;margin:0 auto 18px;color:var(--muted)}
+
+/* Featured carousel layout */
+.featured-carousel{padding:56px 0}
+.featured-header.modern{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:18px}
+.featured-header.modern .section-title{font-family:var(--font-display);letter-spacing:0.01em}
+
+.carousel{position:relative;padding-bottom:88px}
+.carousel-viewport{overflow:hidden;width:100%;box-sizing:border-box}
+.carousel-track{display:flex;gap:var(--carousel-gap);transition:transform .64s cubic-bezier(.2,.9,.2,1);will-change:transform;transform:translate3d(0,0,0)}
+.carousel-item{min-width:calc(33.333% - 12px);flex:0 0 calc(33.333% - 12px);box-sizing:border-box}
+
+/* Per-item animation */
+.carousel-item{opacity:1;transform:translateY(0) scale(1)}
+
+.card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 18px 40px rgba(2,6,23,0.38);width:100%;display:flex;flex-direction:column;transition:transform .3s ease,box-shadow .3s ease;position:relative}
+.card:hover{transform:translateY(-4px);box-shadow:0 24px 48px rgba(2,6,23,0.5)}
+.card img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;display:block}
+.card-body{padding:16px;display:flex;flex-direction:column;flex:1}
+.card h3{margin:0 0 6px;font-size:18px;font-family:var(--font-base);font-weight:800}
+.card .meta{color:var(--muted);font-size:13px;margin-bottom:8px}
+.price{color:var(--accent);font-weight:800;font-size:18px;margin-top:auto}
+
+/* LQIP blur-up styles */
+.cards-grid .card img.lqip{filter:blur(12px);transform:scale(1.02);transition:filter .6s ease,transform .6s ease}
+.cards-grid .card img.loaded{filter:none;transform:none;transition:filter .45s ease,transform .45s ease}
+
+/* Image overlay buttons (save/share) */
+.img-overlay{position:absolute;top:8px;right:8px;display:flex;gap:8px;z-index:15}
+.img-btn{width:36px;height:36px;border-radius:999px;border:0;background:rgba(2,6,23,0.56);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(6px);box-shadow:0 6px 18px rgba(2,6,23,0.45);transition:transform .14s ease,background .14s ease,opacity .14s ease}
+.img-btn svg{width:16px;height:16px;display:block}
+.img-btn:focus{outline:3px solid rgba(8,112,255,0.16);outline-offset:2px}
+.img-btn:hover{transform:translateY(-3px);background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+
+/* Ensure overlay sits inside the image wrapper and doesn't affect flow */
+.lazy-image-wrapper .img-overlay{position:absolute;top:8px;right:8px}
+
+/* Spec badges inside featured cards */
+.spec-badges{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 6px}
+.spec-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);color:var(--muted);font-size:13px}
+.spec-badge .spec-icon{width:16px;height:16px;flex:0 0 16px;stroke:var(--accent-2);fill:none}
+.spec-badge .spec-text{font-weight:600;color:rgba(255,255,255,0.95);font-size:13px}
+
+@media (max-width:640px){
+	.spec-badges{gap:6px}
+	.spec-badge{padding:6px 8px;font-size:12px}
+}
+
+/* Bottom-right large caret controls */
+.carousel-controls{position:absolute;right:18px;bottom:18px;display:flex;gap:12px;z-index:20}
+.carousel-controls button{width:var(--carousel-control-size);height:var(--carousel-control-size);border-radius:999px;border:0;background:rgba(6,10,18,0.72);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 12px 36px rgba(2,6,23,0.5);transition:transform .14s ease,background .14s ease}
+.carousel-controls button svg{width:34px;height:34px}
+.carousel-controls button:focus{outline:3px solid rgba(8,112,255,0.16);outline-offset:2px}
+.carousel-controls button:hover{transform:translateY(-4px);background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+
+/* Dots */
+.carousel-dots{position:absolute;left:18px;bottom:26px;display:flex;gap:8px;z-index:20}
+.carousel-dots button{width:10px;height:10px;border-radius:50%;border:0;background:rgba(255,255,255,0.26);cursor:pointer}
+.carousel-dots button.active{background:var(--accent)}
+
+@media (max-width:1000px){
+	.carousel-item{min-width:calc(50% - 9px);flex:0 0 calc(50% - 9px)}
+	:root{--carousel-control-size:48px}
+}
+
+@media (max-width:640px){
+	.featured-carousel{padding:36px 0}
+	.carousel-item{min-width:calc(100% - 0px);flex:0 0 100%}
+	.carousel-viewport{padding:0 12px;box-sizing:border-box}
+	.carousel-controls{right:12px;bottom:12px}
+	:root{--carousel-control-size:44px;--carousel-gap:12px}
+	.carousel{padding-bottom:0 !important}
+	.featured .section-sub{padding:0 12px;text-align:center;box-sizing:border-box}
+	.card-body{padding:12px}
+	.card h3{font-size:16px}
+}
+
+@media (prefers-reduced-motion:reduce){
+	.carousel-track{transition:none}
+}
+
+/* Very small screens: hide controls and dots to reduce visual clutter */
+@media (max-width:420px){
+	.carousel-controls, .carousel-dots { display: none !important; }
+	/* keep a small viewport padding so slides don't touch the edges */
+	.carousel-viewport { padding: 0 12px; box-sizing: border-box; }
+}

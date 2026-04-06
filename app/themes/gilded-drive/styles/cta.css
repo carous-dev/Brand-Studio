@@ -1,0 +1,190 @@
+
+@import url('base.css');
+
+.cta-banner{background:linear-gradient(90deg,var(--panel),#121212);padding:22px 0;margin-top:28px;border-radius:8px;font-family:var(--font-base)}
+.cta-inner{display:flex;align-items:center;justify-content:space-between;gap:12px}
+
+/* Futuristic CTA Hero */
+.hero-cta{position:relative;overflow:hidden;min-height:180px;display:flex;align-items:center}
+.hero-cta__bg{position:absolute;inset:0;z-index:0;background-size:cover;background-position:bottom center;will-change:auto}
+.hero-cta__overlay{position:absolute;inset:0;z-index:1;background:rgba(0,0,0,0.82)}
+.hero-cta__bg.loaded{opacity:1;transition:opacity 600ms ease}
+.hero-cta__inner{position:relative;z-index:2;padding:56px 0;display:flex;align-items:center;justify-content:center}
+.hero-cta__content{text-align:center;color:var(--muted-foreground,#fff);max-width:980px;margin:0 auto}
+.hero-cta__title{font-family:var(--font-display),sans-serif;font-size:40px;line-height:1.03;margin:0 0 12px;color:var(--foreground,#fff);letter-spacing:-0.02em}
+.hero-cta__sub{margin:0 0 22px;color:rgba(255,255,255,0.9);font-size:16px}
+.hero-cta__actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.hero-cta__actions{margin-top:28px}
+.btn-pill{display:inline-flex;align-items:center;gap:10px;padding:12px 26px;border-radius:999px;font-weight:700;text-decoration:none}
+.btn-ghost{background:#fff;color:#0b0b0b;box-shadow:0 6px 20px rgba(2,2,2,0.18)}
+.btn-dark-outline{background:rgba(0,0,0,0.7);color:#fff;border:2px solid #c9a94a;box-shadow:0 6px 20px rgba(0,0,0,0.28)}
+
+@media (min-width:900px){
+	.hero-cta{min-height:220px}
+	.hero-cta__title{font-size:56px}
+}
+
+@media (max-width:700px){
+	.hero-cta__inner{padding:36px 0}
+	.hero-cta__title{font-size:28px}
+	.hero-cta__sub{font-size:14px}
+	.btn-pill{padding:10px 18px}
+	.hero-cta__actions{margin-top:18px}
+}
+
+/* Futuristic CTA accent and glass tweaks */
+.cta-hero{position:relative;overflow:hidden;overflow-x:hidden;border-radius:14px;margin-top:28px}
+.cta-hero .hero-cta__inner{padding:60px 0}
+.cta-hero .hero-cta__content{max-width:920px;text-align:center}
+.cta-hero .hero-cta__overlay{position:absolute;inset:0;z-index:1;background:rgba(0,0,0,0.82)}
+	.cta-accent{position:absolute;right:-6%;top:10%;width:420px;height:420px;border-radius:50%;pointer-events:none;filter:blur(36px);background:rgba(184,146,74,0.12);transform:translateZ(0)}
+
+/* subtle scanline and glow */
+	.cta-hero::before{content:'';position:absolute;inset:0;border-radius:14px;box-shadow:0 8px 40px rgba(2,6,23,0.45);pointer-events:none}
+	.cta-hero::after{content:'';position:absolute;left:6%;bottom:-18%;width:60%;height:2px;background:rgba(184,146,74,0.12);opacity:0.06;filter:blur(6px);transform:translateZ(0)}
+
+/* Button tweak for neon/futuristic look */
+.cta-hero .btn-ghost{background:linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));border:1px solid rgba(184,146,74,0.18);color:#f8f3ea}
+.cta-hero .btn-dark-outline{background:transparent;border:1px solid rgba(209,182,122,0.2);color:#f3efe8}
+
+@media (max-width:900px){
+  .cta-hero .hero-cta__title{font-size:30px}
+  .cta-hero .hero-cta__inner{padding:36px 0}
+  .cta-accent{display:none}
+}
+
+/* Mobile: make CTA hero min-height fit the content to avoid excessive vertical space */
+@media (max-width:700px){
+	.cta-hero{ min-height: fit-content !important; min-height: auto !important; }
+}
+
+/* Futuristic CTA button enhancements (scoped to .cta-hero) */
+.cta-hero .btn-pill{
+	position:relative;
+	overflow:visible;
+	padding:12px 26px;
+	border-radius:999px;
+	font-weight:700;
+	letter-spacing:0.02em;
+	transition:transform .18s ease, box-shadow .18s ease;
+	z-index:2;
+}
+
+.cta-hero .btn-pill::before{
+	content:'';
+	position:absolute;
+	inset:-6px;
+	border-radius:999px;
+	background:linear-gradient(90deg, rgba(184,146,74,0.95) 0%, rgba(209,182,122,0.95) 50%);
+	filter:blur(12px);
+	opacity:0.36;
+	z-index:-2;
+	transition:transform .3s ease, opacity .3s ease;
+}
+
+.cta-hero .btn-pill::after{
+	content:'';
+	position:absolute;
+	inset:0;
+	border-radius:999px;
+	background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+	mix-blend-mode: overlay;
+	z-index:1;
+	pointer-events:none;
+}
+
+.cta-hero .btn-pill:hover{transform:translateY(-4px);box-shadow:0 18px 50px rgba(184,146,74,0.12), 0 6px 18px rgba(0,0,0,0.28)}
+.cta-hero .btn-pill:hover::before{transform:scale(1.06);opacity:0.56}
+
+.cta-hero .btn-ghost{border:1px solid rgba(184,146,74,0.26);color:#f8f3ea;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.006))}
+.cta-hero .btn-dark-outline{border:1px solid rgba(209,182,122,0.28);color:#efeae0}
+
+.cta-hero .btn-pill:focus{outline:none;box-shadow:0 0 0 4px rgba(184,146,74,0.08), 0 12px 36px rgba(184,146,74,0.12)}
+
+/* Small icon support: if you add an inline SVG inside the button give it breathing room */
+.cta-hero .btn-pill svg{width:16px;height:16px;display:inline-block;vertical-align:middle}
+
+@media (max-width:700px){
+	.cta-hero .btn-pill{padding:10px 18px}
+}
+
+/* Neon (primary) and Dim (secondary) button variants for CTA */
+.cta-hero .btn-neon{
+	background:var(--accent);
+	color:#0b0b0b;
+	border:none;
+	position:relative;
+	z-index:2;
+	box-shadow:0 12px 40px rgba(181,140,60,0.18), 0 6px 18px rgba(0,0,0,0.35);
+}
+.cta-hero .btn-neon::before{
+	/* stronger glow for neon */
+	content:'';
+	position:absolute;
+	inset:-8px;
+	border-radius:999px;
+	background:linear-gradient(90deg, rgba(184,146,74,0.95) 0%, rgba(209,182,122,0.85) 60%);
+	filter:blur(18px);
+	opacity:0.64;
+	z-index:-2;
+	transition:transform .25s ease, opacity .25s ease;
+}
+.cta-hero .btn-neon:hover{
+	transform:translateY(-6px) scale(1.02);
+	box-shadow:0 26px 80px rgba(181,140,60,0.22), 0 8px 28px rgba(0,0,0,0.36);
+}
+.cta-hero .btn-neon:focus{box-shadow:0 0 0 6px rgba(181,140,60,0.08), 0 18px 48px rgba(181,140,60,0.14)}
+
+.cta-hero .btn-dim{
+	background:rgba(255,255,255,0.02);
+	color:rgba(255,255,255,0.88);
+	border:1px solid rgba(255,255,255,0.04);
+	filter:grayscale(20%);
+	opacity:0.78;
+	transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease, opacity .16s ease;
+}
+.cta-hero .btn-dim::before{opacity:0 !important;transform:none !important}
+.cta-hero .btn-dim:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,0.18);border-color:rgba(209,182,122,0.14);opacity:0.92}
+
+@media (max-width:700px){
+	.cta-hero .btn-neon{padding:10px 18px}
+	.cta-hero .btn-dim{padding:10px 18px}
+}
+
+/* Icon inside neon button */
+.cta-hero .btn-neon svg{width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:10px;stroke:currentColor;fill:none}
+
+/* Slightly stronger dim border (subtle) so it reads as an outlined secondary action */
+.cta-hero .btn-dim{border-color:rgba(255,255,255,0.06)}
+
+/* Featured section accent (big, subtle glow) */
+.featured.featured-carousel{position:relative;overflow:visible}
+.featured-accent{
+	position:absolute;
+	left:-8%;
+	top:-20%;
+	width:760px;
+	height:760px;
+	border-radius:50%;
+	pointer-events:none;
+	background: radial-gradient(circle at 30% 30%, rgba(94,243,255,0.14), rgba(142,123,255,0.12) 30%, rgba(255,123,210,0.08) 60%, transparent 70%);
+	filter: blur(80px);
+	transform: translateZ(0);
+	opacity:0.18;
+	mix-blend-mode: screen;
+}
+
+@media (max-width:1100px){
+	.featured-accent{width:520px;height:520px;left:-12%;top:-10%;opacity:0.14}
+}
+
+@media (max-width:780px){
+	.featured-accent{display:none}
+}
+
+/* Wrapper that places a shared background image behind Featured + CTA sections */
+/* removed: wrapper-specific layout no longer needed - Featured and CTA are separate sections */
+
+/* Increase featured/cta vertical space so image shows more */
+.featured.featured-carousel{padding-top:48px;padding-bottom:48px}
+.cta-hero{min-height:520px}

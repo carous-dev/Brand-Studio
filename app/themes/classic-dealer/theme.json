@@ -1,0 +1,7 @@
+{
+  "id": "classic-dealer",
+  "name": "Classic Dealer",
+  "description": "Current production-compatible theme.",
+  "status": "stable",
+  "isDefault": true
+}

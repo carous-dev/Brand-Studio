@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.fairfieldcars.co.uk/sitemap.xml
+
+# Add verification tokens below if needed (Google/Bing):
+# e.g. add meta tag to <head> of layout or root HTML for site ownership verification.

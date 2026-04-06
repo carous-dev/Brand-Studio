@@ -1,0 +1,2169 @@
+/* Dedicated styles for single vehicle page (moved from inline styles) */
+.vehicle-page {
+  font-family: var(--font-ui, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial);
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+  min-height: 100vh;
+}
+
+.vehicle-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(184, 146, 74, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(209, 182, 122, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(139, 69, 19, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.vehicle-page h1,
+.vehicle-page h2,
+.vehicle-page h3,
+.vehicle-page h4 {
+  font-family: var(--font-display), var(--font-base), sans-serif;
+  letter-spacing: 0.01em
+}
+
+.vehicle-page .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 2;
+  backdrop-filter: blur(10px);
+}
+
+/* Ensure vehicle page container keeps sensible padding on small screens
+   (override global mobile rule that removes .container padding). */
+@media (max-width:600px) {
+  .vehicle-page .container {
+    padding: 16px 12px !important;
+  }
+}
+
+.vehicle-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.gallery {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  .gallery {
+    min-width: 615px;
+  }
+}
+
+.gallery-main {
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
+  position: relative;
+}
+
+.gallery-main {
+  position: relative
+}
+
+.loader-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  border: 3px solid;
+  border-color: #FFF #FFF transparent transparent;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+.loader::after,
+.loader::before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  border: 3px solid;
+  border-color: transparent transparent #FF3D00 #FF3D00;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  animation: rotationBack 0.5s linear infinite;
+  transform-origin: center center;
+}
+
+.loader::before {
+  width: 32px;
+  height: 32px;
+  border-color: #FFF #FFF transparent transparent;
+  animation: rotation 1.5s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotationBack {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.gallery-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block
+}
+
+/* thumbnails as centered indicators overlaying the main image */
+.gallery-thumbs {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0px;
+  display: flex;
+  gap: 8px;
+  padding: 6px 10px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.48), rgba(0, 0, 0, 0.32));
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+  z-index: 20;
+  max-width: calc(100% - 1px);
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+  scrollbar-width: none
+}
+
+.gallery-thumbs img {
+  width: 64px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+  flex: 0 0 auto
+}
+
+.gallery-thumbs::-webkit-scrollbar {
+  display: none
+}
+
+.gallery-thumbs img.active {
+  border-color: var(--accent);
+  transform: scale(1.03)
+}
+
+.vehicle-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.vehicle-title {
+  font-size: 28px;
+  margin: 0;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.vehicle-price {
+  font-size: 36px;
+  color: var(--accent);
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 4px 20px rgba(var(--accent-rgb), 0.3);
+}
+
+.vehicle-desc {
+  margin-top: 12px;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1.6
+}
+
+/* clamp description to 3 lines with ellipsis */
+.vehicle-desc {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  /* Chrome, Safari, Opera */
+  display: -webkit-box;
+}
+
+/* Ensure accessible focusable expansion could be added later */
+
+/* futuristic vehicle card */
+.vehicle-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 24px;
+  border-radius: 20px;
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.vehicle-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb), 0.3), transparent);
+}
+
+.vehicle-card .card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px
+}
+
+.vehicle-derivative {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  margin-top: 4px
+}
+
+.vehicle-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  margin-top: 6px
+}
+
+.inline-feature-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px
+}
+
+.inline-feature {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.02)
+}
+
+/* Top-of-specs feature cards layout */
+.feature-cards-top {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+  margin: 8px 0 12px
+}
+
+.feature-cards-top .feature-card {
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  display: flex;
+}
+
+.feature-card .feature-icon {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  color: var(--accent);
+  flex: 0 0 44px;
+}
+
+.feature-card .feature-title {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+/* Clamp bar shown when features are truncated */
+.feature-clamp-bar {
+  margin-top: 12px;
+  display: block;
+}
+
+/* Glassmorphic clamp button */
+.feature-clamp-bar .btn.full-width {
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
+  /* center label and icon */
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  /* border: 1px solid rgba(255, 255, 255, 0.08); */
+  box-shadow: 0 8px 28px rgba(2, 6, 23, 0.28);
+  transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+  color: var(--accent);
+}
+
+.feature-clamp-bar .btn.full-width svg {
+  margin-left: 0;
+  opacity: 0.95;
+}
+
+.feature-clamp-bar .btn.full-width:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 14px 40px rgba(2, 6, 23, 0.36);
+}
+
+.feature-clamp-bar .btn.full-width:focus {
+  outline: 2px solid rgba(var(--accent-rgb), 0.16);
+  outline-offset: 2px;
+}
+
+/* Accent divider between major sections */
+.section-divider {
+  height: 1px;
+  margin: 28px 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.28), rgba(var(--accent-2-rgb, 209, 182, 122), 0.12));
+  box-shadow: none
+}
+
+/* small explanatory subtitle under section headings */
+.section-note {
+  margin: 6px 0 10px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  line-height: 1.4
+}
+
+.specs-chips {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.specs-chips .chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 14px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.specs-chips .chip::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb), 0.1), transparent);
+  transition: left 0.6s ease;
+}
+
+.specs-chips .chip:hover::before {
+  left: 100%;
+}
+
+.specs-chips .chip:hover {
+  transform: translateY(-2px);
+  border-color: rgba(var(--accent-rgb), 0.2);
+  box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.1);
+}
+
+.specs-chips .chip .chip-icon {
+  font-size: 18px;
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  flex: 0 0 36px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.1), rgba(var(--accent-rgb), 0.05));
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
+}
+
+.specs-chips .chip .chip-body {
+  display: flex;
+  flex-direction: column
+}
+
+.specs-chips .chip .chip-body strong {
+  font-weight: 700;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8)
+}
+
+.specs-chips .chip .chip-value {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.72);
+  margin-top: 2px
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px
+}
+
+/* Make CTA buttons share full width evenly and add hover animations */
+.vehicle-card .card-actions {
+  display: flex;
+  gap: 10px
+}
+
+.vehicle-card .card-actions .btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 14px;
+  border-radius: 10px;
+  transition: transform .18s ease, box-shadow .18s ease, background-position .4s ease;
+  background-size: 200% 100%;
+  background-position: 0% 0%
+}
+
+/* Primary button style & hover animation */
+.vehicle-card .card-actions .btn.primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #0a0a0a;
+  box-shadow: 
+    0 8px 24px rgba(var(--accent-rgb), 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.vehicle-card .card-actions .btn.primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.vehicle-card .card-actions .btn.primary:hover::before {
+  left: 100%;
+}
+
+.vehicle-card .card-actions .btn.primary:hover {
+  background-position: 100% 0;
+  transform: translateY(-3px);
+  box-shadow: 0 14px 40px rgba(var(--accent-rgb), 0.14)
+}
+
+.vehicle-card .card-actions .btn.primary:hover {
+  animation: neonPulse 1.6s infinite alternate
+}
+
+/* Ghost button: subtle border, fills on hover */
+.vehicle-card .card-actions .btn.ghost {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  position: relative;
+  overflow: hidden;
+}
+
+.vehicle-card .card-actions .btn.ghost::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb), 0.1), transparent);
+  transition: left 0.6s ease;
+}
+
+.vehicle-card .card-actions .btn.ghost:hover::before {
+  left: 100%;
+}
+
+.vehicle-card .card-actions .btn.ghost:hover {
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.10), rgba(var(--accent-2-rgb, 209, 182, 122), 0.06));
+  color: var(--accent);
+  transform: translateY(-3px);
+  border-color: rgba(var(--accent-rgb), 0.12);
+  box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.08)
+}
+
+/* Neon pulse animation for CTA on hover */
+@keyframes neonPulse {
+  0% {
+    box-shadow: 0 8px 30px rgba(var(--accent-rgb), 0.12), 0 0 24px rgba(var(--accent-rgb), 0.06);
+    filter: drop-shadow(0 8px 20px rgba(var(--accent-rgb), 0.06));
+  }
+
+  100% {
+    box-shadow: 0 18px 60px rgba(var(--accent-rgb), 0.22), 0 0 56px rgba(var(--accent-rgb), 0.14);
+    filter: drop-shadow(0 18px 40px rgba(var(--accent-rgb), 0.12));
+  }
+}
+
+/* Icons inside buttons */
+.vehicle-card .card-actions .btn svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  margin-right: 10px;
+  display: inline-block
+}
+
+.vehicle-card .card-actions .btn.primary svg {
+  color: #060606;
+  fill: currentColor;
+  stroke: currentColor
+}
+
+.vehicle-card .card-actions .btn.ghost svg {
+  color: rgba(255, 255, 255, 0.9);
+  fill: currentColor;
+  stroke: currentColor
+}
+
+.specs-chips .chip .chip-icon svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+  stroke: currentColor;
+  stroke-width: 1.6;
+}
+
+/* Tooltip for chips */
+.chip-tooltip {
+  position: fixed;
+  z-index: 99999;
+  padding: 8px 10px;
+  background: rgba(6, 6, 6, 0.92);
+  color: #fff;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 13px;
+  line-height: 1.3;
+  max-width: 320px;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .12s ease, transform .12s ease;
+  transform: translateY(6px)
+}
+
+.chip-tooltip.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0)
+}
+
+/* Similar-vehicles chips: make meta chips look like specs chips and keep icons inside the badge */
+
+.similar-vehicles .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+  padding: 8px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.similar-vehicles .chip .chip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  color: var(--accent);
+  flex: 0 0 34px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Skeleton loaders */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  left: -150px;
+  top: 0;
+  height: 100%;
+  width: 150px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+  animation: skeleton-shimmer 1.2s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton-rect {
+  height: 12px;
+  border-radius: 6px;
+}
+
+.skeleton-rect.lg {
+  height: 18px;
+}
+
+.skeleton-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+}
+
+.skeleton-gallery {
+  width: 100%;
+  height: 380px;
+  border-radius: 12px;
+}
+
+.skeleton-thumb {
+  width: 64px;
+  height: 44px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-right: 8px
+}
+
+.skeleton-card-head {
+  display: flex;
+  gap: 12px;
+  align-items: center
+}
+
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px
+}
+
+.skeleton-slide {
+  width: 100%;
+  height: 140px;
+  border-radius: 8px
+}
+
+
+.similar-vehicles .chip .chip-icon svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+  stroke: currentColor;
+  stroke-width: 1.6;
+}
+
+.similar-vehicles .chip .chip-body {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.9)
+}
+
+/* Slider styles for similar vehicles */
+/* Position controls absolutely over the slider for a tighter, modern look */
+.similar-slider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+.sim-viewport {
+  overflow: hidden;
+  flex: 1
+}
+
+.sim-track {
+  display: flex;
+  transition: transform .42s cubic-bezier(.22, .9, .28, 1);
+  will-change: transform
+}
+
+.sim-slide {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  padding: 8px
+}
+
+.sim-slide .car-card {
+  flex: 1;
+  min-width: 0
+}
+
+.sim-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(180deg, rgba(6, 8, 10, 0.6), rgba(6, 8, 10, 0.4));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 40;
+  box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px
+}
+
+.sim-nav.sim-prev {
+  left: -48px
+}
+
+.sim-nav.sim-next {
+  right: -48px
+}
+
+.sim-nav:disabled {
+  opacity: 0.36;
+  cursor: default
+}
+
+/* responsive: 3 per slide on wide, 2 on medium, 1 on small */
+@media (min-width:1000px) {
+  .sim-slide .car-card {
+    width: calc((100% - 24px)/3)
+  }
+}
+
+@media (min-width:700px) and (max-width:999px) {
+  .sim-slide .car-card {
+    width: calc((100% - 12px)/2)
+  }
+}
+
+@media (max-width:700px) {
+  .sim-slide {
+    padding: 6px;
+    flex-direction: column
+  }
+
+  .sim-slide .car-card {
+    width: 100%
+  }
+
+  .similar-slider {
+    gap: 0;
+    padding: 0
+  }
+
+  /* add horizontal padding on mobile to the similar-vehicles container (safe-area aware) */
+  .similar-vehicles {
+    padding-left: calc(16px + env(safe-area-inset-left)) !important;
+    padding-right: calc(16px + env(safe-area-inset-right)) !important;
+  }
+
+  /* make navs slightly smaller on mobile and bring them just outside the edge */
+  .sim-nav {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 8px
+  }
+
+  .sim-nav.sim-prev {
+    left: -28px
+  }
+
+  .sim-nav.sim-next {
+    right: -28px
+  }
+}
+
+@media (max-width:700px) {
+  .specs-chips {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .vehicle-card {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .vehicle-hero {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .vehicle-title {
+    font-size: 24px;
+  }
+
+  .vehicle-price {
+    font-size: 28px;
+  }
+}
+
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 16px
+}
+
+.specs-grid li {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 10px;
+  border-radius: 8px;
+  list-style: none
+}
+
+.ctas {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px
+}
+
+/* Futuristic breadcrumb */
+.futuristic-breadcrumb {
+  display: block;
+  margin: 20px 0 24px;
+  font-family: var(--font-display), sans-serif;
+}
+
+.futuristic-breadcrumb ol {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0
+}
+
+.futuristic-breadcrumb li {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px
+}
+
+.futuristic-breadcrumb li+li::before {
+  content: '▸';
+  display: inline-block;
+  margin: 0 8px;
+  color: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px)
+}
+
+.futuristic-breadcrumb a {
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  padding: 6px 8px;
+  border-radius: 6px
+}
+
+.futuristic-breadcrumb a:hover {
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.12), rgba(255, 255, 255, 0.02));
+  color: var(--accent)
+}
+
+.futuristic-breadcrumb .current {
+  color: #fff;
+  font-weight: 700
+}
+
+/* Breadcrumb row: breadcrumb at left, back button aligned right */
+.breadcrumb-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px
+}
+
+.breadcrumb-row .btn-cta-ghost {
+  white-space: nowrap
+}
+
+/* breadcrumb controls (right side) */
+.breadcrumb-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px
+}
+
+.crumb-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+}
+
+.crumb-btn:hover {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--accent)
+}
+
+.crumb-btn[aria-pressed="true"] {
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.12), rgba(255, 255, 255, 0.02));
+  border-color: rgba(var(--accent-rgb), 0.18);
+  color: var(--accent)
+}
+
+@media (max-width:720px) {
+  .breadcrumb-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px
+  }
+
+  .breadcrumb-row .btn-cta-ghost {
+    align-self: flex-start
+  }
+}
+
+@media (max-width:900px) {
+  .vehicle-hero {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .gallery {
+    width: 100%;
+    border-radius: 16px;
+    max-width: none;
+  }
+
+  .gallery-main {
+    height: 400px;
+  }
+
+  /* on small screens place thumbnails under the gallery instead of overlay */
+  .gallery-thumbs {
+    position: static;
+    transform: none;
+    left: auto;
+    bottom: auto;
+    margin-top: 12px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    box-shadow: none;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+    scrollbar-width: none
+  }
+
+  .gallery-thumbs img {
+    width: 72px;
+    height: 48px;
+    flex: 0 0 auto
+  }
+
+  .gallery-thumbs::-webkit-scrollbar {
+    display: none
+  }
+
+  /* make vehicle card full width and ensure layout padding inside vehicleRoot */
+  .vehicle-summary {
+    width: 100%
+  }
+
+  .vehicle-card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box
+  }
+
+  .vehicle-root {
+    padding:14px
+  }
+}
+
+@media (max-width:700px) {
+  .breadcrumb-row {
+    display: none;
+  }
+
+  .vehicle-page .container {
+    padding: 10px 0 !important;
+  }
+}
+
+/* Mobile-specific gallery and neon overflow fixes */
+@media (max-width:700px) {
+
+  /* let gallery size to fit its content instead of forcing fixed height */
+  .gallery {
+    flex: 0 0 auto;
+    /* keep gallery container dark and fixed height on small screens to avoid layout shift */
+    height: auto;
+    border-radius: 10px;
+    overflow: visible
+  }
+
+  /* Fixed gallery height on small screens to stabilise swipe transitions */
+  .gallery-main {
+    height: 260px;
+    background: #000;
+  }
+
+  .gallery-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    background: #000; /* prevents white flash while image loads */
+  }
+
+  /* prevent decorative neon blobs from creating horizontal overflow */
+  .vehicle-page {
+    overflow-x: hidden
+  }
+
+  /* make neon background span the full viewport (both sides) on mobile */
+  .neon-bg {
+    left: 0;
+    right: 0;
+    transform: none;
+    width: 100vw;
+    max-width: 100%;
+    overflow: hidden
+  }
+
+  /* keep the main neon blobs visible on mobile so lighting covers the full page */
+  .neon-bg .n1,
+  .neon-bg .n3 {
+    display: block
+  }
+}
+
+/* Gallery carousel controls */
+.gallery-main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+
+.gallery-main span {
+  height: 100%;
+}
+
+.gallery-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 10
+}
+
+.gallery-prev {
+  left: 10px
+}
+
+.gallery-next {
+  right: 10px
+}
+
+.gallery-nav:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--accent)
+}
+
+/* Lightbox modal */
+.vehicle-lightbox {
+  position: fixed;
+  inset: 0;
+  display: none;
+  background: linear-gradient(180deg, rgba(2, 6, 23, 0.92), rgba(2, 6, 23, 0.96));
+  z-index: 200000;
+  padding: 24px
+}
+
+.vehicle-lightbox.open {
+  display: block
+}
+
+.vehicle-lightbox .lb-inner {
+  width: 100%;
+  height: 100%;
+  position: relative
+}
+
+.vehicle-lightbox img {
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 30px 120px rgba(0, 0, 0, 0.8)
+}
+
+.vehicle-lightbox .lb-close {
+  /* place the close button at the top-right of the viewport (above the lightbox)
+     Use fixed positioning so it stays pinned even when the inner container is centered. */
+  position: fixed;
+  right: 16px;
+  top: 12px;
+  z-index: 300000;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.vehicle-lightbox .lb-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer
+}
+
+.vehicle-lightbox .lb-prev {
+  left: 8px
+}
+
+.vehicle-lightbox .lb-next {
+  right: 8px
+}
+
+@media (max-width:700px) {
+  .gallery-nav {
+    padding: 6px 8px
+  }
+
+  .vehicle-lightbox {
+    padding: 12px
+  }
+
+  /* Keep lightbox image container fixed height on mobile to avoid layout shifts during swipes */
+  .vehicle-lightbox .lb-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .vehicle-lightbox .lb-inner .lb-image-container {
+    min-height: 60vh;
+    width: 100%;
+    max-width: 1000px;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .vehicle-lightbox img {
+    max-height: 100%;
+    width: auto;
+    background: #000;
+  }
+}
+
+/* Stack card head on mobile so title and actions flow vertically */
+@media (max-width:720px) {
+  .vehicle-card .card-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px
+  }
+
+  .vehicle-card .card-head .titles {
+    max-width: 100%
+  }
+
+  .vehicle-card .card-head .card-actions {
+    width: 100%;
+    display: flex;
+    gap: 8px
+  }
+
+  .vehicle-card .card-actions .btn {
+    flex: 1
+  }
+}
+
+/* small visual tweak: ensure buttons and headings look consistent on vehicle page */
+.vehicle-page .btn {
+  padding: 10px 16px;
+  border-radius: 10px
+}
+
+/* utility: visually emphasize title */
+.vehicle-title {
+  font-family: var(--font-display), var(--font-base), sans-serif;
+  font-weight: 700;
+  font-size: 22px
+}
+
+/* Make price more prominent in the card */
+.price,
+#vehiclePrice {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--accent);
+  letter-spacing: 0.01em;
+  text-shadow: 0 10px 40px rgba(var(--accent-rgb), 0.08);
+  line-height: 1
+}
+
+/* Full description section below gallery/card */
+.vehicle-details {
+  margin-top: 40px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+  padding: 32px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+}
+
+.vehicle-details .section-title {
+  margin: 0 0 16px;
+  font-size: 32px;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff, rgba(255, 255, 255, 0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.vehicle-details .section-subtitle {
+  margin: 14px 0 8px;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.86)
+}
+
+.vehicle-full-desc {
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.8;
+  font-size: 16px;
+  margin: 16px 0;
+}
+
+.vehicle-full-desc.clamped {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: 4
+}
+
+.vehicle-full-desc.expanded {
+  display: block;
+  overflow: visible;
+  -webkit-line-clamp: unset
+}
+
+.vehicle-full-desc-toggle {
+  display: inline-block;
+  margin-top: 10px;
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 6px;
+  font-weight: 700
+}
+
+.vehicle-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vehicle-features li {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.vehicle-features li:hover {
+  transform: translateY(-2px);
+  border-color: rgba(var(--accent-rgb), 0.2);
+  box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.1);
+}
+
+/* Feature categories (expandable) */
+.feature-categories {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px
+}
+
+.feature-category summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.03)
+}
+
+.feature-category[open] summary {
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.08), rgba(255, 255, 255, 0.02));
+  border-color: rgba(var(--accent-rgb), 0.12);
+  color: var(--accent)
+}
+
+.feature-category summary::-webkit-details-marker {
+  display: none
+}
+
+.feature-category .feature-cards {
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px
+}
+
+.feature-card {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.006));
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.02)
+}
+
+.feature-card .f-icon {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px
+}
+
+.feature-card .f-body strong {
+  display: block;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.95)
+}
+
+.feature-card .f-body p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.3
+}
+
+/* summary collapse/expand icon: show + when collapsed, − when open */
+.feature-category summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px
+}
+
+.feature-category summary::after {
+  content: '+';
+  flex: 0 0 auto;
+  margin-left: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
+  transition: background .15s ease, color .15s ease, transform .15s ease
+}
+
+.feature-category[open] summary::after {
+  content: '−';
+  background: rgba(var(--accent-rgb), 0.12);
+  color: var(--accent);
+  transform: rotate(0deg)
+}
+
+.feature-category summary:focus {
+  outline: 2px solid rgba(var(--accent-rgb), 0.1);
+  outline-offset: 2px
+}
+
+@media (max-width:1000px) {
+  .feature-category .feature-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+  }
+}
+
+@media (max-width:640px) {
+  .vehicle-hero {
+    flex-direction: column
+  }
+
+  .feature-category .feature-cards {
+    grid-template-columns: repeat(1, minmax(0, 1fr))
+  }
+}
+
+/* Inline style replacements with CSS custom properties */
+.sim-track-dynamic {
+  transform: translateX(var(--track-transform, 0px));
+  width: var(--track-width, 100%);
+  will-change: transform;
+}
+
+.sim-slide-dynamic {
+  width: var(--slide-width, 100%);
+}
+
+.loading-message {
+  padding: 12px;
+}
+
+.loader-fallback {
+  padding: 16px;
+  text-align: center;
+}
+
+.loader-fallback p {
+  margin: 0;
+  margin-bottom: 8px;
+}
+
+.loader-fallback .button-group {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.thumb-fallback {
+  padding: 8px;
+  text-align: center;
+}
+
+.vehicle-lightbox-hidden {
+  display: none;
+}
+
+.vehicle-lightbox-visible {
+  display: block;
+}
+.neon-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0
+}
+
+.neon-bg .neon {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(44px);
+  opacity: 0.52;
+  mix-blend-mode: screen;
+  transform: translate3d(0, 0, 0)
+}
+
+.neon-bg .n1 {
+  width: 360px;
+  height: 360px;
+  left: 6%;
+  top: 10%;
+  animation: neonFloat1 9s ease-in-out infinite
+}
+
+.neon-bg .n2 {
+  width: 260px;
+  height: 260px;
+  right: 4%;
+  top: 6%;
+  animation: neonFloat2 11s ease-in-out infinite
+}
+
+.neon-bg .n3 {
+  width: 420px;
+  height: 420px;
+  left: 10%;
+  bottom: 12%;
+  animation: neonFloat3 13s ease-in-out infinite
+}
+
+.neon-bg .n4 {
+  width: 180px;
+  height: 180px;
+  right: 18%;
+  bottom: 6%;
+  animation: neonFloat4 8s ease-in-out infinite
+}
+
+.neon-bg .n5 {
+  width: 120px;
+  height: 120px;
+  left: 50%;
+  top: 40%;
+  animation: neonFloat5 10s ease-in-out infinite
+}
+
+@keyframes neonFloat1 {
+  0% {
+    transform: translateY(0) scale(1)
+  }
+
+  25% {
+    transform: translateY(-18px) scale(1.03)
+  }
+
+  50% {
+    transform: translateY(0) scale(0.98)
+  }
+
+  75% {
+    transform: translateY(12px) scale(1.01)
+  }
+
+  100% {
+    transform: translateY(0) scale(1)
+  }
+}
+
+@keyframes neonFloat2 {
+  0% {
+    transform: translateX(0) scale(1)
+  }
+
+  25% {
+    transform: translateX(-14px) scale(1.02)
+  }
+
+  50% {
+    transform: translateX(0) scale(0.98)
+  }
+
+  75% {
+    transform: translateX(10px) scale(1.01)
+  }
+
+  100% {
+    transform: translateX(0) scale(1)
+  }
+}
+
+@keyframes neonFloat3 {
+  0% {
+    transform: translateY(0) scale(1)
+  }
+
+  20% {
+    transform: translateY(20px) scale(1.02)
+  }
+
+  40% {
+    transform: translateY(0) scale(0.98)
+  }
+
+  60% {
+    transform: translateY(-10px) scale(1.01)
+  }
+
+  100% {
+    transform: translateY(0) scale(1)
+  }
+}
+
+@keyframes neonFloat4 {
+  0% {
+    transform: translateY(0) scale(1)
+  }
+
+  30% {
+    transform: translateY(-10px) scale(1.02)
+  }
+
+  60% {
+    transform: translateY(6px) scale(0.99)
+  }
+
+  100% {
+    transform: translateY(0) scale(1)
+  }
+}
+
+@keyframes neonFloat5 {
+  0% {
+    transform: translateY(0) scale(1)
+  }
+
+  50% {
+    transform: translateY(-8px) scale(1.04)
+  }
+
+  100% {
+    transform: translateY(0) scale(1)
+  }
+}
+
+/* lower opacity for small screens */
+.section-divider.mobile-tight {
+  margin: 18px 0
+}
+
+@media (max-width:700px) {
+  .neon-bg .neon {
+    filter: blur(40px);
+    opacity: 0.44
+  }
+
+  /* add comfortable horizontal padding to the details area on mobile */
+  .vehicle-details {
+    padding: 18px 16px
+  }
+
+  /* hide short description inside the vehicle card on mobile (we show full desc below) */
+  .vehicle-desc {
+    display: none !important
+  }
+}
+
+/* Space below the similar-vehicles section to separate it from following content */
+.similar-vehicles {
+  margin-bottom: 48px;
+}
+
+@media (max-width: 700px) {
+  .similar-vehicles {
+    margin-bottom: 32px;
+  }
+}
+
+/* Print styles for vehicle brochure */
+@media print {
+
+  /* Hide header, footer, breadcrumb, and navigation */
+  header.site-header,
+  footer.site-footer,
+  .breadcrumb-row,
+  .similar-vehicles,
+  .social-row,
+  nav,
+  .btn-cta-ghost,
+  .breadcrumb-controls {
+    display: none !important;
+  }
+
+  /* Main page setup */
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #000 !important;
+  }
+
+  main {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #000 !important;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 20px;
+  }
+
+  /* Vehicle root with gallery and summary on first page */
+  .vehicle-root {
+    display: block;
+    page-break-after: auto;
+    margin-bottom: 0;
+  }
+
+  .vehicle-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    page-break-inside: avoid;
+    margin-bottom: 20px;
+    page-break-after: auto;
+  }
+
+  /* Gallery section */
+  .gallery-wrapper {
+    width: 100%;
+    height: auto;
+    page-break-inside: avoid;
+  }
+
+  .gallery-main {
+    width: 100%;
+    height: 400px;
+    page-break-inside: avoid;
+  }
+
+  .gallery-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .gallery-thumbnails {
+    display: none !important;
+  }
+
+  .gallery-controls {
+    display: none !important;
+  }
+
+  /* Summary card */
+  .vehicle-summary {
+    page-break-inside: avoid;
+  }
+
+  .summary-content {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 20px !important;
+    border-radius: 12px !important;
+  }
+
+  .summary-header {
+    margin-bottom: 20px;
+  }
+
+  .summary-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #fff !important;
+  }
+
+  .summary-price {
+    font-size: 20px;
+    color: var(--accent) !important;
+    font-weight: 700;
+  }
+
+  .chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .chip {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8) !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Description section - stays on first page */
+  #vehicleDetails {
+    page-break-before: auto;
+    page-break-inside: auto;
+    margin-bottom: 0;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .details-inner {
+    page-break-before: auto;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .vehicle-full-desc {
+    color: rgba(255, 255, 255, 0.85) !important;
+    line-height: 1.6;
+    font-size: 14px;
+    max-height: none !important;
+    overflow: visible !important;
+    page-break-after: always;
+  }
+
+  /* Force Features heading to page 2 */
+  .details-inner>h3:nth-of-type(2) {
+    page-break-before: auto;
+  }
+
+  /* Force Specs heading to page 2 */
+  .details-inner>h3:nth-of-type(3) {
+    page-break-before: auto;
+  }
+
+  /* Features section - page 2 */
+  .feature-cards-top {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+    page-break-inside: avoid;
+    page-break-before: auto;
+    margin-bottom: 24px;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  .feature-card {
+    background: rgba(185, 146, 74, 0.08) !important;
+    border: 1px solid rgba(185, 146, 74, 0.15) !important;
+    padding: 14px !important;
+    border-radius: 6px !important;
+    page-break-inside: avoid;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .feature-icon {
+    color: var(--accent) !important;
+    margin-bottom: 6px;
+    display: inline-block;
+  }
+
+  .feature-title {
+    color: #fff !important;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.4;
+    display: block !important;
+  }
+
+  .feature-clamp-bar {
+    display: none !important;
+  }
+
+  /* Specs section - page 2 */
+  .specs-section {
+    page-break-before: auto;
+    page-break-inside: avoid;
+  }
+
+  .feature-categories {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    page-break-before: always;
+  }
+
+  .feature-category {
+    display: block !important;
+    page-break-inside: avoid;
+    margin-bottom: 16px;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Force all details to be open for printing */
+  details {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  details summary {
+    display: block !important;
+    background: rgba(185, 146, 74, 0.12) !important;
+    padding: 12px !important;
+    border-radius: 6px !important;
+    color: #fff !important;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: default;
+    margin-bottom: 12px;
+    visibility: visible !important;
+  }
+
+  details[open] summary,
+  details summary {
+    list-style: none !important;
+  }
+
+  details summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  /* Show all feature items in details */
+  .feature-cards {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    page-break-inside: avoid;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .feature-card {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .feature-card .f-body {
+    display: block !important;
+  }
+
+  .feature-card .f-body strong {
+    display: block !important;
+    color: #fff !important;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .feature-card .f-body p {
+    display: block !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 13px;
+    margin: 0 !important;
+  }
+
+  .feature-item {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.04) !important;
+    padding: 12px !important;
+    border-radius: 6px !important;
+  }
+
+  .feature-item-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .feature-item-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff !important;
+  }
+
+  .specs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .spec-item {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.04) !important;
+    padding: 12px !important;
+    border-radius: 6px !important;
+  }
+
+  .spec-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .spec-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff !important;
+  }
+
+  /* Section dividers */
+  .section-divider {
+    background: rgba(255, 255, 255, 0.04) !important;
+    height: 1px;
+    margin: 20px 0;
+    page-break-inside: avoid;
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  /* Page break after first divider (after description) */
+  .details-inner>.section-divider:nth-child(4) {
+    page-break-after: always;
+    margin-bottom: 0;
+  }
+
+  .section-title,
+  .section-subtitle {
+    color: #fff !important;
+    font-weight: 700;
+    page-break-inside: avoid;
+    margin-bottom: 16px;
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  .section-title {
+    font-size: 20px;
+  }
+
+  .section-subtitle {
+    font-size: 16px;
+  }
+
+  .section-note {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-size: 12px;
+    margin-bottom: 12px;
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  /* Ensure proper pagination */
+  #featureCardsTop {
+    page-break-before: auto;
+  }
+
+  /* Remove unwanted elements */
+  button,
+  .btn,
+  input,
+  textarea,
+  select,
+  [role="button"],
+  .action-buttons,
+  .modal,
+  .lightbox {
+    display: none !important;
+  }
+
+  /* Ensure text is visible and colors are printed */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Set page size and margins */
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+}

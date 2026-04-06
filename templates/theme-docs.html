@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Theme Documentation - Carous Limited{% endblock %}
+
+{% block content %}
+<section class="content-section active theme-docs-page" id="theme-docs-section">
+    <div class="docs-hero">
+        <div class="docs-hero-content">
+            <span class="docs-kicker">Developer Reference</span>
+            <h2>Theme Contract Documentation</h2>
+            <p>
+                Build a new theme by adding one folder under <code>app/themes/&lt;theme-id&gt;</code>.
+                If the contract is valid, the theme is auto-detected with no manual registration.
+            </p>
+            <div class="docs-hero-actions">
+                <a href="{{ url_for('create') }}" class="btn btn-primary">Open Create Form</a>
+                <a href="/api/themes" class="btn btn-secondary" target="_blank" rel="noopener">View Theme Catalog API</a>
+            </div>
+        </div>
+        <div class="docs-hero-meta">
+            <div class="docs-meta-card">
+                <strong>Contract Source</strong>
+                <span><code>app/themes/*</code></span>
+            </div>
+            <div class="docs-meta-card">
+                <strong>Sync Command</strong>
+                <span><code>npm run theme:sync</code></span>
+            </div>
+            <div class="docs-meta-card">
+                <strong>Auto-run</strong>
+                <span><code>npm run dev</code> and <code>npm run build</code></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="docs-grid">
+        <article class="docs-card">
+            <h3>1. Required Folder Structure</h3>
+            <p>Every theme must follow this exact structure:</p>
+            <pre><code>app/themes/&lt;theme-id&gt;/
+  theme.json
+  shell.tsx
+  pages.ts
+  sections/index.tsx
+  recipes/index.ts
+  tokens.ts</code></pre>
+            <ul class="docs-list">
+                <li><code>&lt;theme-id&gt;</code> must match <code>theme.json.id</code>.</li>
+                <li>Only one theme should set <code>"isDefault": true</code>.</li>
+                <li>If files are missing, the theme is ignored by discovery.</li>
+            </ul>
+        </article>
+
+        <article class="docs-card">
+            <h3>2. theme.json Example</h3>
+            <pre><code>{
+  "id": "my-theme",
+  "name": "My Theme",
+  "description": "Custom independently packaged theme",
+  "status": "stable",
+  "isDefault": false
+}</code></pre>
+            <p class="docs-note">
+                Keep IDs lowercase and folder-safe (letters, numbers, dashes).
+            </p>
+        </article>
+
+        <article class="docs-card">
+            <h3>3. Export Contract</h3>
+            <p>Use these exact export names:</p>
+            <pre><code>// shell.tsx      -> export const themeShell
+// pages.ts       -> export const themePages
+// sections/index.tsx -> export const themeSections
+// recipes/index.ts   -> export const themeRecipes
+// tokens.ts          -> export const themeTokens</code></pre>
+            <p class="docs-note">
+                Generated registries import these symbols directly.
+            </p>
+        </article>
+
+        <article class="docs-card">
+            <h3>4. Minimal Implementation Example</h3>
+            <pre><code>// shell.tsx
+'use client'
+import type { ThemeShellComponent } from '../types'
+
+export const themeShell: ThemeShellComponent = ({ children }) =&gt; &lt;&gt;{children}&lt;/&gt;
+
+// pages.ts
+import type { ThemePageRegistry } from '../types'
+export const themePages: ThemePageRegistry = {
+  // home: MyHomePage,
+}
+
+// tokens.ts
+import type { ThemeTokenMap } from '../types'
+export const themeTokens: ThemeTokenMap = {
+  radii: { card: '16px' }
+}</code></pre>
+        </article>
+
+        <article class="docs-card docs-card-wide">
+            <h3>5. Create & Verify Workflow</h3>
+            <div class="guide-steps">
+                <div class="guide-step">
+                    <div class="step-number">1</div>
+                    <p>Create <code>app/themes/my-theme/</code> with all required files.</p>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">2</div>
+                    <p>Implement the contract exports and update content/styles for your theme.</p>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">3</div>
+                    <p>Run <code>npm run theme:sync</code> to regenerate registries and the shared manifest.</p>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">4</div>
+                    <p>Open <code>/api/themes</code> and confirm your theme appears in the catalog.</p>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">5</div>
+                    <p>Use the new theme from the Create form and AI Brand Generator selectors.</p>
+                </div>
+            </div>
+        </article>
+
+        <article class="docs-card docs-card-wide">
+            <h3>6. Generated Files (Do Not Edit Manually)</h3>
+            <pre><code>app/themes/generated/theme-shell-registry.generated.ts
+app/themes/generated/theme-page-registry.generated.ts
+app/themes/generated/theme-contract-registry.generated.ts
+theme/theme-manifest.json</code></pre>
+            <p class="docs-note">
+                These files are produced by the sync script from your theme folders.
+            </p>
+        </article>
+    </div>
+</section>
+{% endblock %}

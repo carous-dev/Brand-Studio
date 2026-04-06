@@ -1,0 +1,488 @@
+/* CSS custom properties are consolidated in `app/globals.css`.
+   Keep that file as the single source of theme variables (colors, fonts, sizes).
+   This stylesheet uses those variables via var(--name). */
+
+* {
+  box-sizing: border-box
+}
+
+html,
+body {
+  min-height: 100%
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-base);
+  background: var(--bg);
+  color: #f3f3f3;
+  -webkit-font-smoothing: antialiased;
+}
+
+.site-header .nav-links a {
+  font-family: var(--font-ui);
+}
+
+/* Hero title uses Orbitron for a futuristic headline */
+.hero-title {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em
+}
+
+/* Section titles use the base sans (Montserrat) but remain prominent */
+.section-title {
+  font-family: var(--font-base);
+  font-weight: 700
+}
+
+/* Badges and small caption text use Orienta for a compact, geometric look */
+.badge,
+.service-card figcaption {
+  font-family: var(--font-badge)
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* Reusable button styles - Design System */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-family: var(--font-ui-family);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Button size variants */
+.btn.small {
+  padding: 8px 16px;
+  font-size: 13px;
+  border-radius: 999px;
+}
+
+.btn.large {
+  padding: 16px 32px;
+  font-size: 16px;
+  border-radius: 999px;
+}
+
+/* Primary button - brand-primary background, brand-background text */
+.btn-primary {
+  background: var(--brand-primary);
+  color: var(--brand-background);
+  border: 1px solid var(--brand-primary);
+}
+
+.btn-primary:hover {
+  background: var(--brand-secondary);
+  border-color: var(--brand-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(var(--brand-primary-rgb), 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(-1px);
+}
+
+/* Background button - brand-background background, brand-primary text */
+.btn-bg {
+  background: var(--brand-background);
+  color: var(--brand-primary);
+  border: 1px solid rgba(var(--brand-text-rgb), 0.2);
+}
+
+.btn-bg:hover {
+  background: var(--brand-secondary);
+  color: var(--brand-background);
+  border-color: var(--brand-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(var(--brand-text-rgb), 0.15);
+}
+
+.btn-bg:active {
+  transform: translateY(-1px);
+}
+
+/* Accent button - brand-accent background, brand-background text */
+.btn-accent {
+  background: var(--brand-accent);
+  color: var(--brand-background);
+  border: 1px solid var(--brand-accent);
+}
+
+.btn-accent:hover {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(var(--brand-accent-rgb), 0.3);
+}
+
+.btn-accent:active {
+  transform: translateY(-1px);
+}
+
+/* Secondary button - brand-secondary background, brand-background text */
+.btn-secondary {
+  background: var(--brand-secondary);
+  color: var(--brand-background);
+  border: 1px solid var(--brand-secondary);
+}
+
+.btn-secondary:hover {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(var(--brand-secondary-rgb), 0.3);
+}
+
+.btn-secondary:active {
+  transform: translateY(-1px);
+}
+
+/* Outline button - transparent background, brand-primary border and text */
+.btn-outline {
+  background: transparent;
+  color: var(--brand-primary);
+  border: 2px solid var(--brand-primary);
+}
+
+.btn-outline:hover {
+  background: var(--brand-primary);
+  color: var(--brand-background);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(var(--brand-primary-rgb), 0.3);
+}
+
+.btn-outline:active {
+  transform: translateY(-1px);
+}
+
+/* Ghost button - transparent background, subtle border */
+.btn-ghost {
+  background: transparent;
+  color: var(--brand-text);
+  border: 1px solid rgba(var(--brand-text-rgb), 0.2);
+}
+
+.btn-ghost:hover {
+  background: rgba(var(--brand-primary-rgb), 0.1);
+  color: var(--brand-primary);
+  border-color: var(--brand-primary);
+  transform: translateY(-1px);
+}
+
+.btn-ghost:active {
+  transform: translateY(0);
+}
+
+/* Dark theme buttons for sections with brand-primary backgrounds */
+.btn-dark-primary {
+  background: var(--brand-background);
+  color: var(--brand-primary);
+  border: 1px solid rgba(var(--brand-text-rgb), 0.2);
+}
+
+.btn-dark-primary:hover {
+  background: var(--brand-secondary);
+  color: var(--brand-background);
+  border-color: var(--brand-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(var(--brand-text-rgb), 0.15);
+}
+
+.btn-dark-accent {
+  background: var(--brand-background);
+  color: var(--brand-accent);
+  border: 1px solid rgba(var(--brand-text-rgb), 0.2);
+}
+
+.btn-dark-accent:hover {
+  background: var(--brand-accent);
+  color: var(--brand-background);
+  border-color: var(--brand-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(var(--brand-accent-rgb), 0.3);
+}
+
+/* Utility classes */
+.btn-block {
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-rounded {
+  border-radius: 999px;
+}
+
+.btn-square {
+  border-radius: 0;
+}
+
+.btn-disabled,
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Icon button */
+.btn-icon {
+  padding: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  gap: 0;
+}
+
+.btn-icon.small {
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  border-radius: 999px;
+}
+
+.btn-icon.large {
+  width: 48px;
+  height: 48px;
+  padding: 12px;
+  border-radius: 999px;
+}
+
+/* Global select / dropdown styling: neutral background and high-contrast option text */
+select {
+  background: var(--brand-background);
+  color: var(--brand-text);
+  border: 1px solid rgba(var(--brand-text-rgb), 0.1);
+  padding: 8px 10px;
+  border-radius: 8px;
+  min-height: 38px;
+}
+
+/* Base option styling: prefer accent background where supported */
+select option,
+select optgroup {
+  background: var(--brand-background) !important;
+  color: var(--brand-text) !important
+}
+
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 6px rgba(var(--accent-primary-rgb), 0.12);
+  border-color: var(--accent-primary)
+}
+
+/* Keep native dropdown arrow on most platforms; provide a fallback for IE/Edge */
+select::-ms-expand {
+  color: var(--brand-text)
+}
+
+/* Hover/active/checked/focus states for options — use !important to increase precedence.
+   Note: many browsers/OSes (notably macOS native controls and some mobile browsers)
+   will ignore option styling; where supported these rules will apply. */
+select option:hover,
+select option:active,
+select option:focus,
+select option:checked,
+select optgroup option:hover,
+select optgroup option:active,
+select optgroup option:focus,
+select optgroup option:checked {
+  background: var(--brand-background) !important;
+  color: var(--brand-text) !important;
+}
+
+/* For webkit-based browsers that still apply system blue selection inside option lists, try forcing selection color */
+select option::selection,
+select optgroup option::selection {
+  background: rgba(var(--brand-text-rgb), 0.1) !important;
+  color: var(--brand-text) !important;
+}
+
+/* Global LQIP blur-up placeholder styles (used by JS) */
+img.lqip {
+  filter: blur(12px);
+  transform: scale(1.02);
+  transition: filter .6s ease, transform .6s ease
+}
+
+img.loaded {
+  filter: none;
+  transform: none;
+  transition: filter .45s ease, transform .45s ease
+}
+
+/* Reveal/entry animations for sections (scroll into view) */
+:root {
+  --reveal-ease: cubic-bezier(.2, .9, .2, 1)
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .62s var(--reveal-ease), transform .62s var(--reveal-ease);
+  will-change: opacity, transform;
+}
+
+.reveal.in-view {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal--slide-left {
+  transform: translateX(-18px);
+}
+
+.reveal--slide-left.in-view {
+  transform: none;
+}
+
+.reveal--slide-right {
+  transform: translateX(18px);
+}
+
+.reveal--slide-right.in-view {
+  transform: none;
+}
+
+.reveal--zoom {
+  transform: scale(.96);
+}
+
+.reveal--zoom.in-view {
+  transform: none;
+}
+
+.reveal--fade {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important
+  }
+}
+
+/* Debug panel for reveal observer (only shown when debug enabled via JS) */
+.reveal-debug-panel {
+  position: fixed;
+  right: 12px;
+  top: 12px;
+  width: 320px;
+  max-height: 60vh;
+  overflow: auto;
+  background: rgba(var(--brand-text-rgb), 0.92);
+  color: var(--brand-background);
+  font-size: 13px;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(var(--brand-text-rgb), 0.6);
+  padding: 8px;
+  z-index: 99999;
+}
+
+.reveal-debug-panel h4 {
+  margin: 0 0 6px;
+  font-size: 13px
+}
+
+.reveal-debug-entry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px
+}
+
+.reveal-debug-entry button {
+  background: var(--accent);
+  color: var(--brand-background);
+  border: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer
+}
+
+.reveal-debug-entry .status {
+  margin-left: auto;
+  font-weight: 700;
+  font-size: 12px
+}
+
+.reveal-debug-log {
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.9
+}
+
+.reveal-debug-log p {
+  margin: 6px 0;
+}
+
+
+.banner a {
+  color: var(--brand-background);
+  text-decoration: underline;
+  font-weight: 700
+}
+
+.preview-banner .pb-note {
+  max-width: 1100px;
+  text-align: center
+}
+
+@media (max-width:720px) {
+  .preview-banner {
+    height: 48px;
+    font-size: 13px;
+    padding: 0 10px
+  }
+
+  body.has-preview-banner {
+    /* No padding needed since banner is now static */
+  }
+}
+
+@media (max-width:480px) {
+  .preview-banner {
+    height: 44px;
+    font-size: 11px;
+    padding: 0 8px;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width:320px) {
+  .preview-banner {
+    height: 40px;
+    font-size: 10px;
+    padding: 0 6px;
+    line-height: 1.3;
+  }
+}
+
+/* Remove native number input spin buttons (caret up/down) for a cleaner UI */
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}

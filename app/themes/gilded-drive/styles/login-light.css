@@ -1,0 +1,173 @@
+/* Light theme login styles */
+
+.dashboard-login-page {
+  background: linear-gradient(135deg, #f6ead0 0%, #ffffff 100%);
+  color: #333;
+}
+
+.login-card {
+  width: 420px;
+  max-width: 100%;
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(184, 146, 74, 0.2);
+}
+
+.login-card-head h2 {
+  margin: 0 0 8px 0;
+  color: #1a1a1a;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.login-card-head .muted {
+  margin: 0 0 20px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.login-error {
+  background: rgba(255, 107, 107, 0.1);
+  color: #d32f2f;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 107, 107, 0.2);
+}
+
+.input-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  background: #f9f9f9;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-with-icon:focus-within {
+  border-color: #b8924a;
+  box-shadow: 0 0 0 3px rgba(184, 146, 74, 0.1);
+}
+
+.input-icon {
+  color: #999;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+}
+
+.input-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #333;
+  padding: 0;
+  font-size: 16px;
+}
+
+.input-field::placeholder {
+  color: #aaa;
+}
+
+.password-toggle {
+  background: transparent;
+  border: none;
+  color: #999;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #b8924a;
+}
+
+.password-toggle:focus {
+  outline: 2px solid rgba(184, 146, 74, 0.3);
+  border-radius: 4px;
+}
+
+.btn-full {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #b8924a 0%, #d1b67a 100%);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.btn-full:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(184, 146, 74, 0.3);
+}
+
+.btn-full:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-full[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.btn-text {
+  display: inline-block;
+}
+
+/* Honeypot field - hidden from users but visible to bots */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* reCAPTCHA styling */
+.recaptcha-container {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Math CAPTCHA styling */
+.math-captcha {
+  margin-bottom: 16px;
+}
+
+.math-question {
+  font-size: 14px;
+  color: #555;
+  margin-right: 12px;
+  white-space: nowrap;
+}
+
+.math-input {
+  max-width: 80px;
+  text-align: center;
+}

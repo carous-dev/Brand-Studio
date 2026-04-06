@@ -1,0 +1,129 @@
+import { NextResponse } from 'next/server'
+import { loadBrandInventoryStrict, loadInventoryByBrand, normalizeVehicle, generateVehicleSlug } from '@/app/lib/loadInventory'
+import { getBrandFromHost } from '@/config/domains'
+import { fetchBrandByHost, fetchBrandBySlug } from '@/app/lib/brandApi'
+
+export async function GET(req: Request, { params }: { params: Promise<{ slug: string }> }) {
+  try {
+    const { slug } = await params
+    
+    if (!slug) return NextResponse.json({ error: 'missing slug parameter' }, { status: 400 })
+
+    const url = new URL(req.url)
+    const queryBrand = (url.searchParams.get('brand') || '').toLowerCase().trim()
+    const xBrandHeader = (req.headers.get('x-brand') || '').toLowerCase().trim()
+    const host =
+      req.headers.get('x-forwarded-host') ||
+      req.headers.get('x-original-host') ||
+      req.headers.get('host') ||
+      'localhost'
+
+    let brand: string | null = null
+
+    if (queryBrand) {
+      const fromQuery = await fetchBrandBySlug(queryBrand)
+      brand = fromQuery?.slug ? fromQuery.slug.toLowerCase() : queryBrand
+    }
+
+    if (!brand && xBrandHeader) {
+      const fromHeader = await fetchBrandBySlug(xBrandHeader)
+      if (fromHeader?.slug) brand = fromHeader.slug.toLowerCase()
+    }
+
+    if (!brand) {
+      const fromHost = await fetchBrandByHost(host)
+      if (fromHost?.slug) brand = fromHost.slug.toLowerCase()
+    }
+
+    if (!brand) {
+      brand = (getBrandFromHost(host) || 'fairfield').toLowerCase()
+    }
+
+    if (!brand) {
+      return NextResponse.json({ error: 'missing brand for vehicle lookup' }, { status: 400 })
+    }
+
+    // Keep behavior aligned with /api/inventory:
+    // prefer strict brand inventory, but fall back to main inventory when absent.
+    const strictInventory = loadBrandInventoryStrict(brand)
+    const inventory = strictInventory.length > 0 ? strictInventory : loadInventoryByBrand(brand)
+    if (!inventory || inventory.length === 0) {
+      return NextResponse.json({ error: 'brand inventory not found' }, { status: 404 })
+    }
+
+    const slugLower = slug.toLowerCase()
+    const normalizedLookup = slugLower.replace(/[^a-z0-9]/g, '')
+
+    // Find vehicle by slug or registration (supports compact registration variants)
+    const found = inventory.find((item: any) => {
+      const generatedSlug = generateVehicleSlug(item)
+      const explicitSlug = (item.slug || item.derivative_slug || '').toString().toLowerCase()
+      const itemSlug = explicitSlug || generatedSlug
+      const normalizedItemSlug = itemSlug.replace(/[^a-z0-9]/g, '')
+      const reg = (item.reg || item.registration || '').toString().toLowerCase()
+      const normalizedReg = reg.replace(/[^a-z0-9]/g, '')
+      return (
+        itemSlug === slugLower ||
+        Boolean(normalizedLookup && normalizedItemSlug && normalizedItemSlug === normalizedLookup) ||
+        reg === slugLower ||
+        Boolean(normalizedLookup && normalizedReg && normalizedReg === normalizedLookup)
+      )
+    })
+
+    if (!found) {
+      return NextResponse.json({ error: 'Vehicle not found' }, { status: 404 })
+    }
+
+    const normalized = normalizeVehicle(found)
+
+    // Build response
+    const vehicle: any = {
+      vin: normalized.vin,
+      registration: normalized.registration,
+      make: normalized.make,
+      model: normalized.model,
+      derivative: normalized.derivative,
+      year: normalized.year,
+      body_type: normalized.body_type,
+      fuel_type: normalized.fuel_type,
+      transmission_type: normalized.transmission_type,
+      colour: normalized.colour,
+      engine_capacity_cc: found.engine_capacity_cc,
+      engine_power_bhp: found.engine_power_bhp,
+      seats: normalized.seats,
+      doors: found.doors,
+      mileage: normalized.mileage,
+      price: normalized.price,
+      description: normalized.description,
+      ...found // Include any additional fields from inventory
+    }
+
+    const response: any = {
+      vehicle: {
+        ...vehicle,
+        derivative_slug: generateVehicleSlug(found)
+      },
+      advert: {
+        vin: normalized.vin,
+        forecourt_price_gbp: normalized.price,
+        status: 'publish',
+        featured: found.featured || false
+      },
+      advertiser: found.advertiser || null,
+      make: { name: normalized.make },
+      model: { name: normalized.model },
+      vehicle_history: found.vehicle_history || null,
+      vehicle_check: found.vehicle_check || null,
+      features: found.features || [],
+      images: found.images || [found.image || '/images/placeholder.png'],
+      specs: found.specs || {}
+    }
+
+    console.log(`[/api/vehicle/[slug]] Found vehicle: ${normalized.make} ${normalized.model} (${normalized.registration})`)
+
+    return NextResponse.json({ vehicle: response }, { status: 200 })
+  } catch (err) {
+    console.error('[/api/vehicle/[slug]] Error:', err)
+    return NextResponse.json({ error: 'Server error' }, { status: 500 })
+  }
+}

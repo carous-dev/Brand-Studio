@@ -1,0 +1,92 @@
+/* Tablet and smaller */
+@media (max-width:900px){
+  .hero{min-height:80vh;background-position:center top;background-size:cover}
+  .hero-inner{flex-direction:column;padding:calc(var(--nav-height) + 36px) 0 40px}
+  .cards{grid-template-columns:1fr}
+  .services-grid{grid-template-columns:repeat(2,1fr)}
+  .about-inner{flex-direction:column}
+  .hero-image{height:320px}
+}
+
+/* Mobile: refine hero spacing, reduce orb sizes and font-sizes */
+@media (max-width:600px){
+  .hero{min-height:72vh}
+  .hero-inner{padding:calc(var(--nav-height) + 24px) 0 32px}
+  .hero-title{font-size:32px}
+  .hero-sub{font-size:15px}
+  .hero-image{height:220px;border-radius:12px}
+  .hero-decor .orb.orb-1{width:280px;height:280px;left:-18%;top:0}
+  .hero-decor .orb.orb-2{width:320px;height:320px;right:-18%;bottom:-12%}
+  .vf-container{flex-direction:column;align-items:stretch}
+  .vf-fields{flex-direction:column;gap:8px}
+}
+
+/* Small mobile: compact hero to avoid excessive vertical scroll */
+@media (max-width:420px){
+  .hero{min-height:68vh}
+  .hero-inner{padding:unset;}
+  .hero-title{font-size:26px}
+  .hero-sub{font-size:14px}
+  .hero-image{height:180px}
+  .hero-decor{opacity:0.9}
+  .hero-decor .orb{filter:blur(30px)}
+}
+
+/* Prevent About section pseudo-elements from causing horizontal overflow on smaller screens */
+@media (max-width:980px){
+  .about{ overflow-x: hidden; }
+  .about::before, [data-reveal="neon"]::before { left: 0; right: 0; top: -6%; filter: blur(18px); }
+  .visual-accent{ left: 0; width: 100%; transform: none; }
+}
+
+/* Mobile tweak: remove padding for services futuristic reveal when in-view */
+@media (max-width:700px){
+  /* Remove outer padding so reveals can span full width on small screens */
+  .services-futuristic{ padding: 0 !important; }
+
+  /* Make each reveal more compact and ensure images scale correctly */
+  .services-futuristic .reveal{
+    padding: 0 !important;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .services-futuristic .reveal img,
+  .services-futuristic .reveal .media{
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* Tidy the figcaption: center, reduce size and padding, keep rounded look */
+  .services-futuristic .reveal .figcaption{
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 74% !important;
+    max-width: 340px !important;
+    padding: 12px 16px !important;
+    border-radius: 999px !important;
+    text-align: center !important;
+    font-size: 18px !important;
+    line-height: 1.03 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Reduce any large decorative badge/icon inside the caption */
+  .services-futuristic .reveal .figcaption .badge,
+  .services-futuristic .reveal .figcaption .icon{
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    right: 10px !important;
+    bottom: 10px !important;
+  }
+
+  /* Slightly tighter spacing between stacked reveals */
+  .services-futuristic .reveal + .reveal{ margin-top: 6px !important; }
+}

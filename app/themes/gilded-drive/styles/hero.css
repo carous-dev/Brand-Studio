@@ -1,0 +1,689 @@
+/* Full-screen futuristic hero */
+.hero {
+	position: relative;
+	width: 100%;
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+	/* layered backgrounds: subtle colour blobs + photography (removed heavy top darkening to avoid a solid black strip) */
+	background-image:
+		radial-gradient(ellipse at 10% 20%, rgba(185, 146, 74, 0.08), transparent 12%),
+		radial-gradient(ellipse at 90% 80%, rgba(209, 182, 122, 0.05), transparent 18%),
+		var(--classic-hero-image, url('/images/hero-home.webp'));
+	background-size: 60% 60%, 50% 50%, cover;
+	background-position: left top, right bottom, center;
+	/* photographic layer is fixed for subtle parallax */
+	background-attachment: scroll, scroll, fixed;
+	padding-bottom: 40px;
+}
+
+/* Allow hero content to be wider than normal page container, add horizontal padding and box-sizing */
+.hero>.container {
+	max-width: 1180px;
+	padding: 0 16px;
+	width: 100%;
+	box-sizing: border-box
+}
+
+/* make sure the inner grid respects the container and won't create horizontal scroll */
+.hero-inner {
+	box-sizing: border-box;
+	width: 100%
+}
+
+/* hero inner: left caption column + right stacked cards */
+.hero-inner {
+	display: grid;
+	grid-template-columns: 1fr 360px;
+	gap: 32px;
+	align-items: center
+}
+
+.hero-cards {
+	display: flex;
+	flex-direction: column;
+	gap: 18px
+}
+
+.mini-card {
+	position: relative;
+	height: 150px;
+	border-radius: 18px;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	transform: translateZ(0);
+	/* glassmorphic base */
+	background: rgba(255, 255, 255, 0.03);
+	-webkit-backdrop-filter: blur(8px);
+	backdrop-filter: blur(8px);
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	box-shadow: 0 10px 30px rgba(2, 6, 23, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+.mini-card::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: 18px;
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.005));
+	mix-blend-mode: overlay;
+	pointer-events: none
+}
+
+.mini-card .accent-line {
+	position: absolute;
+	left: 12px;
+	top: 12px;
+	height: calc(100% - 24px);
+	width: 4px;
+	background: linear-gradient(180deg, rgba(185, 146, 74, 0.95), rgba(209, 182, 122, 0.6));
+	mix-blend-mode: screen;
+	border-radius: 4px
+}
+
+.mini-content {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 18px;
+	width: 100%
+}
+
+.mini-icon {
+	width: 56px;
+	height: 56px;
+	border-radius: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	color: #fff;
+	box-shadow: inset 0 -6px 12px rgba(0, 0, 0, 0.25)
+}
+
+.mini-copy {
+	flex: 1;
+	min-width: 0
+}
+
+.mini-copy h4 {
+	margin: 0;
+	font-size: 16px;
+	color: #fff
+}
+
+.mini-copy p {
+	margin: 6px 0 0;
+	color: rgba(255, 255, 255, 0.82);
+	font-size: 13px
+}
+
+/* Font mapping for hero microcopy */
+.mini-copy h4 {
+	font-family: var(--font-base);
+	font-weight: 700
+}
+
+.mini-copy p {
+	font-family: var(--font-ui)
+}
+
+.hero-panel .eyebrow {
+	font-family: var(--font-ui);
+	font-weight: 600
+}
+
+.hero-panel .hero-sub {
+	font-family: var(--font-base)
+}
+
+.card-cta {
+	margin-left: 12px;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	border: none;
+	background: linear-gradient(90deg, rgba(185, 146, 74, 0.12), rgba(209, 182, 122, 0.06));
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #fff;
+	cursor: pointer;
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45)
+}
+
+.card-cta svg {
+	transform: translateX(0);
+	transition: transform 220ms ease
+}
+
+.mini-card:hover {
+	transform: translateY(-8px) scale(1.02);
+	transition: transform 240ms cubic-bezier(.2, .9, .2, 1);
+	box-shadow: 0 30px 80px rgba(2, 6, 23, 0.6)
+}
+
+.mini-card:hover .card-cta svg {
+	transform: translateX(4px)
+}
+
+/* Entry animation: slide in from right for hero-right mini-cards */
+@keyframes slideFromRight {
+	from {
+		transform: translateX(28px) translateY(0);
+		opacity: 0
+	}
+
+	to {
+		transform: translateX(0) translateY(0);
+		opacity: 1
+	}
+}
+
+/* Start hidden / offset — animation runs when `.in-view` is added via JS or CSS */
+.hero-right .mini-card {
+	opacity: 0;
+	transform: translateX(28px);
+	will-change: transform, opacity
+}
+
+/* Apply animation only when element receives `.in-view` — allows IntersectionObserver control */
+@media (prefers-reduced-motion: no-preference) {
+	.hero-right .mini-card.in-view {
+		animation: slideFromRight 420ms cubic-bezier(.2, .9, .2, 1) both
+	}
+
+	.hero-right .mini-card.in-view:nth-child(1) {
+		animation-delay: 0s
+	}
+
+	.hero-right .mini-card.in-view:nth-child(2) {
+		animation-delay: 0.06s
+	}
+
+	.hero-right .mini-card.in-view:nth-child(3) {
+		animation-delay: 0.12s
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.hero-right .mini-card {
+		animation: none;
+		opacity: 1;
+		transform: none
+	}
+}
+
+/* small screens: compact cards */
+@media (max-width:900px) {
+	.mini-card {
+		height: 120px;
+		border-radius: 12px
+	}
+
+	.mini-icon {
+		width: 48px;
+		height: 48px
+	}
+}
+
+/* make hero-panel wider and match container margins (edge aligned to navbar) */
+.hero-panel {
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.02));
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	backdrop-filter: blur(6px);
+	padding: 28px;
+	border-radius: 16px;
+	width: 100%;
+	/* prepare for entrance animation */
+	will-change: transform, opacity;
+}
+
+.hero-panel .eyebrow,
+.hero-panel .hero-title,
+.hero-panel .hero-sub,
+.hero-actions {
+	opacity: 0;
+	transform: translateY(10px);
+}
+
+/* entrance animation for caption elements (staggered) */
+@keyframes fadeUp {
+	from {
+		opacity: 0;
+		transform: translateY(12px)
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0)
+	}
+}
+
+.hero-panel .eyebrow {
+	animation: fadeUp 560ms cubic-bezier(.2, .8, .2, 1) both .14s
+}
+
+.hero-panel .hero-title {
+	animation: fadeUp 720ms cubic-bezier(.2, .8, .2, 1) both .26s
+}
+
+.hero-panel .hero-sub {
+	animation: fadeUp 640ms cubic-bezier(.2, .8, .2, 1) both .42s
+}
+
+.hero-actions {
+	animation: fadeUp 560ms cubic-bezier(.2, .8, .2, 1) both .6s
+}
+
+/* Futuristic hero CTA button */
+.btn.hero-cta {
+	--g1: rgba(185, 146, 74, 1);
+	--g2: rgba(209, 182, 122, 1);
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	padding: 14px 22px;
+	border-radius: 12px;
+	background: #fff;
+	color: #0b0b0b;
+	font-weight: 700;
+	box-shadow: 0 8px 30px rgba(185, 146, 74, 0.12), 0 2px 8px rgba(0, 0, 0, 0.5);
+	border: none;
+	text-decoration: none;
+	overflow: hidden;
+	transform: translateZ(0);
+	transition: transform 220ms cubic-bezier(.2, .9, .2, 1), box-shadow 220ms ease, filter 220ms ease;
+}
+
+.btn.hero-cta::after {
+	content: "";
+	position: absolute;
+	left: -60%;
+	top: 0;
+	height: 100%;
+	width: 60%;
+	background: linear-gradient(120deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.12));
+	transform: skewX(-18deg);
+	filter: blur(6px);
+	opacity: 0.0;
+	transition: opacity 360ms ease, left 520ms cubic-bezier(.2, .9, .2, 1);
+	pointer-events: none;
+}
+
+.btn.hero-cta:hover {
+	transform: translateY(-4px) scale(1.02);
+	box-shadow: 0 18px 60px rgba(185, 146, 74, 0.18), 0 6px 18px rgba(0, 0, 0, 0.5)
+}
+
+.btn.hero-cta:hover::after {
+	opacity: 0.9;
+	left: 120%
+}
+
+.btn.hero-cta:active {
+	transform: translateY(-1px) scale(0.995)
+}
+
+.btn.hero-cta:focus {
+	outline: none;
+	box-shadow: 0 0 0 4px rgba(185, 146, 74, 0.12), 0 14px 40px rgba(2, 6, 23, 0.55)
+}
+
+/* Badges with icons */
+.hero-panel-foot .badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	background: rgba(255, 255, 255, 0.05);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	padding: 8px 10px;
+	border-radius: 12px;
+	color: #fff;
+	font-size: 13px
+}
+
+.hero-panel-foot .badge .badge-icon {
+	width: 16px;
+	height: 16px;
+	flex: 0 0 16px;
+	display: block;
+	color: var(--accent);
+	stroke: currentColor;
+	fill: none
+}
+
+.hero-panel-foot .badge:hover {
+	background: rgba(255, 255, 255, 0.08);
+	color: #fff
+}
+
+
+/* Hide / collapse the right stacked cards on narrower viewports */
+@media (max-width:900px) {
+
+	/* Stack hero columns on smaller viewports instead of hiding the right panel */
+	.hero-right {
+		display: block;
+		margin-top: 20px;
+		min-height: auto
+	}
+
+	.hero-inner {
+		grid-template-columns: 1fr;
+		align-items: start;
+		gap: 18px;
+		padding: calc(var(--nav-height) + 8px) 0 20px
+	}
+
+	.hero-panel {
+		max-width: 100%;
+		box-sizing: border-box;
+		padding: 20px
+	}
+}
+
+@media (max-width:600px) {
+
+	/* Tighter stacking on phones */
+	.hero-right {
+		display: block;
+		margin-top: 12px
+	}
+
+	.hero-inner {
+		padding: calc(var(--nav-height) + 6px) 6px 16px
+	}
+
+	.hero-panel {
+		padding: 16px;
+		max-width: 100%;
+		box-sizing: border-box
+	}
+
+	.hero-panel .hero-title {
+		font-size: 28px
+	}
+}
+
+.hero-panel .hero-title {
+	font-size: clamp(28px, 6.8vw, 72px);
+	line-height: 1
+}
+
+.hero-panel .hero-sub {
+	font-size: 18px
+}
+
+.hero-decor {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	z-index: 0
+}
+
+.hero-decor .orb {
+	position: absolute;
+	border-radius: 50%;
+	filter: blur(40px);
+	opacity: 0.9;
+	transform: translate3d(0, 0, 0)
+}
+
+.hero-decor .orb.orb-1 {
+	width: 420px;
+	height: 420px;
+	left: -8%;
+	top: 6%;
+	background: radial-gradient(circle at 30% 30%, rgba(185, 146, 74, 0.22), rgba(177, 146, 74, 0.06) 40%, transparent 60%);
+	animation: float 8s ease-in-out infinite
+}
+
+.hero-decor .orb.orb-2 {
+	width: 520px;
+	height: 520px;
+	right: -12%;
+	bottom: -8%;
+	background: radial-gradient(circle at 70% 70%, rgba(209, 182, 122, 0.14), rgba(209, 182, 122, 0.04) 40%, transparent 65%);
+	animation: float 10s ease-in-out infinite
+}
+
+.hero-decor::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.35));
+	mix-blend-mode: multiply
+}
+
+/* Remove the fixed-height dark top strip (was creating a visible black band). Keep a gentle overlay for the whole hero. */
+.hero::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 0; /* collapsed to remove the band */
+	pointer-events: none;
+	background: none;
+	z-index: 1;
+}
+
+/* Gentle overall overlay for the hero (starts at the top to provide subtle contrast without a hard strip) */
+.hero::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	pointer-events: none;
+	background: linear-gradient(180deg, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.04) 40%, rgba(255, 255, 255, 0.03) 100%);
+	z-index: 1;
+}
+
+.hero-left {
+	flex: 1;
+	max-width: none;
+	position: relative;
+	z-index: 2
+}
+
+.eyebrow {
+	display: inline-block;
+	background: rgba(255, 255, 255, 0.03);
+	color: var(--muted-foreground, #fff);
+	padding: 6px 12px;
+	border-radius: 999px;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	margin: 0 0 12px;
+	border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.hero-title {
+	font-size: 46px;
+	line-height: 1.02;
+	margin: 0 0 18px;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+	color: #fff;
+	text-shadow: 0 8px 30px rgba(0, 0, 0, 0.6)
+}
+
+.hero-sub {
+	color: var(--muted);
+	margin-bottom: 22px
+}
+
+.hero-right {
+	flex: 1;
+	min-height: 320px;
+	position: relative;
+	z-index: 2
+}
+
+.hero-image {
+	height: 440px;
+	border-radius: 18px;
+	background-size: cover;
+	background-position: center;
+	box-shadow: 0 18px 60px rgba(0, 0, 0, 0.6)
+}
+
+/* Boxed caption panel inside the hero */
+.hero-panel {
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.02));
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	backdrop-filter: blur(6px);
+	padding: 28px;
+	border-radius: 16px;
+	max-width: 940px;
+	width: 100%;
+}
+
+.hero-panel .eyebrow {
+	margin-top: 2px;
+	font-weight: 600;
+	padding: 4px 10px;
+	font-size: 12px
+}
+
+.hero-panel .hero-title {
+	font-size: 40px
+}
+
+.hero-panel .hero-sub {
+	margin-bottom: 18px;
+	color: var(--muted)
+}
+
+.hero-actions {
+	margin-top: 6px
+}
+
+.hero-panel-foot {
+	display: flex;
+	gap: 8px;
+	margin-top: 18px;
+	flex-wrap: wrap
+}
+
+.badge {
+	background: rgba(255, 255, 255, 0.03);
+	border: 1px solid rgba(255, 255, 255, 0.03);
+	padding: 6px 10px;
+	border-radius: 10px;
+	color: var(--muted);
+	font-size: 13px
+}
+
+/* subtle hover emphasis for the panel */
+.hero-panel:hover {
+	box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+	transform: translateY(-4px);
+	transition: transform 220ms ease, box-shadow 220ms ease
+}
+
+@media (max-width:900px) {
+	.hero-panel {
+		padding: 20px;
+		border-radius: 12px
+	}
+
+	.hero-panel .hero-title {
+		font-size: 34px
+	}
+}
+
+@media (max-width:600px) {
+	.hero-panel {
+		padding: 16px;
+		border-radius: 10px
+	}
+
+	.hero-panel .hero-title {
+		font-size: 26px
+	}
+
+	.hero-panel .hero-sub {
+		font-size: 14px
+	}
+
+	.hero-panel-foot {
+		gap: 6px
+	}
+
+	.badge {
+		padding: 5px 8px;
+		font-size: 12px
+	}
+}
+
+/* Disable fixed background on smaller viewports for performance and correctness */
+@media (max-width:900px) {
+	.hero {
+		background-attachment: scroll, scroll, scroll, scroll
+	}
+}
+
+/* Inventory hero CTA sizes (larger, more prominent CTAs) */
+.inventory-hero .btn-cta-primary,
+.inventory-hero .btn-cta-secondary {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	padding: 14px 20px;
+	border-radius: 12px;
+	font-size: 16px;
+	font-weight: 700;
+	text-decoration: none;
+	line-height: 1;
+	transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.inventory-hero .btn-cta-primary {
+	background: linear-gradient(90deg, rgba(185,146,74,1), rgba(209,182,122,1));
+	color: #0b0b0b;
+	box-shadow: 0 10px 30px rgba(185,146,74,0.12);
+}
+
+.inventory-hero .btn-cta-secondary {
+	background: rgba(255,255,255,0.06);
+	color: #fff;
+	border: 1px solid rgba(255,255,255,0.04);
+}
+
+@media (max-width:900px) {
+	.inventory-hero .btn-cta-primary,
+	.inventory-hero .btn-cta-secondary {
+		padding: 12px 16px;
+		font-size: 15px;
+	}
+}
+
+/* subtle floating animation for decorative orbs */
+@keyframes float {
+	0% {
+		transform: translateY(0) translateX(0)
+	}
+
+	50% {
+		transform: translateY(-18px) translateX(6px)
+	}
+
+	100% {
+		transform: translateY(0) translateX(0)
+	}
+}
+
+/* smaller screens adjustments handled in responsive.css */

@@ -1,0 +1,138 @@
+.services-why {
+  background: var(--brand-background);
+  padding: 90px 0 80px;
+  font-family: var(--font-ui);
+}
+
+.services-why-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 36px;
+  align-items: center;
+}
+
+.services-why-media {
+  position: relative;
+  min-height: 460px;
+}
+
+.services-why-panel {
+  display: none;
+}
+
+.services-why-panel::after {
+  content: none;
+}
+
+.services-why-image {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.services-why-image img {
+  object-fit: contain;
+}
+
+.services-why-content h2 {
+  font-family: var(--font-brand);
+  font-size: clamp(28px, 4vw, 44px);
+  margin: 0 0 16px;
+  color: var(--brand-text);
+}
+
+.services-why-content p {
+  margin: 0 0 28px;
+  color: var(--brand-text);
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.services-why-stats {
+  border-left: 4px solid var(--accent-primary);
+  padding-left: 22px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 28px;
+}
+
+.services-stat {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  background: var(--brand-background);
+  padding: 16px 18px;
+  border: 1px solid var(--brand-background);
+  box-shadow: 0 10px 24px rgba(var(--brand-text-rgb), 0.05);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(var(--accent-primary-rgb), 0.12);
+  color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--brand-text);
+  font-family: var(--font-brand);
+}
+
+.stat-label {
+  font-size: 14px;
+  color: var(--brand-text);
+}
+
+@media (max-width: 1024px) {
+  .services-why-container {
+    grid-template-columns: 1fr;
+  }
+
+  .services-why-media {
+    min-height: 360px;
+    order: 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .services-why {
+    padding: 70px 0 60px;
+  }
+
+  .services-why-container {
+    padding: 0 18px;
+  }
+
+  .services-why-image {
+    inset: 32px 20px 24px 20px;
+  }
+
+  .services-why-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .services-why {
+    padding: 60px 0 50px;
+  }
+
+  .services-why-media {
+    min-height: 300px;
+  }
+
+  .services-why-content h2 {
+    font-size: clamp(24px, 6vw, 32px);
+  }
+}

@@ -1,0 +1,282 @@
+/* ========================================
+   FONT STANDARDIZATION - BRAND CONSISTENCY
+   ========================================
+   
+   This file ensures all components use brand-specific fonts
+   consistently across the entire Next.js application.
+   
+   Font Variables:
+   - --font-ui: For body text, UI elements, forms
+   - --font-brand: For headings, titles, hero text
+   - --font-mono: For prices, stats, technical data
+   ======================================== */
+
+/* Base Typography Reset */
+* {
+  font-family: inherit;
+}
+
+/* Body and Base Elements */
+body,
+html {
+  font-family: var(--font-ui);
+  line-height: 1.6;
+}
+
+/* Headings - Brand Font */
+h1, h2, h3, h4, h5, h6,
+.heading,
+.title,
+.page-title,
+.section-title,
+.hero-title,
+.featured-title,
+.vehicle-title,
+.brand-title {
+  font-family: var(--font-brand) !important;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* UI Elements - UI Font */
+button,
+.btn,
+input,
+select,
+textarea,
+.label,
+.form-label,
+.nav-link,
+.menu-item,
+.tab,
+.filter,
+.pagination,
+.breadcrumb,
+.badge,
+.tag {
+  font-family: var(--font-ui) !important;
+}
+
+/* Prices and Technical Data - Mono Font */
+.price,
+.vehicle-price,
+.spec-value,
+.stat-value,
+.mileage,
+.year,
+.fuel-type,
+.transmission,
+.engine-size,
+.mono-text {
+  font-family: var(--font-mono) !important;
+  font-weight: 600;
+}
+
+/* Content Text - UI Font */
+p,
+span,
+div,
+.text,
+.description,
+.content,
+.subtitle,
+.featured-subtitle,
+.section-subtitle,
+.cta-subtitle,
+.faq-subtitle {
+  font-family: var(--font-ui) !important;
+}
+
+/* Component-Specific Overrides */
+.vehicle-page {
+  font-family: var(--font-ui) !important;
+}
+
+.vehicle-details-fresh {
+  font-family: var(--font-ui) !important;
+}
+
+.vehicle-details-new {
+  font-family: var(--font-ui) !important;
+}
+
+.used-cars-page {
+  font-family: var(--font-ui) !important;
+}
+
+.featured-section {
+  font-family: var(--font-ui) !important;
+}
+
+.testimonials-section {
+  font-family: var(--font-ui) !important;
+}
+
+.services-section {
+  font-family: var(--font-ui) !important;
+}
+
+.cta-section {
+  font-family: var(--font-ui) !important;
+}
+
+/* Specific Component Fixes */
+.modern-breadcrumb {
+  font-family: var(--font-ui) !important;
+}
+
+.inventory-card {
+  font-family: var(--font-ui) !important;
+}
+
+.inventory-title {
+  font-family: var(--font-brand) !important;
+}
+
+.inventory-price {
+  font-family: var(--font-mono) !important;
+}
+
+.vehicle-panel {
+  font-family: var(--font-ui) !important;
+}
+
+.wishlist-page {
+  font-family: var(--font-ui) !important;
+}
+
+.support-widget {
+  font-family: var(--font-ui) !important;
+}
+
+/* Form Elements */
+form {
+  font-family: var(--font-ui) !important;
+}
+
+.form-group,
+.form-field {
+  font-family: var(--font-ui) !important;
+}
+
+/* Navigation */
+nav,
+.navbar,
+.header,
+.menu {
+  font-family: var(--font-ui) !important;
+}
+
+.nav-brand {
+  font-family: var(--font-brand) !important;
+}
+
+/* Footer */
+footer,
+.footer {
+  font-family: var(--font-ui) !important;
+}
+
+.footer-title {
+  font-family: var(--font-brand) !important;
+}
+
+/* Cards and Components */
+.card,
+.card-header,
+.card-body,
+.card-footer {
+  font-family: var(--font-ui) !important;
+}
+
+.card-title {
+  font-family: var(--font-brand) !important;
+}
+
+.card-price {
+  font-family: var(--font-mono) !important;
+}
+
+/* Tables */
+table,
+th,
+td {
+  font-family: var(--font-ui) !important;
+}
+
+.table-header {
+  font-family: var(--font-brand) !important;
+}
+
+.table-data-price {
+  font-family: var(--font-mono) !important;
+}
+
+/* Lists */
+ul, ol, li {
+  font-family: var(--font-ui) !important;
+}
+
+/* Quotes and Testimonials */
+blockquote,
+.testimonial,
+.quote {
+  font-family: var(--font-ui) !important;
+}
+
+.testimonial-author {
+  font-family: var(--font-brand) !important;
+}
+
+/* Error and Success Messages */
+.error,
+.success,
+.warning,
+.info,
+.alert {
+  font-family: var(--font-ui) !important;
+}
+
+/* Loading States */
+.loading,
+.skeleton {
+  font-family: var(--font-ui) !important;
+}
+
+/* Responsive Font Sizes */
+@media (max-width: 768px) {
+  h1 { font-size: clamp(24px, 5vw, 32px); }
+  h2 { font-size: clamp(20px, 4vw, 28px); }
+  h3 { font-size: clamp(18px, 3vw, 24px); }
+  h4 { font-size: clamp(16px, 2.5vw, 20px); }
+  h5 { font-size: clamp(14px, 2vw, 18px); }
+  h6 { font-size: clamp(12px, 1.5vw, 16px); }
+}
+
+/* Font Weight Standardization */
+.font-light { font-weight: 300; }
+.font-normal { font-weight: 400; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+.font-black { font-weight: 900; }
+
+/* Text Transform Utilities */
+.text-uppercase { text-transform: uppercase; }
+.text-lowercase { text-transform: lowercase; }
+.text-capitalize { text-transform: capitalize; }
+.text-none { text-transform: none; }
+
+/* Letter Spacing Utilities */
+.letter-tight { letter-spacing: -0.05em; }
+.letter-normal { letter-spacing: 0; }
+.letter-wide { letter-spacing: 0.05em; }
+.letter-wider { letter-spacing: 0.1em; }
+.letter-widest { letter-spacing: 0.2em; }
+
+/* Line Height Utilities */
+.leading-tight { line-height: 1.2; }
+.leading-normal { line-height: 1.5; }
+.leading-relaxed { line-height: 1.6; }
+.leading-loose { line-height: 1.8; }

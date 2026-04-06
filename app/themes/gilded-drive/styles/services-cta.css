@@ -1,0 +1,144 @@
+.services-cta {
+  --services-cta-bg-start: var(--classic-footer-bg-start, var(--brand-primary));
+  --services-cta-bg-end: var(--classic-footer-bg-end, var(--brand-secondary));
+  --services-cta-text: var(--text-inverse, var(--brand-background));
+  --services-cta-text-muted: rgba(var(--brand-background-rgb), 0.9);
+  --services-cta-pattern-dot: var(--classic-footer-pattern-dot, rgba(var(--brand-background-rgb), 0.12));
+  --services-cta-btn-shadow: rgba(var(--shadow-color, var(--brand-text-rgb)), 0.2);
+  --services-cta-btn-phone-bg: var(--brand-background);
+  --services-cta-btn-phone-text: var(--btn-primary-bg, var(--brand-primary));
+  --services-cta-btn-email-bg: transparent;
+  --services-cta-btn-email-text: var(--brand-background);
+  --services-cta-btn-border: var(--brand-background);
+  --services-cta-btn-hover-bg: var(--brand-background);
+  --services-cta-btn-hover-text: var(--btn-primary-bg, var(--brand-primary));
+
+  background: var(--services-cta-bg-start);
+  color: var(--services-cta-text);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.services-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, var(--services-cta-pattern-dot) 1.2px, transparent 1.2px);
+  background-size: 20px 20px;
+  pointer-events: none;
+}
+
+.services-cta-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.services-cta .cta-title {
+  font-family: var(--font-brand-family);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--services-cta-text);
+  text-shadow: 0 2px 8px rgba(var(--brand-text-rgb), 0.28);
+  margin: 0 0 15px;
+  position: relative;
+  z-index: 3;
+}
+
+.services-cta .cta-description {
+  font-family: var(--font-ui-family);
+  font-size: 18px;
+  line-height: 1.6;
+  margin: 0 0 40px;
+  color: var(--services-cta-text-muted);
+  position: relative;
+  z-index: 3;
+}
+
+.services-cta .cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 3;
+}
+
+.services-cta .cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-ui-family);
+  padding: 15px 30px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.services-cta .phone-btn {
+  background: var(--services-cta-btn-phone-bg);
+  color: var(--services-cta-btn-phone-text);
+}
+
+.services-cta .phone-btn:hover {
+  background: transparent;
+  color: var(--services-cta-btn-email-text);
+  border-color: var(--services-cta-btn-border);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px var(--services-cta-btn-shadow);
+}
+
+.services-cta .email-btn {
+  background: var(--services-cta-btn-email-bg);
+  color: var(--services-cta-btn-email-text);
+  border-color: var(--services-cta-btn-border);
+}
+
+.services-cta .email-btn:hover {
+  background: var(--services-cta-btn-hover-bg);
+  color: var(--services-cta-btn-hover-text);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px var(--services-cta-btn-shadow);
+}
+
+@media (max-width: 768px) {
+  .services-cta .cta-title {
+    font-size: 28px;
+  }
+
+  .services-cta .cta-description {
+    font-size: 16px;
+  }
+
+  .services-cta .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .services-cta .cta-btn {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .services-cta-content {
+    padding: 40px 25px;
+  }
+
+  .services-cta .cta-title {
+    font-size: 24px;
+  }
+
+  .services-cta .cta-description {
+    font-size: 15px;
+  }
+}

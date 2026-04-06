@@ -1,0 +1,579 @@
+.sell-theme {
+  --sell-surface: var(--brand-background);
+  --sell-surface-soft: rgba(var(--brand-background-rgb), 0.96);
+  --sell-surface-strong: rgba(var(--brand-background-rgb), 0.9);
+  --sell-text: var(--brand-text);
+  --sell-muted: rgba(var(--brand-text-rgb), 0.7);
+  --sell-subtle: rgba(var(--brand-text-rgb), 0.55);
+  --sell-border: rgba(var(--brand-text-rgb), 0.14);
+  --sell-border-strong: rgba(var(--brand-text-rgb), 0.22);
+  --sell-accent: var(--accent-primary);
+  --sell-accent-rgb: var(--accent-primary-rgb);
+  --sell-accent-strong: var(--accent-secondary);
+  --sell-shadow: 0 20px 44px rgba(var(--brand-text-rgb), 0.12);
+  --sell-hero-image: url('/images/IMG_3829.png');
+
+  color: var(--sell-text);
+  background: var(--sell-surface);
+  font-family: var(--font-ui);
+}
+
+.sell-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 18px;
+}
+
+.sell-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 86px 0 54px;
+  background:
+    linear-gradient(110deg, rgba(var(--brand-text-rgb), 0.92) 0%, rgba(var(--brand-text-rgb), 0.72) 45%, rgba(var(--brand-text-rgb), 0.48) 100%),
+    var(--sell-hero-image);
+  background-size: cover;
+  background-position: center;
+  color: var(--text-inverse);
+}
+
+.sell-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(600px 320px at 18% 20%, rgba(var(--sell-accent-rgb), 0.38), transparent 70%),
+    radial-gradient(520px 300px at 88% 86%, rgba(255, 255, 255, 0.14), transparent 75%);
+  pointer-events: none;
+}
+
+.sell-hero-inner {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sell-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin: 0 auto 12px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.sell-breadcrumb a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+}
+
+.sell-breadcrumb a:hover,
+.sell-breadcrumb a:focus-visible {
+  color: var(--text-inverse);
+}
+
+.sell-title {
+  margin: 0 auto;
+  max-width: 720px;
+  font-family: var(--font-brand);
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1.1;
+  color: var(--text-inverse);
+}
+
+.sell-subtitle {
+  margin: 12px auto 0;
+  max-width: 680px;
+  font-size: clamp(14px, 2.1vw, 18px);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sell-hero-actions {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.sell-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.sell-hero-btn.primary {
+  background: linear-gradient(120deg, var(--sell-accent) 0%, var(--sell-accent-strong) 100%);
+  color: var(--text-inverse);
+  box-shadow: 0 12px 30px rgba(var(--sell-accent-rgb), 0.4);
+}
+
+.sell-hero-btn.primary:hover,
+.sell-hero-btn.primary:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 36px rgba(var(--sell-accent-rgb), 0.45);
+}
+
+.sell-hero-btn.ghost {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: var(--text-inverse);
+}
+
+.sell-hero-btn.ghost:hover,
+.sell-hero-btn.ghost:focus-visible {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.sell-main {
+  background: linear-gradient(180deg, var(--sell-surface) 0%, var(--sell-surface-soft) 100%);
+  padding: 56px 0 72px;
+}
+
+.sell-main-grid {
+  display: grid;
+  gap: 26px;
+}
+
+.sell-section-head h2 {
+  margin: 0;
+  font-family: var(--font-brand);
+  font-size: clamp(26px, 3.5vw, 38px);
+  color: var(--sell-text);
+}
+
+.sell-section-head p {
+  margin: 12px 0 0;
+  max-width: 680px;
+  color: var(--sell-muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.sell-steps {
+  margin-top: 18px;
+  display: grid;
+  gap: 12px;
+}
+
+.sell-step-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  align-items: start;
+  background: var(--sell-surface);
+  border: 1px solid var(--sell-border);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 12px 26px rgba(var(--brand-text-rgb), 0.06);
+}
+
+.sell-step-number {
+  width: 42px;
+  height: 32px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sell-text);
+  color: var(--sell-surface);
+  font-size: 12px;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.sell-step-card h3 {
+  margin: 2px 0 6px;
+  font-family: var(--font-brand);
+  font-size: 20px;
+  color: var(--sell-text);
+}
+
+.sell-step-card p {
+  margin: 0;
+  color: var(--sell-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.sell-benefits {
+  margin-top: 16px;
+  background: var(--sell-surface);
+  border: 1px solid var(--sell-border);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 14px 30px rgba(var(--brand-text-rgb), 0.07);
+}
+
+.sell-benefits h3 {
+  margin: 0;
+  font-family: var(--font-brand);
+  font-size: 22px;
+  color: var(--sell-text);
+}
+
+.sell-benefits ul {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.sell-benefits li {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--sell-muted);
+  font-size: 14px;
+}
+
+.sell-benefits .app-icon {
+  color: var(--sell-accent-strong);
+}
+
+.sell-form-wrap {
+  position: static;
+}
+
+.sell-form-card {
+  background: var(--sell-surface);
+  border: 1px solid var(--sell-border-strong);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: var(--sell-shadow);
+}
+
+.sell-form-kicker {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 11px;
+  color: var(--sell-subtle);
+}
+
+.sell-form-card header h3 {
+  margin: 6px 0 8px;
+  font-family: var(--font-brand);
+  font-size: 26px;
+  line-height: 1.1;
+  color: var(--sell-text);
+}
+
+.sell-form-card header p {
+  margin: 0;
+  color: var(--sell-muted);
+  font-size: 13px;
+}
+
+.sell-form {
+  margin-top: 16px;
+}
+
+.sell-form-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.sell-form-grid-lookup {
+  grid-template-columns: 1fr;
+}
+
+.sell-form label {
+  display: grid;
+  gap: 6px;
+}
+
+.sell-form label span {
+  font-size: 12px;
+  color: var(--sell-muted);
+  font-weight: 600;
+}
+
+.sell-form input,
+.sell-form select,
+.sell-form textarea {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--sell-border);
+  border-radius: 12px;
+  padding: 0 12px;
+  font-size: 14px;
+  font-family: var(--font-ui);
+  color: var(--sell-text);
+  background: var(--sell-surface-strong);
+  transition: border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.sell-form textarea {
+  min-height: 72px;
+  resize: vertical;
+  padding: 10px 12px;
+}
+
+.sell-form input:focus,
+.sell-form select:focus,
+.sell-form textarea:focus {
+  outline: none;
+  border-color: rgba(var(--sell-accent-rgb), 0.5);
+  box-shadow: 0 0 0 3px rgba(var(--sell-accent-rgb), 0.15);
+  background: var(--sell-surface);
+}
+
+.sell-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.sell-form-note-field {
+  margin-top: 2px;
+  grid-column: 1 / -1;
+}
+
+.sell-form-note-field textarea {
+  width: 100%;
+}
+
+.sell-form-lookup-actions {
+  margin-top: 10px;
+}
+
+.sell-form-btn {
+  margin-top: 12px;
+  width: 100%;
+  min-height: 46px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(120deg, var(--sell-accent) 0%, var(--sell-accent-strong) 100%);
+  color: var(--text-inverse);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-ui);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sell-form-btn:hover,
+.sell-form-btn:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 30px rgba(var(--sell-accent-rgb), 0.35);
+}
+
+.sell-form-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.sell-form-status {
+  margin: 12px 0 0;
+  border-radius: 12px;
+  border: 1px solid rgba(var(--brand-text-rgb), 0.12);
+  background: rgba(var(--brand-background-rgb), 0.9);
+  color: var(--sell-text);
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 10px 12px;
+}
+
+.sell-form-status.is-error {
+  border-color: rgba(var(--brand-text-rgb), 0.4);
+  background: rgba(var(--brand-text-rgb), 0.06);
+  color: var(--brand-text);
+}
+
+.sell-form-status.is-success {
+  border-color: rgba(var(--sell-accent-rgb), 0.35);
+  background: rgba(var(--sell-accent-rgb), 0.12);
+  color: var(--sell-text);
+}
+
+.sell-form-lock-note {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--sell-subtle);
+}
+
+.sell-match-panel {
+  margin-top: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--sell-border);
+  background: var(--sell-surface-soft);
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.sell-match-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sell-match-kicker {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1.3px;
+  font-size: 11px;
+  color: var(--sell-subtle);
+}
+
+.sell-match-header h4 {
+  margin: 6px 0 4px;
+  font-family: var(--font-brand);
+  font-size: 20px;
+  color: var(--sell-text);
+}
+
+.sell-match-title {
+  margin: 0;
+  font-size: 13px;
+  color: var(--sell-muted);
+}
+
+.sell-match-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--sell-text);
+  color: var(--sell-surface);
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.sell-valuation-panel {
+  margin-top: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--sell-border);
+  background: var(--sell-surface);
+  padding: 14px;
+}
+
+.sell-valuation-header h4 {
+  margin: 0;
+  font-family: var(--font-brand);
+  font-size: 18px;
+  color: var(--sell-text);
+}
+
+.sell-valuation-header p {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--sell-subtle);
+}
+
+.sell-valuation-highlight {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--sell-muted);
+  line-height: 1.6;
+}
+
+.sell-valuation-amount {
+  font-weight: 700;
+  color: var(--sell-text);
+}
+
+.sell-valuation-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--sell-subtle);
+  line-height: 1.5;
+}
+
+.sell-form-details {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--sell-border);
+  display: grid;
+  gap: 12px;
+}
+
+.sell-form-details-head h4 {
+  margin: 6px 0 4px;
+  font-family: var(--font-brand);
+  font-size: 20px;
+  color: var(--sell-text);
+}
+
+.sell-form-details-head p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--sell-muted);
+}
+
+.sell-form-submit-row {
+  margin-top: 2px;
+}
+
+.sell-form-grid-details {
+  margin-top: 12px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 600px) {
+  .sell-shell {
+    padding: 0 24px;
+  }
+
+  .sell-hero-actions {
+    flex-direction: row;
+  }
+
+  .sell-form-grid-lookup {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .sell-main-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+    align-items: start;
+  }
+
+  .sell-form-wrap {
+    position: sticky;
+    top: 110px;
+  }
+
+  .sell-form-grid-details {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .sell-shell {
+    max-width: 1280px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sell-hero-btn,
+  .sell-form-btn {
+    transition: none;
+  }
+}

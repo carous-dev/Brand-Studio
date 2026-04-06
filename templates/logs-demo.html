@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Streaming Demo - Brand Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .control-card {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-primary, #e5e7eb);
+            border-radius: var(--radius-lg, 0.5rem);
+            padding: 1rem;
+        }
+        
+        .control-card h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--text-primary, #111827);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary, #111827);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-primary, #e5e7eb);
+            border-radius: var(--radius-md, 0.375rem);
+            font-size: 0.875rem;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-primary, #e5e7eb);
+            border-radius: var(--radius-md, 0.375rem);
+            background: var(--bg-primary, #ffffff);
+            cursor: pointer;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn:hover {
+            background: var(--bg-hover, #f3f4f6);
+        }
+        
+        .btn-primary {
+            background: var(--primary, #3b82f6);
+            color: white;
+            border-color: var(--primary, #3b82f6);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark, #2563eb);
+        }
+        
+        .btn-danger {
+            background: var(--accent, #ef4444);
+            color: white;
+            border-color: var(--accent, #ef4444);
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md, 0.375rem);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .status-connected {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+        }
+        
+        .status-disconnected {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+        
+        .log-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-primary, #e5e7eb);
+            border-radius: var(--radius-lg, 0.5rem);
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary, #3b82f6);
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary, #6b7280);
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🔍 Real-Time Log Streaming Demo</h1>
+            <p>Experience Server-Sent Events (SSE) for live log monitoring</p>
+            <div id="connectionStatus" class="status-indicator status-disconnected">
+                <span class="status-dot">🔴</span>
+                <span class="status-text">Disconnected</span>
+            </div>
+        </div>
+
+        <div class="log-stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalLogs">0</div>
+                <div class="stat-label">Total Logs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="errorCount">0</div>
+                <div class="stat-label">Errors</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="warningCount">0</div>
+                <div class="stat-label">Warnings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="activeConnections">0</div>
+                <div class="stat-label">Active Connections</div>
+            </div>
+        </div>
+
+        <div class="demo-controls">
+            <div class="control-card">
+                <h3>📡 Connection Control</h3>
+                <div class="form-group">
+                    <button id="connectBtn" class="btn btn-primary">Connect to Log Stream</button>
+                    <button id="disconnectBtn" class="btn btn-secondary" disabled>Disconnect</button>
+                </div>
+                <div class="form-group">
+                    <label>Auto-reconnect</label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="autoReconnect" checked>
+                        <span>Enable automatic reconnection</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="control-card">
+                <h3>📝 Test Log Generation</h3>
+                <div class="form-group">
+                    <label for="logLevel">Log Level</label>
+                    <select id="logLevel">
+                        <option value="debug">Debug</option>
+                        <option value="info" selected>Info</option>
+                        <option value="warning">Warning</option>
+                        <option value="error">Error</option>
+                        <option value="critical">Critical</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="logMessage">Message</label>
+                    <textarea id="logMessage" placeholder="Enter log message...">Test log message from demo</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="logSource">Source</label>
+                    <input type="text" id="logSource" value="demo" placeholder="Log source">
+                </div>
+                <div class="form-group">
+                    <button id="sendLogBtn" class="btn btn-primary">Send Log</button>
+                    <button id="sendBulkBtn" class="btn btn-secondary">Send Bulk Logs</button>
+                </div>
+            </div>
+
+            <div class="control-card">
+                <h3>🎯 Simulation</h3>
+                <div class="form-group">
+                    <button id="simulateActivityBtn" class="btn btn-secondary">Simulate Activity</button>
+                    <button id="simulateErrorsBtn" class="btn btn-danger">Simulate Errors</button>
+                </div>
+                <div class="form-group">
+                    <button id="clearLogsBtn" class="btn btn-secondary">Clear All Logs</button>
+                    <button id="exportLogsBtn" class="btn btn-secondary">Export Logs</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="log-viewer-container">
+            <div id="logViewer"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { sseService } from '/static/modules/sse-service.js';
+        import LogViewer from '/static/modules/log-viewer.js';
+
+        // Initialize log viewer
+        const logViewer = new LogViewer('#logViewer', {
+            maxLogs: 500,
+            autoScroll: true,
+            showTimestamp: true,
+            showSource: true
+        });
+
+        // State
+        let isConnected = false;
+        let simulationInterval = null;
+
+        // DOM elements
+        const connectBtn = document.getElementById('connectBtn');
+        const disconnectBtn = document.getElementById('disconnectBtn');
+        const autoReconnectCheckbox = document.getElementById('autoReconnect');
+        const sendLogBtn = document.getElementById('sendLogBtn');
+        const sendBulkBtn = document.getElementById('sendBulkBtn');
+        const simulateActivityBtn = document.getElementById('simulateActivityBtn');
+        const simulateErrorsBtn = document.getElementById('simulateErrorsBtn');
+        const clearLogsBtn = document.getElementById('clearLogsBtn');
+        const exportLogsBtn = document.getElementById('exportLogsBtn');
+        const connectionStatus = document.getElementById('connectionStatus');
+
+        // Statistics
+        let stats = {
+            total: 0,
+            errors: 0,
+            warnings: 0
+        };
+
+        // Update connection status
+        function updateConnectionStatus(connected) {
+            isConnected = connected;
+            
+            if (connected) {
+                connectionStatus.className = 'status-indicator status-connected';
+                connectionStatus.innerHTML = '<span class="status-dot">🟢</span><span class="status-text">Connected</span>';
+                connectBtn.disabled = true;
+                disconnectBtn.disabled = false;
+            } else {
+                connectionStatus.className = 'status-indicator status-disconnected';
+                connectionStatus.innerHTML = '<span class="status-dot">🔴</span><span class="status-text">Disconnected</span>';
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+            }
+            
+            logViewer.setConnectionStatus(connected);
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('totalLogs').textContent = stats.total;
+            document.getElementById('errorCount').textContent = stats.errors;
+            document.getElementById('warningCount').textContent = stats.warnings;
+        }
+
+        // Connect to log stream
+        function connectToLogStream() {
+            sseService.connect('/api/logs/stream', {
+                onOpen: () => {
+                    console.log('Connected to log stream');
+                    updateConnectionStatus(true);
+                },
+                onMessage: (data) => {
+                    if (data.type === 'log') {
+                        logViewer.addLog(data);
+                        
+                        // Update statistics
+                        stats.total++;
+                        if (data.level === 'error') stats.errors++;
+                        if (data.level === 'warning') stats.warnings++;
+                        updateStats();
+                    }
+                },
+                onError: (error) => {
+                    console.error('SSE error:', error);
+                    updateConnectionStatus(false);
+                },
+                onClose: () => {
+                    console.log('SSE connection closed');
+                    updateConnectionStatus(false);
+                },
+                reconnect: autoReconnectCheckbox.checked
+            });
+        }
+
+        // Disconnect from log stream
+        function disconnectFromLogStream() {
+            sseService.disconnect();
+            if (simulationInterval) {
+                clearInterval(simulationInterval);
+                simulationInterval = null;
+            }
+        }
+
+        // Send test log
+        async function sendTestLog() {
+            const level = document.getElementById('logLevel').value;
+            const message = document.getElementById('logMessage').value;
+            const source = document.getElementById('logSource').value;
+
+            try {
+                const response = await fetch('/api/logs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        level,
+                        message,
+                        source,
+                        metadata: {
+                            timestamp: new Date().toISOString(),
+                            userAgent: navigator.userAgent
+                        }
+                    })
+                });
+
+                if (response.ok) {
+                    console.log('Log sent successfully');
+                } else {
+                    console.error('Failed to send log');
+                }
+            } catch (error) {
+                console.error('Error sending log:', error);
+            }
+        }
+
+        // Send bulk logs
+        async function sendBulkLogs() {
+            const levels = ['info', 'warning', 'error', 'debug'];
+            const sources = ['demo', 'test', 'bulk', 'simulation'];
+            
+            for (let i = 0; i < 10; i++) {
+                setTimeout(async () => {
+                    try {
+                        const response = await fetch('/api/logs', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                level: levels[Math.floor(Math.random() * levels.length)],
+                                message: `Bulk test log #${i + 1}`,
+                                source: sources[Math.floor(Math.random() * sources.length)],
+                                metadata: {
+                                    bulkId: Date.now(),
+                                    index: i + 1
+                                }
+                            })
+                        });
+                    } catch (error) {
+                        console.error('Error sending bulk log:', error);
+                    }
+                }, i * 100);
+            }
+        }
+
+        // Simulate activity
+        function simulateActivity() {
+            if (simulationInterval) {
+                clearInterval(simulationInterval);
+                simulationInterval = null;
+                simulateActivityBtn.textContent = 'Simulate Activity';
+                return;
+            }
+
+            simulateActivityBtn.textContent = 'Stop Simulation';
+            
+            simulationInterval = setInterval(async () => {
+                const activities = [
+                    { level: 'info', message: 'User logged in', source: 'auth' },
+                    { level: 'info', message: 'Database query executed', source: 'db' },
+                    { level: 'warning', message: 'High memory usage detected', source: 'monitor' },
+                    { level: 'info', message: 'Cache refreshed', source: 'cache' },
+                    { level: 'debug', message: 'API request processed', source: 'api' }
+                ];
+
+                const activity = activities[Math.floor(Math.random() * activities.length)];
+                
+                try {
+                    await fetch('/api/logs', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(activity)
+                    });
+                } catch (error) {
+                    console.error('Error simulating activity:', error);
+                }
+            }, 2000);
+        }
+
+        // Simulate errors
+        async function simulateErrors() {
+            const errorMessages = [
+                'Database connection failed',
+                'API rate limit exceeded',
+                'File not found',
+                'Permission denied',
+                'Network timeout'
+            ];
+
+            for (let i = 0; i < 5; i++) {
+                setTimeout(async () => {
+                    try {
+                        await fetch('/api/logs', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                level: 'error',
+                                message: errorMessages[Math.floor(Math.random() * errorMessages.length)],
+                                source: 'error-simulation',
+                                metadata: {
+                                    errorCode: 'SIM_' + Math.random().toString(36).substr(2, 9),
+                                    severity: 'high'
+                                }
+                            })
+                        });
+                    } catch (error) {
+                        console.error('Error simulating errors:', error);
+                    }
+                }, i * 500);
+            }
+        }
+
+        // Clear logs
+        async function clearLogs() {
+            try {
+                const response = await fetch('/api/logs/clear', {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    logViewer.clearLogs();
+                    stats = { total: 0, errors: 0, warnings: 0 };
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('Error clearing logs:', error);
+            }
+        }
+
+        // Export logs
+        function exportLogs() {
+            logViewer.exportLogs();
+        }
+
+        // Event listeners
+        connectBtn.addEventListener('click', connectToLogStream);
+        disconnectBtn.addEventListener('click', disconnectFromLogStream);
+        sendLogBtn.addEventListener('click', sendTestLog);
+        sendBulkBtn.addEventListener('click', sendBulkLogs);
+        simulateActivityBtn.addEventListener('click', simulateActivity);
+        simulateErrorsBtn.addEventListener('click', simulateErrors);
+        clearLogsBtn.addEventListener('click', clearLogs);
+        exportLogsBtn.addEventListener('click', exportLogs);
+
+        // Update active connections count periodically
+        setInterval(async () => {
+            try {
+                const response = await fetch('/api/logs?count=1');
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('activeConnections').textContent = data.subscribers || 0;
+                }
+            } catch (error) {
+                // Ignore errors
+            }
+        }, 5000);
+
+        // Auto-connect on page load
+        setTimeout(connectToLogStream, 1000);
+    </script>
+</body>
+</html>

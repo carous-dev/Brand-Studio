@@ -1,0 +1,1989 @@
+.container {
+	max-width: 1140px;
+	margin: 0 auto;
+}
+
+.inventory-hero {
+	background: linear-gradient(180deg, rgba(6, 8, 10, 0.02), rgba(6, 8, 10, 0.0));
+	border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+	text-align: center;
+}
+
+.hero-grid {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 16px
+}
+
+.hero-left {
+	max-width: 820px;
+	margin: 0 auto
+}
+
+.page-title {
+	font-family: var(--font-display);
+	font-size: 32px;
+	margin: 0;
+	color: #fff;
+	line-height: 1.04
+}
+
+.lead {
+	color: rgba(255, 255, 255, 0.85);
+	margin-top: 8px;
+	font-size: 15px
+}
+
+/* Enhanced Carousel styles */
+.hero-carousel {
+	position: relative;
+	overflow: hidden;
+	border-radius: 0;
+	height: 200px;
+	/* increased height for better content display */
+}
+
+.carousel-wrapper {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.carousel-slide {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+/* Enhanced gradient overlays */
+.slide-overlay {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.slide-overlay-primary {
+	background: linear-gradient(135deg,
+		rgba(2, 6, 23, 0.7) 0%,
+		rgba(2, 6, 23, 0.5) 50%,
+		rgba(2, 6, 23, 0.3) 100%);
+}
+
+.slide-overlay-secondary {
+	background: radial-gradient(ellipse at center,
+		rgba(0, 0, 0, 0.15) 0%,
+		rgba(0, 0, 0, 0.05) 50%,
+		transparent 100%);
+}
+
+.slide-overlay-tertiary {
+	background: linear-gradient(180deg,
+		transparent 0%,
+		rgba(0, 0, 0, 0.1) 100%);
+}
+
+.slide-inner {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 4;
+}
+
+.slide-content {
+	text-align: center;
+}
+
+.slide-header {
+	margin-bottom: 1rem;
+}
+
+.slide-title {
+	font-family: var(--font-display);
+	font-size: clamp(2rem, 5vw, 3.5rem);
+	font-weight: 800;
+	margin: 0;
+	color: #ffffff;
+	line-height: 1.1;
+	text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.slide-lead {
+	color: rgba(255, 255, 255, 0.9);
+	font-size: clamp(1rem, 2vw, 1.25rem);
+	line-height: 1.6;
+	margin: 0 0 2rem 0;
+	font-weight: 400;
+}
+
+/* Navigation arrows */
+.carousel-nav {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(10px);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	z-index: 10;
+	opacity: 0;
+}
+
+.hero-carousel:hover .carousel-nav {
+	opacity: 1;
+}
+
+.carousel-nav:hover {
+	background: rgba(255, 255, 255, 0.2);
+	transform: translateY(-50%) scale(1.05);
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-prev {
+	left: 2rem;
+}
+
+.carousel-next {
+	right: 2rem;
+}
+
+/* Loading overlay */
+.loading-overlay {
+	position: absolute;
+	inset: 0;
+	background: rgba(2, 6, 23, 0.8);
+	z-index: 20;
+}
+
+/* Responsive design for enhanced carousel */
+@media (max-width: 768px) {
+	.hero-carousel {
+		height: 200px;
+	}
+
+	.carousel-nav {
+		width: 40px;
+		height: 40px;
+	}
+
+	.carousel-prev {
+		left: 1rem;
+	}
+
+	.carousel-next {
+		right: 1rem;
+	}
+
+	.carousel-indicators {
+		bottom: 1rem;
+		padding: 0.5rem 1rem;
+		gap: 0.5rem;
+	}
+
+	.indicator {
+		width: 10px;
+		height: 10px;
+	}
+
+	.slide-content {
+		max-width: 100%;
+	}
+
+	.slide-title {
+		font-size: clamp(1.5rem, 8vw, 2.5rem);
+	}
+
+	.slide-lead {
+		font-size: clamp(0.9rem, 4vw, 1.1rem);
+		margin-bottom: 1.5rem;
+	}
+
+}
+
+@media (max-width: 480px) {
+	.hero-carousel {
+		display: none; /* Hide navigation arrows on very small screens */
+	}
+
+	.carousel-play-pause {
+		display: none; /* Hide play/pause on very small screens */
+	}
+
+	.slide-inner {
+		padding: 1rem;
+	}
+
+}
+
+
+/* Controls removed (indicators only) */
+.carousel-controls {
+	display: none
+}
+
+/* Vertical indicators positioned center-right */
+.carousel-indicators {
+	position: absolute;
+	right: 14px;
+	top: 50%;
+	transform: translateY(-50%);
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	align-items: center;
+	padding: 8px;
+	/* darker, translucent surface to match dark hero while keeping content readable */
+	background: rgba(6, 8, 10, 0.64);
+	border-radius: 12px;
+	z-index: 5;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+	backdrop-filter: blur(6px);
+}
+
+.indicator {
+	width: 14px;
+	height: 14px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.14);
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	cursor: pointer;
+	transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.indicator:hover {
+	transform: scale(1.08);
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.indicator:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.12);
+}
+
+.indicator.active {
+	background: #ffffff;
+	border-color: rgba(var(--accent-rgb), 0.22);
+	box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.12), 0 0 12px rgba(var(--accent-rgb), 0.06);
+	transform: scale(1.22);
+}
+
+/* Neon lighting for active slide */
+.hero-carousel::after {
+	content: '';
+	position: absolute;
+	inset: auto 0 0 0;
+	height: 40%;
+	pointer-events: none;
+	mix-blend-mode: soft-light;
+	background: radial-gradient(circle at 80% 10%, rgba(var(--accent-rgb), 0.06), transparent 12%)
+}
+
+.carousel-slide[aria-hidden="false"] {
+	box-shadow: 0 12px 40px rgba(var(--accent-rgb), 0.06), inset 0 -8px 40px rgba(var(--accent-rgb), 0.02)
+}
+
+.slide-title {
+	color: #fff;
+	text-shadow: 0 8px 36px rgba(var(--accent-rgb), 0.06), 0 1px 6px rgba(0, 0, 0, 0.6)
+}
+
+/* Neon lighting: animated glow for active slide title and CTAs */
+@keyframes neonPulse {
+	0% {
+		text-shadow: 0 8px 36px rgba(var(--accent-rgb), 0.08), 0 0 18px rgba(var(--accent-rgb), 0.06), 0 0 60px rgba(var(--accent-rgb), 0.02);
+		box-shadow: 0 8px 28px rgba(var(--accent-rgb), 0.04);
+	}
+
+	50% {
+		text-shadow: 0 12px 54px rgba(var(--accent-rgb), 0.16), 0 0 36px rgba(var(--accent-rgb), 0.12), 0 0 120px rgba(var(--accent-rgb), 0.06);
+		box-shadow: 0 18px 46px rgba(var(--accent-rgb), 0.08);
+	}
+
+	100% {
+		text-shadow: 0 8px 36px rgba(var(--accent-rgb), 0.08), 0 0 18px rgba(var(--accent-rgb), 0.06), 0 0 60px rgba(var(--accent-rgb), 0.02);
+		box-shadow: 0 8px 28px rgba(var(--accent-rgb), 0.04);
+	}
+}
+
+/* Apply neon only to the active slide for subtlety */
+.carousel-slide[aria-hidden="false"] .slide-title {
+	color: #fff;
+	animation: neonPulse 3.6s ease-in-out infinite;
+}
+
+/* Neon glow for primary CTA */
+.btn-cta-primary {
+	box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.12), 0 0 28px rgba(var(--accent-rgb), 0.06);
+	transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+
+.btn-cta-primary:hover {
+	transform: translateY(-2px) scale(1.02);
+	box-shadow: 0 18px 48px rgba(var(--accent-rgb), 0.2), 0 0 48px rgba(var(--accent-rgb), 0.12), 0 0 96px rgba(var(--accent-rgb), 0.04);
+	filter: brightness(1.02);
+}
+
+/* Pulse glow for active indicator */
+.indicator.active {
+	background: linear-gradient(180deg, var(--accent), #d1b57a);
+	box-shadow: 0 12px 40px rgba(var(--accent-rgb), 0.22), 0 0 48px rgba(var(--accent-rgb), 0.12), inset 0 0 8px rgba(255, 255, 255, 0.04);
+	transform: scale(1.16);
+	animation: neonPulse 3.6s ease-in-out infinite;
+}
+
+/* Subtle colored rim on the hero for extra glow */
+.hero-carousel::before {
+	content: '';
+	position: absolute;
+	inset: auto 0 0 0;
+	height: 100%;
+	pointer-events: none;
+	background: radial-gradient(circle at 80% 20%, rgba(var(--accent-rgb), 0.06), transparent 8%), radial-gradient(circle at 10% 80%, rgba(var(--accent-rgb), 0.03), transparent 12%);
+	mix-blend-mode: screen;
+	z-index: 0
+}
+
+/* CTA neon glows */
+.btn-cta-primary,
+.btn-cta-secondary,
+.btn-cta-ghost,
+.btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	text-decoration: none
+}
+
+/* Remove default link underlines globally (kept gentle for accessibility) */
+a {
+	text-decoration: none;
+	color: inherit
+}
+
+/* Lighter, smaller CTA buttons */
+.btn-cta-primary {
+	background: linear-gradient(90deg, var(--accent), #d1b57a);
+	color: #060606;
+	border: none;
+	padding: 8px 12px;
+	border-radius: 8px;
+	font-weight: 700;
+	font-size: 14px;
+	cursor: pointer;
+	box-shadow: 0 6px 18px rgba(var(--accent-rgb), 0.08), 0 0 12px rgba(var(--accent-rgb), 0.04);
+	transition: transform .16s ease, box-shadow .16s ease
+}
+
+.btn-cta-primary:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 10px 28px rgba(var(--accent-rgb), 0.16), 0 0 28px rgba(var(--accent-rgb), 0.08)
+}
+
+.btn-cta-primary:focus {
+	outline: none;
+	box-shadow: 0 10px 28px rgba(var(--accent-rgb), 0.2), 0 0 36px rgba(var(--accent-rgb), 0.12)
+}
+
+.btn-cta-secondary {
+	background: transparent;
+	color: #fff;
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	padding: 7px 10px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 13px;
+	box-shadow: 0 4px 12px rgba(255, 255, 255, 0.02);
+	transition: transform .16s ease, box-shadow .16s ease
+}
+
+.btn-cta-secondary:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 20px rgba(255, 255, 255, 0.03), 0 0 12px rgba(var(--accent-rgb), 0.04)
+}
+
+.btn-cta-ghost {
+	background: transparent;
+	color: #fff;
+	border: none;
+	padding: 6px 10px;
+	font-size: 13px
+}
+
+
+@media (max-width:900px) {
+	.carousel-track {
+		height: 360px;
+		/* slightly taller on tablet/mobile for visual balance */
+	}
+
+	.slide-title {
+		font-size: 22px
+	}
+
+	.slide-lead {
+		font-size: 13px
+	}
+}
+
+/* Hero is intentionally squared (no border-radius) on all viewports */
+
+/* Mobile: move the hero carousel indicators to bottom-right and make them horizontal */
+@media (max-width:700px) {
+	.carousel-indicators {
+		top: auto !important;
+		right: 12px !important;
+		bottom: 12px !important;
+		left: auto !important;
+		transform: none !important;
+		flex-direction: row;
+		gap: 8px;
+		padding: 6px 8px;
+		border-radius: 999px;
+		align-items: center;
+		background: rgba(6, 8, 10, 0.64) !important;
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+	}
+
+	.carousel-indicators .indicator {
+		width: 12px;
+		height: 12px;
+		border-radius: 999px;
+	}
+}
+
+.inventory-pagination {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+	justify-content: center;
+	margin: 18px 0;
+	padding: 10px 12px;
+	border-radius: 12px;
+	background: transparent;
+	border: 1px solid rgba(255, 255, 255, 0.03);
+	box-shadow: none;
+}
+
+.inventory-pagination button {
+	-webkit-appearance: none;
+	appearance: none;
+	background: rgba(255, 255, 255, 0.02);
+	color: rgba(255, 255, 255, 0.95);
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	padding: 8px 12px;
+	border-radius: 10px;
+	cursor: pointer;
+	font-weight: 700;
+	font-size: 13px;
+	min-width: 44px;
+	transition: transform .12s ease, background .12s ease;
+}
+
+.inventory-pagination button:hover {
+	transform: translateY(-2px);
+	box-shadow: none;
+	background: rgba(255, 255, 255, 0.04);
+}
+
+.inventory-pagination button:disabled {
+	opacity: 0.32;
+	cursor: default;
+	transform: none;
+	box-shadow: none;
+}
+
+.inventory-pagination .page-btn.active {
+	background: var(--accent);
+	color: #ffffff;
+	border-color: var(--accent);
+	box-shadow: none;
+	transform: none;
+}
+
+.inventory-pagination .ellipsis {
+	color: rgba(255, 255, 255, 0.5);
+	padding: 0 6px;
+}
+
+.inventory-pagination .first-btn,
+.inventory-pagination .last-btn {
+	font-weight: 600;
+	font-size: 12px;
+	min-width: 56px;
+}
+
+.filters {
+	display: flex;
+	flex-direction: column;
+	gap: 12px
+}
+
+.inventory-pagination {
+	gap: 6px;
+	padding: 8px;
+}
+
+.inventory-pagination button {
+	padding: 8px 10px;
+	min-width: 40px;
+	font-size: 13px;
+}
+
+.inventory-pagination .first-btn,
+.inventory-pagination .last-btn {
+	display: none;
+}
+
+.filter-row {
+	display: flex;
+	gap: 10px
+}
+
+.filter-row input,
+.filter-row select {
+	background: rgba(255, 255, 255, 0.02);
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	padding: 10px;
+	border-radius: 8px;
+	color: #fff
+}
+
+.filter-row input[type="number"] {
+	width: 120px
+}
+
+/* Grid of cards */
+.grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 18px;
+	margin-top: 22px
+}
+
+.car-card {
+	position: relative;
+	background: linear-gradient(180deg, rgba(12, 14, 16, 0.85), rgba(6, 8, 10, 0.85));
+	border-radius: 12px;
+	overflow: hidden;
+	/* subtle accent/grey border */
+	border: 1px solid rgba(var(--accent), 0.06);
+	box-shadow: 0 12px 40px rgba(2, 6, 23, 0.6);
+	display: flex;
+	flex-direction: column;
+	transition: transform .28s ease, box-shadow .28s ease
+}
+
+/* Stock badge: compact, top-left on each card (scoped to .car-card to avoid leaking) */
+.car-card .stock-badge {
+	position: absolute;
+	top: 12px;
+	left: 12px;
+	z-index: 16;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 10px;
+	border-radius: 999px;
+	color: #fff;
+	font-weight: 700;
+	font-size: 12px;
+	line-height: 1;
+	text-transform: none;
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.car-card .stock-badge::before {
+	content: '';
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.9);
+	opacity: 0.95;
+	display: inline-block;
+}
+
+.car-card .stock-badge.stock-sold {
+	background-color: #dc2626;
+}
+
+.car-card .stock-badge.stock-reserved {
+	background-color: #ea580c;
+}
+
+.car-card .stock-badge.stock-pending {
+	background-color: #ca8a04;
+}
+
+.car-card .stock-badge.stock-withdrawn {
+	background-color: #6b7280;
+}
+
+/* Slightly reduce badge size on small screens */
+@media (max-width:700px) {
+	.car-card .stock-badge {
+		top: 10px;
+		left: 10px;
+		padding: 5px 8px;
+		font-size: 11px
+	}
+
+	.car-card .stock-badge::before {
+		width: 6px;
+		height: 6px
+	}
+}
+
+.car-card:hover {
+	transform: translateY(-6px);
+	box-shadow: 0 30px 80px rgba(var(--accent-rgb), 0.12);
+	cursor: pointer
+}
+
+.media {
+	/* doubled size: make images visually larger */
+	height: 320px;
+	overflow: hidden
+}
+
+.media img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block
+}
+
+.card-body {
+	/* make body fill remaining card space and remove top gap to sit flush with media */
+	padding: 14px 14px 16px 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	flex: 1 1 auto;
+	min-height: 0;
+	/* allow flex children to shrink properly */
+}
+
+/* Short description preview: single-line ellipsis in grid view; full text in list view */
+.short-desc {
+	color: var(--accent);
+	font-size: 14px;
+	line-height: 1.4;
+	margin: 4px 0 0;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* In list view show the full description (allow wrapping) */
+.list-view .short-desc {
+	white-space: normal;
+	overflow: visible;
+	text-overflow: clip;
+}
+
+/* Ensure title, meta and footer align with the left edge of the car-meta chips */
+.card-body>.car-title,
+.card-body>.card-footer {
+	margin-left: 0;
+	padding-left: 0;
+}
+
+.car-title {
+	margin: 0;
+	font-size: 16px;
+	color: #fff
+}
+
+.title-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px
+}
+
+.title-row .car-title {
+	margin: 0;
+	font-size: 16px
+}
+
+.title-row .price {
+	font-size: 16px
+}
+
+.car-link {
+	color: inherit;
+	text-decoration: none
+}
+
+.meta {
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 13px;
+	/* default: single-line with ellipsis to keep grid tidy */
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.price {
+	font-weight: 800;
+	color: var(--accent);
+	font-size: 18px
+}
+
+.actions {
+	display: flex;
+	gap: 8px;
+	margin-top: auto
+}
+
+.btn {
+	background: linear-gradient(90deg, rgba(255, 255, 255, 0.98), rgba(246, 244, 239, 0.98));
+	border: none;
+	padding: 8px 12px;
+	border-radius: 8px;
+	cursor: pointer;
+	color: #071018;
+	font-weight: 700;
+	box-shadow: 0 6px 18px rgba(6, 8, 10, 0.04)
+}
+
+.btn.ghost {
+	background: transparent;
+	border: 1px solid rgba(6, 8, 10, 0.06);
+	color: #071018
+}
+
+.btn.details {
+	background: linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(249, 247, 244, 0.98));
+	color: #071018;
+	border-radius: 8px;
+	padding: 8px 10px;
+	box-shadow: 0 6px 14px rgba(6, 8, 10, 0.03)
+}
+
+/* Responsive */
+@media (max-width:1000px) {
+	.grid {
+		grid-template-columns: repeat(2, 1fr)
+	}
+
+	.hero-grid {
+		display: block
+	}
+}
+
+@media (max-width:700px) {
+	.grid {
+		grid-template-columns: 1fr
+	}
+
+	.hero-grid {
+		display: block
+	}
+
+	.filter-row {
+		flex-direction: column
+	}
+}
+
+/* List view styles (applies when <html> has class .list-view) */
+.list-view #inventoryGrid {
+	display: block
+}
+
+.list-view #inventoryGrid .car-card {
+	display: flex;
+	flex-direction: row;
+	gap: 16px;
+	align-items: flex-start;
+	border-radius: 12px;
+	/* ensure cards don't collapse to full-width image */
+	align-content: start;
+}
+
+/* Ensure the link wrapper lays out the media and body side-by-side in list view */
+.list-view #inventoryGrid .car-card>a {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	width: 100%;
+}
+
+.list-view #inventoryGrid .car-card {
+	align-items: flex-start;
+	border-radius: 12px
+}
+
+.list-view #inventoryGrid .car-card .media {
+	/* fixed image column on the left for list view (x2 size) */
+	flex: 0 0 500px;
+	height: 350px;
+	/* remove border radius so image sits flush in list layout */
+	border-radius: 0;
+	overflow: hidden;
+}
+
+.list-view #inventoryGrid .car-card .media img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	/* ensure image corners are square in list view */
+	border-radius: 0;
+}
+
+/* Remove any gap between media and body in grid and list views */
+.car-card .media {
+	margin-bottom: 0
+}
+
+.car-card .card-body {
+	padding-top: 0;
+}
+
+/* Ensure card-body fills vertical space in grid cards */
+.grid .car-card {
+	display: flex;
+	flex-direction: column
+}
+
+.grid .car-card .card-body {
+	flex: 1;
+	min-height: 0
+}
+
+.list-view #inventoryGrid .car-card .card-body {
+	padding: 12px;
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	background: transparent !important;
+	/* allow text truncation */
+}
+
+/* In list view allow meta to wrap but clamp to two lines for consistent layout */
+.list-view #inventoryGrid .car-card .meta {
+	white-space: normal;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+/* Explicitly keep left/right padding consistent in list view */
+.list-view #inventoryGrid .car-card .card-body {
+	padding-left: 12px;
+	padding-right: 12px
+}
+
+.list-view #inventoryGrid .car-card .actions {
+	margin-top: auto;
+	display: flex;
+	gap: 8px
+}
+
+/* Ensure list view stacks nicely on small screens */
+@media (max-width:900px) {
+	.list-view #inventoryGrid .car-card {
+		flex-direction: column
+	}
+
+	.list-view #inventoryGrid .car-card>a {
+		flex-direction: column;
+	}
+
+	.list-view #inventoryGrid .car-card .media {
+		width: 100%;
+		height: 360px;
+		/* mobile: doubled from 180px */
+		flex: 0 0 auto
+	}
+
+	.list-view #inventoryGrid .car-card .card-body {
+		padding: 12px
+	}
+}
+
+
+.car-meta {
+	color: rgba(255, 255, 255, 0.85);
+	font-size: 13px;
+	margin-top: 6px;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 8px 12px;
+	align-items: center
+}
+
+/* Style each metadata value as a compact chip with an icon (two columns) */
+.car-meta span {
+	display: inline-flex;
+	gap: 8px;
+	background: rgba(255, 255, 255, 0.03);
+	padding: 6px 8px;
+	border-radius: 12px;
+	font-size: 13px;
+	color: rgba(255, 255, 255, 0.95);
+	border: 1px solid rgba(255, 255, 255, 0.03);
+	box-shadow: 0 6px 18px rgba(2, 6, 23, 0.45)
+}
+
+.car-meta span::before {
+	display: none
+}
+
+/* Small SVG icons injected via data-URI; they inherit the chip color */
+/* removed pseudo-element icon backgrounds; icons are injected separately via inline SVGs if needed */
+
+.vehicle-features {
+	display: flex;
+	gap: 10px;
+	margin-top: 10px;
+	flex-wrap: wrap
+}
+
+.vehicle-features li {
+	list-style: none;
+	background: rgba(255, 255, 255, 0.03);
+	padding: 6px 8px;
+	border-radius: 8px;
+	font-size: 13px;
+	color: rgba(255, 255, 255, 0.9)
+}
+
+/* Footer row inside card: price (left) and view details (right) */
+.card-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 12px;
+	gap: 12px
+}
+
+.card-footer .price {
+	font-weight: 800;
+	color: var(--accent);
+	font-size: 18px
+}
+
+.card-footer .actions {
+	margin: 0
+}
+
+.details-link {
+	color: var(--accent);
+	font-weight: 700;
+	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px
+}
+
+.details-link .chev {
+	font-size: 18px;
+	line-height: 1;
+	color: var(--accent);
+	opacity: 0.95
+}
+
+.details-link:focus {
+	outline: none;
+	box-shadow: 0 0 0 6px rgba(var(--accent-rgb), 0.09)
+}
+
+@media (max-width:700px) {
+
+	/* keep car metadata in two columns on mobile for denser compact listing */
+	.car-meta {
+		grid-template-columns: repeat(2, minmax(0, 1fr))
+	}
+
+	.card-footer {
+		flex-direction: row;
+		align-items: center
+	}
+}
+
+
+/* Mobile: reduce grid spacing so listings have more usable space */
+@media (max-width:800px) {
+	.grid {
+		gap: 12px;
+		margin-top: 12px;
+		padding: 0 8px;
+	}
+
+	/* if grid has 3 columns on larger layouts, ensure a single column on narrow screens */
+	.grid {
+		grid-template-columns: repeat(1, 1fr);
+	}
+}
+
+/* Icon placeholders inserted via JS: make them sized, inheriting color */
+.car-meta .icon-plate,
+.car-meta .icon-speed,
+.car-meta .icon-fuel,
+.car-meta .icon-gear,
+.car-meta .icon-year {
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	flex: 0 0 20px;
+	color: var(--accent);
+}
+
+.car-meta .icon-plate svg,
+.car-meta .icon-speed svg,
+.car-meta .icon-fuel svg,
+.car-meta .icon-gear svg,
+.car-meta .icon-year svg {
+	width: 20px;
+	height: 20px;
+	display: block;
+	stroke: currentColor;
+	fill: none
+}
+
+/* Lucide wrapper and fallback styles removed — icons use direct SVG styling */
+/* Ensure lucide icons inserted directly inside chips inherit sizing and color */
+.car-meta span svg {
+	width: 20px;
+	height: 20px;
+	display: block;
+	stroke: var(--accent);
+	fill: none;
+	vector-effect: non-scaling-stroke;
+	flex: 0 0 20px;
+}
+
+.card-share .icon-btn svg {
+	width: 20px;
+	height: 20px;
+	color: var(--accent)
+}
+
+.card-share {
+	display: inline-flex;
+	gap: 8px;
+	align-items: center
+}
+
+.card-share .icon-btn {
+	width: 36px;
+	height: 36px;
+	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.03);
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	display: inline-grid;
+	place-items: center
+}
+
+.card-share .icon-btn svg {
+	width: 20px;
+	height: 20px
+}
+
+.card-share .icon-btn.saved {
+	background: linear-gradient(90deg, var(--accent), #d1b57a);
+	color: #060606;
+	border-color: transparent;
+	box-shadow: 0 8px 22px rgba(var(--accent-rgb), 0.12)
+}
+
+/* Emphasize price and title in list view */
+.list-view .car-title {
+	font-size: 18px
+}
+
+.list-view .price {
+	font-size: 20px
+}
+
+/* Grid view explicit (ensures consistent styles when toggling) */
+.grid-view #inventoryGrid {
+	display: grid
+}
+
+.grid-view #inventoryGrid .car-card {
+	display: flex;
+	flex-direction: column
+}
+
+/* Page-specific layout adjustments for used-cars (scoped to .used-page) */
+.used-page main .container {
+	max-width: 100%;
+}
+
+.used-page header .container {
+	max-width: 100%;
+	margin: 0;
+}
+
+.used-page .topbar-inner {
+	max-width: none;
+	margin: 0;
+	padding: 12px 20px;
+	width: 100%
+}
+
+/* Make every main section sit on its own horizontal band with consistent vertical spacing */
+.used-page main>section {
+	padding: 10px 48px;
+}
+
+/* Inventory grid: expand columns on wide viewports, remove boxed constraint */
+.used-page #inventoryGrid {
+	max-width: none;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 20px
+}
+
+/* Accent-tinted background band for the inventory grid */
+.used-page #inventoryGrid {
+	background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.04), rgba(var(--accent-rgb), 0.02));
+	padding: 5px;
+	border-radius: 12px;
+	box-shadow: 0 8px 30px rgba(2, 6, 23, 0.45);
+}
+
+.used-page .grid {
+	align-items: stretch
+}
+
+/* Ensure card media scales nicely in wider grid */
+.used-page .car-card .media {
+	height: 180px
+}
+
+@media (max-width:1200px) {
+	.used-page #inventoryGrid {
+		grid-template-columns: repeat(3, 1fr)
+	}
+}
+
+@media (max-width:900px) {
+	.used-page #inventoryGrid {
+		grid-template-columns: repeat(2, 1fr)
+	}
+}
+
+@media (max-width:600px) {
+	.used-page #inventoryGrid {
+		grid-template-columns: 1fr
+	}
+
+	.used-page main .container {
+		padding: 0;
+	}
+
+	.used-page main>section {
+		padding-top: 28px;
+		padding-bottom: 28px
+	}
+}
+
+/* Modal */
+.car-modal {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity .24s ease;
+	z-index: 9999
+}
+
+.car-modal[aria-hidden="false"] {
+	pointer-events: auto;
+	opacity: 1;
+	background: linear-gradient(180deg, rgba(2, 6, 23, 0.6), rgba(2, 6, 23, 0.6))
+}
+
+.car-modal-inner {
+	background: linear-gradient(180deg, rgba(10, 10, 12, 0.98), rgba(6, 8, 10, 0.96));
+	padding: 18px;
+	border-radius: 12px;
+	display: flex;
+	gap: 18px;
+	max-width: 960px;
+	width: 94%;
+	box-shadow: 0 40px 120px rgba(2, 6, 23, 0.8)
+}
+
+.modal-media img {
+	width: 420px;
+	max-width: 40vw;
+	border-radius: 8px;
+	object-fit: cover
+}
+
+.modal-body {
+	color: #fff
+}
+
+.modal-title {
+	font-size: 20px;
+	margin: 0
+}
+
+.modal-meta {
+	color: rgba(255, 255, 255, 0.8);
+	margin-top: 8px
+}
+
+.modal-price {
+	color: var(--accent);
+	font-weight: 800;
+	margin-top: 6px
+}
+
+.modal-close {
+	background: transparent;
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	color: #fff;
+	border-radius: 8px;
+	padding: 6px 8px;
+	cursor: pointer;
+	position: absolute;
+	right: 24px;
+	top: 18px
+}
+
+/* subtle neon border on cards */
+.car-card::before {
+	content: '';
+	position: absolute;
+	left: 10px;
+	right: 10px;
+	top: 10px;
+	height: 2px;
+	border-radius: 2px;
+	background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb), 0.12), transparent);
+	opacity: 0.95
+}
+
+/* Inventory header: inline stats and filter tools */
+.inventory-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 32px 0;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+	gap: 18px;
+	position: sticky;
+	top: 0;
+	z-index: 45;
+	transition: background .18s ease, box-shadow .18s ease, padding .12s ease;
+	background: transparent
+}
+
+.inventory-title {
+	font-family: var(--font-display);
+	font-size: 18px;
+	color: #fff;
+	margin: 0 0 6px 0
+}
+
+
+/* FORCE: disable sticky header globally to prevent inventory header from fixing on scroll */
+.inventory-header,
+.inventory-header.stuck {
+	position: static !important;
+	top: auto !important;
+	z-index: auto !important;
+	box-shadow: none !important;
+	transform: none !important;
+}
+
+.inventory-header .header-left {
+	display: flex;
+	flex-direction: column
+}
+
+.inventory-header .stats {
+	display: flex;
+	gap: 18px;
+	align-items: center;
+	color: rgba(255, 255, 255, 0.85);
+	font-size: 14px
+}
+
+.inventory-header .stat-item strong {
+	color: var(--accent);
+	margin-right: 6px
+}
+
+.filters-inline {
+	display: flex;
+	gap: 10px;
+	align-items: center
+}
+
+.inline-search {
+	padding: 8px 10px;
+	border-radius: 8px;
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	background: rgba(255, 255, 255, 0.02);
+	color: #fff
+}
+
+.inline-select {
+	padding: 8px 10px;
+	border-radius: 8px;
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	background: transparent;
+	color: #fff
+}
+
+.view-toggle .icon-btn {
+	background: transparent;
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	padding: 8px;
+	border-radius: 8px;
+	color: #fff
+}
+
+/* Small screens: stack header elements and simplify controls for mobile */
+@media (max-width:800px) {
+	.inventory-header {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 12px;
+		/* add comfortable padding on mobile */
+		padding: 18px 16px;
+	}
+
+	/* hide desktop stats row on mobile to reduce clutter */
+	.inventory-header .stats {
+		display: none;
+	}
+
+	/* stack filter controls vertically and make inputs full width */
+	.filters-inline {
+		justify-content: space-between;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 10px;
+	}
+
+	.filters-inline .inline-search {
+		flex: none;
+		margin-right: 0;
+		width: 100%;
+	}
+
+	/* make view-toggle buttons flow as a small horizontal row (right-aligned) */
+	.inventory-header .view-toggle {
+		display: flex;
+		gap: 8px;
+		justify-content: flex-end;
+		align-items: center;
+	}
+
+	.inventory-header .view-toggle .icon-btn {
+		flex: 0 0 auto
+	}
+}
+
+/* Hide the grid/list toggle buttons on mobile to simplify the header */
+@media (max-width:800px) {
+	.inventory-header .view-toggle {
+		display: none !important;
+	}
+}
+
+/* Disable sticky header behavior on mobile so header scrolls with content */
+@media (max-width:800px) {
+	.inventory-header {
+		position: static !important;
+		top: auto !important;
+		z-index: auto !important;
+	}
+}
+
+/* Muted backgrounds for inventory header controls to increase contrast */
+.inventory-header .inline-search,
+.inventory-header .inline-select,
+.inventory-header .filters-inline .inline-search,
+.inventory-header .filters-inline .inline-select {
+	background: rgba(255, 255, 255, 0.04);
+	border: 1px solid rgba(var(--accent-rgb), 0.10);
+	color: #fff;
+	padding: 8px 10px;
+	border-radius: 10px;
+	box-shadow: 0 6px 18px rgba(2, 6, 23, 0.45);
+	transition: box-shadow .14s ease, border-color .14s ease, background .14s ease;
+}
+
+.inventory-header .inline-search::placeholder,
+.inventory-header .filters-inline .inline-search::placeholder {
+	color: rgba(255, 255, 255, 0.6);
+}
+
+/* Use accent color for selects (subtle) and focus rings */
+.inventory-header .inline-select {
+	background-image: linear-gradient(180deg, rgba(var(--accent-rgb), 0.02), rgba(255, 255, 255, 0.00));
+}
+
+.inventory-header .inline-select:focus,
+.inventory-header .inline-search:focus,
+.inventory-header .filters-inline .inline-select:focus,
+.inventory-header .filters-inline .inline-search:focus {
+	outline: none;
+	border-color: var(--accent);
+	box-shadow: 0 0 0 6px rgba(var(--accent-rgb), 0.09), 0 8px 20px rgba(2, 6, 23, 0.45);
+}
+
+/* Make small header icon buttons stand out with a muted background and accent focus */
+.inventory-header .view-toggle .icon-btn,
+.inventory-header .filters-inline .icon-btn {
+	background: rgba(255, 255, 255, 0.035);
+	border: 1px solid rgba(var(--accent-rgb), 0.08);
+	color: #fff;
+	box-shadow: 0 6px 18px rgba(2, 6, 23, 0.32);
+}
+
+.inventory-header .view-toggle .icon-btn:focus,
+.inventory-header .filters-inline .icon-btn:focus {
+	outline: none;
+	box-shadow: 0 0 0 6px rgba(var(--accent-rgb), 0.08), 0 6px 16px rgba(2, 6, 23, 0.32);
+	border-color: var(--accent);
+}
+
+/* Ensure rounded inputs sit nicely when stacked on small screens */
+@media (max-width:800px) {
+
+	.inventory-header .inline-search,
+	.inventory-header .inline-select {
+		width: 100%;
+	}
+}
+
+/* Sticky state: when header becomes stuck at the top of the viewport */
+.inventory-header.stuck {
+	background: rgba(6, 8, 10, 0.96);
+	/* dark background when sticky */
+	box-shadow: 0 8px 30px rgba(2, 6, 23, 0.7);
+	padding-top: 12px;
+	padding-bottom: 12px;
+}
+
+/* Slightly reduce input shadows when header is stuck to keep contrast sharp */
+.inventory-header.stuck .inline-search,
+.inventory-header.stuck .inline-select {
+	box-shadow: none;
+	border-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Gradient border line at the bottom of the inventory header */
+.inventory-header {
+	/* ensure pseudo-element positions correctly */
+	position: -webkit-sticky;
+	/* for Safari */
+	position: sticky;
+}
+
+.inventory-header::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: .5px;
+	/* thicker, full-width gradient stripe */
+	border-radius: 0;
+	pointer-events: none;
+	z-index: 46;
+	/* strong colored gradients at both ends, subtle center */
+	background: linear-gradient(90deg,
+			rgba(var(--accent-rgb), 1) 0%,
+			rgba(var(--accent-rgb), 0.92) 6%,
+			rgba(255, 255, 255, 0.02) 50%,
+			rgba(var(--accent-rgb), 0.92) 94%,
+			rgba(var(--accent-rgb), 1) 100%);
+	opacity: 0.45;
+	transition: opacity .18s ease, transform .18s ease, background .18s ease;
+	transform: translateY(4px);
+}
+
+/* Stronger, more visible gradient when header is stuck */
+.inventory-header.stuck::after {
+	opacity: 1;
+	transform: translateY(0);
+	background: linear-gradient(90deg,
+			rgba(var(--accent-rgb), 1) 0%,
+			rgba(var(--accent-rgb), 0.98) 8%,
+			rgba(255, 255, 255, 0.06) 50%,
+			rgba(var(--accent-rgb), 0.98) 92%,
+			rgba(var(--accent-rgb), 1) 100%);
+}
+
+/* Stock Status Ribbon */
+.stock-ribbon {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 120px;
+	height: 120px;
+	overflow: hidden;
+	z-index: 10;
+}
+
+.stock-ribbon::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 0 120px 120px 0;
+	/* allow rotation via CSS variable --ribbon-rotation (deg) */
+	transform: rotate(var(--ribbon-rotation, 45deg)) translate(30px, -30px);
+	transform-origin: top right;
+}
+
+/* old ribbon styles removed to avoid conflicts with badge styles */
+
+/* List view: show spec badges (up to six) as compact chips */
+.list-view #inventoryGrid .car-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 10px;
+	align-items: center;
+	grid-template-columns: none;
+}
+
+.list-view #inventoryGrid .car-meta span {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 10px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.03);
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	color: rgba(255, 255, 255, 0.95);
+	font-size: 13px;
+	box-shadow: none;
+}
+
+/* slightly smaller icons inside chips */
+.list-view #inventoryGrid .car-meta span svg {
+	width: 16px;
+	height: 16px;
+	flex: 0 0 16px
+}
+
+/* emphasise registration badge */
+.list-view #inventoryGrid .car-meta .reg {
+	font-weight: 700;
+	letter-spacing: 0.4px;
+	text-transform: uppercase
+}
+
+/* Media overlay: image counter, fav and share buttons */
+.media {
+	position: relative
+}
+
+.media span {
+	height: inherit;
+}
+
+/* Ensure inventory/list cards anchor overlays to the media area */
+.car-card .media {
+	position: relative
+}
+
+.car-card .media .media-overlay {
+	z-index: 30
+}
+
+.media-overlay {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	display: none;
+	gap: 8px;
+	z-index: 6
+}
+
+/* Show media overlay only in list view (hide in grid view) */
+.list-view #inventoryGrid .media-overlay {
+	display: flex;
+}
+
+.media .img-count {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+	background: var(--accent);
+	padding: 6px 8px;
+	border-radius: 999px;
+	color: #fff;
+	font-weight: 700;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	border: 1px solid rgba(255, 255, 255, 0.04)
+}
+
+.media .img-count svg {
+	width: 14px;
+	height: 14px;
+	flex: 0 0 14px
+}
+
+.icon-btn {
+	width: 36px;
+	height: 36px;
+	border-radius: 999px;
+	background: var(--accent);
+	border: 0;
+	display: inline-grid;
+	place-items: center;
+	color: #fff;
+	cursor: pointer;
+	backdrop-filter: blur(6px);
+	transition: transform .14s ease, background .14s ease, opacity .14s ease
+}
+
+.icon-btn svg {
+	width: 16px;
+	height: 16px;
+	stroke: currentColor;
+	fill: none
+}
+
+.icon-btn.saved {
+	background: linear-gradient(90deg, var(--accent), #d1b57a);
+	color: #060606;
+	border-color: transparent
+}
+
+.icon-btn:focus {
+	outline: 3px solid rgba(8, 112, 255, 0.12);
+	outline-offset: 2px
+}
+
+.media-overlay .icon-btn:hover {
+	transform: translateY(-3px);
+	background: linear-gradient(90deg, var(--accent), var(--accent-2))
+}
+
+/* Ensure overlay sizing works in list view where media is larger */
+.list-view #inventoryGrid .car-card .media {
+	overflow: hidden
+}
+
+@media (max-width:900px) {
+	.list-view #inventoryGrid .car-card .media {
+		flex: 0 0 100%;
+		height: 220px
+	}
+}
+
+/* Repair rule: ensure SVG icons in this page are visible (scoped to .used-page) */
+.used-page svg {
+	display: inline-block !important;
+	visibility: visible !important;
+	opacity: 1 !important;
+	vertical-align: middle;
+}
+
+/* Cars page overrides: use plain colors (no gradients) and remove shadows */
+.used-page .car-card,
+.used-page .car-card>a {
+	background-image: none !important;
+	box-shadow: none !important;
+	border: 1px solid #1018200f !important;
+	border-radius: 12px;
+}
+
+/* remove neon/rim pseudo element */
+.used-page .car-card::before {
+	display: none !important;
+}
+
+/* Inventory grid: plain background and no shadow */
+.used-page #inventoryGrid {
+	background: transparent !important;
+	box-shadow: none !important;
+	padding: 5px;
+}
+
+/* Card body: subtle light background to separate content from media */
+.used-page .car-card .card-body {
+	background: rgba(255, 255, 255, 0.02);
+	border-top: 1px solid rgba(255, 255, 255, 0.03);
+	border-bottom-left-radius: 12px;
+	border-bottom-right-radius: 12px;
+	padding: 14px;
+}
+
+/* Chips, buttons and icon badges: plain fills, no gradients or shadows */
+.used-page .car-meta span,
+.used-page .card-share .icon-btn,
+.used-page .btn,
+.used-page .btn-cta-primary,
+.used-page .icon-btn.saved {
+	background-image: none !important;
+	background: rgba(255, 255, 255, 0.02);
+	box-shadow: none !important;
+	color: rgba(255, 255, 255, 0.95);
+	border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* Saved state: use solid accent color for clarity */
+.used-page .icon-btn.saved {
+	background: var(--accent);
+	color: #fff;
+}
+
+/* Media overlay hover: avoid gradient transitions */
+.used-page .media-overlay .icon-btn:hover {
+	transform: none;
+	background: rgba(255, 255, 255, 0.03);
+}
+
+/* Remove backdrop-filter effects on cars page */
+.used-page .stock-badge,
+.used-page .icon-btn,
+.used-page .inventory-header .icon-btn {
+	backdrop-filter: none !important;
+	-webkit-backdrop-filter: none !important;
+}
+
+/* Neutralize modals and carousel overlays on cars page */
+.used-page .carousel-slide::before,
+.used-page .carousel-slide::after,
+.used-page .carousel-slide,
+.used-page .car-modal,
+.used-page .car-modal-inner {
+	background-image: none !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+/* Keep accessible focus rings but toned down */
+.used-page .details-link:focus,
+.used-page .btn:focus,
+.used-page .icon-btn:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.08);
+}
+
+/* Give extra spacing between grid/list toggle buttons on the inventory header */
+.used-page .inventory-header .view-toggle {
+	display: inline-flex !important;
+	gap: 12px !important;
+	align-items: center;
+}
+
+/* Slight spacing guarantee for individual toggle buttons */
+.used-page .inventory-header .view-toggle .icon-btn {
+	margin-left: 0 !important;
+}
+
+
+.used-page .inventory-header::after {
+	display: none !important;
+}
+
+/* Light-theme inventory overrides (scoped to .used-page) */
+.used-page {
+	--inventory-page-bg: #f6f7f9;
+	--inventory-card-bg: #ffffff;
+	--inventory-card-body-bg: #fbfbfd;
+	--inventory-text: #0b1720;
+	--inventory-muted: #6b7280;
+}
+
+/* Page band background to lift content from the site background */
+.used-page main>section {
+	background: var(--inventory-page-bg);
+}
+
+/* Cards: white background, subtle border, dark text */
+.used-page .car-card {
+	background: var(--inventory-card-bg) !important;
+	color: var(--inventory-text) !important;
+	border: 1px solid rgba(16, 24, 32, 0.06) !important;
+}
+
+/* Card hover: subtle lift without heavy shadow */
+.used-page .car-card:hover {
+	transform: translateY(-4px);
+	box-shadow: none !important;
+}
+
+/* Card media: keep image saturation but ensure rounded corners match card */
+.used-page .car-card .media {
+	border-radius: 12px 12px 0 0;
+	overflow: hidden;
+}
+
+/* Card body: light subtle background to separate from media */
+.used-page .car-card .card-body {
+	background: var(--inventory-card-body-bg) !important;
+	color: var(--inventory-text) !important;
+	border-top: 1px solid rgba(16, 24, 32, 0.04);
+}
+
+/* Meta chips: light chip with muted text */
+.used-page .car-meta span {
+	background: #f3f4f6 !important;
+	color: var(--inventory-text) !important;
+	border: 1px solid rgba(16, 24, 32, 0.04) !important;
+	box-shadow: none !important;
+}
+
+/* Icon colors inside chips */
+.used-page .car-meta span svg {
+	stroke: var(--accent) !important;
+}
+
+/* Buttons: soft neutral fills and accent primary */
+.used-page .btn,
+.used-page .btn.details,
+.used-page .inventory-pagination button {
+	background: #ffffff !important;
+	color: var(--inventory-text) !important;
+	border: 1px solid rgba(16, 24, 32, 0.06) !important;
+	box-shadow: none !important;
+}
+
+.used-page .btn-cta-primary,
+.used-page .inventory-pagination .page-btn.active {
+	background: var(--accent) !important;
+	color: #fff !important;
+	border-color: var(--accent) !important;
+	box-shadow: none !important;
+}
+
+/* Small icon buttons (save/share): soft light circle with accent on saved */
+.used-page .media-overlay .icon-btn,
+.used-page .card-share .icon-btn {
+	background: rgba(0, 0, 0, 0.06) !important;
+	color: var(--inventory-text) !important;
+	border: 1px solid rgba(16, 24, 32, 0.04) !important;
+}
+
+.used-page .icon-btn.saved {
+	background: var(--accent) !important;
+	color: #fff !important;
+}
+
+/* Pagination wrapper: subtle transparent band on the page bg */
+.used-page .inventory-pagination {
+	background: transparent !important;
+}
+
+/* Inventory header controls: light inputs */
+.used-page .inventory-header .inline-search,
+.used-page .inventory-header .inline-select {
+	background: #fff !important;
+	color: var(--inventory-text) !important;
+	border: 1px solid rgba(16, 24, 32, 0.06) !important;
+	box-shadow: none !important;
+}
+
+/* Modal: light surface */
+.used-page .car-modal-inner {
+	background: #ffffff !important;
+	color: var(--inventory-text) !important;
+	box-shadow: 0 16px 48px rgba(16, 24, 32, 0.12) !important;
+}
+
+/* Header and card text adjustments for light theme (scoped) */
+.used-page .inventory-header {
+	background: transparent !important;
+	color: var(--inventory-text) !important;
+	border-bottom: 1px solid rgba(16, 24, 32, 0.06) !important;
+}
+
+.used-page .inventory-title {
+	color: var(--inventory-text) !important;
+}
+
+.used-page .inventory-header .stats {
+	color: var(--inventory-muted) !important;
+}
+
+.used-page .inventory-header.stuck {
+	background: var(--inventory-card-bg) !important;
+	box-shadow: 0 6px 24px rgba(16, 24, 32, 0.06) !important;
+}
+
+/* Header controls */
+.used-page .inventory-header .view-toggle .icon-btn,
+.used-page .inventory-header .filters-inline .icon-btn {
+	background: #fff !important;
+	border: 1px solid rgba(16, 24, 32, 0.04) !important;
+	color: var(--inventory-text) !important;
+	box-shadow: none !important;
+}
+
+.used-page .inventory-header .inline-search,
+.used-page .inventory-header .inline-select {
+	background: #fff !important;
+	color: var(--inventory-text) !important;
+	border: 1px solid rgba(16, 24, 32, 0.06) !important;
+	box-shadow: none !important;
+}
+
+/* Card text and meta */
+.used-page .car-title {
+	color: var(--inventory-text) !important;
+}
+
+.used-page .meta,
+.used-page .car-meta {
+	color: var(--inventory-muted) !important;
+}
+
+.used-page .price,
+.used-page .card-footer .price {
+	color: var(--accent) !important;
+}
+
+.used-page .car-card .stock-badge {
+	border: 1px solid rgba(16, 24, 32, 0.04) !important;
+	color: #fff !important;
+}
+
+.used-page .details-link {
+	color: var(--accent) !important;
+}
+
+.used-page .card-footer .details-link .chev {
+	color: var(--accent) !important;
+}
+
+/* Ensure chips/icons are visible on light backgrounds */
+.used-page .car-meta span svg,
+.used-page .card-share .icon-btn svg {
+	stroke: var(--accent) !important;
+	color: var(--accent) !important;
+}
