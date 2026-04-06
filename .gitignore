@@ -50,3 +50,5 @@ public/images/*
 *.log
 
 app/data/inventories/*
+
+brandstudi*
