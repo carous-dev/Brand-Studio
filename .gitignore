@@ -52,3 +52,6 @@ public/images/*
 app/data/inventories/*
 
 brandstudi*
+
+__pycache__/
+**/__pycache__/
