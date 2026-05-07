@@ -1,0 +1,71 @@
+[data-theme-id='springalls-classic'] .springalls-whatsapp-fab {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: #25D366;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 14px 30px rgba(37, 211, 102, 0.4);
+  z-index: 1900;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+[data-theme-id='springalls-classic'] .springalls-whatsapp-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 38px rgba(37, 211, 102, 0.5);
+}
+
+[data-theme-id='springalls-classic'] .springalls-whatsapp-status {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 2px solid #ffffff;
+  background: #9aa1a8;
+  pointer-events: none;
+}
+
+[data-theme-id='springalls-classic'] .springalls-whatsapp-fab.is-online .springalls-whatsapp-status {
+  background: #22c55e;
+  animation: springalls-whatsapp-pulse 2.4s ease-out infinite;
+}
+
+[data-theme-id='springalls-classic'] .springalls-whatsapp-fab.is-offline .springalls-whatsapp-status {
+  background: #9aa1a8;
+}
+
+@keyframes springalls-whatsapp-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+@media (max-width: 480px) {
+  [data-theme-id='springalls-classic'] .springalls-whatsapp-fab {
+    width: 50px;
+    height: 50px;
+    bottom: 16px;
+    right: 16px;
+  }
+
+  [data-theme-id='springalls-classic'] .springalls-whatsapp-status {
+    top: 3px;
+    right: 3px;
+    width: 12px;
+    height: 12px;
+  }
+}

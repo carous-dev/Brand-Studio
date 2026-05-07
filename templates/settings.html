@@ -41,6 +41,32 @@
                     <p class="tab-description">Add and manage domains that will be used to create brand previews. These domains serve as the foundation for your dealership websites.</p>
                 </div>
 
+                <!-- Local development panel (only rendered in dev mode) -->
+                <div class="settings-card" id="localPreviewCard" style="display:none;">
+                    <div class="card-header">
+                        <h3>Local development</h3>
+                        <div class="card-actions">
+                            <span class="badge" id="localPreviewBadge">lvh.me</span>
+                            <button class="btn-primary btn-sm" id="enableLocalBaseBtn" onclick="domainManager.enableLocalBase()" style="display:none;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                <span id="enableLocalBaseLabel">Use lvh.me for local previews</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <p class="text-muted" style="margin:0 0 8px;">
+                            Brands created against a wildcard-DNS base resolve to your local Next.js dev server with no Apache, no Cloudflare, and no hosts-file edits — the public DNS service points <code>*.lvh.me</code> at <code>127.0.0.1</code>.
+                        </p>
+                        <p class="text-muted" style="margin:0;">
+                            Preview URL pattern:
+                            <code id="localPreviewPattern">http://&lt;slug&gt;.lvh.me:3000</code>
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Domains Table -->
                 <div class="settings-card">
                     <div class="card-header">
@@ -348,11 +374,56 @@ class DomainManager {
         try {
             const response = await ApiService.get('/settings/domains');
             this.domains = Array.isArray(response?.domains) ? response.domains : [];
+            this.localPreview = (response && response.local_preview) || null;
+            this.renderLocalPreviewPanel();
             this.renderDomains();
         } catch (error) {
             this.domains = [];
+            this.localPreview = null;
+            this.renderLocalPreviewPanel();
             this.renderDomains();
             this.showAlert(this.extractError(error, 'Failed to load domains'), 'error');
+        }
+    }
+
+    renderLocalPreviewPanel() {
+        const card = document.getElementById('localPreviewCard');
+        if (!card) return;
+        const meta = this.localPreview;
+        if (!meta || !meta.is_dev_mode) {
+            card.style.display = 'none';
+            return;
+        }
+        card.style.display = '';
+
+        const base = meta.base_domain || 'lvh.me';
+        const pattern = meta.url_pattern || `http://<slug>.${base}:${meta.next_port || '3000'}`;
+
+        const badge = document.getElementById('localPreviewBadge');
+        if (badge) badge.textContent = base;
+
+        const patternEl = document.getElementById('localPreviewPattern');
+        if (patternEl) patternEl.textContent = pattern;
+
+        const alreadyAdded = (this.domains || []).some((d) => (d.domain || '').toLowerCase() === base.toLowerCase());
+        const btn = document.getElementById('enableLocalBaseBtn');
+        const lbl = document.getElementById('enableLocalBaseLabel');
+        if (btn) btn.style.display = alreadyAdded ? 'none' : '';
+        if (lbl) lbl.textContent = `Use ${base} for local previews`;
+    }
+
+    async enableLocalBase() {
+        const base = (this.localPreview && this.localPreview.base_domain) || 'lvh.me';
+        try {
+            await ApiService.post('/settings/domains', {
+                domain: base,
+                description: `Local development base — wildcard DNS resolves *.${base} to 127.0.0.1`,
+                status: 'active',
+            });
+            this.showAlert(`${base} added as local development base`, 'success');
+            await this.fetchDomains();
+        } catch (error) {
+            this.showAlert(this.extractError(error, `Failed to add ${base}`), 'error');
         }
     }
 
@@ -446,6 +517,9 @@ class DomainManager {
 
         const rows = this.domains.map((domain) => {
             const safeStatus = domain.status === 'inactive' ? 'inactive' : 'active';
+            const localChip = domain.is_local_preview_base
+                ? '<span class="status-badge status-active" style="margin-left:8px;font-size:0.7rem;">local</span>'
+                : '';
             return `
                 <tr>
                     <td class="col-domain">
@@ -455,7 +529,7 @@ class DomainManager {
                                 <path d="M2 12h20"></path>
                                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                             </svg>
-                            ${this.escapeHtml(domain.domain)}
+                            ${this.escapeHtml(domain.domain)}${localChip}
                         </div>
                     </td>
                     <td class="col-description">

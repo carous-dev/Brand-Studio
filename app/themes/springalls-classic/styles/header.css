@@ -1,0 +1,458 @@
+[data-theme-id='springalls-classic'] .sps-header {
+  background: var(--color-header-bg);
+  color: var(--color-header-text);
+  border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+}
+
+[data-theme-id='springalls-classic'] .sps-header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 18px 28px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+[data-theme-id='springalls-classic'] .sps-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 220px;
+  flex-shrink: 1;
+  text-decoration: none;
+}
+
+[data-theme-id='springalls-classic'] .sps-brand-badge {
+  width: 180px;
+  height: 54px;
+  color: var(--color-accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme-id='springalls-classic'] .sps-brand-badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+[data-theme-id='springalls-classic'] .sps-brand-text {
+  font-family: 'Oswald', 'Montserrat', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--t-text);
+}
+
+[data-theme-id='springalls-classic'] .sps-main-nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex: 1;
+  justify-content: center;
+}
+
+[data-theme-id='springalls-classic'] .sps-main-nav-link {
+  color: var(--color-header-text);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  position: relative;
+  padding-right: 18px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+[data-theme-id='springalls-classic'] .sps-main-nav-link.is-active {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
+  text-decoration-color: var(--color-primary);
+}
+
+[data-theme-id='springalls-classic'] .sps-main-nav-link:hover,
+[data-theme-id='springalls-classic'] .sps-main-nav-link:focus,
+[data-theme-id='springalls-classic'] .sps-nav-dropdown-link:hover,
+[data-theme-id='springalls-classic'] .sps-nav-dropdown-link:focus,
+[data-theme-id='springalls-classic'] .sps-mobile-nav-link:hover,
+[data-theme-id='springalls-classic'] .sps-mobile-nav-link:focus {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
+  text-decoration-color: var(--color-primary);
+}
+
+[data-theme-id='springalls-classic'] .sps-main-nav-link:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  width: 1px;
+  height: 16px;
+  background: rgba(17, 24, 39, 0.12);
+  transform: translateY(-50%);
+}
+
+[data-theme-id='springalls-classic'] .sps-main-nav-chev {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--color-accent);
+  border-bottom: 2px solid var(--color-accent);
+  transform: rotate(45deg) translateY(-1px);
+  display: inline-block;
+}
+
+[data-theme-id='springalls-classic'] .sps-nav-dropdown {
+  position: relative;
+}
+
+[data-theme-id='springalls-classic'] .sps-nav-dropdown::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 12px;
+}
+
+[data-theme-id='springalls-classic'] .sps-nav-dropdown-toggle {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+[data-theme-id='springalls-classic'] .sps-nav-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  margin-top: 6px;
+  left: 0;
+  min-width: 200px;
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+  background: var(--t-card);
+  border: 1px solid var(--t-border);
+  border-radius: 14px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 10;
+}
+
+[data-theme-id='springalls-classic'] .sps-nav-dropdown-link {
+  text-decoration: none;
+  color: var(--color-header-text);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+[data-theme-id='springalls-classic'] .sps-nav-dropdown-link.is-active {
+  color: var(--color-primary);
+}
+
+[data-theme-id='springalls-classic'] .sps-nav-dropdown:hover .sps-nav-dropdown-menu,
+[data-theme-id='springalls-classic'] .sps-nav-dropdown:focus-within .sps-nav-dropdown-menu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+[data-theme-id='springalls-classic'] .sps-header-tools {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+[data-theme-id='springalls-classic'] .sps-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  white-space: nowrap;
+}
+
+[data-theme-id='springalls-classic'] .sps-header-actions-item {
+  color: var(--color-header-text);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+[data-theme-id='springalls-classic'] .sps-header-actions-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-accent);
+  display: inline-flex;
+}
+
+[data-theme-id='springalls-classic'] .sps-wishlist-button {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  border: 1px solid var(--t-border);
+  background: var(--t-card);
+  color: var(--color-primary);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+[data-theme-id='springalls-classic'] .sps-wishlist-button:hover {
+  transform: translateY(-1px);
+}
+
+[data-theme-id='springalls-classic'] .sps-wishlist-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-header-bg);
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-toggle {
+  display: none;
+  margin-left: auto;
+  background: transparent;
+  border: 0;
+  padding: 8px;
+  cursor: pointer;
+  color: var(--color-header-text);
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  backdrop-filter: blur(3px);
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-panel {
+  position: absolute;
+  inset: 0;
+  width: min(100vw, 380px);
+  background: var(--color-header-bg);
+  color: var(--color-header-text);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.2);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(110%);
+  transition: transform 0.25s ease;
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav.is-open .sps-mobile-nav-panel {
+  transform: translateX(0);
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-close {
+  border: 0;
+  background: transparent;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-header-text);
+  cursor: pointer;
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-links {
+  display: grid;
+  gap: 2px;
+  padding: 10px 18px 6px;
+  overflow-y: auto;
+  max-height: calc(100vh - 260px);
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-link {
+  color: var(--color-header-text);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 12px 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-link.is-active {
+  color: var(--color-primary);
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-group {
+  display: grid;
+  gap: 4px;
+  padding: 10px 0 4px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-group-title {
+  color: var(--color-header-muted);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 0;
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-actions {
+  display: grid;
+  gap: 4px;
+  padding: 8px 18px 14px;
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-info-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-info-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--t-icon-bg-strong);
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-info-text {
+  display: grid;
+  gap: 2px;
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-info-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-header-muted);
+  font-weight: 700;
+}
+
+[data-theme-id='springalls-classic'] .sps-mobile-nav-info-value {
+  font-weight: 600;
+  color: var(--color-accent);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 1200px) {
+  [data-theme-id='springalls-classic'] .sps-header-inner {
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+  }
+  [data-theme-id='springalls-classic'] .sps-main-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  [data-theme-id='springalls-classic'] .sps-header-tools {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 960px) {
+  [data-theme-id='springalls-classic'] .sps-header-inner {
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: nowrap;
+  }
+  [data-theme-id='springalls-classic'] .sps-brand {
+    min-width: 0;
+  }
+  [data-theme-id='springalls-classic'] .sps-brand-badge {
+    width: 140px;
+    height: 42px;
+  }
+  [data-theme-id='springalls-classic'] .sps-main-nav,
+  [data-theme-id='springalls-classic'] .sps-header-actions {
+    display: none;
+  }
+  [data-theme-id='springalls-classic'] .sps-header-tools {
+    margin-left: auto;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  [data-theme-id='springalls-classic'] .sps-wishlist-button {
+    width: 46px;
+    height: 46px;
+  }
+  [data-theme-id='springalls-classic'] .sps-mobile-toggle {
+    display: inline-flex;
+    margin-left: 0;
+  }
+}
+
+@media (min-width: 961px) {
+  [data-theme-id='springalls-classic'] .sps-mobile-nav {
+    display: none;
+  }
+}

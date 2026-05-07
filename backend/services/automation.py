@@ -1,4 +1,19 @@
-"""Background automation helpers (Linux-only provisioning)."""
+"""Background automation helpers (Linux-only provisioning).
+
+DEPRECATED — these functions are no longer the ones the request flow runs.
+The authoritative implementations of `maybe_start_linux_brand_automation` and
+`maybe_restart_pm2_next_linux` live in app.py (search for `def maybe_...`),
+and they shadow the imports that used to live at the top of app.py.
+
+This file is kept on disk only because removing it could break tooling that
+still imports from it. Do not edit the bodies below expecting your change to
+take effect — edit app.py instead. New work should consolidate everything in
+backend/services/ and remove the duplicates from app.py; see
+docs/FEATURE_LOG.md (2026-05-07 audit).
+
+`resolve_cloudflare_ssl_paths` and `_cloudflare_origin_name_for_hostname` are
+also redefined inside app.py and the app.py copies are what get called.
+"""
 
 import logging
 import os

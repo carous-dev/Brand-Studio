@@ -1,4 +1,10 @@
-"""DNS helpers (nslookup, propagation validation)."""
+"""DNS helpers (nslookup, dig propagation validation).
+
+`nslookup_resolves` and `dig_resolves` ARE used by app.py. `validate_dns_after_automation`
+is also defined here but is shadowed by a copy in app.py (see app.py:522). The app.py
+copy is the one that runs. See docs/FEATURE_LOG.md (2026-05-07 audit) for the
+consolidation plan.
+"""
 
 import re
 import socket

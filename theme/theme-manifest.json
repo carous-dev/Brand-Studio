@@ -9,16 +9,16 @@
       "status": "stable"
     },
     {
-      "id": "editorial-showroom",
-      "name": "Editorial Showroom",
-      "description": "Independent magazine-style preview theme.",
+      "id": "gilded-drive",
+      "name": "Gilded Drive",
+      "description": "Futuristic showcase theme adapted for brand tokens.",
       "status": "experimental"
     },
     {
-      "id": "gilded-drive",
-      "name": "Gilded Drive",
-      "description": "Futuristic showroom theme adapted for brand tokens.",
-      "status": "experimental"
+      "id": "springalls-classic",
+      "name": "Springalls Classic",
+      "description": "Crisp teal-accented dealer theme ported from the Springalls Car Sales Ltd app. Suited to family-run independents who want a clean, trustworthy look.",
+      "status": "stable"
     }
   ]
 }

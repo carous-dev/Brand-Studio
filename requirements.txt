@@ -1,3 +1,13 @@
+# BrandStudio Flask backend — pinned to Python 3.12.
+#
+# Pillow 10.1.0 and cryptography 42.0.8 only publish prebuilt wheels through
+# Python 3.12. On 3.13 / 3.14, `pip install` here falls back to building from
+# source ("Getting requirements to build wheel ... error") which needs MSVC +
+# libjpeg + Rust + OpenSSL locally. To upgrade Python:
+#   1. Bump Pillow to 11.x (has 3.13 / 3.14 wheels)
+#   2. Bump cryptography to 44.x (has 3.13 / 3.14 wheels)
+#   3. Re-test the imports in app.py and lib/cloudflare_dns.py.
+# Until then: use `py -3.12` on Windows or `python3.12` on Linux/macOS.
 Flask==3.0.0
 Werkzeug==3.0.1
 Pillow==10.1.0

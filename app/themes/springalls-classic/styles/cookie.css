@@ -1,0 +1,300 @@
+[data-theme-id='springalls-classic'] .sps-cookie-root {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2300;
+  pointer-events: none;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-banner {
+  background: var(--t-card);
+  border-top: 1px solid var(--t-border);
+  box-shadow: 0 -18px 36px rgba(15, 23, 42, 0.12);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: nowrap;
+  pointer-events: auto;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-banner.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+  color: var(--color-primary);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--t-text);
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-text {
+  margin: 6px 0 0;
+  color: var(--t-muted);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-link {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-actions {
+  display: grid;
+  gap: 10px;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-button-primary,
+[data-theme-id='springalls-classic'] .sps-cookie-button-secondary,
+[data-theme-id='springalls-classic'] .sps-cookie-button-ghost {
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid transparent;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-button-primary {
+  background: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 16px 24px color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-button-secondary {
+  background: var(--t-card);
+  color: var(--t-text);
+  border-color: var(--t-border);
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-button-ghost {
+  background: transparent;
+  color: var(--t-muted);
+  text-decoration: underline;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 12, 20, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 2390;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: min(420px, 100%);
+  background: var(--t-card);
+  border-left: 1px solid var(--t-border);
+  transform: translateX(100%);
+  transition: transform 0.35s ease;
+  z-index: 2400;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-panel.is-open {
+  transform: translateX(0);
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-panel-header {
+  padding: 18px 20px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--t-border);
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-panel-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--t-text);
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-panel-body {
+  padding: 16px 20px;
+  display: grid;
+  gap: 16px;
+  overflow: auto;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-panel-intro {
+  margin: 0;
+  color: var(--t-muted);
+  line-height: 1.6;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-pref-item {
+  border: 1px solid var(--t-border);
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-pref-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--t-icon-bg-strong);
+  color: var(--t-icon-fg);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-pref-content {
+  flex: 1;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-pref-title {
+  margin: 0;
+  font-weight: 700;
+  color: var(--t-text);
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-pref-desc {
+  margin: 4px 0 0;
+  color: var(--t-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-toggle {
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--t-border);
+  border: 0;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #ffffff;
+  transition: transform 0.2s ease;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-toggle.is-active {
+  background: var(--color-primary);
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-toggle.is-active::after {
+  transform: translateX(20px);
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-toggle.is-locked {
+  cursor: not-allowed;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-panel-footer {
+  padding: 14px 20px 20px;
+  border-top: 1px solid var(--t-border);
+  display: grid;
+  gap: 10px;
+}
+
+[data-theme-id='springalls-classic'] .sps-cookie-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (min-width: 900px) {
+  [data-theme-id='springalls-classic'] .sps-cookie-banner {
+    padding: 18px 32px;
+    gap: 24px;
+  }
+  [data-theme-id='springalls-classic'] .sps-cookie-actions {
+    align-items: center;
+  }
+  [data-theme-id='springalls-classic'] .sps-cookie-button-row {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 768px) {
+  [data-theme-id='springalls-classic'] .sps-cookie-banner {
+    padding: 14px 16px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+  [data-theme-id='springalls-classic'] .sps-cookie-button-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  [data-theme-id='springalls-classic'] .sps-cookie-button-primary {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  [data-theme-id='springalls-classic'] .sps-cookie-panel {
+    top: auto;
+    height: 75vh;
+    width: 100%;
+    border-left: 0;
+    border-top: 1px solid var(--t-border);
+    transform: translateY(100%);
+  }
+  [data-theme-id='springalls-classic'] .sps-cookie-panel.is-open {
+    transform: translateY(0);
+  }
+}

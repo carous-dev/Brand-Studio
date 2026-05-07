@@ -7,6 +7,8 @@ export type ThemePageId =
   | 'contact'
   | 'services'
   | 'sellYourCar'
+  | 'finance'
+  | 'partExchange'
   | 'recentlySold'
   | 'usedCars'
   | 'vehicleDetail'

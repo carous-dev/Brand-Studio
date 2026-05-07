@@ -50,16 +50,33 @@ Next runs on `http://localhost:3000`.
 
 ### 2) Install and run Flask dashboard/API
 
+**Python 3.12 is required.** Pillow 10.1.0 and cryptography 42.0.8 only ship
+prebuilt wheels through 3.12; on 3.13/3.14 `pip install` falls back to
+building from source which needs MSVC + libjpeg + Rust + OpenSSL.
+
 ```bash
-py -m pip install -r requirements.txt
-py app.py
+# Windows — use the launcher to pick 3.12 explicitly
+py -3.12 -m venv venv
+venv\Scripts\activate
+python -m pip install -r requirements.txt
+python app.py
+
+# Linux/macOS
+python3.12 -m venv venv
+source venv/bin/activate
+python -m pip install -r requirements.txt
+python app.py
 ```
 
 Flask runs on `http://localhost:5000`.
 
-You can also use the helper scripts:
+You can also use the helper scripts (they handle the venv + the 3.12 pin):
 - Windows: `start.bat`
 - Bash/WSL/macOS/Linux: `start.sh`
+
+If you've already created a `venv/` with the wrong Python version, delete it
+(`rmdir /s /q venv` on Windows, `rm -rf venv` on Linux/macOS) and re-run.
+The start scripts detect and warn about a mismatched venv.
 
 ## Environment variables
 

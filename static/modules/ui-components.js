@@ -128,7 +128,20 @@ export const UIComponents = {
         </td>
         <td class="col-slug">${this.escapeHtml(brand.slug || '')}</td>
         <td class="col-domain">
-          ${domain ? `<a href="${domain.startsWith('http') ? domain : 'https://' + domain}" target="_blank" style="color: var(--accent); text-decoration: none;">${this.escapeHtml(domain.replace('http://', '').replace('https://', ''))}</a>` : '-'}
+          ${(() => {
+            if (!domain) return '-';
+            // When the backend tags a brand with a local-dev preview URL
+            // (lvh.me / sslip.io / etc.), link there instead of https://<domain>
+            // so dev-mode clicks land on the running Next.js dev server.
+            const previewUrl = brand.preview_url || '';
+            const href = previewUrl
+              ? previewUrl
+              : (domain.startsWith('http') ? domain : 'https://' + domain);
+            const localChip = brand.preview_url_kind === 'local-dev'
+              ? ' <span class="status-badge status-active" style="margin-left:6px;font-size:0.65rem;vertical-align:middle;">local</span>'
+              : '';
+            return `<a href="${href}" target="_blank" style="color: var(--accent); text-decoration: none;">${this.escapeHtml(domain.replace('http://', '').replace('https://', ''))}</a>${localChip}`;
+          })()}
         </td>
         <td class="col-location">${this.escapeHtml(city + (county ? ', ' + county : ''))}</td>
         <td class="col-theme">
@@ -236,9 +249,19 @@ export const UIComponents = {
       // Use online checker status, fallback to is_active for backward compatibility
       const status = brand.status || (brand.is_active !== false ? 'online' : 'offline');
       const isOnline = status === 'online';
-      
+
+      // Automation lifecycle (set by the Linux provisioning thread; empty for
+      // legacy previews that pre-date this feature). Surface as a small badge
+      // so operators can see at a glance which brands are live vs failed vs
+      // mid-provisioning. See /api/previews/<slug>/automation-status for live polling.
+      const automation = (brand && brand._automation) || {};
+      const aStatus = automation.status || '';
+      const aStep = automation.step || '';
+      const aMessage = automation.message || automation.error || '';
+      const aTooltip = [aStep, aMessage].filter(Boolean).join(' — ');
+
       return `
-        <div class="brand-card" data-slug="${brand.slug}">
+        <div class="brand-card" data-slug="${brand.slug}" data-automation-status="${aStatus}">
           <div class="brand-card-header" style="background: ${primaryColor};">
             <div class="brand-logo">
               ${brand.name ? brand.name.charAt(0).toUpperCase() : 'B'}
@@ -246,6 +269,7 @@ export const UIComponents = {
             <div class="brand-status ${isOnline ? 'online' : 'offline'}">
               <span class="status-dot"></span>
             </div>
+            ${aStatus ? `<div class="automation-badge automation-${aStatus}" title="${this.escapeHtml(aTooltip)}">${this.escapeHtml(aStatus)}</div>` : ''}
           </div>
           <div class="brand-card-body">
             <h3 class="brand-name">${this.escapeHtml(brand.name || 'Unnamed Brand')}</h3>
@@ -300,6 +324,53 @@ export const UIComponents = {
         window.brandStudio.confirmDeleteBrand(slug);
       }
     });
+
+    // Poll any in-flight cards (status = pending|provisioning) every 3s and
+    // update the badge as the automation thread reports progress. Stops as
+    // soon as the card reaches a terminal status (live/failed/skipped) or
+    // gets re-rendered by the next list refresh.
+    this._startAutomationPolling(container);
+  },
+
+  _startAutomationPolling(container) {
+    if (!container) return;
+    if (this._automationPollHandle) {
+      clearInterval(this._automationPollHandle);
+      this._automationPollHandle = null;
+    }
+    const poll = async () => {
+      const cards = Array.from(container.querySelectorAll('.brand-card[data-automation-status="pending"], .brand-card[data-automation-status="provisioning"]'));
+      if (cards.length === 0) {
+        clearInterval(this._automationPollHandle);
+        this._automationPollHandle = null;
+        return;
+      }
+      await Promise.all(cards.map(async (card) => {
+        const slug = card.getAttribute('data-slug');
+        if (!slug) return;
+        try {
+          const res = await fetch(`/api/previews/${encodeURIComponent(slug)}/automation-status`, { cache: 'no-store' });
+          if (!res.ok) return;
+          const body = await res.json();
+          const a = body && body.automation ? body.automation : {};
+          const newStatus = a.status || '';
+          const newStep = a.step || '';
+          const newMsg = a.message || a.error || '';
+          card.setAttribute('data-automation-status', newStatus);
+          const badge = card.querySelector('.automation-badge');
+          if (badge) {
+            badge.textContent = newStatus;
+            badge.title = [newStep, newMsg].filter(Boolean).join(' — ');
+            badge.className = 'automation-badge automation-' + (newStatus || '');
+          }
+        } catch (e) {
+          /* swallow — next tick will retry */
+        }
+      }));
+    };
+    this._automationPollHandle = setInterval(poll, 3000);
+    // First tick after a short delay so the operator sees motion fast.
+    setTimeout(poll, 600);
   },
 
   /**

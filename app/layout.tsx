@@ -8,7 +8,6 @@ import './globals.css';
 import './styles/font-standardization.css';
 
 export const dynamic = 'force-dynamic';
-export const dynamicMetadata = 'force-dynamic';
 
 async function getBrandOnce() {
   const brandResult = await getBrandForRequest();
@@ -33,12 +32,6 @@ export async function generateMetadata(): Promise<Metadata> {
   const { brand } = brandResult;
   const siteUrl = (brand?.domain || 'http://localhost:3000').replace(/\/$/, '');
   const iconUrl = brand.favicon || brand.logo || '/favicon.ico';
-  
-  // Add cache-busting timestamp for favicon to force updates
-  const faviconTimestamp = Date.now();
-  const iconUrlWithTimestamp = iconUrl.includes('?') 
-    ? `${iconUrl}&t=${faviconTimestamp}` 
-    : `${iconUrl}?t=${faviconTimestamp}`;
 
   return {
     title: brand.name,
@@ -67,9 +60,9 @@ export async function generateMetadata(): Promise<Metadata> {
       site: brand.seo.twitterHandle
     },
     icons: {
-      icon: iconUrlWithTimestamp,
-      shortcut: iconUrlWithTimestamp,
-      apple: iconUrlWithTimestamp,
+      icon: iconUrl,
+      shortcut: iconUrl,
+      apple: iconUrl,
     },
     alternates: {
       canonical: siteUrl

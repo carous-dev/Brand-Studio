@@ -30,7 +30,12 @@ from urllib.parse import urlparse
 from auth import init_auth, auth_manager
 from auth_routes import auth_bp
 from backend.config import ensure_storage_dirs, PUBLIC_IMAGES_DIR, INVENTORIES_DIR
-from backend.services.automation import maybe_restart_pm2_next_linux, maybe_start_linux_brand_automation
+# NOTE: maybe_start_linux_brand_automation, maybe_restart_pm2_next_linux and
+# validate_dns_after_automation each used to be imported from backend/services/*
+# but the active implementations live in this file (search for `def ...` below)
+# and shadow the imports. Importing them only confused readers. The legacy
+# copies in backend/services/automation.py and backend/services/dns.py remain on
+# disk for reference but are NOT what the request flow uses.
 from backend.services.db import get_db_connection
 from backend.services.domain import (
     extract_hostname,
@@ -41,7 +46,7 @@ from backend.services.domain import (
     split_host_port,
     strip_www,
 )
-from backend.services.dns import nslookup_resolves, dig_resolves, validate_dns_after_automation
+from backend.services.dns import nslookup_resolves, dig_resolves
 from lib.cloudflare_dns import create_dns_record, upsert_dns_record
 from lib.sse_log_handler import SSELogHandler
 from backend.services.preview import (
@@ -586,6 +591,273 @@ def ensure_dns_ready_or_fail(brand: dict, slug: str) -> tuple[bool, str]:
         return (False, f'DNS setup failed: {exc}')
 
 
+# Brand automation "dev mode" — Windows local-testing path.
+# ----------------------------------------------------------
+# On Linux production hosts the create / update / delete pipeline runs real
+# `a2ensite`, `apache2ctl configtest`, `systemctl reload apache2`, `pm2 restart`
+# subprocesses against a real Apache + PM2 stack. None of those tools exist
+# (or behave the same) on Windows, so before the 2026-05-07 dev-mode pass the
+# automation thread simply bailed via `if platform.system() == 'Windows': return`.
+# That meant operators couldn't exercise the orchestration code path at all
+# locally — dashboard status badge, lifecycle state machine, vhost template
+# rendering, Cloudflare upserts.
+#
+# Dev mode now lets all of that run end-to-end:
+#   - Vhost configs are written to `./dev-vhosts/<subdomain>.conf` (or whatever
+#     `DEV_VHOSTS_DIR` points to) so an operator can inspect the rendered output.
+#   - Apache / PM2 / systemctl subprocess calls are short-circuited to no-ops
+#     that log "[DEV-MODE] would run: ..." with the full command for visibility.
+#   - Cloudflare DNS upserts run as normal (the `requests` library is platform-
+#     agnostic). To skip them set `CLOUDFLARE_DISABLED=1`, same as production.
+#   - The `_automation` lifecycle state still updates so the dashboard polling
+#     badge works exactly the same as production.
+#
+# Dev mode is automatically on when `platform.system() == 'Windows'`. To force
+# it on Linux/macOS (e.g. for CI smoke-tests) set `BRAND_AUTOMATION_DEV_MODE=1`.
+
+def _is_brand_automation_dev_mode() -> bool:
+    if platform.system() == 'Windows':
+        return True
+    return str(os.environ.get('BRAND_AUTOMATION_DEV_MODE', '')).strip().lower() in ('1', 'true', 'yes', 'on')
+
+
+def _resolve_apache_sites_dir() -> str:
+    """Where to write the rendered vhost. In production (Linux, no dev override)
+    this is `APACHE_SITES_AVAILABLE_DIR` (default /etc/apache2/sites-available).
+    In dev mode we redirect to a project-relative `dev-vhosts/` so the operator
+    can inspect what would have been deployed without needing root."""
+    if _is_brand_automation_dev_mode():
+        d = Path(os.environ.get('DEV_VHOSTS_DIR', '').strip() or 'dev-vhosts').expanduser()
+        if not d.is_absolute():
+            d = (Path(os.getcwd()) / d).resolve()
+        try:
+            d.mkdir(parents=True, exist_ok=True)
+        except Exception as exc:
+            print(f"[DEV-MODE] WARN: failed to create dev-vhosts dir {d}: {exc}")
+        return str(d)
+    return os.environ.get('APACHE_SITES_AVAILABLE_DIR', '/etc/apache2/sites-available')
+
+
+# Cross-thread lock for the apache+pm2 critical section. Prevents two concurrent
+# brand-creates from racing `apache2 reload` / `pm2 restart` and confusing each
+# other's configtest output. NOTE: this is per-process — multi-worker gunicorn
+# setups still need a file lock (planned follow-up).
+import threading as _threading
+
+_automation_critical_lock = _threading.Lock()
+
+# Separate lock for automation-state read-modify-write so a fast-firing series
+# of state ticks from the automation thread don't lose updates to each other.
+_automation_state_lock = _threading.Lock()
+
+
+def _cleanup_old_domain_resources(old_host: str, *, slug: str | None = None) -> None:
+    """Spawn a daemon thread that removes Apache vhost + Cloudflare DNS for a
+    domain that's been replaced by another. Does NOT touch the preview row.
+
+    Used by the update path when an operator changes a brand's domain — we want
+    the OLD domain's vhost taken down so it doesn't keep proxying for a name
+    the brand no longer claims, and the OLD DNS record removed so Cloudflare
+    doesn't keep routing it. The new domain's vhost + DNS are provisioned by
+    the regular `maybe_start_linux_brand_automation` call.
+    """
+    if not old_host:
+        return
+    is_dev_mode = _is_brand_automation_dev_mode()
+    if is_dev_mode:
+        # Dev mode: skip the Apache disable + Cloudflare delete subprocess work
+        # but log it so operators see the orchestration ran. Returning early
+        # is the right call here — there's nothing to "log instead of run"
+        # that's useful for the operator (no a2dissite output to inspect).
+        print(f"[OLD-DOMAIN-CLEANUP] DEV-MODE: would delete CF DNS + a2dissite for {old_host} (slug={slug}); skipping")
+        return
+
+    candidates: list[str] = []
+    seen: set[str] = set()
+
+    def _add(value: str) -> None:
+        site = (value or '').strip().lower()
+        if not site:
+            return
+        site, _ = split_host_port(site)
+        site = site.rstrip('.')
+        site = re.sub(r'[^a-z0-9.-]', '', site)
+        if site and site not in seen:
+            seen.add(site)
+            candidates.append(site)
+
+    _add(old_host)
+    _add(strip_www(old_host))
+    if old_host and '.' in old_host:
+        labels = old_host.split('.')
+        sanitized_left = labels[0].replace('-', '')
+        if sanitized_left and sanitized_left != labels[0]:
+            _add('.'.join([sanitized_left] + labels[1:]))
+
+    def _do_cleanup():
+        try:
+            print(f"[OLD-DOMAIN-CLEANUP] start for {old_host} (slug={slug})")
+            try:
+                from lib.cloudflare_dns import delete_dns_record
+                if not delete_dns_record(old_host):
+                    print(f"[OLD-DOMAIN-CLEANUP] WARN: DNS delete returned false for {old_host}")
+            except Exception as exc:
+                print(f"[OLD-DOMAIN-CLEANUP] ERROR: DNS delete raised: {exc}")
+
+            with _automation_critical_lock:
+                apache_sites_available_dir = Path(
+                    os.environ.get('APACHE_SITES_AVAILABLE_DIR', '/etc/apache2/sites-available')
+                ).expanduser()
+                apache_sites_enabled_dir = Path(
+                    os.environ.get('APACHE_SITES_ENABLED_DIR', '/etc/apache2/sites-enabled')
+                ).expanduser()
+                apache_changed = False
+
+                for site in candidates:
+                    try:
+                        disable_result = subprocess.run(
+                            ['a2dissite', f'{site}.conf'],
+                            capture_output=True, text=True, timeout=10,
+                        )
+                        out_l = (
+                            f"{disable_result.stdout or ''}\n{disable_result.stderr or ''}"
+                        ).lower()
+                        if disable_result.returncode == 0:
+                            apache_changed = True
+                            print(f"[OLD-DOMAIN-CLEANUP] a2dissite OK for {site}")
+                        elif any(t in out_l for t in ('already disabled', 'does not exist', 'not found')):
+                            pass
+                        else:
+                            print(
+                                f"[OLD-DOMAIN-CLEANUP] WARN: a2dissite {site}: "
+                                f"{(disable_result.stderr or disable_result.stdout or '').strip()}"
+                            )
+                    except Exception as exc:
+                        print(f"[OLD-DOMAIN-CLEANUP] WARN: a2dissite {site} raised: {exc}")
+
+                    for config_path in (
+                        apache_sites_available_dir / f'{site}.conf',
+                        apache_sites_enabled_dir / f'{site}.conf',
+                    ):
+                        try:
+                            if config_path.exists() or config_path.is_symlink():
+                                config_path.unlink()
+                                apache_changed = True
+                                print(f"[OLD-DOMAIN-CLEANUP] removed {config_path}")
+                        except Exception as exc:
+                            print(f"[OLD-DOMAIN-CLEANUP] WARN: failed to remove {config_path}: {exc}")
+
+                if apache_changed:
+                    reload_result = subprocess.run(
+                        ['systemctl', 'reload', 'apache2'],
+                        capture_output=True, text=True, timeout=10,
+                    )
+                    if reload_result.returncode != 0:
+                        print(f"[OLD-DOMAIN-CLEANUP] WARN: apache reload failed: {reload_result.stderr}")
+            print(f"[OLD-DOMAIN-CLEANUP] DONE for {old_host}")
+        except Exception as exc:
+            print(f"[OLD-DOMAIN-CLEANUP] FATAL: {exc}")
+            import traceback
+            print(traceback.format_exc())
+
+    threading.Thread(target=_do_cleanup, daemon=True).start()
+
+
+def _set_automation_state(slug: str, **fields) -> None:
+    """Merge fields into the `_automation` block of a preview's config and persist.
+
+    Status updates are intentionally written directly via preview_store (NOT via
+    upsert_preview) so they don't re-run normalize_brand_colors / services /
+    theme on every state tick. Thread-safe via _automation_state_lock; idempotent;
+    silently no-ops if the preview was deleted between read and write — automation
+    threads must never raise out of a status update.
+    """
+    if not slug:
+        return
+    with _automation_state_lock:
+        try:
+            row = preview_store.load_row(slug)
+            if not row:
+                return
+            try:
+                config = json.loads(row.get('config') or '{}')
+            except Exception:
+                config = {}
+            current = config.get('_automation') if isinstance(config, dict) else None
+            if not isinstance(current, dict):
+                current = {}
+            now_iso = datetime.utcnow().isoformat() + 'Z'
+            # Anchor `started_at` the first time we move into pending/provisioning.
+            incoming_status = fields.get('status')
+            if (
+                'started_at' not in current
+                and (incoming_status in ('pending', 'provisioning') or current.get('status') in ('pending', 'provisioning'))
+            ):
+                current['started_at'] = now_iso
+            current.update(fields)
+            current['updated_at'] = now_iso
+            if isinstance(config, dict):
+                config['_automation'] = current
+            else:
+                config = {'_automation': current}
+            preview_store.upsert_row(
+                slug=slug,
+                name=row.get('name') or (config.get('name') if isinstance(config, dict) else slug) or slug,
+                created_at=row.get('created_at') or now_iso,
+                updated_at=now_iso,
+                config_json=json.dumps(config, indent=2, ensure_ascii=False),
+            )
+        except Exception as exc:
+            # Status updates must never break the automation thread.
+            print(f"[AUTOMATION_STATE] WARN: failed to update {slug}: {exc}")
+
+
+def _get_automation_state(slug: str) -> dict:
+    """Return the `_automation` block for a preview, or {} if not set."""
+    if not slug:
+        return {}
+    try:
+        row = preview_store.load_row(slug)
+        if not row:
+            return {}
+        config = json.loads(row.get('config') or '{}')
+        state = config.get('_automation') if isinstance(config, dict) else None
+        return state if isinstance(state, dict) else {}
+    except Exception:
+        return {}
+
+
+def _pm2_wait_until_online(app_name: str, timeout: int = 30, interval: float = 1.5) -> bool:
+    """Poll `pm2 jlist` until the named app reports `online` or the timeout elapses.
+
+    Returns True if the app reaches `online`, False on timeout or any parse error.
+    """
+    deadline = time.time() + max(1, int(timeout))
+    while time.time() < deadline:
+        try:
+            result = subprocess.run(
+                ['pm2', 'jlist'],
+                capture_output=True,
+                text=True,
+                timeout=8,
+                check=False,
+            )
+            if result.returncode == 0 and (result.stdout or '').strip():
+                apps = json.loads(result.stdout)
+                for app_entry in apps:
+                    if not isinstance(app_entry, dict):
+                        continue
+                    if app_entry.get('name') == app_name:
+                        env = app_entry.get('pm2_env') or {}
+                        status = env.get('status', '') if isinstance(env, dict) else ''
+                        if status == 'online':
+                            return True
+        except Exception:
+            pass
+        time.sleep(max(0.25, float(interval)))
+    return False
+
+
 def maybe_start_linux_brand_automation(brand: dict) -> None:
     """
     Linux-only provisioning automation for new previews.
@@ -620,18 +892,27 @@ def maybe_start_linux_brand_automation(brand: dict) -> None:
         
         maybe_start_linux_brand_automation._recent_calls[domain] = current_time
     
+    slug_for_state = (brand.get('slug') or '').strip() if isinstance(brand, dict) else ''
     try:
         print(f"[AUTOMATION] DEBUG: [{request_id}] Starting automation check, platform={platform.system()}")
         print(f"[AUTOMATION] DEBUG: [{request_id}] Brand object received: {brand}")
         print(f"[AUTOMATION] DEBUG: [{request_id}] Brand domain: '{brand.get('domain', 'NO_DOMAIN')}'")
         print(f"[AUTOMATION] DEBUG: [{request_id}] Brand slug: '{brand.get('slug', 'NO_SLUG')}'")
-        
-        if platform.system() == 'Windows':
-            print(f"[AUTOMATION] DEBUG: [{request_id}] Skipping - Windows detected")
-            return
+
+        # Dev mode (Windows or BRAND_AUTOMATION_DEV_MODE=1): the orchestration
+        # still runs end-to-end so operators can test the dashboard's status
+        # badge, the lifecycle state machine, and the vhost rendering — but
+        # the Apache / PM2 / systemctl subprocess calls are short-circuited
+        # to no-ops with a "[DEV-MODE] would run: …" log line. Vhost configs
+        # are written to ./dev-vhosts/ for inspection rather than
+        # /etc/apache2/sites-available. See _is_brand_automation_dev_mode().
+        is_dev_mode = _is_brand_automation_dev_mode()
+        if is_dev_mode:
+            print(f"[AUTOMATION] [{request_id}] DEV MODE — Apache/PM2 calls will be logged not executed; vhost goes to {os.environ.get('DEV_VHOSTS_DIR', './dev-vhosts')}/")
 
         if str(os.environ.get('BRAND_AUTOMATION_DISABLED', '')).strip().lower() in ('1', 'true', 'yes'):
             print(f"[AUTOMATION] DEBUG: [{request_id}] Skipping - BRAND_AUTOMATION_DISABLED is set")
+            _set_automation_state(slug_for_state, status='skipped', step='disabled', message='BRAND_AUTOMATION_DISABLED is set', request_id=request_id)
             return
 
         if not isinstance(brand, dict):
@@ -640,7 +921,7 @@ def maybe_start_linux_brand_automation(brand: dict) -> None:
 
         domain_value = brand.get('domain') or ''
         print(f"[AUTOMATION] DEBUG: domain_value='{domain_value}'")
-        
+
         # Preserve user-submitted hostname verbatim; only strip scheme/port for Apache compatibility.
         host_raw = (domain_value or '').strip()
         if '://' in host_raw:
@@ -651,14 +932,16 @@ def maybe_start_linux_brand_automation(brand: dict) -> None:
                 host_raw = host_raw.split('://', 1)[-1]
         host_without_port, _ = _split_host_port(host_raw)
         print(f"[AUTOMATION] DEBUG: normalized host='{host_without_port}'")
-        
+
         if not host_without_port:
             print("[AUTOMATION] DEBUG: Skipping - no host extracted")
+            _set_automation_state(slug_for_state, status='skipped', step='no-host', message='No host extracted from domain field', request_id=request_id)
             return
-        
+
         # Require a dotted hostname (skip slugs like "fair-deal-motors-uk")
         if not host_without_port or '.' not in host_without_port:
             print("[AUTOMATION] DEBUG: Skipping - invalid hostname (needs a dot)")
+            _set_automation_state(slug_for_state, status='skipped', step='invalid-host', message=f'Hostname needs a dot: {host_without_port}', request_id=request_id)
             return
 
         # Enforce hyphen-free carous subdomains for consistency
@@ -672,12 +955,40 @@ def maybe_start_linux_brand_automation(brand: dict) -> None:
             subdomain = host_without_port
 
         print(f"[AUTOMATION] DEBUG: FINAL SUBDOMAIN = '{subdomain}' (this should be the only domain processed)")
-        apache_sites_dir = os.environ.get('APACHE_SITES_AVAILABLE_DIR', '/etc/apache2/sites-available')
+
+        # Local-dev base domain short-circuit: if `<slug>.lvh.me` (or any wildcard
+        # DNS base in LOCAL_PREVIEW_BASE_DOMAINS), we don't need Apache, Cloudflare,
+        # or PM2 — the browser resolves the host to 127.0.0.1 via public DNS, and
+        # the Next.js dev server already routes by host header via proxy.ts.
+        # Mark the brand provisioned with the preview URL and exit cleanly.
+        if _is_local_preview_host(subdomain):
+            preview_url = _local_preview_url_for_host(subdomain)
+            print(f"[AUTOMATION] [{request_id}] LOCAL-DEV BASE: skipping Apache/CF/PM2 — preview at {preview_url}")
+            _set_automation_state(
+                slug_for_state,
+                status='provisioned',
+                step='local-dev-base',
+                subdomain=subdomain,
+                preview_url=preview_url,
+                request_id=request_id,
+                message=f'Local preview ready at {preview_url}',
+            )
+            return
+
+        # Vhost output dir routes to dev-vhosts/ in dev mode, /etc/apache2/sites-available in prod.
+        apache_sites_dir = _resolve_apache_sites_dir()
         next_internal_port = int(os.environ.get('NEXT_INTERNAL_PORT', '4013'))
         ws_internal_port = int(os.environ.get('SUPPORT_WS_PORT', '4001'))
         pm2_app_name = os.environ.get('PM2_NEXT_APP_NAME', 'app-brandstudio')
 
         def run_cmd(cmd: str) -> int:
+            """Execute a shell command; in dev mode log it instead and return 0
+            (success-equivalent). Used for apache2ctl / a2ensite / a2dissite /
+            systemctl reload apache2 / pm2 restart — all of which need a real
+            Linux apache+pm2 stack."""
+            if is_dev_mode:
+                print(f"[DEV-MODE] [{request_id}] would run: {cmd}")
+                return 0
             return subprocess.call(cmd, shell=True)
 
         def render_vhost(subdomain: str, next_port: int, ws_port: int) -> str:
@@ -703,134 +1014,145 @@ def maybe_start_linux_brand_automation(brand: dict) -> None:
             content = content.replace('/etc/ssl/cloudflare/cloudflare-key.pem', ssl_key_file)
             return content
 
-        def render_vhost_http_only(subdomain: str, next_port: int, ws_port: int) -> str:
-            """Render HTTP-only vhost (no SSL) for initial setup before SSL generation."""
-            return f"""# ----- HTTP: Serve Next.js -----
-<VirtualHost *:80>
-    ServerName {subdomain}
-    ServerAlias www.{subdomain}
-
-    # Proxy headers
-    ProxyPreserveHost On
-    ProxyRequests Off
-    RequestHeader set X-Forwarded-Proto "http"
-    RequestHeader set X-Forwarded-SSL "off"
-
-    <Proxy *>
-        Require all granted
-    </Proxy>
-
-    ProxyPass / http://127.0.0.1:{next_port}/
-    ProxyPassReverse / http://127.0.0.1:{next_port}/
-
-    # Handle WebSockets
-    RewriteEngine On
-    RewriteCond %{{HTTP:Upgrade}} =websocket [NC]
-    RewriteRule /(.*) ws://127.0.0.1:{ws_port}/$1 [P,L]
-
-    # Logs
-    ErrorLog ${{APACHE_LOG_DIR}}/{subdomain.replace('.', '_')}_error.log
-    CustomLog ${{APACHE_LOG_DIR}}/{subdomain.replace('.', '_')}_access.log combined
-</VirtualHost>"""
+        # `render_vhost_http_only` was removed in the 2026-05-07 audit refactor.
+        # It existed to support certbot HTTP-01 challenges (which need port 80 to
+        # reach the origin directly, not via Cloudflare proxy). Certbot is no
+        # longer used — we serve through Cloudflare origin certs — so the
+        # HTTP-only intermediate vhost is dead. The HTTPS vhost rendered by
+        # `render_vhost` already includes a port-80 → port-443 redirect block,
+        # which is all we need.
 
         def automate():
+            """Provision a brand on Linux: write Apache vhost, upsert DNS (proxied),
+            restart PM2 with health verification.
+
+            Sequence (post-2026-05-07 audit refactor):
+              1. Apache vhost (HTTPS direct, with shared Cloudflare origin cert).
+                 Done first because it's local and fast — DNS pointing at an origin
+                 that doesn't yet handle the hostname would 404 from the default vhost.
+                 Held under the apache+pm2 critical-section lock.
+              2. Cloudflare DNS upsert with proxied=True. Single call (the previous
+                 proxy-OFF → wait-for-DNS → proxy-ON dance existed only for
+                 certbot HTTP-01 challenges, which are no longer used). One retry
+                 on transient failures; final failure logged but doesn't abort —
+                 vhost is in place so the operator can fix DNS manually.
+              3. PM2 restart with `pm2 jlist` health poll.
+            """
             try:
-                print(f"[AUTOMATION] DEBUG: Starting automation thread for {subdomain}")
-
-                # STEP 1: Create DNS (proxy OFF)
+                print(f"[AUTOMATION] [{request_id}] Starting for {subdomain}")
+                _set_automation_state(slug_for_state, status='provisioning', step='starting', subdomain=subdomain, request_id=request_id, message='Automation thread started')
                 cloudflare_disabled = str(os.environ.get('CLOUDFLARE_DISABLED', '')).strip().lower() in ('1', 'true', 'yes')
-                expected_ip = os.environ.get('CLOUDFLARE_IP_ADDRESS', '46.202.140.63')
-                if not cloudflare_disabled:
-                    print(f"\n[CLOUDFLARE] Creating DNS record for '{subdomain}' (proxy off)...")
-                    dns_ok = upsert_dns_record(subdomain, expected_ip, proxied=False)
-                    if not dns_ok:
-                        print(f"[CLOUDFLARE] ERROR: DNS upsert failed for '{subdomain}'; aborting automation.")
-                        return
-                else:
-                    print(f"[CLOUDFLARE] Skipping DNS creation (disabled)")
-                    dns_ok = True
-
-                # STEP 2: Wait until dig/nslookup resolves (optimized)
-                if dns_ok:
-                    wait_timeout = int(os.environ.get('DNS_POLL_TIMEOUT', '60'))  # Reduced from 180s to 60s
-                    interval = int(os.environ.get('DNS_POLL_INTERVAL', '3'))       # Reduced from 10s to 3s
-                    waited = 0
-                    while waited < wait_timeout:
-                        ok, addresses, _ = dig_resolves(subdomain)
-                        if not ok:
-                            ok, addresses, _ = nslookup_resolves(subdomain)
-                        if ok:
-                            print(f"[DNS] OK: {subdomain} -> {addresses}")
-                            break
-                        waited += interval
-                        print(f"[DNS] Waiting for propagation ({waited}/{wait_timeout}s) for {subdomain}")
-                        time.sleep(interval)
-                    else:
-                        print(f"[DNS] ERROR: DNS did not resolve for {subdomain} after {wait_timeout}s; aborting automation.")
-                        return
-
-                # STEP 3: Create HTTP-only vhost first (before SSL)
-                print(f"\n[APACHE] Creating HTTP-only vhost for {subdomain}...")
-                vhost_conf = render_vhost_http_only(subdomain, next_internal_port, ws_internal_port)
-                vhost_path = os.path.join(apache_sites_dir, f'{subdomain}.conf')
-                
-                with open(vhost_path, 'w', encoding='utf-8') as f:
-                    f.write(vhost_conf)
-                print(f"[APACHE] HTTP-only vhost written: {vhost_path}")
-
-                # Enable HTTP site and test Apache config
-                run_cmd(f'a2ensite {subdomain}.conf')
-                reload_rc = run_cmd('apache2ctl configtest')
-                if reload_rc != 0:
-                    print(f"[APACHE] ERROR: HTTP configtest failed for {subdomain}; removing vhost and aborting.")
-                    run_cmd(f'a2dissite {subdomain}.conf')
-                    try:
-                        os.remove(vhost_path)
-                    except Exception:
-                        pass
-                    return
-                run_cmd('systemctl reload apache2')
-                print(f"[APACHE] OK: HTTP-only virtual host enabled for {subdomain}")
-
-                # STEP 4: Skip certbot – use shared Cloudflare certificate
-                print(f"[SSL] Skipping certbot; using shared Cloudflare certificate for {subdomain}")
-                cert_ok = True
-
-                # STEP 5: Write full HTTPS vhost using shared certificate
-                print(f"\n[APACHE] Writing HTTPS vhost (shared cert) for {subdomain}...")
-                vhost_conf = render_vhost(subdomain, next_internal_port, ws_internal_port)
-                with open(vhost_path, 'w', encoding='utf-8') as f:
-                    f.write(vhost_conf)
-                print(f"[APACHE] Updated vhost with shared SSL configuration")
-
-                # STEP 6: Final Apache reload and enable site
-                run_cmd(f'a2ensite {subdomain}.conf')
-                reload_rc = run_cmd('apache2ctl configtest')
-                if reload_rc != 0:
-                    print(f"[APACHE] ERROR: Final configtest failed for {subdomain}; removing vhost and aborting.")
-                    run_cmd(f'a2dissite {subdomain}.conf')
-                    try:
-                        os.remove(vhost_path)
-                    except Exception:
-                        pass
-                    return
-                run_cmd('systemctl reload apache2')
-                print(f"[APACHE] OK: Final virtual host configuration enabled for {subdomain}")
-
-                # STEP 7: Flip Cloudflare proxy ON
-                if not cloudflare_disabled:
-                    upsert_dns_record(subdomain, expected_ip, proxied=True)
-
-                # PM2 restart (optional; no rebuild is required)
                 pm2_disabled = str(os.environ.get('PM2_RESTART_DISABLED', '')).strip().lower() in ('1', 'true', 'yes')
-                if not pm2_disabled:
-                    print(f"\n[PM2] Restarting Next.js app: {pm2_app_name}")
-                    run_cmd(f'pm2 restart {pm2_app_name}')
-            except Exception as e:
-                print(f"[WARN] Linux automation failed: {e}")
-                import traceback
-                print(f"[WARN] Traceback: {traceback.format_exc()}")
+                expected_ip = os.environ.get('CLOUDFLARE_IP_ADDRESS', '46.202.140.63')
+                vhost_path = os.path.join(apache_sites_dir, f'{subdomain}.conf')
 
+                # STEP 1: Apache vhost (under critical-section lock to prevent
+                # concurrent provisions from racing apache2 reload).
+                _set_automation_state(slug_for_state, step='apache:awaiting-lock', message='Waiting for apache critical-section lock')
+                with _automation_critical_lock:
+                    _set_automation_state(slug_for_state, step='apache:rendering-vhost')
+                    print(f"[APACHE] [{request_id}] Writing HTTPS vhost for {subdomain}")
+                    try:
+                        vhost_conf = render_vhost(subdomain, next_internal_port, ws_internal_port)
+                    except Exception as render_exc:
+                        print(f"[APACHE] [{request_id}] ERROR: vhost render failed: {render_exc}")
+                        _set_automation_state(slug_for_state, status='failed', step='apache:render-failed', error=str(render_exc))
+                        return
+
+                    try:
+                        with open(vhost_path, 'w', encoding='utf-8') as f:
+                            f.write(vhost_conf)
+                    except Exception as write_exc:
+                        print(f"[APACHE] [{request_id}] ERROR: failed to write {vhost_path}: {write_exc}")
+                        _set_automation_state(slug_for_state, status='failed', step='apache:write-failed', error=str(write_exc))
+                        return
+                    print(f"[APACHE] [{request_id}] vhost written: {vhost_path}")
+
+                    run_cmd(f'a2ensite {subdomain}.conf')
+
+                    _set_automation_state(slug_for_state, step='apache:configtest')
+                    if run_cmd('apache2ctl configtest') != 0:
+                        print(f"[APACHE] [{request_id}] ERROR: configtest failed for {subdomain}; rolling back.")
+                        run_cmd(f'a2dissite {subdomain}.conf')
+                        try:
+                            os.remove(vhost_path)
+                        except Exception:
+                            pass
+                        _set_automation_state(slug_for_state, status='failed', step='apache:configtest-failed', error='apache2ctl configtest failed; vhost rolled back')
+                        return
+
+                    _set_automation_state(slug_for_state, step='apache:reload')
+                    if run_cmd('systemctl reload apache2') != 0:
+                        print(f"[APACHE] [{request_id}] WARN: reload failed; attempting restart")
+                        if run_cmd('systemctl restart apache2') != 0:
+                            print(f"[APACHE] [{request_id}] ERROR: restart also failed; aborting")
+                            _set_automation_state(slug_for_state, status='failed', step='apache:reload-failed', error='systemctl reload + restart both failed')
+                            return
+                    print(f"[APACHE] [{request_id}] OK: vhost enabled for {subdomain}")
+                    _set_automation_state(slug_for_state, step='apache:ok')
+
+                # STEP 2: Cloudflare DNS upsert (proxied). One retry on transient.
+                if not cloudflare_disabled:
+                    print(f"[CLOUDFLARE] [{request_id}] Upserting DNS for {subdomain} -> {expected_ip} (proxied)")
+                    _set_automation_state(slug_for_state, step='dns:upserting')
+                    dns_ok = False
+                    for attempt in range(2):
+                        if upsert_dns_record(subdomain, expected_ip, proxied=True):
+                            dns_ok = True
+                            break
+                        if attempt == 0:
+                            print(f"[CLOUDFLARE] [{request_id}] WARN: upsert failed, retrying in 5s")
+                            time.sleep(5)
+                    if not dns_ok:
+                        print(
+                            f"[CLOUDFLARE] [{request_id}] ERROR: DNS upsert failed after retry. "
+                            f"Apache vhost is in place; brand will not be reachable until "
+                            f"Cloudflare record is created manually."
+                        )
+                        _set_automation_state(slug_for_state, step='dns:failed', dns_status='failed', message='Cloudflare upsert failed twice; vhost is in place but DNS needs manual fix')
+                        # Don't abort — operator can fix DNS without losing the vhost.
+                    else:
+                        _set_automation_state(slug_for_state, step='dns:ok', dns_status='ok')
+                else:
+                    print(f"[CLOUDFLARE] [{request_id}] Skipping DNS (CLOUDFLARE_DISABLED)")
+                    _set_automation_state(slug_for_state, step='dns:skipped', dns_status='skipped')
+
+                # STEP 3: PM2 restart with health verification (also under the lock
+                # so concurrent provisions don't pile restarts on top of each other).
+                if not pm2_disabled:
+                    _set_automation_state(slug_for_state, step='pm2:awaiting-lock')
+                    with _automation_critical_lock:
+                        _set_automation_state(slug_for_state, step='pm2:restarting')
+                        print(f"[PM2] [{request_id}] Restarting Next.js app: {pm2_app_name}")
+                        run_cmd(f'pm2 restart {pm2_app_name}')
+                        if is_dev_mode:
+                            # `pm2 jlist` doesn't exist on Windows, and the
+                            # `pm2 restart` call above was already a logged
+                            # no-op. Treat as immediately online for the
+                            # state machine so the dashboard reaches `live`.
+                            print(f"[PM2] [{request_id}] DEV-MODE: skipping pm2 jlist health-check")
+                            _set_automation_state(slug_for_state, step='pm2:online', pm2_status='dev-mode')
+                        elif _pm2_wait_until_online(pm2_app_name, timeout=int(os.environ.get('PM2_HEALTH_TIMEOUT', '30'))):
+                            print(f"[PM2] [{request_id}] OK: {pm2_app_name} is online")
+                            _set_automation_state(slug_for_state, step='pm2:online', pm2_status='online')
+                        else:
+                            print(
+                                f"[PM2] [{request_id}] WARN: {pm2_app_name} did not report 'online' "
+                                f"within timeout. Check `pm2 logs {pm2_app_name}`."
+                            )
+                            _set_automation_state(slug_for_state, step='pm2:not-online', pm2_status='timeout', message=f"PM2 app {pm2_app_name} did not return online within timeout")
+                else:
+                    _set_automation_state(slug_for_state, step='pm2:skipped', pm2_status='skipped')
+
+                print(f"[AUTOMATION] [{request_id}] DONE for {subdomain}")
+                _set_automation_state(slug_for_state, status='live', step='complete', message='Provisioning complete')
+            except Exception as e:
+                print(f"[AUTOMATION] [{request_id}] ERROR: automation failed: {e}")
+                import traceback
+                print(f"[AUTOMATION] [{request_id}] Traceback: {traceback.format_exc()}")
+                _set_automation_state(slug_for_state, status='failed', step='exception', error=str(e))
+
+        _set_automation_state(slug_for_state, status='pending', step='queued', subdomain=subdomain, request_id=request_id)
         thread = threading.Thread(target=automate, daemon=True)
         thread.start()
         print("[AUTOMATION] OK: Linux SSL/Apache/PM2 automation started (no rebuild).")
@@ -838,24 +1160,33 @@ def maybe_start_linux_brand_automation(brand: dict) -> None:
         print(f"[AUTOMATION] ERROR: Failed to start automation: {e}")
         import traceback
         print(f"[AUTOMATION] ERROR: Traceback: {traceback.format_exc()}")
+        _set_automation_state(slug_for_state, status='failed', step='bootstrap-error', error=str(e))
         # Never fail a request because automation setup failed.
         return
 
 
 def maybe_restart_pm2_next_linux(*, reason: str, slug: str | None = None) -> None:
     """
-    Linux-only: restart the Next.js process via pm2 (no rebuild).
+    Linux: restart the Next.js process via pm2 (no rebuild).
 
     This is useful when you deploy behind pm2 and want to ensure the running
     process reloads any process-level state after a brand update.
 
-    Disable by setting PM2_RESTART_DISABLED=1
+    Dev mode (Windows or BRAND_AUTOMATION_DEV_MODE=1): logs what would have
+    been run instead of executing — pm2 isn't installed on Windows and we
+    want operators to see the call site fired even if it can't actually
+    restart anything.
+
+    Disable entirely by setting PM2_RESTART_DISABLED=1.
     """
     try:
-        if platform.system() == 'Windows':
+        if str(os.environ.get('PM2_RESTART_DISABLED', '')).strip().lower() in ('1', 'true', 'yes'):
             return
 
-        if str(os.environ.get('PM2_RESTART_DISABLED', '')).strip().lower() in ('1', 'true', 'yes'):
+        if _is_brand_automation_dev_mode():
+            pm2_app_name = os.environ.get('PM2_NEXT_APP_NAME', 'app-brandstudio')
+            detail = f" slug={slug}" if slug else ''
+            print(f"[PM2] DEV-MODE: would restart {pm2_app_name} (reason={reason}{detail})")
             return
 
         pm2_app_name = os.environ.get('PM2_NEXT_APP_NAME', 'app-brandstudio')
@@ -950,13 +1281,24 @@ def serialize_preview_row(row):
     config.setdefault('name', row['name'])
     config['_created_at'] = row['created_at']
     config['_updated_at'] = row['updated_at']
-    
+
     # Add status column if available
     if 'status' in row:
         config['status'] = row['status']
     else:
         config['status'] = 'offline'  # Default status if not present
-    
+
+    # Local-dev preview URL: when the brand's domain resolves under a wildcard
+    # base (lvh.me etc.), expose a directly-clickable URL so the dashboard can
+    # link straight to the running Next.js dev server without DNS / hosts edits.
+    raw_domain = (config.get('domain') or '').strip()
+    if raw_domain:
+        host = extract_hostname(raw_domain) or raw_domain.split('/', 1)[0]
+        host = strip_www(host).rstrip('.').lower()
+        if host and _is_local_preview_host(host):
+            config['preview_url'] = _local_preview_url_for_host(host)
+            config['preview_url_kind'] = 'local-dev'
+
     return config
 
 
@@ -1280,6 +1622,56 @@ MANAGED_DOMAIN_PATTERN = re.compile(
 )
 MANAGED_DOMAIN_STATUSES = {'active', 'inactive'}
 
+# Public wildcard-DNS services that always resolve `*.<base>` to 127.0.0.1.
+# Operators can preview brands at `<slug>.lvh.me:3000` without touching their
+# hosts file or running Apache/PM2 — Next.js dev server already handles host
+# routing via proxy.ts. Override with `LOCAL_PREVIEW_BASE_DOMAIN` env to pin
+# a different base (e.g. nip.io, sslip.io variants).
+LOCAL_PREVIEW_BASE_DOMAINS = (
+    'lvh.me',
+    'localtest.me',
+    'localhost.test',
+    '127.0.0.1.sslip.io',
+    'nip.io',
+    'sslip.io',
+)
+
+
+def _local_preview_base_host() -> str:
+    """The default local-dev base domain shown in the UI / used for new brands.
+    Defaults to `lvh.me`; override via `LOCAL_PREVIEW_BASE_DOMAIN` env."""
+    return (os.environ.get('LOCAL_PREVIEW_BASE_DOMAIN', '').strip().lower() or 'lvh.me')
+
+
+def _is_local_preview_base_domain(domain: str) -> bool:
+    """Is `domain` itself a local-dev wildcard-DNS base (e.g. `lvh.me`)?"""
+    d = (domain or '').strip().lower().rstrip('.')
+    if not d:
+        return False
+    if d == _local_preview_base_host():
+        return True
+    return d in LOCAL_PREVIEW_BASE_DOMAINS
+
+
+def _is_local_preview_host(host: str) -> bool:
+    """Is `host` a brand-style hostname under a local-dev base (e.g. `fairfield.lvh.me`)?"""
+    h = (host or '').strip().lower().rstrip('.')
+    if not h:
+        return False
+    for base in (_local_preview_base_host(),) + LOCAL_PREVIEW_BASE_DOMAINS:
+        if h == base or h.endswith('.' + base):
+            return True
+    return False
+
+
+def _local_preview_url_for_host(host: str) -> str:
+    """Return `http://<host>:<NEXT_INTERNAL_PORT>` if `host` is a local-dev preview
+    hostname; empty string otherwise. Used by brand serialization + dashboard."""
+    if not _is_local_preview_host(host):
+        return ''
+    port = (os.environ.get('NEXT_INTERNAL_PORT', '') or os.environ.get('PORT', '') or '3000').strip()
+    return f"http://{host.strip().lower().rstrip('.')}:{port}"
+
 
 def _normalize_managed_domain(raw_value: Any) -> str:
     raw = str(raw_value or '').strip()
@@ -1312,6 +1704,7 @@ def _serialize_managed_domain_row(row: dict[str, Any]) -> dict[str, Any]:
         'updated_at': _to_iso(row.get('updated_at')),
         'vhost_template_file': template_path.name if template_path else '',
         'vhost_template_ready': bool(template_path and template_path.exists()),
+        'is_local_preview_base': _is_local_preview_base_domain(normalized_domain),
     }
 
 
@@ -1505,8 +1898,21 @@ def resolve_cloudflare_ssl_paths(hostname: str) -> tuple[str, str]:
 
     cert_path = cert_template.replace('{origin}', origin_name) if cert_template else default_cert
     key_path = key_template.replace('{origin}', origin_name) if key_template else default_key
+
+    # Allow combined PEM (cert+key in same file): if the dedicated key file is
+    # missing but the cert file exists, point key at the cert path too.
     if cert_path and not os.path.exists(key_path) and os.path.exists(cert_path):
         key_path = cert_path
+
+    # If the per-origin cert doesn't exist on disk, fall back to the shared
+    # default cert. Otherwise apache2ctl configtest fails every time on a
+    # brand-new origin and the automation aborts. The default cert is a
+    # Cloudflare origin cert valid for *.<base-domain> in our setup.
+    if cert_path and not os.path.exists(cert_path) and default_cert and os.path.exists(default_cert):
+        cert_path = default_cert
+        if not os.path.exists(key_path) and os.path.exists(default_key):
+            key_path = default_key
+
     return cert_path or default_cert, key_path or default_key
 
 
@@ -1624,7 +2030,19 @@ def list_managed_domains():
             connection.close()
 
         domains = [_serialize_managed_domain_row(row) for row in rows]
-        return jsonify({'domains': domains, 'count': len(domains)}), 200
+
+        local_base = _local_preview_base_host()
+        port = (os.environ.get('NEXT_INTERNAL_PORT', '') or os.environ.get('PORT', '') or '3000').strip()
+        return jsonify({
+            'domains': domains,
+            'count': len(domains),
+            'local_preview': {
+                'base_domain': local_base,
+                'next_port': port,
+                'url_pattern': f'http://<slug>.{local_base}:{port}',
+                'is_dev_mode': _is_brand_automation_dev_mode(),
+            },
+        }), 200
     except Exception as e:
         app.logger.exception("Failed to list managed domains")
         return jsonify({'error': 'Failed to list managed domains', 'details': str(e)}), 500
@@ -2618,6 +3036,41 @@ def get_preview(slug):
     })
 
 
+@app.route('/api/previews/<slug>/automation-status', methods=['GET'])
+def get_automation_status(slug):
+    """Return the live automation lifecycle state for a preview.
+
+    Shape:
+        {
+          "slug": "...",
+          "automation": {
+            "status": "pending" | "provisioning" | "live" | "failed" | "skipped",
+            "step":   "apache:rendering-vhost" | "dns:upserting" | ...,
+            "subdomain": "...",
+            "request_id": "...",
+            "started_at": "...",
+            "updated_at": "...",
+            "message": "...",
+            "error": "..."
+          }
+        }
+
+    `automation` is an empty object when the preview hasn't been provisioned by
+    this Flask process (e.g. legacy previews). Designed to be polled every 1–3 s
+    by the dashboard while the operator watches a brand-create complete.
+    """
+    if not slug or not re.match(r'^[a-z0-9-]+$', slug):
+        return jsonify({'error': 'Invalid preview slug'}), 400
+    if not preview_exists(slug):
+        return jsonify({'error': f'Preview {slug} not found'}), 404
+    state = _get_automation_state(slug)
+    return jsonify({
+        'slug': slug,
+        'automation': state or {},
+        'fetched_at': datetime.utcnow().isoformat() + 'Z',
+    })
+
+
 @app.route('/api/brands/<slug>', methods=['GET'])
 def get_brand(slug):
     """Legacy brand route for backward compatibility."""
@@ -2685,7 +3138,13 @@ def update_brand_put(slug):
                 brand_patch['slug'] = slug
                 brand_patch['domain'] = normalize_domain(brand_patch.get('domain', ''))
 
-                existing = strip_internal_fields(load_preview(slug) or {})
+                # Snapshot the OLD domain BEFORE strip/merge so we can detect a change
+                # and re-provision properly (audit finding C — domain changes were silently
+                # dropped, leaving brand 404'ing on the new hostname).
+                old_existing_full = load_preview(slug) or {}
+                old_host_for_change = extract_hostname(old_existing_full.get('domain') or '')
+
+                existing = strip_internal_fields(old_existing_full)
                 merged = deep_merge(existing, brand_patch) if existing else brand_patch
 
                 errors = validate_brand(merged)
@@ -2695,12 +3154,33 @@ def update_brand_put(slug):
 
                 upsert_preview(slug, merged)
                 print(f"[UPDATE] OK: Preview {slug} updated successfully (full config)")
-                maybe_restart_pm2_next_linux(reason='update_brand_put_full_json', slug=slug)
+
+                new_host_for_change = extract_hostname(merged.get('domain') or '')
+                domain_changed = bool(
+                    old_host_for_change
+                    and new_host_for_change
+                    and old_host_for_change != new_host_for_change
+                )
+                if domain_changed:
+                    print(f"[UPDATE] Domain changed for {slug}: {old_host_for_change} -> {new_host_for_change}")
+                    _set_automation_state(
+                        slug,
+                        status='pending',
+                        step='domain-change',
+                        message=f'Re-provisioning for {new_host_for_change}; old vhost {old_host_for_change} will be cleaned up',
+                        old_host=old_host_for_change,
+                        new_host=new_host_for_change,
+                    )
+                    _cleanup_old_domain_resources(old_host_for_change, slug=slug)
+                    maybe_start_linux_brand_automation(merged)
+                else:
+                    maybe_restart_pm2_next_linux(reason='update_brand_put_full_json', slug=slug)
 
                 return jsonify({
                     'success': True,
                     'message': f"Preview '{merged.get('name', slug)}' updated successfully",
                     'preview': merged,
+                    'domain_changed': domain_changed,
                 }), 200
 
         # Debug: Check keywords before processing
@@ -2994,7 +3474,11 @@ def update_brand(slug):
             sse_log_manager.warning(f"Brand not found for deletion: {slug}", source="delete", metadata={"slug": slug})
             return jsonify({'error': 'Preview not found'}), 404
 
-        existing = strip_internal_fields(load_preview(slug) or {})
+        # Snapshot the OLD domain BEFORE strip/merge for domain-change detection.
+        old_full_for_change = load_preview(slug) or {}
+        old_host_for_change = extract_hostname(old_full_for_change.get('domain') or '')
+
+        existing = strip_internal_fields(old_full_for_change)
         existing_name = existing.get('name') if isinstance(existing.get('name'), str) else ''
 
         # If the client sends a full BrandConfig JSON (already nested), merge & persist it.
@@ -3016,12 +3500,30 @@ def update_brand(slug):
 
             upsert_preview(slug, brand)
             print(f"[UPDATE] OK: Preview {slug} updated successfully (full config)")
-            maybe_restart_pm2_next_linux(reason='update_brand_update_full_json', slug=slug)
+
+            new_host_for_change = extract_hostname(brand.get('domain') or '')
+            domain_changed = bool(
+                old_host_for_change
+                and new_host_for_change
+                and old_host_for_change != new_host_for_change
+            )
+            if domain_changed:
+                print(f"[UPDATE] Domain changed for {slug}: {old_host_for_change} -> {new_host_for_change}")
+                _set_automation_state(
+                    slug, status='pending', step='domain-change',
+                    message=f'Re-provisioning for {new_host_for_change}; old vhost {old_host_for_change} will be cleaned up',
+                    old_host=old_host_for_change, new_host=new_host_for_change,
+                )
+                _cleanup_old_domain_resources(old_host_for_change, slug=slug)
+                maybe_start_linux_brand_automation(brand)
+            else:
+                maybe_restart_pm2_next_linux(reason='update_brand_update_full_json', slug=slug)
 
             return jsonify({
                 'success': True,
                 'message': f"Preview '{brand.get('name', slug)}' updated successfully",
                 'preview': brand,
+                'domain_changed': domain_changed,
             }), 200
 
         # Flat update payload (from templates/update.html): build a complete config, but preserve
@@ -3221,12 +3723,30 @@ def update_brand(slug):
 
         upsert_preview(slug, brand)
         print(f"[UPDATE] OK: Preview {slug} updated successfully")
-        maybe_restart_pm2_next_linux(reason='update_brand_update_form', slug=slug)
+
+        new_host_for_change = extract_hostname(brand.get('domain') or '')
+        domain_changed_form = bool(
+            old_host_for_change
+            and new_host_for_change
+            and old_host_for_change != new_host_for_change
+        )
+        if domain_changed_form:
+            print(f"[UPDATE] Domain changed for {slug}: {old_host_for_change} -> {new_host_for_change}")
+            _set_automation_state(
+                slug, status='pending', step='domain-change',
+                message=f'Re-provisioning for {new_host_for_change}; old vhost {old_host_for_change} will be cleaned up',
+                old_host=old_host_for_change, new_host=new_host_for_change,
+            )
+            _cleanup_old_domain_resources(old_host_for_change, slug=slug)
+            maybe_start_linux_brand_automation(brand)
+        else:
+            maybe_restart_pm2_next_linux(reason='update_brand_update_form', slug=slug)
 
         return jsonify({
             'success': True,
             'message': f"Preview '{brand['name']}' updated successfully",
             'preview': brand,
+            'domain_changed': domain_changed_form,
         }), 200
         
     except Exception as e:
@@ -3438,28 +3958,26 @@ def get_inventory_info(slug):
 
 @app.route('/api/brands/<slug>', methods=['DELETE'])
 def delete_brand(slug):
-    """Delete a preview configuration and reverse all creation tasks"""
+    """Delete a preview configuration and reverse all creation tasks.
+
+    Sequence (post-2026-05-07 audit refactor):
+      1. SYNC: validate, snapshot domain info, delete the DB record + local files.
+         The brand vanishes from the dashboard immediately.
+      2. ASYNC (daemon thread, holds `_automation_critical_lock` for the apache+pm2
+         section): Cloudflare DNS delete, Apache vhost disable + remove, apache2
+         reload, PM2 restart with health verification.
+    """
     try:
         sse_log_manager.info(f"Starting deletion of brand: {slug}", source="delete", metadata={"slug": slug})
         print(f"\n[DELETE PREVIEW] Processing deletion of: {slug}")
-        
-        # Add more detailed logging
-        sse_log_manager.debug(f"Validating slug: {slug}", source="delete", metadata={"slug": slug})
-        
-        # Validate slug
+
         if not slug or not re.match(r'^[a-z0-9-]+$', slug):
-            sse_log_manager.warning(f"Invalid slug for deletion: {slug}", source="delete", metadata={"slug": slug})
             return jsonify({'error': 'Invalid preview slug'}), 400
-        
-        sse_log_manager.debug(f"Slug validation passed for: {slug}", source="delete", metadata={"slug": slug})
-        
+
         if not preview_exists(slug):
-            sse_log_manager.error(f"Brand not found for deletion: {slug}", source="delete", metadata={"slug": slug})
             return jsonify({'error': f'Preview {slug} not found'}), 404
-        
-        sse_log_manager.info(f"Brand found, proceeding with deletion: {slug}", source="delete", metadata={"slug": slug})
-        
-        # Load preview data to get domain information
+
+        # Snapshot domain info before we delete the DB row.
         preview_data = load_preview(slug)
         domain_host = ''
         host = ''
@@ -3470,7 +3988,7 @@ def delete_brand(slug):
                 host_no_port, _ = split_host_port(domain_host)
                 host = strip_www(host_no_port).rstrip('.')
 
-        def add_site_candidate(candidates: list[str], value: str) -> None:
+        def _add_site_candidate(candidates: list[str], value: str) -> None:
             site = (value or '').strip().lower()
             if not site:
                 return
@@ -3481,256 +3999,188 @@ def delete_brand(slug):
                 candidates.append(site)
 
         apache_site_candidates: list[str] = []
-        add_site_candidate(apache_site_candidates, slug)
-        add_site_candidate(apache_site_candidates, domain_host)
-        add_site_candidate(apache_site_candidates, host)
-
+        # Note: we no longer add the bare slug as a candidate (the audit found it
+        # always logs warnings because real vhost names are dotted hostnames).
+        _add_site_candidate(apache_site_candidates, domain_host)
+        _add_site_candidate(apache_site_candidates, host)
         if domain_host:
             stripped_host = strip_www(domain_host)
-            add_site_candidate(apache_site_candidates, stripped_host)
+            _add_site_candidate(apache_site_candidates, stripped_host)
             stripped_no_port, _ = split_host_port(stripped_host)
-            add_site_candidate(apache_site_candidates, stripped_no_port)
+            _add_site_candidate(apache_site_candidates, stripped_no_port)
 
-        # Legacy compatibility: earlier provisioning removed hyphens in the first label for some domains.
+        # Legacy compatibility: earlier provisioning removed hyphens in the first
+        # label for some domains; clean both spellings up just in case.
         if host and '.' in host:
             labels = host.split('.')
             sanitized_left = labels[0].replace('-', '')
             if sanitized_left and sanitized_left != labels[0]:
-                add_site_candidate(apache_site_candidates, '.'.join([sanitized_left] + labels[1:]))
-        
-        # Track cleanup results
-        cleanup_results = {
-            'dns_deleted': False,
-            'ssl_revoked': False,
-            'apache_disabled': False,
-            'apache_vhost_files_deleted': [],
-            'pm2_restarted': False,
-            'files_deleted': []
-        }
-        
-        # 1. Delete Cloudflare DNS record
-        if host:
-            print(f"\n[DNS DELETE] Attempting to delete DNS record for {host}")
-            try:
-                from lib.cloudflare_dns import delete_dns_record
-                dns_success = delete_dns_record(host)
-                cleanup_results['dns_deleted'] = dns_success
-                if dns_success:
-                    print(f"  OK: DNS record deleted for {host}")
-                else:
-                    print(f"  WARN: Failed to delete DNS record for {host}")
-            except Exception as e:
-                print(f"  ERROR: DNS deletion failed: {e}")
-                cleanup_results['dns_deleted'] = False
-        
-        # 2. Revoke SSL certificate (if exists)
-        cert_label = host or slug
-        print(f"\n[SSL REVOKE] Attempting to revoke SSL certificate for {cert_label}")
+                _add_site_candidate(apache_site_candidates, '.'.join([sanitized_left] + labels[1:]))
+
+        # SYNC: delete local files + DB record so the dashboard reflects the
+        # deletion immediately. Apache + DNS + PM2 cleanup runs in background.
+        deleted_files: list[str] = []
         try:
-            def kill_certbot():
+            image_extensions = ('png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'ico')
+            for ext in image_extensions:
+                for image_type in ('logo', 'favicon', 'heroImage'):
+                    image_file = PUBLIC_IMAGES_DIR / f'{slug}-{image_type}.{ext}'
+                    if image_file.exists():
+                        try:
+                            image_file.unlink()
+                            deleted_files.append(str(image_file))
+                        except Exception as exc:
+                            print(f"[DELETE] WARN: failed to remove {image_file}: {exc}")
+
+            inventory_file = get_brand_inventory_path(slug)
+            if inventory_file.exists():
                 try:
-                    subprocess.run("pkill -f certbot || true", shell=True, capture_output=True, text=True, timeout=5)
-                    time.sleep(1)
-                except Exception:
-                    pass
+                    inventory_file.unlink()
+                    deleted_files.append(str(inventory_file))
+                except Exception as exc:
+                    print(f"[DELETE] WARN: failed to remove {inventory_file}: {exc}")
+        except Exception as exc:
+            print(f"[DELETE] WARN: local file cleanup failed: {exc}")
 
-            # Ensure no stale certbot processes are running
-            kill_certbot()
-
-            # Check if SSL certificate exists
-            cert_path = f"/etc/letsencrypt/live/{cert_label}/fullchain.pem"
-            if os.path.exists(cert_path):
-                # Attempt to revoke certificate (non-interactive)
-                revoke_cmd = f"certbot revoke --cert-path {cert_path} --non-interactive --agree-tos"
-                revoke_result = subprocess.run(revoke_cmd, shell=True, capture_output=True, text=True, timeout=30)
-                
-                # Retry once if another certbot instance was running
-                if revoke_result.returncode != 0 and "Another instance of Certbot is already running" in (revoke_result.stderr or ""):
-                    print("  WARN: Certbot busy, retrying once after cleanup...")
-                    kill_certbot()
-                    revoke_result = subprocess.run(revoke_cmd, shell=True, capture_output=True, text=True, timeout=30)
-
-                if revoke_result.returncode == 0:
-                    cleanup_results['ssl_revoked'] = True
-                    print(f"  OK: SSL certificate revoked for {cert_label}")
-                    
-                    # Delete certificate files
-                    delete_cmd = f"certbot delete --cert-name {cert_label} --non-interactive --agree-tos"
-                    delete_result = subprocess.run(delete_cmd, shell=True, capture_output=True, text=True, timeout=30)
-                    
-                    if delete_result.returncode == 0:
-                        print(f"  OK: SSL certificate files deleted for {cert_label}")
-                    else:
-                        print(f"  WARN: Failed to delete SSL certificate files: {delete_result.stderr}")
-                else:
-                    print(f"  WARN: Failed to revoke SSL certificate: {revoke_result.stderr}")
-            else:
-                print(f"  INFO: No SSL certificate found for {cert_label}")
-                cleanup_results['ssl_revoked'] = True  # Already gone
-        except Exception as e:
-            print(f"  ERROR: SSL revocation failed: {e}")
-            cleanup_results['ssl_revoked'] = False
-        
-        # 3. Disable Apache virtual host(s) and remove vhost files
-        print(
-            f"\n[APACHE CLEANUP] Attempting Apache cleanup for site candidates: "
-            f"{', '.join(apache_site_candidates) if apache_site_candidates else '(none)'}"
-        )
-        try:
-            apache_sites_available_dir = Path(
-                os.environ.get('APACHE_SITES_AVAILABLE_DIR', '/etc/apache2/sites-available')
-            ).expanduser()
-            apache_sites_enabled_dir = Path(
-                os.environ.get('APACHE_SITES_ENABLED_DIR', '/etc/apache2/sites-enabled')
-            ).expanduser()
-
-            apache_cleanup_ok = True
-            apache_changed = False
-
-            for site in apache_site_candidates:
-                print(f"  [APACHE] Processing site '{site}'")
-                try:
-                    disable_result = subprocess.run(
-                        ['a2dissite', f'{site}.conf'],
-                        capture_output=True,
-                        text=True,
-                        timeout=10,
-                    )
-                    disable_output = (
-                        f"{disable_result.stdout or ''}\n{disable_result.stderr or ''}"
-                    ).lower()
-                    if disable_result.returncode == 0:
-                        apache_changed = True
-                        print(f"    OK: Apache site disabled for {site}")
-                    elif (
-                        'already disabled' in disable_output
-                        or 'does not exist' in disable_output
-                        or 'not found' in disable_output
-                    ):
-                        print(f"    INFO: Apache site already disabled or missing for {site}")
-                    else:
-                        apache_cleanup_ok = False
-                        print(
-                            f"    WARN: Failed to disable Apache site {site}: "
-                            f"{(disable_result.stderr or disable_result.stdout or '').strip()}"
-                        )
-                except Exception as disable_exc:
-                    apache_cleanup_ok = False
-                    print(f"    WARN: Apache disable command failed for {site}: {disable_exc}")
-
-                for config_path in (
-                    apache_sites_available_dir / f'{site}.conf',
-                    apache_sites_enabled_dir / f'{site}.conf',
-                ):
-                    try:
-                        if config_path.exists() or config_path.is_symlink():
-                            config_path.unlink()
-                            cleanup_results['apache_vhost_files_deleted'].append(str(config_path))
-                            apache_changed = True
-                            print(f"    OK: Removed vhost file {config_path}")
-                    except Exception as remove_exc:
-                        apache_cleanup_ok = False
-                        print(f"    WARN: Failed to remove vhost file {config_path}: {remove_exc}")
-
-            if apache_changed:
-                reload_result = subprocess.run(
-                    ['systemctl', 'reload', 'apache2'],
-                    capture_output=True,
-                    text=True,
-                    timeout=10,
-                )
-                if reload_result.returncode == 0:
-                    print("  OK: Apache reloaded successfully")
-                else:
-                    print(f"  WARN: Failed to reload Apache: {reload_result.stderr}")
-                    restart_result = subprocess.run(
-                        ['systemctl', 'restart', 'apache2'],
-                        capture_output=True,
-                        text=True,
-                        timeout=15,
-                    )
-                    if restart_result.returncode == 0:
-                        print("  OK: Apache restarted successfully")
-                    else:
-                        apache_cleanup_ok = False
-                        print(f"  ERROR: Failed to restart Apache: {restart_result.stderr}")
-
-            cleanup_results['apache_disabled'] = apache_cleanup_ok
-        except Exception as e:
-            print(f"  ERROR: Apache cleanup failed: {e}")
-            cleanup_results['apache_disabled'] = False
-        
-        # 4. Delete local files
-        print(f"\n[FILES DELETE] Deleting local files for {slug}")
-        
-        # Delete associated image files if they exist
-        image_extensions = ['png', 'jpg', 'jpeg', 'gif', 'svg']
-        deleted_images = []
-        
-        for ext in image_extensions:
-            for image_type in ['logo', 'favicon', 'heroImage']:
-                image_file = PUBLIC_IMAGES_DIR / f'{slug}-{image_type}.{ext}'
-                if image_file.exists():
-                    try:
-                        image_file.unlink()
-                        deleted_images.append(str(image_file))
-                        print(f"  OK: Deleted image: {image_file}")
-                    except Exception as e:
-                        print(f"  WARN: Failed to delete image {image_file}: {e}")
-        
-        # Delete inventory file
-        inventory_file = get_brand_inventory_path(slug)
-        deleted_inventory = []
-        if inventory_file.exists():
-            try:
-                inventory_file.unlink()
-                deleted_inventory.append(str(inventory_file))
-                print(f"  OK: Deleted inventory: {inventory_file}")
-            except Exception as e:
-                print(f"  WARN: Failed to delete inventory {inventory_file}: {e}")
-        
-        deleted_vhost_files = list(cleanup_results.get('apache_vhost_files_deleted') or [])
-        cleanup_results['files_deleted'] = deleted_images + deleted_inventory + deleted_vhost_files
-
-        # 5. Finally, delete the preview record from database
-        print(f"\n[DATABASE DELETE] Removing preview record for {slug}")
         delete_preview_record(slug)
-        print(f"  OK: Preview record deleted from database")
+        print(f"[DELETE] DB record removed for {slug}")
 
-        # 6. Restart primary PM2 app once after all cleanup
-        print(f"\n[PM2 RESTART] Restarting primary PM2 app after cleanup for {slug}")
-        try:
-            pm2_app = os.environ.get('PM2_NEXT_APP_NAME', 'app-brandstudio')
-            restart_cmd = f"pm2 restart {pm2_app}"
-            restart_result = subprocess.run(restart_cmd, shell=True, capture_output=True, text=True, timeout=20)
-            if restart_result.returncode == 0:
-                cleanup_results['pm2_restarted'] = True
-                print(f"  OK: PM2 app '{pm2_app}' restarted")
-            else:
-                print(f"  WARN: Failed to restart PM2 app '{pm2_app}': {restart_result.stderr}")
-                cleanup_results['pm2_restarted'] = False
-        except Exception as e:
-            print(f"  ERROR: PM2 restart failed: {e}")
-            cleanup_results['pm2_restarted'] = False
-        
-        # Summary
-        print(f"\n[DELETE SUMMARY] Cleanup completed for {slug}:")
-        print(f"  DNS Record: {'✓' if cleanup_results['dns_deleted'] else '✗'}")
-        print(f"  SSL Certificate: {'✓' if cleanup_results['ssl_revoked'] else '✗'}")
-        print(f"  Apache Config: {'✓' if cleanup_results['apache_disabled'] else '✗'}")
-        print(f"  Apache Vhost Files: {len(cleanup_results.get('apache_vhost_files_deleted', []))} deleted")
-        print(f"  PM2 Process: {'✓' if cleanup_results['pm2_restarted'] else '✗'} (restarted)")
-        print(f"  Local Files: {len(cleanup_results['files_deleted'])} deleted")
+        # ASYNC: spawn cleanup thread. Captures the snapshot vars by closure.
+        def _async_cleanup():
+            try:
+                is_dev_mode = _is_brand_automation_dev_mode()
+
+                # 1. Delete Cloudflare DNS record (idempotent — treats missing as success).
+                # CF API call works on Windows; only Apache + PM2 need dev-mode fallbacks.
+                if host:
+                    if is_dev_mode and str(os.environ.get('CLOUDFLARE_DISABLED', '')).strip().lower() in ('1', 'true', 'yes'):
+                        print(f"[DELETE/ASYNC] DEV-MODE: would delete CF DNS for {host} (CLOUDFLARE_DISABLED)")
+                    else:
+                        print(f"[DELETE/ASYNC] DNS delete for {host}")
+                        try:
+                            from lib.cloudflare_dns import delete_dns_record
+                            if not delete_dns_record(host):
+                                print(f"[DELETE/ASYNC] WARN: DNS delete returned false for {host}")
+                        except Exception as exc:
+                            print(f"[DELETE/ASYNC] ERROR: DNS delete raised: {exc}")
+
+                # 2. Apache vhost cleanup (skipped on dev mode — no Apache to talk to).
+                if is_dev_mode:
+                    dev_dir = _resolve_apache_sites_dir()
+                    print(f"[DELETE/ASYNC] DEV-MODE: would a2dissite + remove vhost for {apache_site_candidates}")
+                    # Best-effort: remove any matching files from the dev-vhosts dir
+                    # so re-creating the brand starts fresh.
+                    for site in apache_site_candidates:
+                        for d in (dev_dir,):
+                            try:
+                                p = Path(d) / f'{site}.conf'
+                                if p.exists():
+                                    p.unlink()
+                                    print(f"[DELETE/ASYNC] DEV-MODE: removed {p}")
+                            except Exception as exc:
+                                print(f"[DELETE/ASYNC] DEV-MODE: failed to remove dev vhost: {exc}")
+                    # Skip the systemctl section entirely in dev mode.
+                    if str(os.environ.get('PM2_RESTART_DISABLED', '')).strip().lower() not in ('1', 'true', 'yes'):
+                        pm2_app = os.environ.get('PM2_NEXT_APP_NAME', 'app-brandstudio')
+                        print(f"[DELETE/ASYNC] DEV-MODE: would pm2 restart {pm2_app}")
+                    print(f"[DELETE/ASYNC] DONE for {slug} (dev-mode)")
+                    return
+
+                # 2. Apache vhost cleanup (under critical-section lock so we don't
+                # race a concurrent create's reload).
+                with _automation_critical_lock:
+                    apache_sites_available_dir = Path(
+                        os.environ.get('APACHE_SITES_AVAILABLE_DIR', '/etc/apache2/sites-available')
+                    ).expanduser()
+                    apache_sites_enabled_dir = Path(
+                        os.environ.get('APACHE_SITES_ENABLED_DIR', '/etc/apache2/sites-enabled')
+                    ).expanduser()
+                    apache_changed = False
+
+                    for site in apache_site_candidates:
+                        try:
+                            disable_result = subprocess.run(
+                                ['a2dissite', f'{site}.conf'],
+                                capture_output=True,
+                                text=True,
+                                timeout=10,
+                            )
+                            out_l = (
+                                f"{disable_result.stdout or ''}\n{disable_result.stderr or ''}"
+                            ).lower()
+                            if disable_result.returncode == 0:
+                                apache_changed = True
+                                print(f"[DELETE/ASYNC] a2dissite OK for {site}")
+                            elif any(token in out_l for token in ('already disabled', 'does not exist', 'not found')):
+                                pass  # quiet — site already gone
+                            else:
+                                print(
+                                    f"[DELETE/ASYNC] WARN: a2dissite {site}: "
+                                    f"{(disable_result.stderr or disable_result.stdout or '').strip()}"
+                                )
+                        except Exception as exc:
+                            print(f"[DELETE/ASYNC] WARN: a2dissite {site} raised: {exc}")
+
+                        for config_path in (
+                            apache_sites_available_dir / f'{site}.conf',
+                            apache_sites_enabled_dir / f'{site}.conf',
+                        ):
+                            try:
+                                if config_path.exists() or config_path.is_symlink():
+                                    config_path.unlink()
+                                    apache_changed = True
+                                    print(f"[DELETE/ASYNC] removed {config_path}")
+                            except Exception as exc:
+                                print(f"[DELETE/ASYNC] WARN: failed to remove {config_path}: {exc}")
+
+                    if apache_changed:
+                        reload_result = subprocess.run(
+                            ['systemctl', 'reload', 'apache2'],
+                            capture_output=True, text=True, timeout=10,
+                        )
+                        if reload_result.returncode != 0:
+                            print(f"[DELETE/ASYNC] WARN: apache reload failed: {reload_result.stderr}")
+                            restart_result = subprocess.run(
+                                ['systemctl', 'restart', 'apache2'],
+                                capture_output=True, text=True, timeout=15,
+                            )
+                            if restart_result.returncode != 0:
+                                print(f"[DELETE/ASYNC] ERROR: apache restart also failed: {restart_result.stderr}")
+
+                # 3. PM2 restart with health check (also under the lock).
+                if str(os.environ.get('PM2_RESTART_DISABLED', '')).strip().lower() not in ('1', 'true', 'yes'):
+                    with _automation_critical_lock:
+                        pm2_app = os.environ.get('PM2_NEXT_APP_NAME', 'app-brandstudio')
+                        try:
+                            subprocess.run(
+                                f"pm2 restart {pm2_app}",
+                                shell=True, capture_output=True, text=True, timeout=20,
+                            )
+                            if _pm2_wait_until_online(pm2_app, timeout=int(os.environ.get('PM2_HEALTH_TIMEOUT', '30'))):
+                                print(f"[DELETE/ASYNC] PM2 OK: {pm2_app} online")
+                            else:
+                                print(f"[DELETE/ASYNC] WARN: PM2 app {pm2_app} did not return online in time")
+                        except Exception as exc:
+                            print(f"[DELETE/ASYNC] ERROR: pm2 restart raised: {exc}")
+
+                print(f"[DELETE/ASYNC] DONE for {slug}")
+            except Exception as exc:
+                print(f"[DELETE/ASYNC] FATAL: {exc}")
+                import traceback
+                print(traceback.format_exc())
+
+        threading.Thread(target=_async_cleanup, daemon=True).start()
 
         return jsonify({
             'success': True,
-            'message': f"Preview '{slug}' deleted successfully with full cleanup",
-            'cleanup_results': cleanup_results,
-            'deleted_files': cleanup_results['files_deleted'],
+            'message': f"Preview '{slug}' deleted; DNS / Apache / PM2 cleanup running in background",
+            'deleted_files': deleted_files,
         }), 200
-        
+
     except Exception as e:
-        print(f"  ERROR deleting preview: {e}")
+        print(f"[DELETE] ERROR: {e}")
+        import traceback
+        print(traceback.format_exc())
         return jsonify({'error': 'Failed to delete preview', 'details': str(e)}), 500
 
 

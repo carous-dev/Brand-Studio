@@ -1,0 +1,562 @@
+.siteHeader {
+  background: var(--color-header-bg);
+  color: var(--color-header-text);
+  border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+}
+
+.siteHeaderInner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 18px 28px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 220px;
+  flex-shrink: 1;
+}
+
+.brandBadge {
+  width: 180px;
+  height: 54px;
+  color: var(--color-accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brandBadge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.brandBadge svg {
+  width: 100%;
+  height: 100%;
+}
+
+
+.mainNav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex: 1;
+  justify-content: center;
+}
+
+.mainNavLink {
+  color: var(--color-header-text);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  position: relative;
+  padding-right: 18px;
+}
+
+.isActive {
+  color: var(--color-accent);
+}
+
+.mainNavLink {
+  transition: color 0.18s ease;
+}
+
+.mainNavLink:hover,
+.mainNavLink:focus,
+.navDropdownToggle:hover,
+.navDropdownToggle:focus,
+.navDropdownLink:hover,
+.navDropdownLink:focus,
+.mobileNavLink:hover,
+.mobileNavLink:focus {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
+  text-decoration-color: var(--color-accent);
+  text-decoration-skip-ink: auto;
+}
+
+.mainNavLink.isActive,
+.mainNavLink.isActive:hover,
+.mainNavLink.isActive:focus {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
+  text-decoration-color: var(--color-accent);
+  text-decoration-skip-ink: auto;
+}
+
+.mainNavLink:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  width: 1px;
+  height: 16px;
+  background: rgba(17, 24, 39, 0.12);
+  transform: translateY(-50%);
+}
+
+.mainNavChev {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--color-accent);
+  border-bottom: 2px solid var(--color-accent);
+  transform: rotate(45deg) translateY(-1px);
+  display: inline-block;
+}
+
+.navDropdown {
+  position: relative;
+}
+
+.navDropdown::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 12px;
+}
+
+.navDropdownToggle {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.navDropdownToggle.isActive {
+  background: transparent;
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
+  text-decoration-color: var(--color-accent);
+  text-decoration-skip-ink: auto;
+}
+
+.navDropdownMenu {
+  position: absolute;
+  top: 100%;
+  margin-top: 6px;
+  left: 0;
+  min-width: 200px;
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+  background: var(--t-card);
+  border: 1px solid var(--t-border);
+  border-radius: 14px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 10;
+}
+
+.navDropdownLink {
+  text-decoration: none;
+  color: var(--color-header-text);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+.navDropdownLink.isActive {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+  text-decoration-color: var(--color-accent);
+  text-decoration-skip-ink: auto;
+}
+
+.navDropdownLink:hover {
+  color: var(--color-accent);
+  background: transparent;
+}
+
+.navDropdown:hover .navDropdownMenu,
+.navDropdown:focus-within .navDropdownMenu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.headerTools {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  white-space: nowrap;
+}
+
+.headerActionsItem {
+  color: var(--color-header-text);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.headerActionsIcon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-accent);
+  display: inline-flex;
+}
+
+.headerActionsIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.wishlistButton {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  border: 1px solid var(--t-border);
+  background: var(--t-card);
+  color: var(--color-primary);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.wishlistButton:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--color-primary) 35%, var(--t-border));
+}
+
+.wishlistCount {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-header-bg);
+}
+
+.mobileToggle {
+  display: none;
+  margin-left: auto;
+  background: transparent;
+  border: 0;
+  padding: 8px;
+  cursor: pointer;
+  color: var(--color-header-text);
+  align-items: center;
+  justify-content: center;
+}
+
+
+.mobileNav {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  display: block;
+}
+
+.mobileNav.isOpen {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobileNavBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  backdrop-filter: blur(3px);
+}
+
+.mobileNavPanel {
+  position: absolute;
+  inset: 0;
+  width: min(100vw, 380px);
+  background: var(--color-header-bg);
+  color: var(--color-header-text);
+  border-radius: 0;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.2);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(110%);
+  transition: transform 0.25s ease;
+}
+
+.mobileNav.isOpen .mobileNavPanel {
+  transform: translateX(0);
+}
+
+.mobileNavHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.mobileNavTitle {
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+.mobileNavClose {
+  border: 0;
+  background: transparent;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-header-text);
+  cursor: pointer;
+}
+
+.mobileNavLinks {
+  display: grid;
+  gap: 2px;
+  padding: 10px 18px 6px;
+  overflow-y: auto;
+  max-height: calc(100vh - 260px);
+}
+
+.mobileNavLink {
+  color: var(--color-header-text);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 12px 0;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mobileNavLink.isActive {
+  color: var(--color-accent);
+  background: transparent;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+  text-decoration-color: var(--color-accent);
+  text-decoration-skip-ink: auto;
+}
+
+.mobileNavLink:hover {
+  color: var(--color-accent);
+  background: transparent;
+}
+
+.mobileNavGroup {
+  display: grid;
+  gap: 4px;
+  padding: 10px 0 4px;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.mobileNavGroupTitle {
+  color: var(--color-header-muted);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 0 4px;
+}
+
+.mobileNavActions {
+  display: grid;
+  gap: 4px;
+  padding: 8px 18px 14px;
+}
+
+.mobileNavInfoItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.mobileNavInfoIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--t-icon-bg-strong);
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobileNavInfoText {
+  display: grid;
+  gap: 2px;
+}
+
+.mobileNavInfoLabel {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-header-muted);
+  font-weight: 700;
+}
+
+.mobileNavInfoValue {
+  font-weight: 600;
+  color: var(--color-accent);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 1200px) {
+  .siteHeaderInner {
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .mainNav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .headerTools {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 960px) {
+  .siteHeaderInner {
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: nowrap;
+  }
+
+  .brand {
+    min-width: 0;
+  }
+
+  .brandBadge {
+    width: 140px;
+    height: 42px;
+  }
+
+  .mainNav,
+  .headerActions {
+    display: none;
+  }
+
+  .headerTools {
+    margin-left: auto;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .wishlistButton {
+    width: 46px;
+    height: 46px;
+  }
+
+  .mobileToggle {
+    display: inline-flex;
+    margin-left: 0;
+  }
+}
+
+@media (min-width: 961px) {
+  .mobileNav {
+    display: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .brandBadge {
+    width: 200px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 640px) {
+  .siteHeaderInner {
+    padding: 12px 14px;
+  }
+
+  .brandBadge {
+    width: 180px;
+    height: 54px;
+  }
+
+  .wishlistButton {
+    width: 40px;
+    height: 40px;
+  }
+
+  .wishlistCount {
+    min-width: 18px;
+    height: 18px;
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .siteHeaderInner {
+    gap: 8px;
+  }
+
+  .brandBadge {
+    width: 170px;
+    height: 50px;
+  }
+}

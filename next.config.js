@@ -33,6 +33,20 @@ const nextConfig = {
     'localhost:3000',
     '*.local',
     '*.local:3000',
+    // Wildcard-DNS local-dev bases (resolve *.<base> -> 127.0.0.1 without
+    // hosts edits). Brand Studio's /settings page provisions brands against
+    // these for local previews. Keep in sync with LOCAL_PREVIEW_BASE_DOMAINS
+    // in app.py.
+    '*.lvh.me',
+    '*.lvh.me:3000',
+    '*.localtest.me',
+    '*.localtest.me:3000',
+    '*.localhost.test',
+    '*.localhost.test:3000',
+    '*.sslip.io',
+    '*.sslip.io:3000',
+    '*.nip.io',
+    '*.nip.io:3000',
     'citimotorsuk.local',
     'www.citimotorsuk.local',
     'citimotorsuk.local:3000',
@@ -64,38 +78,13 @@ const nextConfig = {
     ]
   },
 
-  // Exclude Python venv from build to prevent Turbopack symlink errors
-  // The dashboard directory contains Python virtual environment with external symlinks
-
-  webpack: (config, { isServer }) => {
-    config.watchOptions = {
-      ...config.watchOptions,
-      ignored: [
-        '**/venv/**',
-        '**/.venv/**',
-        '**/*.py',
-        // Dashboard/Flask writes here; ignore to prevent Next dev reload loops
-        '**/app/data/**',
-        '**/*.db',
-        // Uploaded assets land here; avoid triggering dev server restarts
-        '**/public/images/**',
-        '**/node_modules/**',
-        '**/.git/**'
-      ]
-    }
-    return config
-  },
-
-  // Turbopack exclusions for experimental builds
-  experimental: {
-    turbo: {
-      excludeFiles: [
-        '**/venv/**',
-        '**/.venv/**',
-        '**/*.py'
-      ]
-    }
-  },
+  // Empty turbopack config: Next 16 uses Turbopack by default. The legacy
+  // `webpack.watchOptions.ignored` block (which tried to keep dev from reloading
+  // when Flask wrote to app/data, public/images, .py, .db) doesn't apply under
+  // Turbopack. Turbopack only re-runs HMR for files in the import graph, so
+  // those non-imported writes don't trigger reloads. Keep this stub to silence
+  // the "webpack config but no turbopack config" warning.
+  turbopack: {},
 
   async rewrites() {
     return [

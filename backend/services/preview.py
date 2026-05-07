@@ -160,14 +160,27 @@ def extract_preview_payload(data: Any) -> Any:
     return data
 
 
+_PRESERVED_INTERNAL_KEYS = ('_automation',)
+
+
 def strip_internal_fields(config: Any) -> Dict[str, Any]:
-    """Drop internal metadata before persisting."""
+    """Drop transient internal metadata (_-prefixed) before persisting.
+
+    Exception: `_automation` is preserved so the provisioning-lifecycle status
+    survives brand updates (otherwise every dashboard edit would wipe the
+    status badge). Read-side keys like `_created_at` / `_updated_at` are still
+    stripped because they're re-derived from the row's columns on the next read.
+    """
     if not isinstance(config, dict):
         return {}
     return {
         key: value
         for key, value in config.items()
-        if not (isinstance(key, str) and key.startswith('_'))
+        if not (
+            isinstance(key, str)
+            and key.startswith('_')
+            and key not in _PRESERVED_INTERNAL_KEYS
+        )
     }
 
 

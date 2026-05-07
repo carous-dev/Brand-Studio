@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Oswald:wght@500;600&display=swap');
+
+[data-theme-id='springalls-classic'] {
+  color-scheme: light;
+  font-family: var(--font-ui-family-override, 'Montserrat', 'Segoe UI', sans-serif);
+  background: var(--t-page);
+  color: var(--t-text);
+  margin: 0;
+}
+
+[data-theme-id='springalls-classic'] *,
+[data-theme-id='springalls-classic'] *::before,
+[data-theme-id='springalls-classic'] *::after {
+  box-sizing: border-box;
+}
+
+[data-theme-id='springalls-classic'] h1,
+[data-theme-id='springalls-classic'] h2,
+[data-theme-id='springalls-classic'] h3,
+[data-theme-id='springalls-classic'] h4 {
+  font-family: var(--font-brand-family-override, 'Oswald', 'Montserrat', sans-serif);
+  letter-spacing: 0.01em;
+}
+
+:where([data-theme-id='springalls-classic']) :where(a) {
+  color: var(--color-primary);
+}
+
+[data-theme-id='springalls-classic'] .springalls-main {
+  display: block;
+  min-height: calc(100vh - 200px);
+}
+
+[data-theme-id='springalls-classic'] .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+[data-theme-id='springalls-classic'] .springalls-section {
+  padding: clamp(32px, 6vw, 64px) 20px;
+}
+
+[data-theme-id='springalls-classic'] .springalls-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+[data-theme-id='springalls-classic'] .springalls-page-placeholder {
+  padding: 80px 20px;
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+[data-theme-id='springalls-classic'] .springalls-page-placeholder h1 {
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  margin: 0 0 12px;
+  color: var(--t-text);
+}
+
+[data-theme-id='springalls-classic'] .springalls-page-placeholder p {
+  color: var(--t-muted);
+  line-height: 1.7;
+  font-size: 1.05rem;
+  margin: 0 0 18px;
+}
+
+[data-theme-id='springalls-classic'] .springalls-cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+}

@@ -1,0 +1,135 @@
+[data-theme-id='springalls-classic'] .sps-hero {
+  position: relative;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #ffffff;
+  background-image: var(--springalls-hero-image);
+  background-size: cover;
+  background-position: center;
+  padding: 48px 20px 64px;
+}
+
+[data-theme-id='springalls-classic'] .sps-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--color-hero-overlay-start), var(--color-hero-overlay-end));
+}
+
+[data-theme-id='springalls-classic'] .sps-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  align-items: center;
+  width: 100%;
+}
+
+[data-theme-id='springalls-classic'] .sps-hero-title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-weight: 700;
+  color: #ffffff;
+}
+
+[data-theme-id='springalls-classic'] .sps-hero-lead {
+  margin: 0;
+  font-size: clamp(1.05rem, 1.6vw, 1.4rem);
+  color: var(--color-hero-text-muted);
+  max-width: 760px;
+}
+
+[data-theme-id='springalls-classic'] .sps-hero-search {
+  width: 100%;
+  background: var(--t-card);
+  border-radius: 999px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme-id='springalls-classic'] .sps-hero-fields {
+  display: grid;
+  gap: 12px;
+}
+
+[data-theme-id='springalls-classic'] .sps-hero-field select {
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid var(--t-border);
+  padding: 14px 18px;
+  font-size: 1rem;
+  background: var(--t-card);
+  color: var(--t-text);
+}
+
+[data-theme-id='springalls-classic'] .sps-hero-search-btn {
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 14px 22px;
+  cursor: pointer;
+}
+
+@media (max-width: 720px) {
+  [data-theme-id='springalls-classic'] .sps-hero-search {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  [data-theme-id='springalls-classic'] .sps-hero {
+    min-height: 440px;
+    padding: 28px 16px 48px;
+  }
+  [data-theme-id='springalls-classic'] .sps-hero-title {
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+  }
+  [data-theme-id='springalls-classic'] .sps-hero-lead {
+    display: none;
+  }
+  [data-theme-id='springalls-classic'] .sps-hero-search {
+    border-radius: 24px;
+    padding: 14px;
+  }
+  [data-theme-id='springalls-classic'] .sps-hero-field select {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+  }
+  [data-theme-id='springalls-classic'] .sps-hero-search-btn {
+    width: 100%;
+  }
+}
+
+@media (min-width: 880px) {
+  [data-theme-id='springalls-classic'] .sps-hero-search {
+    flex-direction: row;
+    align-items: center;
+    padding: 22px 24px;
+  }
+  [data-theme-id='springalls-classic'] .sps-hero-fields {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    flex: 1;
+  }
+  [data-theme-id='springalls-classic'] .sps-hero-search-btn {
+    min-width: 220px;
+  }
+}
+
+@media (min-width: 1200px) {
+  [data-theme-id='springalls-classic'] .sps-hero {
+    min-height: 560px;
+    padding: 56px 24px 72px;
+  }
+  [data-theme-id='springalls-classic'] .sps-hero-content {
+    gap: 26px;
+  }
+}

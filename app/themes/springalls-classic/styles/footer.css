@@ -1,0 +1,184 @@
+[data-theme-id='springalls-classic'] .sps-footer {
+  background: color-mix(in srgb, var(--t-text) 5%, var(--t-card));
+  color: var(--t-text);
+  padding: 48px 20px 0;
+  border-top: 1px solid var(--t-border);
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  gap: 28px;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-brand {
+  display: grid;
+  gap: 14px;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-brand-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-brand-logo {
+  width: 140px;
+  height: 42px;
+  object-fit: contain;
+  display: block;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-brand-name {
+  font-family: 'Oswald', 'Montserrat', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-brand-summary {
+  max-width: 280px;
+  color: var(--color-header-muted);
+  margin: 0;
+  line-height: 1.6;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-socials {
+  display: flex;
+  gap: 10px;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-social-link {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-header-text);
+  text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-social-link:hover {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-column-title {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-link-list,
+[data-theme-id='springalls-classic'] .sps-footer-contact-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-link-item,
+[data-theme-id='springalls-classic'] .sps-footer-contact-list a {
+  color: var(--color-header-muted);
+  text-decoration: none;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-link-item:hover,
+[data-theme-id='springalls-classic'] .sps-footer-contact-list a:hover {
+  color: var(--color-primary);
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-newsletter {
+  display: grid;
+  gap: 12px;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-newsletter-text {
+  margin: 0;
+  color: var(--color-header-muted);
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-newsletter-form {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-newsletter-input {
+  border-radius: 12px;
+  border: 1px solid var(--t-border);
+  padding: 12px 14px;
+  background: var(--t-card);
+  color: var(--t-text);
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-newsletter-button {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 18px;
+  background: var(--t-action-bg);
+  color: var(--t-action-fg);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-find-us {
+  display: grid;
+  gap: 8px;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-find-us-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-header-text);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-bottom {
+  margin-top: 40px;
+  border-top: 1px solid var(--t-border);
+  padding: 16px 0 18px;
+  background: color-mix(in srgb, var(--t-text) 8%, var(--t-card));
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-bottom-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-header-muted);
+  font-size: 0.92rem;
+  padding: 0 20px;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-bottom-links {
+  display: inline-flex;
+  gap: 16px;
+}
+
+[data-theme-id='springalls-classic'] .sps-footer-bottom-links a {
+  color: var(--color-header-muted);
+  text-decoration: none;
+}
+
+@media (min-width: 920px) {
+  [data-theme-id='springalls-classic'] .sps-footer-inner {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  [data-theme-id='springalls-classic'] .sps-footer-newsletter-form {
+    grid-template-columns: 1fr;
+  }
+}

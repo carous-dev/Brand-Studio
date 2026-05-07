@@ -1,0 +1,336 @@
+[data-theme-id='springalls-classic'] .sps-section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+[data-theme-id='springalls-classic'] .sps-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+[data-theme-id='springalls-classic'] .sps-section-title {
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  margin: 0;
+  color: var(--t-text);
+}
+
+[data-theme-id='springalls-classic'] .sps-section-subtitle {
+  margin: 0;
+  color: var(--t-muted);
+  max-width: 580px;
+}
+
+[data-theme-id='springalls-classic'] .sps-section-cta {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+[data-theme-id='springalls-classic'] .sps-section-empty {
+  color: var(--t-muted);
+  text-align: center;
+  padding: 32px 0;
+}
+
+/* Trust signals */
+[data-theme-id='springalls-classic'] .sps-trust-section {
+  background: var(--t-card);
+  padding: 36px 0;
+  border-bottom: 1px solid var(--t-border);
+}
+
+[data-theme-id='springalls-classic'] .sps-trust-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@media (min-width: 720px) {
+  [data-theme-id='springalls-classic'] .sps-trust-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+[data-theme-id='springalls-classic'] .sps-trust-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+[data-theme-id='springalls-classic'] .sps-trust-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--t-icon-bg-strong);
+  color: var(--color-primary);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+[data-theme-id='springalls-classic'] .sps-trust-title {
+  margin: 0;
+  font-weight: 700;
+  color: var(--t-text);
+}
+
+[data-theme-id='springalls-classic'] .sps-trust-body {
+  margin: 4px 0 0;
+  color: var(--t-muted);
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+/* Latest arrivals */
+[data-theme-id='springalls-classic'] .sps-latest-section,
+[data-theme-id='springalls-classic'] .sps-services-section,
+[data-theme-id='springalls-classic'] .sps-reviews-section,
+[data-theme-id='springalls-classic'] .sps-cta-section,
+[data-theme-id='springalls-classic'] .sps-directory-section {
+  padding: clamp(40px, 5vw, 64px) 0;
+}
+
+[data-theme-id='springalls-classic'] .sps-latest-section {
+  background: var(--t-page);
+}
+
+[data-theme-id='springalls-classic'] .sps-vehicle-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+[data-theme-id='springalls-classic'] .sps-vehicle-card {
+  background: var(--t-card);
+  border-radius: 16px;
+  border: 1px solid var(--t-border);
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+[data-theme-id='springalls-classic'] .sps-vehicle-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme-id='springalls-classic'] .sps-vehicle-card-link {
+  display: grid;
+  text-decoration: none;
+  color: inherit;
+}
+
+[data-theme-id='springalls-classic'] .sps-vehicle-card-media {
+  aspect-ratio: 4 / 3;
+  background: var(--t-page);
+  overflow: hidden;
+}
+
+[data-theme-id='springalls-classic'] .sps-vehicle-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+[data-theme-id='springalls-classic'] .sps-vehicle-card-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--t-page), color-mix(in srgb, var(--color-primary) 12%, var(--t-page)));
+}
+
+[data-theme-id='springalls-classic'] .sps-vehicle-card-body {
+  padding: 14px 16px 18px;
+}
+
+[data-theme-id='springalls-classic'] .sps-vehicle-card-title {
+  margin: 0;
+  font-weight: 700;
+  color: var(--t-text);
+}
+
+[data-theme-id='springalls-classic'] .sps-vehicle-card-derivative {
+  margin: 2px 0 0;
+  color: var(--t-muted);
+  font-size: 0.92rem;
+}
+
+[data-theme-id='springalls-classic'] .sps-vehicle-card-price {
+  margin: 8px 0 0;
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+[data-theme-id='springalls-classic'] .sps-vehicle-card-meta {
+  margin: 6px 0 0;
+  color: var(--t-muted);
+  font-size: 0.88rem;
+}
+
+/* Services grid */
+[data-theme-id='springalls-classic'] .sps-services-section {
+  background: var(--t-card);
+}
+
+[data-theme-id='springalls-classic'] .sps-services-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+[data-theme-id='springalls-classic'] .sps-service-card {
+  background: var(--t-page);
+  border-radius: 16px;
+  border: 1px solid var(--t-border);
+  padding: 20px;
+}
+
+[data-theme-id='springalls-classic'] .sps-service-card h3 {
+  margin: 0;
+  color: var(--t-text);
+  font-size: 1.05rem;
+}
+
+[data-theme-id='springalls-classic'] .sps-service-card p {
+  margin: 8px 0 0;
+  color: var(--t-muted);
+  line-height: 1.55;
+  font-size: 0.94rem;
+}
+
+/* Reviews */
+[data-theme-id='springalls-classic'] .sps-reviews-section {
+  background: var(--t-page);
+}
+
+[data-theme-id='springalls-classic'] .sps-reviews-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+[data-theme-id='springalls-classic'] .sps-review-card {
+  background: var(--t-card);
+  border: 1px solid var(--t-border);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+[data-theme-id='springalls-classic'] .sps-review-stars {
+  display: inline-flex;
+  gap: 2px;
+}
+
+[data-theme-id='springalls-classic'] .sps-review-body {
+  margin: 12px 0 14px;
+  color: var(--t-text);
+  line-height: 1.6;
+}
+
+[data-theme-id='springalls-classic'] .sps-review-meta {
+  margin: 0;
+  color: var(--t-muted);
+  font-size: 0.92rem;
+}
+
+/* CTA */
+[data-theme-id='springalls-classic'] .sps-cta-section {
+  background: linear-gradient(135deg, var(--t-action-bg) 0%, var(--t-action-bg-hover) 100%);
+  color: var(--t-text-on-brand);
+}
+
+[data-theme-id='springalls-classic'] .sps-cta-shell {
+  text-align: center;
+  display: grid;
+  gap: 14px;
+}
+
+[data-theme-id='springalls-classic'] .sps-cta-title {
+  margin: 0;
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #ffffff;
+}
+
+[data-theme-id='springalls-classic'] .sps-cta-lead {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1.05rem;
+}
+
+[data-theme-id='springalls-classic'] .sps-cta-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+[data-theme-id='springalls-classic'] .sps-cta-button-primary,
+[data-theme-id='springalls-classic'] .sps-cta-button-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  border: 2px solid #ffffff;
+}
+
+[data-theme-id='springalls-classic'] .sps-cta-button-primary {
+  background: #ffffff;
+  color: var(--color-primary);
+}
+
+[data-theme-id='springalls-classic'] .sps-cta-button-secondary {
+  background: transparent;
+  color: #ffffff;
+}
+
+/* Directory */
+[data-theme-id='springalls-classic'] .sps-directory-section {
+  background: var(--t-card);
+}
+
+[data-theme-id='springalls-classic'] .sps-directory-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+[data-theme-id='springalls-classic'] .sps-directory-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--t-page);
+  color: var(--t-text);
+  border: 1px solid var(--t-border);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+[data-theme-id='springalls-classic'] .sps-directory-chip:hover {
+  background: var(--t-icon-bg-strong);
+  color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 24%, var(--t-border));
+}

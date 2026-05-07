@@ -1,0 +1,235 @@
+.footer {
+  background: color-mix(in srgb, var(--t-text) 5%, var(--t-card));
+  color: var(--t-text);
+  padding: 48px 20px 0;
+  border-top: 1px solid var(--t-border);
+}
+
+.footerInner {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  gap: 28px;
+}
+
+.brand {
+  display: grid;
+  gap: 14px;
+}
+
+.brandMark {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.brandLogo {
+  width: 140px;
+  height: 42px;
+  object-fit: contain;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .brandLogo {
+    width: 150px;
+    height: 45px;
+  }
+}
+
+@media (max-width: 420px) {
+  .brandLogo {
+    width: 130px;
+    height: 39px;
+  }
+}
+
+
+.brandSummary {
+  max-width: 280px;
+  color: var(--t-muted);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.socials {
+  display: flex;
+  gap: 10px;
+}
+
+.socialLink {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--t-card));
+  border: 1px solid var(--t-border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.socialLink:hover,
+.socialLink:focus {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
+
+.columnTitle {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+  color: var(--t-text);
+  font-weight: 700;
+}
+
+.linkList {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.linkItem {
+  color: var(--t-muted);
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.linkItem:hover,
+.linkItem:focus {
+  color: var(--color-primary);
+}
+
+.contactList {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--t-muted);
+}
+
+.newsletter {
+  display: grid;
+  gap: 12px;
+}
+
+.newsletterText {
+  margin: 0;
+  color: var(--t-muted);
+}
+
+.newsletterForm {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.newsletterInput {
+  border-radius: 12px;
+  border: 1px solid var(--t-border);
+  padding: 12px 14px;
+  background: var(--t-page);
+  color: var(--t-text);
+  outline: none;
+  transition: border-color 0.18s ease;
+}
+
+.newsletterInput:focus {
+  border-color: var(--color-primary);
+}
+
+.newsletterButton {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 18px;
+  background: var(--color-primary);
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.findUs {
+  display: grid;
+  gap: 8px;
+}
+
+.findUsRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--t-text);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.18s ease;
+}
+
+.findUsRow:hover,
+.findUsRow:focus {
+  color: var(--color-primary);
+}
+
+.findUsLabel {
+  margin: 0;
+  color: var(--t-muted);
+  line-height: 1.6;
+}
+
+.footerBottom {
+  margin-top: 40px;
+  border-top: 1px solid var(--t-border);
+  padding: 16px 0 18px;
+  background: color-mix(in srgb, var(--t-text) 8%, var(--t-card));
+}
+
+.footerBottomInner {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--t-muted);
+  font-size: 0.92rem;
+  padding: 0 20px;
+}
+
+.footerBottomLinks {
+  display: inline-flex;
+  gap: 16px;
+}
+
+.footerBottomLinks a {
+  color: var(--t-muted);
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.footerBottomLinks a:hover,
+.footerBottomLinks a:focus {
+  color: var(--color-primary);
+}
+
+@media (min-width: 920px) {
+  .footerInner {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .brandLogo {
+    width: 120px;
+    height: 36px;
+  }
+
+  .newsletterForm {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,136 @@
+.section {
+  padding: 48px 20px 64px;
+  background: var(--t-page);
+}
+
+.sectionInner {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  gap: 22px;
+}
+
+.header {
+  display: grid;
+  gap: 8px;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--t-eyebrow);
+  font-weight: 700;
+}
+
+.title {
+  margin: 0;
+  font-family: 'Oswald', 'Montserrat', sans-serif;
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  font-weight: 700;
+  color: var(--t-text);
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--t-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 640px;
+}
+
+.status {
+  margin: 0;
+  color: var(--t-muted);
+}
+
+.grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.card {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  background: transparent;
+  border: 1px solid var(--t-border);
+  display: grid;
+  grid-template-rows: 180px auto;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--color-primary) 65%, var(--t-border));
+  box-shadow: 0 12px 26px rgba(8, 12, 20, 0.12);
+}
+
+.cardImage {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+}
+
+.cardImage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8, 12, 20, 0.1), rgba(8, 12, 20, 0.6));
+}
+
+.priceTag {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--t-text);
+  font-weight: 700;
+  z-index: 1;
+}
+
+.cardBody {
+  padding: 16px 16px 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--t-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--t-muted);
+  font-size: 0.9rem;
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--t-border);
+}
+
+@media (min-width: 700px) {
+  .section {
+    padding: 56px 28px 72px;
+  }
+}

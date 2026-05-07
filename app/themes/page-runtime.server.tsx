@@ -21,6 +21,8 @@ type RoutedThemePageId = Extract<
   | 'contact'
   | 'services'
   | 'sellYourCar'
+  | 'finance'
+  | 'partExchange'
   | 'recentlySold'
   | 'usedCars'
   | 'vehicleDetail'
@@ -507,6 +509,16 @@ export async function generateThemePageMetadata(options: ThemeRouteRuntimeOption
   if (options.pageId === 'sellYourCar') {
     const seo = generateSellCarPageSEO(brand)
     return buildPageMetadata(brand, options.canonicalPath, seo)
+  }
+
+  if (options.pageId === 'finance') {
+    const seo = generateServicesPageSEO(brand)
+    return buildPageMetadata(brand, options.canonicalPath, { ...seo, title: `Finance | ${brand.name}` })
+  }
+
+  if (options.pageId === 'partExchange') {
+    const seo = generateSellCarPageSEO(brand)
+    return buildPageMetadata(brand, options.canonicalPath, { ...seo, title: `Part Exchange | ${brand.name}` })
   }
 
   if (options.pageId === 'usedCars') {

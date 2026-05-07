@@ -1,0 +1,196 @@
+.page {
+  background: var(--t-page);
+  color: var(--t-text);
+}
+
+.hero {
+  position: relative;
+  padding: 56px 20px 48px;
+  background:
+    radial-gradient(120% 130% at 80% -25%, var(--t-hero-base-light) 0%, transparent 50%),
+    radial-gradient(140% 140% at 12% 110%, var(--t-hero-base-dark) 0%, transparent 55%),
+    linear-gradient(135deg, var(--t-hero-base-dark) 0%, var(--t-hero-base) 50%, var(--t-hero-base-dark) 100%);
+  color: var(--t-text-on-brand);
+}
+
+.heroInner {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  gap: 16px;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--t-eyebrow);
+  font-weight: 700;
+}
+
+.heroTitle {
+  margin: 0;
+  font-family: 'Oswald', 'Montserrat', sans-serif;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  font-weight: 700;
+}
+
+.heroLead {
+  margin: 0;
+  color: var(--t-muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.section {
+  padding: 48px 20px;
+}
+
+.sectionAlt {
+  padding: 56px 20px;
+  background: var(--t-card);
+}
+
+.sectionInner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  gap: 24px;
+}
+
+.sectionHeader {
+  display: grid;
+  gap: 10px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  font-weight: 700;
+}
+
+.sectionText {
+  margin: 0;
+  color: var(--t-muted);
+  line-height: 1.7;
+}
+
+.storyCard {
+  border: 1px solid var(--t-border);
+  border-radius: 20px;
+  background: var(--t-card);
+  padding: 22px;
+  display: grid;
+  gap: 22px;
+}
+
+.statsGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.statCard {
+  border: 1px solid var(--t-border);
+  border-radius: 16px;
+  padding: 14px;
+  background: var(--t-page);
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.statCard span {
+  color: var(--t-muted);
+  font-weight: 500;
+}
+
+.valueGrid {
+  display: grid;
+  gap: 16px;
+}
+
+.valueCard {
+  border: 1px solid var(--t-border);
+  border-radius: 18px;
+  background: var(--t-card);
+  padding: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.valueIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--t-icon-bg);
+  color: var(--color-primary);
+}
+
+.valueTitle {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.valueText {
+  margin: 0;
+  color: var(--t-muted);
+  line-height: 1.6;
+}
+
+.teamCard {
+  border: 1px solid var(--t-border);
+  border-radius: 20px;
+  background: var(--t-card);
+  padding: 22px;
+  display: grid;
+  gap: 18px;
+}
+
+.teamGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.teamMember {
+  border-radius: 14px;
+  background: var(--t-page);
+  padding: 14px;
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.teamMember span {
+  color: var(--t-muted);
+  font-weight: 500;
+}
+
+@media (min-width: 760px) {
+  .storyCard {
+    grid-template-columns: 1.4fr 0.6fr;
+    align-items: start;
+  }
+
+  .statsGrid {
+    gap: 14px;
+  }
+
+  .valueGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .teamGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .valueGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

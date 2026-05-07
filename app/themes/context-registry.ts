@@ -14,11 +14,11 @@ import { BrandStyles as GildedBrandStyles } from './gilded-drive/context/BrandSt
 import { AuthProvider as GildedAuthProvider } from './gilded-drive/context/AuthContext'
 import { DynamicFavicon as GildedDynamicFavicon } from './gilded-drive/context/DynamicFavicon'
 import {
-  BrandClientWrapper as EditorialBrandClientWrapper,
-} from './editorial-showroom/context/BrandClientWrapper'
-import { BrandStyles as EditorialBrandStyles } from './editorial-showroom/context/BrandStyles'
-import { AuthProvider as EditorialAuthProvider } from './editorial-showroom/context/AuthContext'
-import { DynamicFavicon as EditorialDynamicFavicon } from './editorial-showroom/context/DynamicFavicon'
+  BrandClientWrapper as SpringallsBrandClientWrapper,
+} from './springalls-classic/context/BrandClientWrapper'
+import { BrandStyles as SpringallsBrandStyles } from './springalls-classic/context/BrandStyles'
+import { AuthProvider as SpringallsAuthProvider } from './springalls-classic/context/AuthContext'
+import { DynamicFavicon as SpringallsDynamicFavicon } from './springalls-classic/context/DynamicFavicon'
 
 type BrandClientWrapperComponent = ComponentType<{
   children: ReactNode
@@ -49,11 +49,11 @@ export const THEME_CONTEXT_REGISTRY: Record<string, ThemeContextBundle> = {
     AuthProvider: GildedAuthProvider,
     DynamicFavicon: GildedDynamicFavicon,
   },
-  'editorial-showroom': {
-    BrandClientWrapper: EditorialBrandClientWrapper,
-    BrandStyles: EditorialBrandStyles,
-    AuthProvider: EditorialAuthProvider,
-    DynamicFavicon: EditorialDynamicFavicon,
+  'springalls-classic': {
+    BrandClientWrapper: SpringallsBrandClientWrapper,
+    BrandStyles: SpringallsBrandStyles,
+    AuthProvider: SpringallsAuthProvider,
+    DynamicFavicon: SpringallsDynamicFavicon,
   },
 }
 

@@ -1,0 +1,148 @@
+.services {
+  padding: 76px 20px 80px;
+  background: var(--t-page);
+}
+
+.servicesInner {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.servicesGrid {
+  display: grid;
+  gap: 18px;
+}
+
+.serviceCard {
+  position: relative;
+  min-height: 320px;
+  border-radius: 26px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding: 26px;
+  background-color: color-mix(in srgb, var(--color-primary) 16%, var(--t-card));
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 18px 36px var(--t-icon-bg-strong);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.serviceCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      rgba(0, 0, 0, 0.25) 0%,
+      rgba(0, 0, 0, 0.65) 100%);
+  transition: opacity 0.35s ease;
+}
+
+.serviceContent {
+  position: relative;
+  z-index: 1;
+  color: #ffffff;
+  text-align: center;
+  width: 100%;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+.serviceTitle {
+  margin: 0;
+  font-size: clamp(1.4rem, 2vw, 2rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.serviceText {
+  margin: 0;
+  max-width: 240px;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.serviceButton {
+  border: 0;
+  border-radius: 999px;
+  padding: 11px 22px;
+  background: #ffffff;
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+  transition: transform 0.35s ease, box-shadow 0.35s ease, background 0.2s ease, color 0.2s ease;
+  text-decoration: none;
+  text-shadow: none;
+  white-space: nowrap;
+  margin-top: 6px;
+}
+
+.serviceCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 26px 44px color-mix(in srgb, var(--color-primary) 26%, transparent);
+}
+
+.serviceCard:hover::before {
+  opacity: 0.92;
+}
+
+.serviceCard:hover .serviceButton {
+  transform: translateY(-2px);
+  background: var(--color-accent);
+  color: #ffffff;
+  box-shadow: 0 14px 24px color-mix(in srgb, var(--color-accent) 35%, transparent);
+}
+
+/* Unsplash photos (Unsplash License — free commercial use). Swap the photo
+ * id segment if a brand wants different imagery; the underlying primary-tinted
+ * fallback paint still shows during load and on 404. */
+
+.cardOffers {
+  /* Unsplash: cars in a dealership showroom — fits "latest offers and deals". */
+  background-image: url('https://images.unsplash.com/photo-1542228262-3d663b306a53?auto=format&fit=crop&w=1200&q=70');
+}
+
+.cardServicing {
+  /* Unsplash: workshop / service bay (same shot used in Service Promise media). */
+  background-image: url('https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=1200&q=70');
+}
+
+.cardParts {
+  /* tools / parts shelves */
+  background-image: url('https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=1200&q=70');
+}
+
+.cardSell {
+  /* car keys handover */
+  background-image: url('https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&w=1200&q=70');
+}
+
+@media (min-width: 700px) {
+  .servicesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .serviceCard {
+    min-height: 340px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .servicesGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .serviceCard {
+    min-height: 360px;
+  }
+}
