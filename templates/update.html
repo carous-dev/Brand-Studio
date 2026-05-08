@@ -3,6 +3,32 @@
 {% block title %}Update {{ brand_data.name if brand_data else 'Brand' }} - Brand Configuration{% endblock %}
 
 {% block content %}
+{# Editor lives at localhost:5000 (Flask) but brand assets are served from
+   the Next.js dev server (e.g. carmax.lvh.me:3000 / localhost:3000). Resolve
+   any relative asset path against the brand's preview origin so <img src=>
+   actually loads. Absolute http(s) URLs pass through unchanged. #}
+{% set _asset_origin = (brand_data.preview_url if brand_data.preview_url else '') %}
+{% if not _asset_origin and brand_data.domain %}
+  {% if brand_data.domain.startswith('http://') or brand_data.domain.startswith('https://') %}
+    {% set _asset_origin = brand_data.domain %}
+  {% else %}
+    {% set _asset_origin = ('http://' if 'lvh.me' in brand_data.domain or 'localhost' in brand_data.domain else 'https://') ~ brand_data.domain %}
+  {% endif %}
+{% endif %}
+{% if not _asset_origin and brand_data.slug %}
+  {% set _asset_origin = 'http://' ~ brand_data.slug ~ '.lvh.me:3000' %}
+{% endif %}
+{% set _asset_origin = _asset_origin.rstrip('/') if _asset_origin else '' %}
+{% macro asset_url(path) -%}
+{%- if not path -%}{%- elif path.startswith('http://') or path.startswith('https://') or path.startswith('data:') -%}{{ path }}{%- elif _asset_origin and path.startswith('/') -%}{{ _asset_origin }}{{ path }}{%- else -%}{{ path }}{%- endif -%}
+{%- endmacro %}
+<script>
+  // Same-origin resolution for client-side preview (used by clearFile/
+  // appendCacheBust path). Mirrors the asset_url() Jinja macro above so that
+  // relative asset paths (/images/...) load from the brand's Next.js origin
+  // instead of the Flask editor's localhost:5000.
+  window.__BRAND_ASSET_ORIGIN__ = "{{ _asset_origin | e }}";
+</script>
 <div class="dashboard-section">
     <!-- Page Header -->
     <div class="section-header">
@@ -149,8 +175,8 @@
                                         <p class="file-upload-text">Click to upload or drag and drop</p>
                                         <p class="file-upload-subtitle">PNG, JPG, GIF, SVG (max. 16MB)</p>
                                     </div>
-                                    <div class="file-upload-preview" id="logoPreview" style="display: none;">
-                                        <img src="" alt="Logo preview" class="preview-image">
+                                    <div class="file-upload-preview" id="logoPreview" style="{% if brand_data.logo %}display: flex;{% else %}display: none;{% endif %}">
+                                        <img src="{{ asset_url(brand_data.logo) }}" alt="Logo preview" class="preview-image">
                                         <button type="button" class="remove-file" onclick="clearFile('logoFile')">×</button>
                                     </div>
                                 </div>
@@ -169,8 +195,8 @@
                                         <p class="file-upload-text">Click to upload or drag and drop</p>
                                         <p class="file-upload-subtitle">PNG, ICO (max. 16MB)</p>
                                     </div>
-                                    <div class="file-upload-preview" id="faviconPreview" style="display: none;">
-                                        <img src="" alt="Favicon preview" class="preview-image">
+                                    <div class="file-upload-preview" id="faviconPreview" style="{% if brand_data.favicon %}display: flex;{% else %}display: none;{% endif %}">
+                                        <img src="{{ asset_url(brand_data.favicon) }}" alt="Favicon preview" class="preview-image">
                                         <button type="button" class="remove-file" onclick="clearFile('faviconFile')">×</button>
                                     </div>
                                 </div>
@@ -189,8 +215,8 @@
                                         <p class="file-upload-text">Click to upload or drag and drop</p>
                                         <p class="file-upload-subtitle">PNG, JPG, GIF, SVG (max. 16MB)</p>
                                     </div>
-                                    <div class="file-upload-preview" id="heroImagePreview" style="display: none;">
-                                        <img src="" alt="Hero image preview" class="preview-image">
+                                    <div class="file-upload-preview" id="heroImagePreview" style="{% if brand_data.heroImage %}display: flex;{% else %}display: none;{% endif %}">
+                                        <img src="{{ asset_url(brand_data.heroImage) }}" alt="Hero image preview" class="preview-image">
                                         <button type="button" class="remove-file" onclick="clearFile('heroImageFile')">×</button>
                                     </div>
                                 </div>
@@ -682,7 +708,9 @@
                 </svg>
                 Update Brand
             </button>
-            <button type="button" class="btn btn-secondary" id="previewBtn">
+            <button type="button" class="btn btn-secondary" id="previewBtn"
+                data-preview-url="{{ brand_data.preview_url or brand_data.domain or '' }}"
+                data-brand-slug="{{ brand_data.slug or '' }}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                     <circle cx="12" cy="12" r="3"></circle>
@@ -1602,15 +1630,47 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(result => {
                 if (result.success) {
                     showAlert('Brand updated successfully!', 'success');
-                    // Force a hard refresh to update cached brand data and images
+                    // After an asset upload we need TWO things to happen:
+                    //  1. The editor refreshes so the new file path / hidden
+                    //     input value renders for the next edit.
+                    //  2. The preview tab (if the user has one open) reloads
+                    //     against a cache-buster so the new image is picked up.
                     setTimeout(() => {
-                        // Check if we have logo/favicon updates that need cache busting
-                        const hasImageUpdates = formData.has('logoFile') || formData.has('faviconFile') || formData.has('heroImageFile');
+                        const hasImageUpdates = formData.has('logoFile')
+                            || formData.has('faviconFile')
+                            || formData.has('heroImageFile');
+
                         if (hasImageUpdates) {
-                            // Force hard refresh to clear image cache and brand data
+                            // Try to refresh any preview tab opened from this
+                            // editor (window.open named target). Falls back
+                            // silently if the tab was closed or never opened.
+                            try {
+                                const slug = (previewBtn && previewBtn.getAttribute('data-brand-slug')) || '';
+                                const winName = `brandstudio-preview-${slug || 'default'}`;
+                                let previewTarget = (previewBtn && previewBtn.getAttribute('data-preview-url')) || '';
+                                if (!previewTarget && slug) {
+                                    previewTarget = `http://${slug}.lvh.me:3000`;
+                                }
+                                if (previewTarget) {
+                                    if (!/^https?:\/\//i.test(previewTarget)) {
+                                        previewTarget = (previewTarget.includes('lvh.me') || previewTarget.includes('localhost'))
+                                            ? `http://${previewTarget}`
+                                            : `https://${previewTarget}`;
+                                    }
+                                    const sep = previewTarget.includes('?') ? '&' : '?';
+                                    const refreshUrl = `${previewTarget}${sep}v=${Date.now()}`;
+                                    const previewRef = window.open(refreshUrl, winName, 'noopener,noreferrer');
+                                    if (previewRef && typeof previewRef.focus === 'function') {
+                                        previewRef.focus();
+                                    }
+                                }
+                            } catch (e) {
+                                console.warn('preview refresh skipped:', e);
+                            }
+                            // Reload the editor itself so the hidden inputs
+                            // pick up the new server-side asset paths.
                             window.location.reload();
                         } else {
-                            // Regular redirect for non-image updates
                             window.location.href = '/dashboard';
                         }
                     }, 2000);
@@ -1629,12 +1689,43 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Preview button functionality
+    // Preview button: open the brand's live preview URL in a new tab,
+    // cache-busted so any newly-uploaded assets render fresh.
     const previewBtn = document.getElementById('previewBtn');
     if (previewBtn) {
-        previewBtn.addEventListener('click', function() {
-            // This would open a preview window or modal
-            showAlert('Preview functionality coming soon!', 'info');
+        previewBtn.addEventListener('click', function () {
+            let target = previewBtn.getAttribute('data-preview-url') || '';
+            const slug = previewBtn.getAttribute('data-brand-slug') || '';
+
+            // Sane fallback: if no preview_url + no domain, use lvh.me locally.
+            if (!target && slug) {
+                target = `http://${slug}.lvh.me:3000`;
+            }
+            if (!target) {
+                showAlert('No preview URL configured for this brand.', 'error');
+                return;
+            }
+
+            // Force https:// or http:// scheme — domain field is sometimes
+            // stored bare (carmax.lvh.me).
+            if (!/^https?:\/\//i.test(target)) {
+                target = (target.includes('lvh.me') || target.includes('localhost'))
+                    ? `http://${target}`
+                    : `https://${target}`;
+            }
+
+            // Cache-buster: append ?v=<timestamp> so the browser refetches HTML,
+            // CSS, and image references that reuse the same path.
+            const sep = target.includes('?') ? '&' : '?';
+            const url = `${target}${sep}v=${Date.now()}`;
+
+            // Reuse the same tab if a preview window is already open for
+            // this brand — that way back-to-back saves refresh the same view.
+            const winName = `brandstudio-preview-${slug || 'default'}`;
+            const previewWin = window.open(url, winName, 'noopener,noreferrer');
+            if (previewWin && typeof previewWin.focus === 'function') {
+                previewWin.focus();
+            }
         });
     }
 });
@@ -2509,11 +2600,15 @@ function loadExistingImage(fieldName) {
             uploadContent.style.display = 'none';
             previewContainer.style.display = 'flex';
         } else {
-            // Handle existing images
+            // Handle existing images. Brand assets are served by the Next.js
+            // dev server (e.g. carmax.lvh.me:3000), NOT by the Flask editor at
+            // localhost:5000. Resolve relative paths against the brand's
+            // preview origin so the <img> actually loads.
             const previewImage = previewContainer.querySelector('.preview-image');
             if (previewImage) {
                 const isAbsolute = /^https?:\/\//i.test(hiddenInput.value);
-                const base = window.location.origin;
+                const base = (window.__BRAND_ASSET_ORIGIN__ || '').replace(/\/+$/, '')
+                    || window.location.origin;
                 const rawSrc = isAbsolute ? hiddenInput.value : `${base}${hiddenInput.value}`;
                 previewImage.src = appendCacheBust(rawSrc);
                 uploadContent.style.display = 'none';
