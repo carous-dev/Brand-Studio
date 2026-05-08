@@ -1,5 +1,6 @@
 import { apiUrl } from '../lib/api'
 import { normalizeInventoryItem, type InventoryVehicle } from '../lib/inventory'
+import { getBrandSlugFromRequest } from '../lib/brand-slug.server'
 import styles from './DirectorySection.module.css'
 
 const INVENTORY_PAGE_SIZE = 200
@@ -21,8 +22,10 @@ function normalizeLabel(value: unknown) {
 }
 
 async function fetchInventoryPage(page: number) {
+  const brand = await getBrandSlugFromRequest()
+  const brandQuery = brand ? `&brand=${encodeURIComponent(brand)}` : ''
   const response = await fetch(
-    apiUrl(`/inventory?page=${page}&per_page=${INVENTORY_PAGE_SIZE}&light=1&vehicle_type=car&stock_status=in_stock`),
+    apiUrl(`/inventory?page=${page}&per_page=${INVENTORY_PAGE_SIZE}&light=1&vehicle_type=car&stock_status=in_stock${brandQuery}`),
     { cache: 'no-store' }
   )
 

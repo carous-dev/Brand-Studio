@@ -1,6 +1,7 @@
 import LatestArrivalsSectionClient from "./LatestArrivalsSectionClient"
 import { apiUrl } from "../lib/api"
 import { normalizeInventoryItem, type InventoryVehicle } from "../lib/inventory"
+import { getBrandSlugFromRequest } from "../lib/brand-slug.server"
 
 const normalizeItems = (data: unknown): unknown[] => {
   if (Array.isArray(data)) return data
@@ -14,7 +15,9 @@ const normalizeItems = (data: unknown): unknown[] => {
 
 async function getLatestArrivals(): Promise<InventoryVehicle[]> {
   try {
-    const response = await fetch(apiUrl("/featured-vehicles?sort=price_desc"), { cache: "no-store" })
+    const brand = await getBrandSlugFromRequest()
+    const brandQuery = brand ? `&brand=${encodeURIComponent(brand)}` : ""
+    const response = await fetch(apiUrl(`/featured-vehicles?sort=price_desc${brandQuery}`), { cache: "no-store" })
     if (!response.ok) return []
 
     const contentType = response.headers.get("content-type") || ""

@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import styles from './page.module.css'
 import { useGarage, type SavedVehicle } from '../../context/GarageContext'
+import { useBrand } from '../../context/BrandClientWrapper'
 import { apiUrl } from '../../lib/api'
 import { normalizeInventoryItem, type InventoryMeta, type InventoryVehicle } from '../../lib/inventory'
 import { buildVehiclePermalink } from '../../lib/vehicle-links'
@@ -119,6 +120,8 @@ export default function UsedCarsClient({
   initialMeta?: InventoryMeta | null
 }) {
   const { toggleWishlist, toggleCompare, isWishlisted, isCompared } = useGarage()
+  const brand = useBrand()
+  const brandSlug = (brand?.slug || '').trim()
   const skipInitialFetchRef = useRef(Boolean(initialMeta || initialVehicles.length))
   const skipPageResetRef = useRef({ skip: true, suppressNext: false, initialUrlParams: new Set<string>() })
   const lastQueryRef = useRef<string | null>(null)
@@ -442,6 +445,7 @@ export default function UsedCarsClient({
         if (maxMileage) params.set('max_mileage', maxMileage)
         params.set('vehicle_type', 'car')
         params.set('stock_status', 'in_stock')
+        if (brandSlug) params.set('brand', brandSlug)
 
         const query = params.toString()
         if (lastQueryRef.current === query) {
@@ -526,7 +530,8 @@ export default function UsedCarsClient({
     sort,
     priceBounds,
     yearBounds,
-    perPage
+    perPage,
+    brandSlug
   ])
 
   useEffect(() => {

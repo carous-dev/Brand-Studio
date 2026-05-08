@@ -1,6 +1,7 @@
 import { apiUrl } from '../../lib/api'
 import UsedCarsClient from './UsedCarsClient'
 import { normalizeInventoryItem, type InventoryMeta, type InventoryVehicle } from '../../lib/inventory'
+import { getBrandSlugFromRequest } from '../../lib/brand-slug.server'
 import type { ThemePageProps } from '../../../types'
 
 type UsedCarsRuntimeProps = ThemePageProps & {
@@ -60,6 +61,9 @@ export async function SpringallsUsedCarsPage({ searchParams }: UsedCarsRuntimePr
     if (!params.has('sort')) params.set('sort', 'price_desc')
     params.set('vehicle_type', 'car')
     params.set('stock_status', 'in_stock')
+
+    const brand = await getBrandSlugFromRequest()
+    if (brand) params.set('brand', brand)
 
     const url = apiUrl(`/inventory?${params.toString()}`)
     const res = await fetch(url, { cache: 'no-store' })

@@ -473,7 +473,19 @@ async function fetchVehicleFromTarget(target: string, signal: AbortSignal): Prom
   }
 }
 
-async function fetchVehicleByLookupValue(value: string, signal: AbortSignal): Promise<VehicleDetailsPayload | null> {
+function appendBrand(target: string, brand?: string | null): string {
+  if (!target) return target;
+  const slug = (brand || "").trim();
+  if (!slug) return target;
+  const separator = target.includes("?") ? "&" : "?";
+  return `${target}${separator}brand=${encodeURIComponent(slug)}`;
+}
+
+async function fetchVehicleByLookupValue(
+  value: string,
+  signal: AbortSignal,
+  brand?: string | null,
+): Promise<VehicleDetailsPayload | null> {
   const trimmed = value.trim();
   if (!trimmed) return null;
 
@@ -483,7 +495,7 @@ async function fetchVehicleByLookupValue(value: string, signal: AbortSignal): Pr
       candidate.reg ? apiUrl(`/vehicle?slug=${encodeURIComponent(candidate.reg)}`) : '',
       candidate.slug ? apiUrl(`/vehicle/${encodeURIComponent(candidate.slug)}`) : '',
       candidate.reg ? apiUrl(`/vehicle/${encodeURIComponent(candidate.reg)}`) : '',
-    ].filter(Boolean);
+    ].filter(Boolean).map((target) => appendBrand(target, brand));
 
     for (const target of targets) {
       const resolved = await fetchVehicleFromTarget(target, signal);
@@ -515,6 +527,7 @@ function inventoryMatchScore(item: { slug?: string; title: string }, candidate: 
 async function fetchVehiclePayloadFromInventoryFallback(
   slugCandidates: string[],
   signal: AbortSignal,
+  brand?: string | null,
 ): Promise<VehicleDetailsPayload | null> {
   for (const candidate of slugCandidates) {
     const queryCandidates = unique([candidate, candidate.replace(/-/g, " ").trim()]);
@@ -530,6 +543,8 @@ async function fetchVehiclePayloadFromInventoryFallback(
         light: "1",
         vehicle_type: "car",
       });
+      const brandSlug = (brand || "").trim();
+      if (brandSlug) params.set("brand", brandSlug);
 
       const target = apiUrl(`/inventory?${params.toString()}`);
       let payload: any = null;
@@ -571,7 +586,7 @@ async function fetchVehiclePayloadFromInventoryFallback(
 
       const lookupValues = unique([bestMatch.item.slug ?? "", bestMatch.item.id]);
       for (const lookupValue of lookupValues) {
-        const resolved = await fetchVehicleByLookupValue(lookupValue, signal);
+        const resolved = await fetchVehicleByLookupValue(lookupValue, signal, brand);
         if (resolved) return resolved;
       }
     }
@@ -580,7 +595,11 @@ async function fetchVehiclePayloadFromInventoryFallback(
   return null;
 }
 
-async function fetchVehiclePayloadBySlug(slug: string, signal: AbortSignal): Promise<VehicleDetailsPayload | null> {
+async function fetchVehiclePayloadBySlug(
+  slug: string,
+  signal: AbortSignal,
+  brand?: string | null,
+): Promise<VehicleDetailsPayload | null> {
   const normalizedSlug = slug.trim();
   if (!normalizedSlug) return null;
 
@@ -600,11 +619,11 @@ async function fetchVehiclePayloadBySlug(slug: string, signal: AbortSignal): Pro
   ]);
 
   for (const candidate of slugCandidates) {
-    const resolved = await fetchVehicleByLookupValue(candidate, signal);
+    const resolved = await fetchVehicleByLookupValue(candidate, signal, brand);
     if (resolved) return resolved;
   }
 
-  return fetchVehiclePayloadFromInventoryFallback(slugCandidates, signal);
+  return fetchVehiclePayloadFromInventoryFallback(slugCandidates, signal, brand);
 }
 
 const SWIPE_THRESHOLD = 42;
@@ -852,7 +871,7 @@ export function SpringallsVehicleDetailPage() {
       setVehicleLoadError(null);
 
       try {
-        const nextVehicle = await fetchVehiclePayloadBySlug(slug, controller.signal);
+        const nextVehicle = await fetchVehiclePayloadBySlug(slug, controller.signal, __brand?.slug);
         if (!isMounted) return;
         if (!nextVehicle) {
           setVehicleData(null);
