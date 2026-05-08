@@ -2,6 +2,16 @@
 
 Newest entry at the top. One entry per logical change, not per file.
 
+- 2026-05-08: /update/<slug> — theme picker is a real `<select>` instead of a read-only text field (owner: Difatha)
+  - Scope: `app.py` (`update_preview_page` + new `_load_theme_manifest` helper); `templates/update.html` (Theme form-group + populateFormFields JS).
+  - Reason: Previously the Theme field was a `readonly` `<input>` with the active theme id and the actual `themeId` lived in a hidden input — operators couldn't switch themes without editing JSON. Three themes are now registered (`classic-dealer`, `gilded-drive`, `springalls-classic`) so picking between them is a routine action.
+  - Applied:
+    - `_load_theme_manifest()` reads `theme/theme-manifest.json` and returns the list of `{id, name, status}` entries (falls back to `[{id:'classic-dealer'}]` on failure). Result passed to the template as `available_themes`.
+    - Form group rebuilt as `<select id="themeId" name="themeId">` with the current theme `selected`. Non-stable themes get a `(experimental)` suffix in their option label.
+    - Removed the duplicate hidden `themeId` input — the select now carries the value posted to `/api/brands/<slug>/update`.
+    - `populateFormFields` updated: `setFieldValue('themeDisplay', …)` → `setFieldValue('themeId', …)` (works on `<select>` because `el.value = 'classic-dealer'` matches the option).
+  - Verified: `py_compile` clean on `app.py`. POST contract unchanged — backend still receives `themeId=<id>` exactly as before.
+
 - 2026-05-08: classic-dealer — fix topbar contrast, surface phone/mail/social icons, drop preview-banner box-shadow (owner: Difatha)
   - Scope: `app/themes/classic-dealer/styles/{header.css,preview-banner.css}`. Header.tsx markup unchanged — icons (Phone, Mail, Facebook, Instagram, Twitter, LinkedIn, Youtube) were already in JSX but invisible.
   - Reason: Carmax Hanwell preview shows the topbar as a bright-blue strip with text barely readable and no icons rendering — `--accent-primary` resolved to the same blue as the bar bg, so icons disappeared into the background. Box-shadow on the preview banner was also a leftover that the user wanted gone.

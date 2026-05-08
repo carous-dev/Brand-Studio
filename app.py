@@ -2445,6 +2445,21 @@ def generate_brand_via_ai():
         _release_ai_lock()
 
 
+def _load_theme_manifest():
+    """Read theme/theme-manifest.json and return the list of theme entries."""
+    manifest_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'theme', 'theme-manifest.json')
+    try:
+        with open(manifest_path, 'r', encoding='utf-8') as fh:
+            data = json.load(fh) or {}
+        themes = data.get('themes') or []
+        if not isinstance(themes, list):
+            themes = []
+        return [t for t in themes if isinstance(t, dict) and t.get('id')]
+    except Exception as exc:
+        print(f'[THEME_MANIFEST] failed to load: {exc}')
+        return [{'id': 'classic-dealer', 'name': 'Classic Dealer'}]
+
+
 @app.route('/update/<slug>')
 @auth_manager.login_required
 def update_preview_page(slug):
@@ -2455,7 +2470,12 @@ def update_preview_page(slug):
         return render_template('404.html', message=f'Preview {slug} not found'), 404
 
     preview_data.setdefault('edit_mode', True)
-    return render_template('update.html', preview_data=preview_data, brand_data=preview_data)
+    return render_template(
+        'update.html',
+        preview_data=preview_data,
+        brand_data=preview_data,
+        available_themes=_load_theme_manifest(),
+    )
 
 
 @app.route('/api/extract-website', methods=['POST'])

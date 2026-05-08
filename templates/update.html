@@ -127,14 +127,15 @@
                         </div>
                         <div class="form-grid two-columns">
                             <div class="form-group">
-                                <label for="themeDisplay">Theme</label>
-                                <input
-                                    type="text"
-                                    id="themeDisplay"
-                                    value="{{ brand_data.theme.id if brand_data.theme and brand_data.theme.id else (brand_data.themeId if brand_data.themeId else 'classic-dealer') }}"
-                                    readonly
-                                    aria-readonly="true"
-                                >
+                                <label for="themeId">Theme</label>
+                                {% set current_theme_id = (brand_data.theme.id if brand_data.theme and brand_data.theme.id else (brand_data.themeId if brand_data.themeId else 'classic-dealer')) %}
+                                <select id="themeId" name="themeId">
+                                    {% for theme in available_themes %}
+                                        <option value="{{ theme.id }}" {% if theme.id == current_theme_id %}selected{% endif %}>
+                                            {{ theme.name or theme.id }}{% if theme.status and theme.status != 'stable' %} ({{ theme.status }}){% endif %}
+                                        </option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="aaApprovedDealer">AA Approved</label>
@@ -536,7 +537,6 @@
                         <input type="hidden" id="fontUi" name="fontUi" value="{{ brand_data.theme.fonts.ui if brand_data.theme and brand_data.theme.fonts and brand_data.theme.fonts.ui else 'Inter, system-ui, sans-serif' }}">
                         <input type="hidden" id="fontBrand" name="fontBrand" value="{{ brand_data.theme.fonts.brand if brand_data.theme and brand_data.theme.fonts and brand_data.theme.fonts.brand else 'Lora, serif' }}">
                         <input type="hidden" id="fontMono" name="fontMono" value="{{ brand_data.theme.fonts.mono if brand_data.theme and brand_data.theme.fonts and brand_data.theme.fonts.mono else 'JetBrains Mono, Consolas, monospace' }}">
-                        <input type="hidden" id="themeId" name="themeId" value="{{ brand_data.theme.id if brand_data.theme and brand_data.theme.id else 'classic-dealer' }}">
 
                         <div class="form-grid three-columns" id="customFontInputs" style="display:none;">
                             <div class="form-group">
@@ -2032,7 +2032,7 @@ function populateFormFields(brand) {
     setFieldValue('name', brand.name);
     setFieldValue('tagline', brand.tagline);
     setFieldValue('domain', brand.domain);
-    setFieldValue('themeDisplay', brand.themeId || brand.theme?.id || brand.theme?.themeId || 'classic-dealer');
+    setFieldValue('themeId', brand.themeId || brand.theme?.id || brand.theme?.themeId || 'classic-dealer');
     setCheckboxValue('aaApprovedDealer', brand.aaApprovedDealer ?? brand.aa_approved_dealer);
     setFieldValue('logo', brand.logo);
     setFieldValue('favicon', brand.favicon);
