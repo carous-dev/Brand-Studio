@@ -14,11 +14,47 @@
   box-shadow: 0 14px 30px rgba(37, 211, 102, 0.4);
   z-index: 1900;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: springalls-whatsapp-fab-pulse 2.6s ease-out infinite;
+}
+
+[data-theme-id='springalls-classic'] .springalls-whatsapp-fab::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  z-index: -1;
+  animation: springalls-whatsapp-ring 2.6s ease-out infinite;
+  pointer-events: none;
 }
 
 [data-theme-id='springalls-classic'] .springalls-whatsapp-fab:hover {
   transform: translateY(-2px);
   box-shadow: 0 18px 38px rgba(37, 211, 102, 0.5);
+  animation-play-state: paused;
+}
+
+[data-theme-id='springalls-classic'] .springalls-whatsapp-fab:hover::before {
+  animation-play-state: paused;
+}
+
+@keyframes springalls-whatsapp-fab-pulse {
+  0%   { box-shadow: 0 14px 30px rgba(37, 211, 102, 0.4), 0 0 0 0 rgba(37, 211, 102, 0.55); }
+  60%  { box-shadow: 0 14px 30px rgba(37, 211, 102, 0.4), 0 0 0 18px rgba(37, 211, 102, 0); }
+  100% { box-shadow: 0 14px 30px rgba(37, 211, 102, 0.4), 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+@keyframes springalls-whatsapp-ring {
+  0%   { transform: scale(1); opacity: 0.55; }
+  70%  { transform: scale(1.55); opacity: 0; }
+  100% { transform: scale(1.55); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme-id='springalls-classic'] .springalls-whatsapp-fab,
+  [data-theme-id='springalls-classic'] .springalls-whatsapp-fab::before {
+    animation: none;
+  }
 }
 
 [data-theme-id='springalls-classic'] .springalls-whatsapp-status {

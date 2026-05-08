@@ -1,0 +1,68 @@
+[data-theme-id='springalls-classic'] .springalls-preview-banner {
+  position: relative;
+  z-index: 50;
+  background: var(--color-primary);
+  color: #ffffff;
+  font-size: 0.86rem;
+  line-height: 1.4;
+  border-bottom: 1px solid color-mix(in srgb, #000 12%, var(--color-primary));
+}
+
+[data-theme-id='springalls-classic'] .springalls-preview-banner-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 9px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+[data-theme-id='springalls-classic'] .springalls-preview-banner-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+[data-theme-id='springalls-classic'] .springalls-preview-banner-text {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 500;
+}
+
+[data-theme-id='springalls-classic'] .springalls-preview-banner-text strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+[data-theme-id='springalls-classic'] .springalls-preview-banner-text a {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+}
+
+[data-theme-id='springalls-classic'] .springalls-preview-banner-text a:hover {
+  text-decoration-thickness: 2px;
+}
+
+@media (max-width: 640px) {
+  [data-theme-id='springalls-classic'] .springalls-preview-banner-inner {
+    padding: 8px 14px;
+    gap: 8px;
+  }
+
+  [data-theme-id='springalls-classic'] .springalls-preview-banner-text {
+    font-size: 0.8rem;
+  }
+}

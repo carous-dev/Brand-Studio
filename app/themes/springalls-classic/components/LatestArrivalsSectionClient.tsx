@@ -191,7 +191,7 @@ export default function LatestArrivalsSectionClient({ vehicles }: { vehicles: In
   if (!arrivals.length) return null
 
   return (
-    <section className={styles.section} aria-labelledby="latest-arrivals-title">
+    <section className={styles.section} aria-labelledby="latest-arrivals-title" data-aos="fade-up">
       <div className={styles.sectionInner}>
         <div className={styles.header}>
           <p className={styles.eyebrow}>Latest Arrivals</p>

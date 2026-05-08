@@ -81,7 +81,7 @@ export default function DirectorySection({
   const dealershipName = brandName || 'Springalls Car Sales'
 
   return (
-    <section className={styles.section} aria-labelledby="directory-title">
+    <section className={styles.section} aria-labelledby="directory-title" data-aos="fade-up">
       <div className={styles.inner}>
         <h2 id="directory-title" className={styles.title}>Vehicles for Sale in {region}</h2>
         <p className={styles.subtitle}>

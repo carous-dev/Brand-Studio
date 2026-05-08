@@ -34,7 +34,7 @@ export default function TrustSignalsSection() {
   const county = brand?.location?.address?.county || 'Berkshire'
 
   return (
-    <section className={styles.section} aria-labelledby="trust-signals-title">
+    <section className={styles.section} aria-labelledby="trust-signals-title" data-aos="fade-up">
       <div className={styles.inner}>
         <p id="trust-signals-title" className={styles.lead}>
           All our stock is privately bought, checked, and tested so you can buy with confidence from {name} in {city}

@@ -99,7 +99,7 @@ export default function ReviewsSection() {
   const brandName = brand?.name || 'Springalls Car Sales'
 
   return (
-    <section className={styles.reviews}>
+    <section className={styles.reviews} data-aos="fade-up">
       <div className={styles.reviewsInner}>
         <p className={styles.reviewsEyebrow}>Verified customer feedback from {brandName} buyers</p>
         <h2 className={styles.reviewsTitle}>Customer Reviews</h2>

@@ -34,7 +34,7 @@ const SERVICES = [
 
 export default function ServicesSection() {
   return (
-    <section className={styles.services}>
+    <section className={styles.services} data-aos="fade-up">
       <div className={styles.servicesInner}>
         <div className={styles.servicesGrid}>
           {SERVICES.map((service) => (

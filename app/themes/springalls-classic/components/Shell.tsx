@@ -8,6 +8,8 @@ import Header from './Header'
 import Footer from './Footer'
 import CookieBanner from './CookieBanner'
 import WhatsAppEnquiry from './WhatsAppEnquiry'
+import PreviewBanner from './PreviewBanner'
+import AosProvider from './AosProvider'
 
 import '../styles/base.css'
 import '../styles/color-policy.css'
@@ -17,6 +19,8 @@ import '../styles/cookie.css'
 import '../styles/hero.css'
 import '../styles/sections.css'
 import '../styles/whatsapp.css'
+import '../styles/preview-banner.css'
+import '../styles/aos.css'
 
 const KNOWN_ROUTES = new Set([
   '/',
@@ -54,6 +58,8 @@ export function SpringallsShell({ children }: { children: ReactNode }) {
 
   return (
     <GarageProvider brandSlug={brand?.slug || 'default'}>
+      <AosProvider />
+      <PreviewBanner />
       <Header />
       <main id="content" role="main" className="springalls-main">
         {children}

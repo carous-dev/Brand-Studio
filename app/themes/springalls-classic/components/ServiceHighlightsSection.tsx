@@ -35,7 +35,7 @@ export default function ServiceHighlightsSection() {
   const postcode = brand?.location?.address?.postcode || 'RG2 6UB'
 
   return (
-    <section className={styles.section} aria-labelledby="service-highlights-title">
+    <section className={styles.section} aria-labelledby="service-highlights-title" data-aos="fade-up">
       <div className={styles.topBar}>
         <div className={styles.topBarContent}>
           <div className={styles.topBarInner}>
