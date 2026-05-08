@@ -3701,6 +3701,7 @@ def update_brand(slug):
             'email',
             'api',
             'theme',
+            'themeId',
             'aaApprovedDealer',
         )
         for key in overwrite_keys:

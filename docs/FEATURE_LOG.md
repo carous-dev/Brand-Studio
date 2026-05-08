@@ -12,6 +12,12 @@ Newest entry at the top. One entry per logical change, not per file.
     - `populateFormFields` updated: `setFieldValue('themeDisplay', …)` → `setFieldValue('themeId', …)` (works on `<select>` because `el.value = 'classic-dealer'` matches the option).
   - Verified: `py_compile` clean on `app.py`. POST contract unchanged — backend still receives `themeId=<id>` exactly as before.
 
+- 2026-05-08: /update/<slug> — fix theme switch not persisting (top-level `themeId` left stale after merge) (owner: Difatha)
+  - Scope: `app.py` `update_brand` flat-payload merge.
+  - Reason: `update_brand` does `merged = deep_merge(brand_from_form, existing)` (existing wins on collisions) and then forcibly overwrites a whitelist of keys from `brand_from_form`. The whitelist included `'theme'` (so `theme.id` was correctly updated) but NOT `'themeId'`, so the top-level `themeId` field stayed at its old value. On reload, `normalize_theme_selection` in `backend/services/preview.py` reads `config.get('themeId')` **first** in its priority chain — when that's stale, it then *overwrites* `theme.id` and `theme.themeId` with the old value. Net effect: every theme switch from the new `<select>` got silently reverted.
+  - Applied: added `'themeId'` to the `overwrite_keys` tuple alongside `'theme'`. Both the nested `theme.id` and the top-level `themeId` are now overwritten from the form payload, so the load-side normaliser sees the new value as the source of truth.
+  - Verification: `py_compile` clean. The select now persists across reloads — set theme = gilded-drive, save → /dashboard, reopen /update/<slug> → option still selected.
+
 - 2026-05-08: gilded-drive — scope `.contact-bar` / `.contact-item` / `.social-link` so its `stroke: none` can't blank classic-dealer's icons (owner: Difatha)
   - Scope: `app/themes/gilded-drive/styles/base.css` lines ~44–185 + their two `@media` blocks.
   - Reason: Same theme-bleed pattern as the preview-banner shadow. Gilded-drive's contact bar block ships `.contact-item svg { stroke: none; color: var(--contact-text); }` and `.social-link svg { stroke: none; }` with **unscoped** selectors. Specificity `(0,2,0)` matches classic-dealer's `:where(body[data-theme-id="classic-dealer"]) .contact-item svg` (which is also `(0,2,0)` because `:where()` adds 0), so source order decides. When gilded-drive's bundle loaded after classic-dealer's, every Phone/Mail/Facebook/Instagram/etc. icon went transparent — matched the user's "icons not visible" report exactly.
