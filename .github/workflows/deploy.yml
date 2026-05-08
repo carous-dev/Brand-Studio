@@ -77,11 +77,9 @@ jobs:
               fi
             fi
 
-            # Python venv lives OUTSIDE the project tree. Turbopack scans the
-            # project filesystem at build time and panics if it finds the
-            # `venv/bin/python` symlink (target is "out of the filesystem"
-            # relative to the project root). Putting venv at /home/brandstudio-venv
-            # keeps the runtime interpreter intact while staying invisible to Next.
+            # Python venv lives OUTSIDE the project tree so the Next dev runtime
+            # never has to walk through it (Turbopack panics on venv-internal
+            # symlinks pointing at the system Python interpreter).
             if [ ! -d "${VENV_DIR}" ]; then
               python3 -m venv "${VENV_DIR}"
               python_changed=1
@@ -100,16 +98,13 @@ jobs:
               echo "Skipping pip install; requirements.txt unchanged since ${last_deploy_ref}"
             fi
 
-            # Node deps (Next.js)
+            # Node deps (Next.js runtime — this app is served by `next dev`,
+            # not a production build, so we install but don't build).
             if [ "${node_changed}" = "1" ]; then
               npm ci
             else
               echo "Skipping npm ci; package.json + lockfile unchanged since ${last_deploy_ref}"
             fi
-
-            # Always rebuild Next.js — CSS module hashes change every theme edit
-            # and Turbopack output for the dealer-site template needs refreshing.
-            npm run build
 
             # Restart both PM2 processes. If a process doesn't exist yet (first
             # deploy of a name), `pm2 restart` errors — fall through to start.
