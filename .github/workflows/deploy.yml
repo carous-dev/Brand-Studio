@@ -35,8 +35,17 @@ jobs:
             DEPLOY_DIR=/home/brandstudio
             REPO_URL=https://github.com/carous-dev/Brand-Studio.git
 
-            if [ ! -d "${DEPLOY_DIR}/.git" ]; then
+            # If the directory exists but isn't a git checkout (manual upload,
+            # earlier failed clone, etc.), initialise it in place and force-pull
+            # so we don't trash whatever's already there.
+            if [ ! -d "${DEPLOY_DIR}" ]; then
               git clone "${REPO_URL}" "${DEPLOY_DIR}"
+            elif [ ! -d "${DEPLOY_DIR}/.git" ]; then
+              cd "${DEPLOY_DIR}"
+              git init
+              git remote add origin "${REPO_URL}" 2>/dev/null || git remote set-url origin "${REPO_URL}"
+              git fetch origin main
+              git checkout -f -B main origin/main
             fi
             cd "${DEPLOY_DIR}"
             git remote set-url origin "${REPO_URL}"
