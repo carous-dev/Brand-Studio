@@ -4,6 +4,7 @@ name: Deploy
 # The script pulls, updates Python + Node deps only when their lockfiles
 # changed since the last successful deploy, rebuilds the Next.js app, then
 # restarts both PM2 processes (app-brandstudio = Next.js, brandstudio = Flask).
+# (re-trigger: 2026-05-08 — previous run timed out, retrying)
 
 on:
   push:
