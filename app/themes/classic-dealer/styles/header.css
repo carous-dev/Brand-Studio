@@ -14,14 +14,12 @@
   transition: var(--transition-base);
 }
 
-/* Contact Bar - Modern Top Bar */
+/* Contact Bar - brand-accent strip, white text + icons for guaranteed contrast across brands */
 :where(body[data-theme-id="classic-dealer"]) .contact-bar {
-  background: var(--bg-elevated);
-  border-bottom: 1px solid var(--border-subtle);
+  background: var(--brand-accent);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   padding: 6px 0;
   font-size: 13px;
-  backdrop-filter: blur(10px);
-  box-shadow: none;
 }
 
 :where(body[data-theme-id="classic-dealer"]) .contact-inner {
@@ -42,7 +40,7 @@
   display: flex;
   align-items: center;
   gap: var(--gap-sm);
-  color: var(--text-secondary);
+  color: #ffffff;
   text-decoration: none;
   transition: var(--transition-fast);
   font-family: var(--font-ui-family);
@@ -58,12 +56,13 @@
   left: 0;
   width: 0;
   height: 2px;
-  background: var(--accent-primary);
+  background: #ffffff;
   transition: var(--transition-base);
 }
 
 :where(body[data-theme-id="classic-dealer"]) .contact-item:hover {
-  color: var(--accent-primary);
+  color: #ffffff;
+  opacity: 0.9;
 }
 
 :where(body[data-theme-id="classic-dealer"]) .contact-item:hover::after {
@@ -71,7 +70,7 @@
 }
 
 :where(body[data-theme-id="classic-dealer"]) .contact-item svg {
-  stroke: var(--accent-primary);
+  stroke: #ffffff;
   transition: all 0.3s ease;
   width: 17px;
   height: 17px;
@@ -90,7 +89,7 @@
 }
 
 :where(body[data-theme-id="classic-dealer"]) .contact-right .hours {
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.92);
   font-family: var(--font-ui-family);
   font-weight: 600;
   font-size: 13px;
@@ -100,7 +99,7 @@
 :where(body[data-theme-id="classic-dealer"]) .social-links {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 :where(body[data-theme-id="classic-dealer"]) .social-link {
@@ -110,52 +109,30 @@
   width: 26px;
   height: 26px;
   border-radius: var(--radius-sm);
-  color: var(--brand-text);
+  color: #ffffff;
   text-decoration: none;
   transition: all var(--transition-fast);
   font-family: var(--font-ui);
-  background: transparent;
-  position: relative;
-  overflow: hidden;
-  border: none;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .social-link::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--brand-accent);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  z-index: -1;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 :where(body[data-theme-id="classic-dealer"]) .social-link:hover {
-  color: var(--brand-background);
-  border-color: var(--brand-accent);
-  background: var(--brand-accent);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(var(--brand-accent-rgb), 0.3);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .social-link:hover::before {
-  opacity: 1;
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
 }
 
 :where(body[data-theme-id="classic-dealer"]) .social-link svg {
-  stroke: currentColor;
-  transition: all 0.3s ease;
-  position: relative;
-  z-index: 1;
-  width: 17px;
-  height: 17px;
-  stroke-width: 1.5;
+  stroke: #ffffff;
+  transition: transform 0.3s ease;
+  width: 14px;
+  height: 14px;
+  stroke-width: 1.6;
 }
 
 :where(body[data-theme-id="classic-dealer"]) .social-link:hover svg {
-  stroke: var(--brand-background);
-  transform: scale(1.2);
-  stroke-width: 2;
+  transform: scale(1.15);
 }
 
 /* Main Navigation */

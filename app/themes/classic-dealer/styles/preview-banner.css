@@ -16,7 +16,6 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   z-index: 100000;
-  box-shadow: 0 2px 8px rgba(var(--brand-text-rgb), 0.3);
   border-bottom: 1px solid rgba(var(--brand-background-rgb), 0.1);
 }
 
