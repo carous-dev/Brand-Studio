@@ -1,0 +1,102 @@
+name: Deploy
+
+# Pushes to main trigger an SSH deploy onto the VPS at /home/brandstudio.
+# The script pulls, updates Python + Node deps only when their lockfiles
+# changed since the last successful deploy, rebuilds the Next.js app, then
+# restarts both PM2 processes (app-brandstudio = Next.js, brandstudio = Flask).
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          debug: true
+          timeout: 120s
+          command_timeout: 30m
+          script_stop: false
+          script: |
+            set -euxo pipefail
+
+            DEPLOY_DIR=/home/brandstudio
+            REPO_URL=https://github.com/carous-dev/Brand-Studio.git
+
+            if [ ! -d "${DEPLOY_DIR}/.git" ]; then
+              git clone "${REPO_URL}" "${DEPLOY_DIR}"
+            fi
+            cd "${DEPLOY_DIR}"
+            git remote set-url origin "${REPO_URL}"
+
+            if [ -n "$(git status --porcelain)" ]; then
+              git stash push -u -m "ci-cd-auto-stash-$(date +%s)"
+            fi
+            git fetch --prune
+            git checkout main
+            git pull --ff-only origin main
+
+            # Track the previous deploy SHA so we can skip dep installs when
+            # nothing relevant changed. Stored alongside the repo on the box.
+            LAST_DEPLOY_FILE="${DEPLOY_DIR}/.last-deploy"
+            last_deploy_ref=""
+            if [ -f "${LAST_DEPLOY_FILE}" ]; then
+              last_deploy_ref="$(tr -d '\n' < "${LAST_DEPLOY_FILE}")"
+            fi
+
+            python_changed=1
+            node_changed=1
+            if [ -n "${last_deploy_ref}" ] && git rev-parse --verify "${last_deploy_ref}" >/dev/null 2>&1; then
+              if ! git diff --name-only "${last_deploy_ref}..HEAD" -- requirements.txt | grep -q .; then
+                python_changed=0
+              fi
+              if ! git diff --name-only "${last_deploy_ref}..HEAD" -- package.json package-lock.json | grep -q .; then
+                node_changed=0
+              fi
+            fi
+
+            # Python venv (Flask backend)
+            if [ ! -d venv ]; then
+              python3 -m venv venv
+              python_changed=1
+            fi
+            # shellcheck disable=SC1091
+            . venv/bin/activate
+            python -m pip install --upgrade pip
+            if [ "${python_changed}" = "1" ]; then
+              pip install -r requirements.txt
+            else
+              echo "Skipping pip install; requirements.txt unchanged since ${last_deploy_ref}"
+            fi
+
+            # Node deps (Next.js)
+            if [ "${node_changed}" = "1" ]; then
+              npm ci
+            else
+              echo "Skipping npm ci; package.json + lockfile unchanged since ${last_deploy_ref}"
+            fi
+
+            # Always rebuild Next.js — CSS module hashes change every theme edit
+            # and Turbopack output for the dealer-site template needs refreshing.
+            npm run build
+
+            # Restart both PM2 processes. If a process doesn't exist yet (first
+            # deploy of a name), `pm2 restart` errors — fall through to start.
+            pm2 restart app-brandstudio || pm2 start ecosystem.config.cjs --only app-brandstudio || true
+            pm2 restart brandstudio     || pm2 start ecosystem.config.cjs --only brandstudio     || true
+            pm2 save
+
+            # Record this commit so the next deploy can do the dep-skip math
+            git rev-parse HEAD > "${LAST_DEPLOY_FILE}"
