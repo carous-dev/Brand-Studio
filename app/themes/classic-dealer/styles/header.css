@@ -14,10 +14,10 @@
   transition: var(--transition-base);
 }
 
-/* Contact Bar - brand-accent strip, white text + icons for guaranteed contrast across brands */
+/* Contact Bar - text/icons follow --brand-text so they always contrast with the brand's --bg-elevated */
 :where(body[data-theme-id="classic-dealer"]) .contact-bar {
-  background: var(--brand-accent);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-subtle);
   padding: 6px 0;
   font-size: 13px;
 }
@@ -40,7 +40,7 @@
   display: flex;
   align-items: center;
   gap: var(--gap-sm);
-  color: #ffffff;
+  color: var(--brand-text);
   text-decoration: none;
   transition: var(--transition-fast);
   font-family: var(--font-ui-family);
@@ -56,13 +56,13 @@
   left: 0;
   width: 0;
   height: 2px;
-  background: #ffffff;
+  background: var(--brand-text);
   transition: var(--transition-base);
 }
 
 :where(body[data-theme-id="classic-dealer"]) .contact-item:hover {
-  color: #ffffff;
-  opacity: 0.9;
+  color: var(--brand-text);
+  opacity: 0.85;
 }
 
 :where(body[data-theme-id="classic-dealer"]) .contact-item:hover::after {
@@ -70,7 +70,7 @@
 }
 
 :where(body[data-theme-id="classic-dealer"]) .contact-item svg {
-  stroke: #ffffff;
+  stroke: var(--brand-text);
   transition: all 0.3s ease;
   width: 17px;
   height: 17px;
@@ -89,7 +89,8 @@
 }
 
 :where(body[data-theme-id="classic-dealer"]) .contact-right .hours {
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--brand-text);
+  opacity: 0.85;
   font-family: var(--font-ui-family);
   font-weight: 600;
   font-size: 13px;
@@ -109,22 +110,22 @@
   width: 26px;
   height: 26px;
   border-radius: var(--radius-sm);
-  color: #ffffff;
+  color: var(--brand-text);
   text-decoration: none;
   transition: all var(--transition-fast);
   font-family: var(--font-ui);
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(var(--brand-text-rgb), 0.06);
+  border: 1px solid rgba(var(--brand-text-rgb), 0.18);
 }
 
 :where(body[data-theme-id="classic-dealer"]) .social-link:hover {
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(var(--brand-text-rgb), 0.12);
+  border-color: rgba(var(--brand-text-rgb), 0.32);
   transform: translateY(-1px);
 }
 
 :where(body[data-theme-id="classic-dealer"]) .social-link svg {
-  stroke: #ffffff;
+  stroke: var(--brand-text);
   transition: transform 0.3s ease;
   width: 14px;
   height: 14px;
