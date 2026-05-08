@@ -439,25 +439,10 @@ img.loaded {
   font-weight: 700
 }
 
-.preview-banner .pb-note {
-  max-width: 1100px;
-  text-align: center
-}
-
-@media (max-width:720px) {
-  .preview-banner {
-    height: 48px;
-    font-size: 13px;
-    padding: 0 10px
-  }
-
-  body.has-preview-banner {
-    /* No padding needed since banner is now static */
-  }
-}
+/* preview-banner styles live in styles/preview-banner.css (theme-scoped) */
 
 @media (max-width:480px) {
-  .preview-banner {
+  :where(body[data-theme-id="classic-dealer"]) .preview-banner {
     height: 44px;
     font-size: 11px;
     padding: 0 8px;
@@ -466,7 +451,7 @@ img.loaded {
 }
 
 @media (max-width:320px) {
-  .preview-banner {
+  :where(body[data-theme-id="classic-dealer"]) .preview-banner {
     height: 40px;
     font-size: 10px;
     padding: 0 6px;

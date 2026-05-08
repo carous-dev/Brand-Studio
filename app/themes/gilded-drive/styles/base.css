@@ -41,8 +41,8 @@ body {
   font-family: var(--font-badge)
 }
 
-/* Modern Contact Bar - Light Theme */
-.contact-bar {
+/* Modern Contact Bar - Light Theme (gilded-drive only) */
+:where(body[data-theme-id="gilded-drive"]) .contact-bar {
   --contact-bg: var(--brand-primary, #666666);
   --contact-text: var(--brand-background, #ffffff);
   --contact-hover: var(--brand-accent, var(--brand-secondary, #555555));
@@ -54,7 +54,7 @@ body {
   z-index: 100;
 }
 
-.contact-bar-content {
+:where(body[data-theme-id="gilded-drive"]) .contact-bar-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -64,19 +64,19 @@ body {
   min-height: 34px;
 }
 
-.contact-left {
+:where(body[data-theme-id="gilded-drive"]) .contact-left {
   display: flex;
   align-items: center;
   gap: 20px;
 }
 
-.contact-right {
+:where(body[data-theme-id="gilded-drive"]) .contact-right {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.contact-item {
+:where(body[data-theme-id="gilded-drive"]) .contact-item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -88,12 +88,12 @@ body {
   line-height: 1;
 }
 
-.contact-item:hover {
+:where(body[data-theme-id="gilded-drive"]) .contact-item:hover {
   color: var(--contact-hover);
   transform: translateY(-1px);
 }
 
-.contact-item svg {
+:where(body[data-theme-id="gilded-drive"]) .contact-item svg {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
@@ -103,13 +103,13 @@ body {
   color: var(--contact-text);
 }
 
-.social-links {
+:where(body[data-theme-id="gilded-drive"]) .social-links {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.social-link {
+:where(body[data-theme-id="gilded-drive"]) .social-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -125,12 +125,12 @@ body {
   line-height: 1;
 }
 
-.social-link:hover {
+:where(body[data-theme-id="gilded-drive"]) .social-link:hover {
   color: var(--contact-hover);
   transform: translateY(-1px);
 }
 
-.social-link svg {
+:where(body[data-theme-id="gilded-drive"]) .social-link svg {
   width: 16px;
   height: 16px;
   display: block;
@@ -138,48 +138,48 @@ body {
   stroke: none;
 }
 
-/* Responsive Contact Bar */
+/* Responsive Contact Bar (gilded-drive) */
 @media (max-width: 768px) {
-  .contact-bar {
+  :where(body[data-theme-id="gilded-drive"]) .contact-bar {
     padding: 6px 0;
   }
-  
-  .contact-bar-content {
+
+  :where(body[data-theme-id="gilded-drive"]) .contact-bar-content {
     padding: 0 16px;
     gap: 16px;
   }
-  
-  .contact-left {
+
+  :where(body[data-theme-id="gilded-drive"]) .contact-left {
     gap: 12px;
   }
-  
-  .contact-item {
+
+  :where(body[data-theme-id="gilded-drive"]) .contact-item {
     font-size: 12px;
     gap: 6px;
   }
-  
-  .contact-item svg {
+
+  :where(body[data-theme-id="gilded-drive"]) .contact-item svg {
     width: 14px;
     height: 14px;
   }
-  
-  .social-links {
+
+  :where(body[data-theme-id="gilded-drive"]) .social-links {
     gap: 8px;
   }
-  
-  .social-link {
+
+  :where(body[data-theme-id="gilded-drive"]) .social-link {
     width: 28px;
     height: 28px;
   }
-  
-  .social-link svg {
+
+  :where(body[data-theme-id="gilded-drive"]) .social-link svg {
     width: 14px;
     height: 14px;
   }
 }
 
 @media (max-width: 640px) {
-  .contact-bar {
+  :where(body[data-theme-id="gilded-drive"]) .contact-bar {
     display: none; /* Hide on small mobile for cleaner look */
   }
 }
@@ -893,7 +893,7 @@ img.loaded {
 }
 
 /* Preview banner: full-width green bar indicating this is a preview site */
-.preview-banner {
+:where(body[data-theme-id="gilded-drive"]) .preview-banner {
   position: relative;
   height: 42px;
   display: flex;
@@ -911,31 +911,22 @@ img.loaded {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
 }
 
-.preview-banner a {
+:where(body[data-theme-id="gilded-drive"]) .preview-banner a {
   color: var(--brand-background, #ffffff);
   text-decoration: underline;
   font-weight: 700
 }
 
-.preview-banner .pb-note {
+:where(body[data-theme-id="gilded-drive"]) .preview-banner .pb-note {
   max-width: 1100px;
   text-align: center
 }
 
-/* Ensure page content is below the banner when present */
-body.has-preview-banner {
-  /* padding-top removed since banner is not fixed */
-}
-
 @media (max-width:720px) {
-  .preview-banner {
+  :where(body[data-theme-id="gilded-drive"]) .preview-banner {
     height: 48px;
     font-size: 13px;
     padding: 0 10px
-  }
-
-  body.has-preview-banner {
-    /* padding-top removed since banner is not fixed */
   }
 }
 
