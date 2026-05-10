@@ -186,12 +186,56 @@ If any must-have can't be met for a specific theme (e.g. dealer site has
 wildly unusual layout that doesn't translate cleanly to the section
 contract), document the gap in the final report. Don't ship silently.
 
+## Required widgets — use the brandstudio globals, don't re-roll
+
+Every theme's Shell **must** mount these brandstudio-global widgets
+(skeleton scaffolder wires them by default; preserve through Phase 8):
+
+- **`<AnimateOnScroll />`** from `@/app/widgets/AnimateOnScroll` —
+  one-shot IntersectionObserver-based scroll-reveal driver. Mount once in
+  Shell. After it's mounted, ANY element in the tree can opt into entry
+  animation by adding `data-aos="fade-up" | "fade-down" | "fade-left" |
+  "fade-right" | "fade" | "zoom-in" | "zoom-out"` (optional
+  `data-aos-delay="120"` ms). Honors `prefers-reduced-motion`. The
+  companion `aos.css` is auto-imported via the widget's `index.ts`.
+
+- **`<CookieBanner />`** from `@/app/widgets/CookieBanner` — UK GDPR
+  consent banner with three categories (essential / analytics /
+  marketing). Theme-agnostic, brand-token-driven, accepts `brandSlug`
+  (for namespacing the localStorage key) and `cookiePolicyHref`. Pass
+  the brand slug from `useBrand()` so multiple brands bundled into the
+  same preview don't share consent state.
+
+**Why these are widgets, not per-theme components:** the logic
+(IntersectionObserver, localStorage consent, focus-trapped settings
+panel) is identical across themes. Re-implementing per theme is
+duplication that drifts. The widget's CSS uses brand tokens
+(`var(--color-primary)`, `var(--color-text)` etc.), so the visual
+identity still retints per dealer automatically.
+
+**When designing the homepage in Phase 8**, sprinkle `data-aos="..."`
+attributes on at least:
+- The hero (or its eyebrow / headline / CTA row — whichever feels right)
+- Each stat card in a SpecsBar (with staggered `data-aos-delay`)
+- Each downstream section (LatestArrivals / Services / RecentlySold /
+  CTA / Reviews / Directory) wrapped in a `<div data-aos="...">` if the
+  section component itself doesn't take the attr
+
+The audit's `lib-no-aos-on-homepage` rule fires (advisory) if the
+homepage has zero `data-aos` attributes.
+
+**Pages that capture leads (sell-your-car, part-exchange, contact)**
+should ideally use a shared `LeadForm` widget too — see the
+"Forms shouldn't be per-theme" entry in the Pitfalls Catalogue. Not
+shipped yet; flagged as deferred work.
+
 ## Phase 0 — Plan the run
 
 Use **TodoWrite** to capture the phases below as a checklist. Mark each
 one complete the moment it lands. The phase set differs by mode.
 
 **Mode A phases:**
+0.5. Pre-flight check (`check-skill-env.mjs`) — verify environment before any work.
 1. Gather inputs (logo path + dealer URL via AskUserQuestion).
 2. Analyze the logo:
    a. Deterministic colors via `extract-logo-colors.mjs`.
@@ -207,9 +251,39 @@ one complete the moment it lands. The phase set differs by mode.
 8. Adapt per archetype design spec (`docs/theme-archetype-specs.md`).
 9. Sync registries.
 9.5. Register the preview brand via `register_preview_brand.py --images <manifest>`.
-10. Verify (tsc clean against zero baseline + contrast re-check + theme audit).
+10. Verify:
+    a. `tsc --noEmit` clean against zero baseline.
+    b. Contrast re-check on final DNA.
+    c. Audit (`audit-theme.mjs`) — 0 blockers.
+    d. Smoke test (`smoke-test-preview.mjs`) — brand record fetchable, themeId correct, images populated, preview URL responds.
 11. Log to FEATURE_LOG.
 12. Report (with preview URL + image attributions + audit advisories).
+
+If anything fails between Phase 7 and 12, run
+`node tools/rollback-theme.mjs --theme-id <id>` to clean up the partial
+artifacts (theme folder, public images, DNA JSON, brand row, registries)
+before re-attempting. Idempotent — safe to run multiple times.
+
+## Phase 0.5 — Pre-flight environment check
+
+Before gathering inputs (which costs a user round-trip), verify the
+environment is healthy:
+
+```bash
+node tools/check-skill-env.mjs
+```
+
+Seven gates: tools-present, node-deps (sharp installed), mysql-env,
+mysql-reachable, flask-running, lvhme-resolves, theme-sync-clean. Exit 0
+means proceed; exit 1 means tell the user which gate(s) failed and stop.
+
+Common failures + fixes:
+- **flask-running FAIL**: User needs to run `python app.py` in a separate terminal.
+- **mysql-reachable FAIL**: Check MySQL service; verify `.env` has correct creds.
+- **lvhme-resolves FAIL**: Internet/DNS issue. Pre-flight can be bypassed with `--skip-lvhme` if you're testing offline, but Phase 12 preview URL won't work.
+- **theme-sync-clean FAIL**: An existing theme has a broken contract file; investigate before scaffolding a new theme.
+
+Skip flags exist for testing edge cases: `--skip-flask --skip-lvhme --skip-sync`. Don't skip in normal runs.
 
 **Mode B phases:** same as the Mode A flow but Phases 1–5 are replaced by
 running `tools/extract-theme-dna.mjs --source <app>` against the named
@@ -749,10 +823,22 @@ files plus `theme/theme-manifest.json`. If it errors with `missing
 required contract files`, the new folder is incomplete — the scaffolder
 should never produce that, so investigate before re-running.
 
-## Phase 9.5 — Register a preview brand (Mode A only)
+## Phase 9.5 — Register a preview brand (OPTIONAL — local sanity-check only)
 
-Mode A is for dealer previews; the theme is useless until a brand
-references it. Skip this in Mode B (no specific dealer).
+> **Scope change 2026-05-10:** the `/new-theme` skill no longer creates
+> brand records or wires domains as a required step. Themes ship as
+> reusable code; brand creation happens through the brandstudio dashboard
+> (`/create`) using the existing automation, which auto-provisions
+> Cloudflare DNS + Apache vhost + cert based on the operator-supplied
+> domain. The dropdown on `/create` reads `theme/theme-manifest.json`,
+> which is regenerated by `theme:sync` (Phase 9) and re-run on every
+> deploy by `.github/workflows/deploy.yml`. No manual steps required.
+>
+> **This phase is now OPTIONAL** — only run it if you want a quick local
+> preview at `<slug>.lvh.me:3000` to eyeball the new theme during
+> development. Skip it for the canonical Mode-A flow if you only intend
+> to ship the theme via git and let real previews come from the
+> dashboard later.
 
 ```bash
 python tools/register_preview_brand.py \
@@ -902,6 +988,45 @@ Multiple rules can be comma-separated: `audit-ignore: rule1, rule2`.
 
 `npm run build` only when the user explicitly asks for a build.
 
+## Phase 10d — End-to-end smoke test
+
+After the audit is clean, prove the running stack actually serves the new
+theme. The audit only inspects source files; the smoke test verifies that
+MySQL, Flask, Next, and the registries all agree on the same theme.
+
+```bash
+node tools/smoke-test-preview.mjs --slug <brand-slug> --theme-id <theme-id>
+```
+
+The brand slug is what `register_preview_brand.py` returned in Phase 9.5
+(typically `<theme-id minus -bespoke>-preview`). Five checks, all must be
+green before reporting done:
+
+1. **brand-record-fetchable** — `/api/previews/<slug>` returns 200 with a
+   non-empty body. Catches a missing or broken MySQL row.
+2. **brand-themeId-correct** — the brand's `themeId` field matches the
+   scaffolded theme id. Catches mode-A registrar bugs where the wrong
+   theme got linked.
+3. **brand-images-populated** — at least 5 of 7 expected slots
+   (`hero`, `about`, `services`, `finance`, `partExchange`,
+   `sellYourCar`, `recentlySold`) are filled in. Catches Phase 7.5
+   silently failing.
+4. **theme-folder-exists** — the 6 contract files
+   (`theme.json`, `tokens.ts`, `recipes/index.ts`, `sections/index.tsx`,
+   `shell.tsx`, `pages.ts`) all exist on disk. Catches scaffolder
+   producing an incomplete tree.
+5. **preview-url-responds** — `http://<slug>.lvh.me:3000/` returns
+   2xx/3xx. Catches Next dev not running, lvh.me not resolving, or
+   middleware not picking up the brand.
+
+Exit 0 = ship it; exit 1 = stop and investigate the specific failing
+check (the output names which one). Don't bypass; a smoke fail means the
+user-visible preview won't work even if the audit passed.
+
+If `preview-url-responds` is the only failure, ask the user to confirm
+`npm run dev` is running before re-trying — the rest of the chain is fine,
+the dev server just isn't up.
+
 ## Phase 11 — Log to FEATURE_LOG
 
 Append a new entry at the **top** of `docs/FEATURE_LOG.md`:
@@ -925,16 +1050,68 @@ Concise summary to the user, ~6 lines:
   contrast had to be iterated (e.g. "primary darkened from #ffd700 →
   #595959 to pass white-on-primary AA").
 - Font pairing chosen + the logo-character category that drove it.
-- Hero image: self-hosted at `/themes/<id>/hero.jpg` from `<source URL>`
-  (or note it was skipped + why).
-- Brand registered (Mode A only): preview reachable at the
-  `previewUrl` field returned by `register_preview_brand.py`
-  (typically `http://<slug>.lvh.me:3000/`). lvh.me is public DNS that
-  resolves all subdomains to 127.0.0.1, so no hosts-file or Apache setup
-  is needed locally. Both Flask (`python app.py`) and Next
-  (`npm run dev`) must be running.
+- Hero image + 7-slot images: self-hosted under `/themes/<id>/images/*.jpg`
+  (or note any slots that fell back to the classic-archetype pool).
+- Audit result: `0 blockers / N advisories` from `tools/audit-theme.mjs`.
+- **Ship instruction:** "commit + push to `main` (or open PR per branch
+  policy); CI will deploy and the theme will appear in `/create`'s
+  picker once the deploy finishes." — see Phase 13.
 - Anything that needs follow-up (WebFetch blocks, missing dealer fields,
   unusual layout flourishes the adaptation didn't capture).
+
+## Phase 13 — Ship to production (git-based, automatic)
+
+**The canonical ship path is git.** Once Phases 7–11 are clean, the only
+manual steps are: commit, push, merge (if working off a branch).
+
+**What ships automatically when commits land on `main`:**
+
+- `app/themes/<theme-id>/` — the theme contract code (SCP'd by deploy.yml)
+- `public/themes/<theme-id>/` — the 7 hero/page images (tracked, SCP'd)
+- `theme/theme-manifest.json` — committed, makes the theme appear in the
+  `/create` page's theme picker dropdown immediately after deploy
+- The 4 generated registries (`app/themes/generated/theme-context-,
+  -contract-, -page-, -shell-registry.generated.ts`) — gitignored. The
+  deploy script regenerates them on the VPS via `npm run theme:sync`
+  after `git pull`, which is why the new theme is wired into the runtime
+  picker without any manual step.
+
+**Commit + push:**
+
+```bash
+git checkout -b theme/<theme-id>
+git add app/themes/<theme-id> public/themes/<theme-id> \
+        theme/theme-manifest.json docs/FEATURE_LOG.md
+git commit -m "Add <theme-id> theme — <brand>"
+git push -u origin theme/<theme-id>
+gh pr create --title "Theme: <theme-id> for <brand>" --body "..."
+```
+
+(Or commit directly to `main` if your branch policy allows it. The
+`/new-theme` skill should NOT push automatically — per the global
+"always ask before git push" rule, the operator confirms.)
+
+**What the operator does AFTER ship:** open `/create` on the deployed
+brandstudio dashboard, fill in the dealer details, pick the new theme
+from the dropdown, set the dealer's domain (or leave the default
+`<slug>.carous.co.uk` for an internal preview), and click Create. The
+existing `maybe_start_linux_brand_automation` provisions Cloudflare DNS
++ Apache vhost + cert. The skill is done at this point — brand creation
+is operator-driven, not skill-driven.
+
+**Why brand creation is split out:** themes are reusable assets shipped
+once; brands are operator decisions made many times against the same
+theme (per dealer, per preview, per re-skin attempt). Conflating the two
+into the same skill made every theme ship a brand-record write, which
+locked the theme to one specific dealer and made the rollback story
+muddier. Now theme code lives in git, brand records live in MySQL, and
+they sync up at brand-creation time — operator picks the theme, the
+existing dashboard wires the rest.
+
+**If you also want a quick local preview:** run Phase 9.5 (optional)
+to register a `<slug>-preview` brand pointing at the new theme on
+`<slug>.lvh.me:3000`. That's for development eyeballing only, not a
+ship step.
 
 ## Failure modes & escape hatches
 
@@ -952,6 +1129,43 @@ Concise summary to the user, ~6 lines:
 - **theme:sync errors** → surface verbatim. Don't paper over.
 - **tsc baseline mismatch** → only investigate the *delta* over the
   template's baseline.
+
+## Recovery — partial-theme cleanup
+
+If a `/new-theme` run fails between Phase 7 (scaffold) and Phase 12
+(report), the system can be left in inconsistent states: theme folder
+present but incomplete, public images downloaded, MySQL row half-written,
+4 generated registries referencing a now-broken theme. Manual cleanup is
+error-prone — use the rollback tool:
+
+```bash
+node tools/rollback-theme.mjs --theme-id <theme-id>
+node tools/rollback-theme.mjs --theme-id <theme-id> --dry-run     # preview only
+node tools/rollback-theme.mjs --theme-id <theme-id> --keep-brand  # keep MySQL row
+```
+
+It removes (in order, each step tolerates "already gone"):
+
+1. `app/themes/<theme-id>/` (scaffolded contract files)
+2. `public/themes/<theme-id>/` (downloaded images)
+3. `tools/.theme-dna/<theme-id>.json`
+4. `tools/.theme-images/<theme-id>.json`
+5. `tools/.logo-colors/<theme-id>.json`
+6. The MySQL preview row for `<theme-id minus -bespoke>-preview`
+   (skip with `--keep-brand` if you want to retry registration only)
+7. Re-runs `npm run theme:sync` so the 4 generated registries no longer
+   reference the deleted theme — without this, the dev server errors.
+
+Idempotent: safe to run multiple times. After rollback, fix the root
+cause (don't blindly retry — diagnose what blew up first), then start
+Phase 7 again with a fresh slate.
+
+When to rollback vs. partial fix:
+- Rollback when the theme folder is missing files, the brand row points
+  at the wrong themeId, or the registries are out of sync — anything
+  structural.
+- Partial fix when only Phase 8 design or Phase 10c audit failed — those
+  are file-edit-and-retry, not "blow it away" situations.
 
 ## Slack post (optional, only if user enabled it)
 
@@ -1017,6 +1231,9 @@ fire and block you, but recognising the pattern earlier saves a round trip.
 | 13 | Gilded-drive's `.contact-item svg { stroke: none }` blanks classic-dealer's contact icons when both themes ship to the same preview | Unscoped class-rule in a global stylesheet (`base.css`) — competes on tied (0,1,0) specificity with the other theme's scoped rule, source order decides which wins. | Audit advisory rule **`std-css-unscoped-global-rule`** — flags class selectors at column 0 in any global `.css` that doesn't reference `data-theme-id` anywhere. Wrap every rule in `:where(body[data-theme-id='<this-theme>'])` so it can't bleed. |
 | 14 | Latest Arrivals / Directory / `/used-cars` show empty even though the dealer uploaded inventory via `/update/<slug>` | Server-side `fetch('/api/inventory')` from a theme component without `?brand=<slug>` — server-to-server requests resolve to 127.0.0.1 with no host or x-brand context, API falls back to default `inventory.json`. | Audit advisory rule **`data-fetch-no-brand-param`** — flags `fetch(...)` / `apiUrl(...)` to brand-scoped endpoints (`/api/inventory`, `/api/featured-vehicles`, `/api/recently-sold`, etc.) without a `brand=` parameter. Use `getBrandSlugFromRequest()` server-side or `useBrand().slug` client-side. |
 | 15 | Browser silently kills form submit; console reports "An invalid form control with name='X' is not focusable" | `<input required>` (or `<input type="hidden" required>`) on a tab that's `display:none` when not active. Browser tries to focus the invalid field to display its message, can't focus a hidden control, aborts submit. | Multi-tab forms must use `<form novalidate>` and rely on server-side validation; alternatively, validate per-tab in JS and switch tabs to surface errors. Caught at `templates/update.html` 2026-05-10. |
+| 16 | Theme ships without GDPR cookie consent — UK regulator complaints, no consent state captured | Phase 8 designed Hero / Header / Footer / sections fresh but forgot to mount a cookie banner; previous themes had a per-theme `CookieBanner.tsx` that was pruned by the skeleton scaffolder. | Two-pronged: (a) **Skeleton scaffolder's `componentShell` stub** mounts `<CookieBanner />` from `@/app/widgets/CookieBanner` by default — preserve through Phase 8 redesign. (b) Audit advisory rule **`lib-missing-cookie-banner`** — fires if Shell.tsx doesn't reference `CookieBanner`. The widget itself lives at `app/widgets/CookieBanner/` (theme-agnostic, brand-token-driven). |
+| 17 | Homepage feels static / dead — no entrance animations, sections just appear | Phase 8 didn't add any `data-aos="..."` attributes. Themes used to have a per-theme `AosProvider` that was extracted to `app/widgets/AnimateOnScroll`; if Phase 8 doesn't sprinkle the attributes, the observer has nothing to animate. | Two-pronged: (a) **Skeleton scaffolder's `componentShell` stub** mounts `<AnimateOnScroll />` from `@/app/widgets/AnimateOnScroll` by default — observer's always running. (b) Audit advisory rule **`lib-no-aos-on-homepage`** — flags `pages/home/page.tsx` if it has zero `data-aos` attributes. Variants: `fade-up` / `fade-down` / `fade-left` / `fade-right` / `fade` / `zoom-in` / `zoom-out`; optional `data-aos-delay="120"` (ms) for staggered reveals. Honors `prefers-reduced-motion`. |
+| 18 | Same form code duplicated across `pages/contact`, `pages/sell-your-car`, `pages/part-exchange` per theme — drift between themes, repeated debugging | Each theme writing its own `useLeadsForm`-wired form for the lead-capture pages. Field validation, error display, submit-handling, accessibility wiring — 150 lines of nearly-identical JSX per theme per form. | **Deferred work** (no rule yet). Plan: extract `<LeadCaptureForm config={{ leadType, fields, copy }} />` global widget at `app/widgets/LeadCaptureForm/` that themes consume with field config + className overrides. Until shipped, the per-theme forms are acceptable with the caveat that form fixes need to be applied to every theme's instance. |
 
 When you add a new audit rule for a future bug, append a row here. The
 catalogue should grow as a record of "what we've already learned not to
@@ -1028,9 +1245,12 @@ the row stays as institutional memory.
 
 | Tool | Purpose | Mode |
 |------|---------|------|
+| `tools/check-skill-env.mjs` | Phase 0.5 pre-flight. 7 gates: tools-present, node-deps, mysql-env, mysql-reachable, flask-running, lvhme-resolves, theme-sync-clean. Exit 1 on any fail. Skip flags: `--skip-flask`, `--skip-lvhme`, `--skip-sync` (testing only). | Both modes |
 | `tools/extract-logo-colors.mjs` | Deterministic dominant-color extraction from a logo (sharp + saturation-filtered histogram). | Mode A only |
 | `tools/check-theme-contrast.mjs` | WCAG AA validator for theme color combos. Exit 1 on critical fail. | Both modes |
 | `tools/audit-theme.mjs` | Static-analysis quality gate. Rule prefixes: `a11y-` (accessibility), `std-` (standards), `data-` (data-fetching), `mobile-` (responsive), `perf-` (performance), `brand-` (token discipline), `tp-` (Turbopack collision avoidance), `lib-` (foundation/dependency). Blockers exit 1. Supports inline `audit-ignore: <rule>` and file-level `audit-ignore-file: <rule>` directives. See **Pitfalls catalogue** above for the historical bugs each rule prevents. | Both modes |
+| `tools/smoke-test-preview.mjs` | Phase 10d end-to-end check. 5 checks: brand-record-fetchable, brand-themeId-correct, brand-images-populated, theme-folder-exists, preview-url-responds. Verifies MySQL + Flask + Next + registries all agree. Exit 1 on any fail. | Both modes |
+| `tools/rollback-theme.mjs` | Partial-theme cleanup when a run fails between Phase 7 and 12. Removes theme folder, public images, DNA JSON, images manifest, logo-colors JSON, MySQL row, then re-runs theme:sync. Idempotent. Flags: `--dry-run`, `--keep-brand`, `--brand-slug <s>`. | Both modes |
 | `tools/fetch-theme-images.mjs` | Source 7 page-level images (hero/about/services/finance/partExchange/sellYourCar/recentlySold). Curated Unsplash catalogue with classic-archetype fallback; live API mode when `UNSPLASH_ACCESS_KEY` is set. | Mode A only |
 | `tools/extract-theme-dna.mjs` | DNA extractor from a carous-platform sibling app. | Mode B only |
 | `tools/scaffold-theme.mjs` | Full clone-and-edit scaffolder. Used by Mode B — clones springalls-classic, applies DNA, downloads hero. | Mode B |

@@ -107,6 +107,19 @@ jobs:
               echo "Skipping npm ci; package.json + lockfile unchanged since ${last_deploy_ref}"
             fi
 
+            # Regenerate the 4 theme runtime registries (theme-context-,
+            # theme-contract-, theme-page-, theme-shell-registry) +
+            # theme-manifest.json from the on-disk per-theme folders. These
+            # files are gitignored — the canonical source is the per-theme
+            # context/ + pages.ts + shell.tsx + recipes/ + sections/, and
+            # `theme:sync` writes the registries from them. Running on every
+            # deploy means a new theme dropped into app/themes/<id>/ via git
+            # is automatically wired into the runtime picker without a
+            # second manual step. Idempotent (writeIfChanged semantics).
+            npm run theme:sync
+            # Always run after sync, before pm2 restart, so the running
+            # processes pick up the new generated files when they reload.
+
             # Restart both PM2 processes. If a process doesn't exist yet (first
             # deploy of a name), `pm2 restart` errors — fall through to start.
             # The Flask process MUST point its interpreter at the external venv

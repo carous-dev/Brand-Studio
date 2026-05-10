@@ -1,0 +1,121 @@
+name: PR quality gate
+
+# Runs on every pull request that changes a theme. Catches the two classes
+# of bug that would block a deploy:
+#   1. The theme audit (`tools/audit-theme.mjs`) flags any blocker rule.
+#   2. The TypeScript compiler reports a type error in the new theme.
+# Either failure blocks merge — `main` only ever receives green themes.
+#
+# Skips when no theme files changed (PRs that touch only docs or tools
+# don't need the audit). Skips classic-dealer / gilded-drive baseline
+# audits because they have known unrelated pre-existing blockers
+# (img-no-alt, div-as-button) that are tracked separately.
+
+on:
+  pull_request:
+    paths:
+      - 'app/themes/**'
+      - 'tools/audit-theme.mjs'
+      - 'tools/sync-theme-contracts.mjs'
+      - '.claude/skills/new-theme/SKILL.md'
+      - '.github/workflows/pr-quality.yml'
+
+concurrency:
+  group: pr-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit-themes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # need previous commit to diff against
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Detect changed themes
+        id: changed
+        run: |
+          set -euo pipefail
+          # Find theme folders that have any changed file in this PR.
+          # Strips the leading "app/themes/" prefix to leave just the theme id.
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD \
+            | grep -E '^app/themes/[^/]+/' \
+            | sed -E 's|^app/themes/([^/]+)/.*|\1|' \
+            | sort -u \
+            | grep -vE '^(generated)$' \
+            || true)
+          echo "themes=${CHANGED}" | tr '\n' ' '
+          {
+            echo "themes<<EOF"
+            echo "${CHANGED}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Regenerate theme registries
+        # The audit + tsc both depend on the registries being up to date with
+        # what's on disk, so run sync first.
+        run: npm run theme:sync
+
+      - name: Audit changed themes
+        if: steps.changed.outputs.themes != ''
+        run: |
+          set -euo pipefail
+          FAIL=0
+          for THEME in ${{ steps.changed.outputs.themes }}; do
+            # Skip the legacy themes that carry pre-existing unrelated blockers.
+            # Their issues are tracked in FEATURE_LOG; not a regression.
+            if [ "$THEME" = "classic-dealer" ] || [ "$THEME" = "gilded-drive" ]; then
+              echo "::notice::skipping audit for $THEME (legacy baseline; see FEATURE_LOG)"
+              continue
+            fi
+            echo "::group::audit-theme.mjs $THEME"
+            if ! node tools/audit-theme.mjs --id "$THEME"; then
+              FAIL=1
+              echo "::error::theme audit failed for $THEME"
+            fi
+            echo "::endgroup::"
+          done
+          if [ "$FAIL" = "1" ]; then
+            exit 1
+          fi
+
+      - name: Type-check
+        # Run tsc against the whole project so cross-theme type wiring (registries,
+        # contracts, generated types) is also validated. The new theme's errors
+        # surface here even if the targeted audit happened to miss something.
+        run: |
+          set -euo pipefail
+          # Allow pre-existing baseline noise (validator.ts AppPageConfig etc.)
+          # but fail on anything inside the changed theme folders.
+          npx tsc --noEmit > tsc.out 2>&1 || true
+          if [ ! -s tsc.out ]; then
+            echo "tsc clean"
+            exit 0
+          fi
+          THEMES="${{ steps.changed.outputs.themes }}"
+          if [ -z "$THEMES" ]; then
+            echo "no theme changes; tsc warnings ignored"
+            exit 0
+          fi
+          FAIL=0
+          for THEME in $THEMES; do
+            if grep -E "themes/$THEME/" tsc.out; then
+              echo "::error::tsc error in app/themes/$THEME (see above)"
+              FAIL=1
+            fi
+          done
+          if [ "$FAIL" = "1" ]; then
+            cat tsc.out
+            exit 1
+          fi
+          echo "tsc has pre-existing baseline noise but nothing in the changed themes"
