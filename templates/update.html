@@ -60,7 +60,12 @@
     {% if brand_data %}
     {% set aa_approved_raw = (brand_data.aaApprovedDealer if brand_data and (brand_data.aaApprovedDealer is defined) else (brand_data.aa_approved_dealer if brand_data and (brand_data.aa_approved_dealer is defined) else false)) %}
     {% set aa_approved = (aa_approved_raw in [true, 1]) or ((aa_approved_raw|string|lower) in ['1', 'true', 'yes', 'on']) %}
-    <form id="updateBrandForm" class="brand-form" data-brand-slug="{{ brand_data.slug }}">
+    <!-- novalidate: required inputs live on hidden tabs (Contact / SEO etc.). The
+         browser silently kills submit when a required field can't be focused
+         to display its validation message. Server-side validate_brand()
+         already enforces the same constraints; JS handler surfaces the
+         response via showAlert(). -->
+    <form id="updateBrandForm" class="brand-form" data-brand-slug="{{ brand_data.slug }}" novalidate>
         <!-- Hidden field for brand slug -->
         <input type="hidden" name="slug" value="{{ brand_data.slug }}">
         
@@ -366,7 +371,7 @@
                                 <div class="keywords-input-container">
                                     <div id="seoKeywordsChipsContainer" class="keywords-chips-container"></div>
                                     <input type="text" id="seoKeywordsInput" placeholder="Type a keyword and press Enter" autocomplete="off" inputmode="text">
-                                    <input type="hidden" id="seoKeywords" name="seoKeywords" value="{{ brand_data.seo.keywords | join(', ') if brand_data.seo and brand_data.seo.keywords else '' }}" required>
+                                    <input type="hidden" id="seoKeywords" name="seoKeywords" value="{{ brand_data.seo.keywords | join(', ') if brand_data.seo and brand_data.seo.keywords else '' }}">
                                 </div>
                                 <small>Press Enter (or comma) to add a keyword.</small>
                             </div>

@@ -1,0 +1,173 @@
+/* =============================================================================
+ * Columbus Vehicles — Hero (rugged archetype)
+ * =============================================================================
+ *
+ * Designed fresh per docs/theme-archetype-specs.md → rugged:
+ *   - Full-bleed dark photo, 80vh desktop / 60vh mobile
+ *   - Charcoal #1e293b → near-black gradient overlay for legibility
+ *   - Condensed-bold uppercase headline (Oswald)
+ *   - Sharp 4px corners on CTAs (NOT pills)
+ *   - Status pills as understated badges, not decorative chips
+ *
+ * Mobile-first: base styles target ~375px wide; min-width breakpoints
+ * progressively enhance. Brand tokens only — no hardcoded brand colors.
+ * ============================================================================= */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(520px, 70vh, 680px);
+  background: #0a0e14;
+  color: #ffffff;
+  overflow: hidden;
+}
+
+.heroPhoto {
+  position: absolute;
+  inset: 0;
+  background-image: var(--brand-image-hero, url('/themes/columbus-vehicles-bespoke/hero.jpg'));
+  background-size: cover;
+  background-position: center 35%;
+  z-index: -2;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.40) 0%,
+    rgba(15, 23, 42, 0.62) 50%,
+    rgba(10, 14, 20, 0.84) 100%
+  );
+  z-index: -1;
+}
+
+.heroInner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: clamp(56px, 12vh, 120px) clamp(20px, 4vw, 48px) clamp(40px, 6vh, 80px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2vw, 24px);
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent, #f59e0b);
+}
+
+.headline {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'Oswald', 'Impact', sans-serif);
+  font-weight: 700;
+  font-size: clamp(2.2rem, 6vw, 4.6rem);
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #ffffff;
+  max-width: 18ch;
+}
+
+.lead {
+  margin: 0;
+  font-size: clamp(1rem, 1.6vw, 1.18rem);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.86);
+  max-width: 52ch;
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: clamp(8px, 1.5vw, 16px);
+}
+
+.ctaPrimary,
+.ctaSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 24px;
+  min-height: 52px;
+  border-radius: 4px;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background 160ms ease, transform 160ms ease, border-color 160ms ease;
+}
+
+.ctaPrimary {
+  background: var(--color-accent, #f59e0b);
+  color: #0a0e14;
+  border: 2px solid var(--color-accent, #f59e0b);
+}
+.ctaPrimary:hover,
+.ctaPrimary:focus-visible {
+  background: #ffb73a;
+  border-color: #ffb73a;
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.ctaSecondary {
+  background: transparent;
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+}
+.ctaSecondary:hover,
+.ctaSecondary:focus-visible {
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+}
+
+.statusPills {
+  list-style: none;
+  margin: clamp(20px, 3vw, 32px) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+@media (min-width: 768px) {
+  .hero {
+    min-height: clamp(620px, 80vh, 820px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ctaPrimary,
+  .ctaSecondary {
+    transition: none;
+  }
+  .ctaPrimary:hover,
+  .ctaPrimary:focus-visible {
+    transform: none;
+  }
+}

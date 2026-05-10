@@ -1,0 +1,86 @@
+{
+  "_doc": "Curated public-domain Unsplash URLs per (archetype × slot). The fetch-theme-images.mjs script reads this when UNSPLASH_ACCESS_KEY is not set. Each URL must be VERIFIED — don't add fabricated photo IDs. Seeded from existing Unsplash references already in use in app/themes/. To expand: visit unsplash.com, find a real image, copy its photo URL, paste it under the right (archetype, slot). For full automation, set UNSPLASH_ACCESS_KEY in .env and the script switches to live API mode.",
+  "_attributionPolicy": "Unsplash photos are free for commercial and non-commercial use. Attribution is appreciated, not required (per Unsplash License). Where the photographer name is known we include it for the dashboard's image-credit panel.",
+  "classic": {
+    "hero": {
+      "url": "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1920&q=80",
+      "attribution": { "service": "Unsplash" }
+    },
+    "about": {
+      "url": "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1600&q=80",
+      "attribution": { "service": "Unsplash" }
+    },
+    "services": {
+      "url": "https://images.unsplash.com/photo-1727893344848-2ec8eba4bacd?auto=format&fit=crop&w=1600&q=80",
+      "attribution": { "service": "Unsplash" }
+    },
+    "finance": {
+      "url": "https://images.unsplash.com/photo-1714348938110-d3692bc3716a?auto=format&fit=crop&w=1600&q=80",
+      "attribution": { "service": "Unsplash" }
+    },
+    "partExchange": {
+      "url": "https://images.unsplash.com/photo-1565376901308-37344a4b06ea?auto=format&fit=crop&w=1600&q=80",
+      "attribution": { "service": "Unsplash" }
+    },
+    "sellYourCar": {
+      "url": "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1600&q=80",
+      "attribution": { "service": "Unsplash" }
+    },
+    "recentlySold": {
+      "url": "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1600&q=80",
+      "attribution": { "service": "Unsplash" }
+    }
+  },
+  "modern": {
+    "hero": {
+      "url": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=80",
+      "attribution": { "service": "Unsplash" }
+    },
+    "services": {
+      "url": "https://images.unsplash.com/photo-1755288348835-dc6c29852299?auto=format&fit=crop&w=1600&q=80",
+      "attribution": { "service": "Unsplash" }
+    },
+    "finance": {
+      "url": "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=1600&q=80",
+      "attribution": { "service": "Unsplash" }
+    },
+    "partExchange": {
+      "url": "https://images.unsplash.com/photo-1542228262-3d663b306a53?auto=format&fit=crop&w=1600&q=80",
+      "attribution": { "service": "Unsplash" }
+    },
+    "_todo_about": "TODO: add Unsplash URL for modern dealer team / showroom interior",
+    "_todo_sellYourCar": "TODO: add Unsplash URL for modern car appraisal / sleek scene",
+    "_todo_recentlySold": "TODO: add Unsplash URL for modern sold sign / handover"
+  },
+  "rugged": {
+    "_todo_hero": "TODO: add Unsplash URL for 4x4 / off-road / Jeep Wrangler landscape shot",
+    "_todo_about": "TODO: add Unsplash URL for rugged dealer team / Jeep showroom",
+    "_todo_services": "TODO: add Unsplash URL for 4x4 service / off-road maintenance",
+    "_todo_finance": "TODO: add Unsplash URL for rugged-themed finance / vehicle keys",
+    "_todo_partExchange": "TODO: add Unsplash URL for 4x4 trade-in",
+    "_todo_sellYourCar": "TODO: add Unsplash URL for selling 4x4 / appraisal",
+    "_todo_recentlySold": "TODO: add Unsplash URL for sold 4x4 / new owner with vehicle",
+    "_note": "Rugged archetype (4x4 specialists like Columbus Vehicles) needs dedicated photos. Set UNSPLASH_ACCESS_KEY for live API search, or hand-curate from unsplash.com searches: 'jeep wrangler', 'land rover defender', 'off-road 4x4', 'rugged vehicle landscape'."
+  },
+  "luxury": {
+    "hero": {
+      "url": "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1920&q=80",
+      "attribution": { "service": "Unsplash" }
+    },
+    "_todo_about": "TODO: luxury dealer concierge / showroom",
+    "_todo_services": "TODO: luxury car detailing / valeting",
+    "_todo_finance": "TODO: luxury finance / leather interior",
+    "_todo_partExchange": "TODO: prestige trade-in",
+    "_todo_sellYourCar": "TODO: luxury appraisal / consignment",
+    "_todo_recentlySold": "TODO: luxury sold / handover ceremony"
+  },
+  "prestige": {
+    "_todo_hero": "TODO: supercar showroom magazine layout",
+    "_todo_about": "TODO: prestige curator / private viewing room",
+    "_todo_services": "TODO: prestige workshop / specialist tooling",
+    "_todo_finance": "TODO: bespoke prestige finance",
+    "_todo_partExchange": "TODO: supercar trade-in",
+    "_todo_sellYourCar": "TODO: supercar consignment",
+    "_todo_recentlySold": "TODO: supercar delivered / sold"
+  }
+}

@@ -22,9 +22,9 @@
   letter-spacing: 0.01em;
 }
 
-:where([data-theme-id='springalls-classic']) :where(a) {
-  color: var(--color-primary);
-}
+/* No blanket :where(a) { color } — paints every <Link>-wrapped brand wordmark
+ * (header, footer, etc.) with --color-primary regardless of context. Style
+ * links per-component instead. (See SKILL.md Quality Bar.) */
 
 [data-theme-id='springalls-classic'] .springalls-main {
   display: block;
