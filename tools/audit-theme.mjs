@@ -19,8 +19,33 @@
  *                                paints brand wordmarks wrapped in <Link> with
  *                                the wrong color.
  *
+ *   STANDARDS (advisory)
+ *     std-css-unscoped-global-rule — class selector in a global stylesheet
+ *                                without a [data-theme-id] scope wrapper —
+ *                                bleeds across themes bundled in the same
+ *                                preview (see FEATURE_LOG 2026-05-08).
+ *
  *   DATA FETCHING (blocker)
  *     data-useeffect-fetch     — useEffect that calls fetch() for initial data
+ *
+ *   DATA FETCHING (advisory)
+ *     data-fetch-no-brand-param — fetch() / apiUrl() to a brand-scoped
+ *                                endpoint (/api/inventory, /api/featured-
+ *                                vehicles, etc.) without ?brand=<slug>;
+ *                                falls back to default inventory.json.
+ *
+ *   TURBOPACK / FRAMEWORK (blocker)
+ *     tp-use-client-on-page    — 'use client' on a page wrapper —
+ *                                Turbopack chunk-item collision across
+ *                                parallel themes. Extract interactivity
+ *                                into a co-located components/<Name>.tsx
+ *                                client island.
+ *     tp-cross-folder-css-module — CSS module imported via parent-relative
+ *                                path; always co-locate.
+ *
+ *   LIBRARY DEPENDENCIES (advisory)
+ *     lib-hero-no-svg-fallback — Hero/PageHero uses var(--brand-image-*)
+ *                                but doesn't render <HeroBackdrop> safety net.
  *
  *   MOBILE-FIRST RESPONSIVE (advisory)
  *     mobile-max-width-query   — CSS file uses @media (max-width:...) — prefer min-width
@@ -352,6 +377,131 @@ function checkBrandHardcodedColor(file, content) {
   return findings
 }
 
+// === Turbopack-collision prevention rules =================================
+// Lessons baked in from the columbus-vehicles-bespoke build (FEATURE_LOG
+// 2026-05-10). Both rules block: the failure mode is a runtime parse error
+// surfaced as "Code generation for chunk item errored / Expected export to
+// be in eval context X, exports has Y" — Turbopack's parsed-exports record
+// for a 'use client' chunk-item ends up shared between two themes whose
+// page paths are parallel.
+
+function checkTpUseClientOnPage(file, content) {
+  // Page wrappers under pages/**/page.tsx must be Server Components.
+  // Interactive logic lives in co-located client islands at components/<Name>.tsx.
+  const norm = file.replace(/\\/g, '/')
+  const isPageWrapper = /\/pages\/[^/]+\/page\.tsx$/.test(norm)
+                     || /\/pages\/[^/]+\/\[[^\]]+\]\/page\.tsx$/.test(norm)
+  if (!isPageWrapper) return []
+  // Allow leading line/block comments before the directive check.
+  const m = /^\s*(?:\/\*[\s\S]*?\*\/\s*|\/\/[^\n]*\n\s*)*['"]use client['"]/.exec(content)
+  if (!m) return []
+  return [newFinding(
+    'tp-use-client-on-page',
+    'blocker',
+    file,
+    content,
+    m.index || 0,
+    `'use client' directive on a page wrapper. Pages must be Server Components — extract interactivity into co-located components/<Name>.tsx client islands. See FEATURE_LOG 2026-05-10 for the Turbopack chunk-item collision rationale.`,
+  )]
+}
+
+function checkTpCrossFolderCssModule(file, content) {
+  if (!/\.tsx?$/.test(file)) return []
+  const findings = []
+  // Flag CSS-module imports that traverse out of the current folder
+  // (`'../foo/page.module.css'`). Co-locate the CSS module beside the
+  // file that consumes it instead.
+  const re = /import\s+\w+\s+from\s+['"]((?:\.\.\/)+[^'"]+\.module\.css)['"]/g
+  for (const { index, groups } of findAllMatches(content, re)) {
+    findings.push(newFinding(
+      'tp-cross-folder-css-module',
+      'blocker',
+      file,
+      content,
+      index,
+      `CSS module imported via a parent-relative path (${groups[1]}). Co-locate per page/component — cross-folder imports trip Turbopack's 'use client' chunk-item export tracking when the file's also marked use-client.`,
+    ))
+  }
+  return findings
+}
+
+// === Foundation / library-dependency rules ================================
+
+function checkStdCssUnscopedGlobalRule(file, content) {
+  // Global stylesheets (base.css and friends — NOT *.module.css) must scope
+  // every class-rule under :where(body[data-theme-id='<id>']) or
+  // [data-theme-id='<id>']. Without that, a class rule in one theme will
+  // bleed into any other theme bundled into the same preview, and source
+  // order decides which wins. Past damage: gilded-drive's
+  // `.contact-item svg { stroke: none }` blanked classic-dealer's contact
+  // icons because both rules sat at (0,2,0) specificity and gilded-drive's
+  // bundle loaded second.
+  // Heuristic, advisory: in a global .css, flag class selectors at column 0
+  // when the file contains no `data-theme-id` reference at all (cheap
+  // approximation — full parsing would be more accurate but more brittle).
+  if (!/\.css$/.test(file) || /\.module\.css$/.test(file)) return []
+  if (/color-policy\.css$/i.test(file)) return [] // defines :root vars, not classes
+  if (/data-theme-id/.test(content)) return [] // file is at least theme-aware
+  const findings = []
+  const re = /^[ \t]*(\.[A-Za-z][\w-]*(?:\s*[,:>+~][^{]*?)?)\s*\{/gm
+  for (const { index, groups } of findAllMatches(content, re)) {
+    findings.push(newFinding(
+      'std-css-unscoped-global-rule',
+      'advisory',
+      file,
+      content,
+      index,
+      `unscoped global rule "${groups[1].trim()}" — wrap in :where(body[data-theme-id='<theme-id>']) so this theme's CSS can't bleed into other themes loaded in the same preview.`,
+    ))
+  }
+  return findings
+}
+
+function checkDataFetchNoBrandParam(file, content) {
+  // Brand-scoped server fetches (e.g. /api/inventory) must thread the brand
+  // slug as `?brand=<slug>` (or `&brand=<slug>`). Without it, server-to-server
+  // requests resolve to 127.0.0.1 with no host or x-brand context and the API
+  // falls back to the default inventory.json. Past damage: every uploaded
+  // dealer inventory persisted on disk but never appeared in Latest Arrivals
+  // / Directory / /used-cars because the fetches dropped the brand.
+  if (!/\.tsx?$/.test(file)) return []
+  if (!/[\\/](components|pages)[\\/]/.test(file)) return []
+  const findings = []
+  // Match fetch('/api/<endpoint>...') or apiUrl('/api/<endpoint>...') for the
+  // brand-scoped endpoints, flagging when ?brand= / &brand= is missing.
+  const re = /\b(?:fetch|apiUrl)\s*\(\s*[`'"](?:[^`'"]*?)\/(api\/(?:inventory|featured-vehicles|recently-sold|vehicle-images|advert-analytics)[^`'"]*)/g
+  for (const { index, groups, match } of findAllMatches(content, re)) {
+    if (/\bbrand=/.test(match)) continue
+    findings.push(newFinding(
+      'data-fetch-no-brand-param',
+      'advisory',
+      file,
+      content,
+      index,
+      `fetch to /${groups[1]} without brand param — server fetches resolve to 127.0.0.1 and fall back to default inventory.json. Append \`&brand=\${slug}\` (use getBrandSlugFromRequest() server-side or useBrand().slug client-side).`,
+    ))
+  }
+  return findings
+}
+
+function checkLibHeroNoSvgFallback(file, content) {
+  // Hero/PageHero components that paint a brand image as background should
+  // also render <HeroBackdrop> (the decorative SVG safety-net) so an unset
+  // or 404'd brand image doesn't leave the section as flat charcoal.
+  const norm = file.replace(/\\/g, '/')
+  if (!/\/components\/[^/]*Hero[^/]*\.tsx$/i.test(norm)) return []
+  if (!/var\(\s*--brand-image-/i.test(content)) return []
+  if (/HeroBackdrop/.test(content)) return []
+  return [newFinding(
+    'lib-hero-no-svg-fallback',
+    'advisory',
+    file,
+    content,
+    0,
+    `Hero component uses var(--brand-image-*) but does not render <HeroBackdrop>. Add the SVG fallback so unbranded previews don't render as flat color when the image is unset or 404s.`,
+  )]
+}
+
 const RULES = [
   checkA11yImgAlt,
   checkA11yH1Multiple,
@@ -364,6 +514,11 @@ const RULES = [
   checkPerfRawImg,
   checkPerfImgNoDimensions,
   checkBrandHardcodedColor,
+  checkTpUseClientOnPage,
+  checkTpCrossFolderCssModule,
+  checkStdCssUnscopedGlobalRule,
+  checkDataFetchNoBrandParam,
+  checkLibHeroNoSvgFallback,
 ]
 
 // --- ignore directives ------------------------------------------------------
@@ -421,7 +576,7 @@ function parseRuleList(raw) {
   const matches = String(raw || '').match(/[a-z][a-z0-9-]+/g) || []
   // Filter to only known rule names by accepting anything that starts with
   // a category prefix we use (a11y, std, data, mobile, perf, brand).
-  const knownPrefixes = /^(a11y|std|data|mobile|perf|brand)-/
+  const knownPrefixes = /^(a11y|std|data|mobile|perf|brand|tp|lib)-/
   return new Set(matches.filter((token) => knownPrefixes.test(token)))
 }
 
@@ -521,6 +676,37 @@ async function main() {
         console.error(`rule ${rule.name} threw on ${file}: ${err.message}`)
       }
     }
+  }
+
+  // === Cross-file post-pass rules ==========================================
+  // `lib-missing-color-policy`: kept inventory CSS modules reference role
+  // tokens (var(--t-border), var(--t-card), etc.) defined in
+  // styles/color-policy.css. The skeleton scaffolder used to prune that
+  // file — without it, every form-field border rendered washed-out (Columbus
+  // pre-fix). This post-pass fires once per theme if the gap is detected.
+  const usesRoleTokens = []
+  let hasColorPolicy = false
+  for (const filePath of auditFiles) {
+    const norm = filePath.replace(/\\/g, '/')
+    if (/\/styles\/color-policy\.css$/.test(norm)) hasColorPolicy = true
+    if (/\.(css|tsx?|module\.css)$/.test(filePath)) {
+      const raw = await fs.readFile(filePath, 'utf8').catch(() => '')
+      if (/var\(\s*--t-[a-z]/i.test(raw)) usesRoleTokens.push(filePath)
+    }
+  }
+  if (usesRoleTokens.length > 0 && !hasColorPolicy) {
+    const exemplar = usesRoleTokens[0]
+    findings.push({
+      rule: 'lib-missing-color-policy',
+      severity: 'blocker',
+      file: path.relative(PROJECT_ROOT, exemplar),
+      line: 1,
+      col: 1,
+      message:
+        `Theme references --t-* role tokens in ${usesRoleTokens.length} file(s) but is missing styles/color-policy.css. ` +
+        `The role tokens won't resolve, leaving form-field borders + card surfaces effectively invisible. ` +
+        `Add styles/color-policy.css mapping each --t-* used to its --color-* brand-token equivalent (see columbus-vehicles-bespoke for the minimum 7-token mapping).`,
+    })
   }
 
   const blockers = findings.filter((f) => f.severity === 'blocker')
