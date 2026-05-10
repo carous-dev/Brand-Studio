@@ -290,17 +290,18 @@ environment is healthy:
 node tools/check-skill-env.mjs
 ```
 
-Seven gates: tools-present, node-deps (sharp installed), mysql-env,
-mysql-reachable, flask-running, lvhme-resolves, theme-sync-clean. Exit 0
-means proceed; exit 1 means tell the user which gate(s) failed and stop.
+Three gates (theme-only): `tools-present`, `node-deps` (sharp installed),
+`theme-sync-clean`. Exit 0 means proceed; exit 1 means tell the user which
+gate(s) failed and stop.
 
 Common failures + fixes:
-- **flask-running FAIL**: User needs to run `python app.py` in a separate terminal.
-- **mysql-reachable FAIL**: Check MySQL service; verify `.env` has correct creds.
-- **lvhme-resolves FAIL**: Internet/DNS issue. Pre-flight can be bypassed with `--skip-lvhme` if you're testing offline. The canonical ship path (Phase 13) doesn't depend on lvh.me — only Appendix A's local preview does.
+- **tools-present FAIL**: a required script under `tools/` is missing; check the listed paths.
+- **node-deps FAIL**: `sharp` not installed; run `npm install`.
 - **theme-sync-clean FAIL**: An existing theme has a broken contract file; investigate before scaffolding a new theme.
 
-Skip flags exist for testing edge cases: `--skip-flask --skip-lvhme --skip-sync`. Don't skip in normal runs.
+The previous Flask / MySQL / lvh.me gates were removed 2026-05-10 when
+the skill scope was narrowed to theme-building only. Those services are
+preview-creation concerns — not the skill's job.
 
 **Mode B phases:** same as the Mode A flow but Phases 1–5 are replaced by
 running `tools/extract-theme-dna.mjs --source <app>` against the named
@@ -673,11 +674,11 @@ Two modes (auto-selected):
 
 The script outputs a manifest JSON at `tools/.theme-images/<theme-id>.json`
 with `{themeId, archetype, mode, images: { hero: { localPath, attribution },
-... }, warnings}`. The manifest is consumed at preview-creation time
-(in the dashboard's `/create` flow, or optionally by Appendix A's
-`register_preview_brand.py --images <path>` if you're running a local
-preview during development) so the brand record's `images.<slot>`
-fields point at the local URLs that ship with the theme.
+... }, warnings}`. The 7 images themselves are saved under
+`public/themes/<theme-id>/images/<slot>.jpg` and ship with the theme as
+archetype-default fallbacks. When the operator creates a brand against
+this theme via the dashboard's `/create` flow, those defaults render
+automatically; the operator can override per slot via `/update/<slug>`.
 
 If the script reports warnings (slot couldn't be sourced, classic-fallback
 used), surface them in the Phase 12 report — the team will want to swap
@@ -842,98 +843,6 @@ files plus `theme/theme-manifest.json`. If it errors with `missing
 required contract files`, the new folder is incomplete — the scaffolder
 should never produce that, so investigate before re-running.
 
-## Appendix A — OPTIONAL local preview (dev-only; not part of the ship path)
-
-> **Not a phase.** Renamed from "Phase 9.5" to "Appendix A" 2026-05-10
-> because the `/new-theme` skill no longer creates brand records, no
-> longer wires domains, and no longer interacts with previews on the
-> canonical path. Themes ship purely as code; preview creation happens
-> through the brandstudio dashboard (`/create`) where the operator picks
-> the new theme from the dropdown and the existing automation handles
-> Cloudflare DNS + Apache vhost + cert.
->
-> **Run this only if you want to eyeball the new theme on
-> `<slug>.lvh.me:3000` during development**, before the git push. Phase
-> 13 (Ship) does NOT depend on this. The dashboard's `/create` flow at
-> production time does NOT depend on this. It's purely a developer
-> convenience for visual sanity-checking.
-
-```bash
-python tools/register_preview_brand.py \
-  --slug <dealer-slug>-preview \
-  --name "<Display Name>" \
-  --theme-id <theme-id> \
-  --primary "<suggested.primary>" \
-  --primary-dark "<suggested.primaryDark>" \
-  --accent "<suggested.accent or suggested.primary>" \
-  --logo "<input logo path or hosted URL>" \
-  --hero "/themes/<theme-id>/hero.jpg" \
-  --images tools/.theme-images/<theme-id>.json \
-  --phone "<from A3>" \
-  --email "<from A3>" \
-  --address-line1 "<from A3>" \
-  --city "<from A3>" \
-  --county "<from A3>" \
-  --postcode "<from A3>" \
-  --tagline "<from A3>" \
-  --about "<dealer profile from A3>" \
-  --font-heading "<heading family>" \
-  --font-body "<body family>"
-```
-
-The `--images` flag points at the manifest from Phase 7.5
-(`fetch-theme-images.mjs`). The registrar reads each slot's `localPath`
-and writes them to `brand.images.<slot>` in the brand record. The
-dashboard's `/update/<slug>` page can then edit any individual slot
-without touching the others.
-
-The script returns a JSON line on stdout with `{ok, slug, action,
-automation, previewUrl, ...}`. On `ok: false`, surface the error verbatim
-— common causes: missing MYSQL_* env vars (the script auto-loads `.env`
-so this should be rare), preview_store import failure, or pymysql
-connection rejected.
-
-If a brand for this dealer already exists, the script will *update* it
-in place (idempotent). The action field reports `created` vs `updated`.
-
-**The registrar fires brandstudio's existing automation by default.**
-After the upsert, it imports `maybe_start_linux_brand_automation` from
-`app.py` and runs it with the brand config. That function is dual-mode:
-
-- **Local-preview-base hosts** (default — `<slug>.lvh.me`,
-  `<slug>.localtest.me`, `<slug>.sslip.io`, etc., per `LOCAL_PREVIEW_BASE_DOMAINS`
-  in app.py): it short-circuits to "preview ready", marks the brand as
-  `provisioned` in automation state, and exits. No Apache, no Cloudflare,
-  no PM2 — the browser resolves these public-DNS bases to `127.0.0.1`
-  automatically and Next's middleware (`proxy.ts`) extracts the brand
-  from the first subdomain via `getBrandFromHost`.
-- **Production domains** (e.g. `dealer.carous.co.uk`): runs the full
-  flow — Cloudflare DNS record creation, Apache vhost generation from
-  `vhost_template.conf`, `a2ensite + apache2ctl configtest + systemctl
-  reload apache2`, optional pm2 restart. On Windows the subprocess calls
-  short-circuit to "[DEV-MODE] would run: ..." and the rendered vhost
-  goes to `dev-vhosts/` for inspection.
-
-To skip the automation (for tests / dry runs): pass `--no-automation`.
-
-The result JSON includes `previewUrl` — a clickable URL the user can
-visit immediately. For lvh.me bases this is `http://<slug>.lvh.me:3000/`;
-for production it's `https://<domain>/`. Use this verbatim in the Phase
-12 report — don't construct your own.
-
-**Domain default** — if `--domain` is omitted, the registrar defaults to
-`<slug>.lvh.me`. This works locally with no DNS / hosts / Apache setup
-because lvh.me resolves all subdomains to `127.0.0.1` via public DNS.
-Override only when you actually have a real domain to deploy against.
-
-**MSYS path mangling warning** — when invoking `register_preview_brand.py`
-from git-bash on Windows, leading-slash paths like `--logo "/themes/foo"`
-get mangled by MSYS into `C:/Program Files/Git/themes/foo` *before* Python
-sees the arg. The script defensively undoes this prefix, but if you see
-any path coming back wrong (`curl /api/previews/<slug>` shows
-`C:/Program Files/Git/...`), pass the path with a doubled leading slash
-(`--logo "//themes/foo"`) or run from PowerShell which doesn't mangle.
-
 ## Phase 10 — Verify
 
 The template (`springalls-classic`) is type-clean as of 2026-05-09 — the
@@ -1005,46 +914,6 @@ expressions (`{/* ... */}`), and trailing prose after the rule name.
 Multiple rules can be comma-separated: `audit-ignore: rule1, rule2`.
 
 `npm run build` only when the user explicitly asks for a build.
-
-## Phase 10d — End-to-end smoke test (OPTIONAL — Appendix A only)
-
-> **Scope change 2026-05-10:** this phase was previously part of the
-> canonical Mode A flow but is no longer. It depends on a registered
-> brand (Phase 9.5) and a running Next dev server, both of which are
-> Appendix A concerns (local development eyeballing). Skip on the
-> ship path; run only when Appendix A is also being run.
-
-```bash
-node tools/smoke-test-preview.mjs --slug <brand-slug> --theme-id <theme-id>
-```
-
-The brand slug is what `register_preview_brand.py` returned in Appendix A
-(typically `<theme-id minus -bespoke>-preview`). Five checks:
-
-1. **brand-record-fetchable** — `/api/previews/<slug>` returns 200 with a
-   non-empty body. Catches a missing or broken MySQL row.
-2. **brand-themeId-correct** — the brand's `themeId` field matches the
-   scaffolded theme id. Catches Appendix A registrar bugs where the wrong
-   theme got linked.
-3. **brand-images-populated** — at least 5 of 7 expected slots
-   (`hero`, `about`, `services`, `finance`, `partExchange`,
-   `sellYourCar`, `recentlySold`) are filled in. Catches Phase 7.5
-   silently failing.
-4. **theme-folder-exists** — the 6 contract files
-   (`theme.json`, `tokens.ts`, `recipes/index.ts`, `sections/index.tsx`,
-   `shell.tsx`, `pages.ts`) all exist on disk. Catches scaffolder
-   producing an incomplete tree.
-5. **preview-url-responds** — `http://<slug>.lvh.me:3000/` returns
-   2xx/3xx. Catches Next dev not running, lvh.me not resolving, or
-   middleware not picking up the brand.
-
-Exit 0 = ship it; exit 1 = stop and investigate the specific failing
-check (the output names which one). Don't bypass; a smoke fail means the
-user-visible preview won't work even if the audit passed.
-
-If `preview-url-responds` is the only failure, ask the user to confirm
-`npm run dev` is running before re-trying — the rest of the chain is fine,
-the dev server just isn't up.
 
 ## Phase 11 — Log to FEATURE_LOG
 
@@ -1242,7 +1111,7 @@ fire and block you, but recognising the pattern earlier saves a round trip.
 
 | # | Symptom | Bad pattern | How it's caught now |
 |---|---------|------------|---------------------|
-| 1 | Brand record's `logo`/`heroImage` paths come back as `C:/Program Files/Git/...` | Calling `register_preview_brand.py` from git-bash on Windows with leading-slash paths (`--logo "/themes/..."`). MSYS rewrites the arg before Python sees it. | `_undo_msys_path()` defensively strips the prefix in `register_preview_brand.py`. Caller can also use `//themes/...` or run from PowerShell. |
+| 1 | Brand record's `logo`/`heroImage` paths come back as `C:/Program Files/Git/...` | Calling `register_preview_brand.py` from git-bash on Windows with leading-slash paths (`--logo "/themes/..."`). MSYS rewrites the arg before Python sees it. | _Tool removed 2026-05-10 with the brand-registration coupling._ Defensive `_undo_msys_path()` lived in `register_preview_brand.py`. If reintroducing CLI tools that take path args on Windows, mirror that pattern. |
 | 2 | `<slug>.preview.brandstudio.local` hits `DNS_PROBE_FINISHED_NXDOMAIN` | Fictional placeholder domain baked into the registrar default. | Default is now `<slug>.lvh.me` (public DNS that resolves all subdomains to 127.0.0.1). Phase 9.5 returns the real `previewUrl` for the Phase 12 report. |
 | 3 | `useBrand must be used within a BrandClientWrapper` runtime error on a freshly-scaffolded theme | Hand-maintained `app/themes/context-registry.ts` missing the new theme entry → layout falls back to wrong theme's wrapper → different `BrandContext` instance → `useBrand` returns null. | `theme-context-registry.generated.ts` is auto-generated by `tools/sync-theme-contracts.mjs` from the per-theme `context/` folders. New themes register automatically. |
 | 4 | `Code generation for chunk item errored / Expected export to be in eval context X, exports has Y` | Two parallel `'use client'` files at twin paths across themes (e.g. both `<theme-a>/pages/contact/page.tsx` and `<theme-b>/pages/contact/page.tsx` carrying the directive). Turbopack's chunk-item parsed-exports record gets shared between them. | Audit blocker rule **`tp-use-client-on-page`** — pages must be Server Components; extract interactivity into co-located `components/<Name>.tsx` client islands. Existing exemptions: deferred kept inventory pages (annotated `audit-ignore-file`). |
@@ -1252,7 +1121,7 @@ fire and block you, but recognising the pattern earlier saves a round trip.
 | 8 | "COLUMBUS VEHICLES" wordmark in primary blue against the dark header | `:where(a)/:is(a) { color: var(--color-primary) }` blanket rule in `base.css` — `:where()` ties on specificity (0,1,0) with CSS-module classes, so `<Link>`-wrapped wordmarks inherited the wrong color depending on stylesheet load order. | Audit blocker rule **`std-link-color-blanket`** — flags any `:where(a) { color: ... }` / `:is(a) { color: ... }` in CSS files. Style links per-component instead. |
 | 9 | Hero section renders flat charcoal when `--brand-image-hero` is unset or 404s | Hero component painted only the brand image background; nothing behind it. | Audit advisory rule **`lib-hero-no-svg-fallback`** — flags `*Hero*.tsx` files that use `var(--brand-image-*)` but don't render `<HeroBackdrop>`. The skeleton scaffolder also keeps `components/HeroBackdrop.tsx` so the SVG fallback is always available. |
 | 10 | Newly-scaffolded theme's `recently-sold` page renders unstyled | `recently-sold/page.tsx` was kept by the skeleton's keep-list, but its inline class names (`sps-section-container`, `sps-vehicle-card`) referenced styles in pruned CSS files. | Phase 8 design guidance now treats the kept `recently-sold/page.tsx` as a stub to redesign per archetype — like any other inner page. |
-| 11 | Skill imports `app.py` for `maybe_start_linux_brand_automation` and crashes on Windows console (`'charmap' codec can't encode character '\U0001f527'`) | app.py prints emoji during startup; default cp1252 console can't encode it. | `register_preview_brand.py` calls `sys.stdout.reconfigure(errors='replace')` before the import. |
+| 11 | Skill imports `app.py` for `maybe_start_linux_brand_automation` and crashes on Windows console (`'charmap' codec can't encode character '\U0001f527'`) | app.py prints emoji during startup; default cp1252 console can't encode it. | _No longer applicable since 2026-05-10 — the skill no longer imports `app.py` (brand creation moved to dashboard's `/create`). If reintroducing Python CLI that imports `app.py` on Windows, prefix with `sys.stdout.reconfigure(errors='replace')`._ |
 | 12 | Identifier rewrite leaves UPPER_CASE constants like `SPRINGALLS_PHONE_TEL` | Scaffolder only handled Pascal/camel/kebab forms. | `scaffold-theme.mjs` and `scaffold-theme-skeleton.mjs` `replaceIdentifiers()` now also handles `upperShort` and `upperFull` forms (longest-first to avoid double-replacement). |
 | 13 | Gilded-drive's `.contact-item svg { stroke: none }` blanks classic-dealer's contact icons when both themes ship to the same preview | Unscoped class-rule in a global stylesheet (`base.css`) — competes on tied (0,1,0) specificity with the other theme's scoped rule, source order decides which wins. | Audit advisory rule **`std-css-unscoped-global-rule`** — flags class selectors at column 0 in any global `.css` that doesn't reference `data-theme-id` anywhere. Wrap every rule in `:where(body[data-theme-id='<this-theme>'])` so it can't bleed. |
 | 14 | Latest Arrivals / Directory / `/used-cars` show empty even though the dealer uploaded inventory via `/update/<slug>` | Server-side `fetch('/api/inventory')` from a theme component without `?brand=<slug>` — server-to-server requests resolve to 127.0.0.1 with no host or x-brand context, API falls back to default `inventory.json`. | Audit advisory rule **`data-fetch-no-brand-param`** — flags `fetch(...)` / `apiUrl(...)` to brand-scoped endpoints (`/api/inventory`, `/api/featured-vehicles`, `/api/recently-sold`, etc.) without a `brand=` parameter. Use `getBrandSlugFromRequest()` server-side or `useBrand().slug` client-side. |
@@ -1271,15 +1140,13 @@ the row stays as institutional memory.
 
 | Tool | Purpose | Mode |
 |------|---------|------|
-| `tools/check-skill-env.mjs` | Phase 0.5 pre-flight. 7 gates: tools-present, node-deps, mysql-env, mysql-reachable, flask-running, lvhme-resolves, theme-sync-clean. Exit 1 on any fail. Skip flags: `--skip-flask`, `--skip-lvhme`, `--skip-sync` (testing only). | Both modes |
+| `tools/check-skill-env.mjs` | Phase 0.5 pre-flight. 3 gates: tools-present, node-deps (sharp), theme-sync-clean. Exit 1 on any fail. | Both modes |
 | `tools/extract-logo-colors.mjs` | Deterministic dominant-color extraction from a logo (sharp + saturation-filtered histogram). | Mode A only |
 | `tools/check-theme-contrast.mjs` | WCAG AA validator for theme color combos. Exit 1 on critical fail. | Both modes |
 | `tools/audit-theme.mjs` | Static-analysis quality gate. Rule prefixes: `a11y-` (accessibility), `std-` (standards), `data-` (data-fetching), `mobile-` (responsive), `perf-` (performance), `brand-` (token discipline), `tp-` (Turbopack collision avoidance), `lib-` (foundation/dependency). Blockers exit 1. Supports inline `audit-ignore: <rule>` and file-level `audit-ignore-file: <rule>` directives. See **Pitfalls catalogue** above for the historical bugs each rule prevents. | Both modes |
-| `tools/smoke-test-preview.mjs` | Phase 10d end-to-end check. 5 checks: brand-record-fetchable, brand-themeId-correct, brand-images-populated, theme-folder-exists, preview-url-responds. Verifies MySQL + Flask + Next + registries all agree. Exit 1 on any fail. | Both modes |
-| `tools/rollback-theme.mjs` | Partial-theme cleanup when a run fails between Phase 7 and 12. Removes theme folder, public images, DNA JSON, images manifest, logo-colors JSON, MySQL row, then re-runs theme:sync. Idempotent. Flags: `--dry-run`, `--keep-brand`, `--brand-slug <s>`. | Both modes |
+| `tools/rollback-theme.mjs` | Partial-theme cleanup when a run fails between Phase 7 and 12. Removes theme folder, public images, DNA JSON, images manifest, logo-colors JSON, then re-runs theme:sync. Idempotent. Flag: `--dry-run`. (No longer touches MySQL — brand cleanup is dashboard-only.) | Both modes |
 | `tools/fetch-theme-images.mjs` | Source 7 page-level images (hero/about/services/finance/partExchange/sellYourCar/recentlySold). Curated Unsplash catalogue with classic-archetype fallback; live API mode when `UNSPLASH_ACCESS_KEY` is set. | Mode A only |
 | `tools/extract-theme-dna.mjs` | DNA extractor from a carous-platform sibling app. | Mode B only |
 | `tools/scaffold-theme.mjs` | Full clone-and-edit scaffolder. Used by Mode B — clones springalls-classic, applies DNA, downloads hero. | Mode B |
 | `tools/scaffold-theme-skeleton.mjs` | Skeleton-first scaffolder. Used by Mode A — produces ONLY contract + plumbing (~39 files), strips visual layer for Phase 8 fresh design. | Mode A |
-| `tools/register_preview_brand.py` | Registers the preview brand in MySQL via `preview_store`. | Mode A only |
-| `npm run theme:sync` | Auto-discovers themes, regenerates registries + manifest. | Both modes |
+| `npm run theme:sync` | Auto-discovers themes, regenerates registries + manifest. Run automatically by `.github/workflows/deploy.yml` on every prod deploy so new themes wire into the dashboard's `/create` picker without manual steps. | Both modes |
