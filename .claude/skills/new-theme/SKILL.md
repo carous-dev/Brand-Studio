@@ -232,9 +232,20 @@ shipped yet; flagged as deferred work.
 ## Phase 0 — Plan the run
 
 Use **TodoWrite** to capture the phases below as a checklist. Mark each
-one complete the moment it lands. The phase set differs by mode.
+one complete the moment it lands.
+
+**Scope of this skill (clarified 2026-05-10):** `/new-theme` builds the
+THEME ONLY — a reusable code asset under `app/themes/<id>/` plus its
+default imagery under `public/themes/<id>/`. The skill does NOT register
+brand records, does NOT trigger Cloudflare/Apache automation, and does
+NOT create previews. After the theme ships via git (Phase 13), the
+operator opens the brandstudio dashboard's `/create` page, picks the
+new theme from the dropdown, and the existing preview-creation flow
+handles all brand wiring + automation. Theme creation and preview
+creation are intentionally separate concerns.
 
 **Mode A phases:**
+
 0.5. Pre-flight check (`check-skill-env.mjs`) — verify environment before any work.
 1. Gather inputs (logo path + dealer URL via AskUserQuestion).
 2. Analyze the logo:
@@ -242,27 +253,33 @@ one complete the moment it lands. The phase set differs by mode.
    b. Vision-analyze typography character + shape language.
    c. Validate WCAG AA contrast on the suggested primary; iterate if needed.
    d. Map character to archetype (`classic` / `modern` / `rugged` / `luxury` / `prestige`).
-3. Scrape the dealer site (WebFetch — brand name, services, location, hero image, etc).
+3. Scrape the dealer site (WebFetch — brand name, services, location, hero image, etc — captured in DNA notes for archetype guidance, NOT baked as brand record).
 4. Pick a paired Google Font from the character analysis.
 5. Synthesize DNA JSON (includes the hero image URL + chosen archetype).
 6. Derive theme id + display name from brand name.
-7. Run scaffolder with `--archetype <id>` (clones baseline + downloads hero).
-7.5. Fetch theme imagery — 7 page-level slots via `fetch-theme-images.mjs`.
+7. Run scaffolder with `--archetype <id>` (clones baseline + downloads default hero).
+7.5. Fetch theme imagery — 7 page-level archetype-default slots via `fetch-theme-images.mjs`.
 8. Adapt per archetype design spec (`docs/theme-archetype-specs.md`).
-9. Sync registries.
-9.5. Register the preview brand via `register_preview_brand.py --images <manifest>`.
+9. Sync registries (`npm run theme:sync`).
 10. Verify:
     a. `tsc --noEmit` clean against zero baseline.
     b. Contrast re-check on final DNA.
     c. Audit (`audit-theme.mjs`) — 0 blockers.
-    d. Smoke test (`smoke-test-preview.mjs`) — brand record fetchable, themeId correct, images populated, preview URL responds.
 11. Log to FEATURE_LOG.
-12. Report (with preview URL + image attributions + audit advisories).
+12. Report (theme deliverables only — no preview URL).
+13. Ship — operator commits + pushes via git; CI deploys; theme appears in `/create`'s picker.
+
+**Phase 9.5 (brand registration) and Phase 10d (preview smoke test) are
+NO LONGER part of the canonical Mode A flow.** Both are documented as
+Appendix A — "Optional: local preview during development" — for cases
+where a developer wants to eyeball the theme on `<slug>.lvh.me:3000`
+before pushing. They are NOT a ship gate and are NOT how previews
+reach production.
 
 If anything fails between Phase 7 and 12, run
 `node tools/rollback-theme.mjs --theme-id <id>` to clean up the partial
-artifacts (theme folder, public images, DNA JSON, brand row, registries)
-before re-attempting. Idempotent — safe to run multiple times.
+artifacts (theme folder, public images, DNA JSON, registries) before
+re-attempting. Idempotent — safe to run multiple times.
 
 ## Phase 0.5 — Pre-flight environment check
 
@@ -280,7 +297,7 @@ means proceed; exit 1 means tell the user which gate(s) failed and stop.
 Common failures + fixes:
 - **flask-running FAIL**: User needs to run `python app.py` in a separate terminal.
 - **mysql-reachable FAIL**: Check MySQL service; verify `.env` has correct creds.
-- **lvhme-resolves FAIL**: Internet/DNS issue. Pre-flight can be bypassed with `--skip-lvhme` if you're testing offline, but Phase 12 preview URL won't work.
+- **lvhme-resolves FAIL**: Internet/DNS issue. Pre-flight can be bypassed with `--skip-lvhme` if you're testing offline. The canonical ship path (Phase 13) doesn't depend on lvh.me — only Appendix A's local preview does.
 - **theme-sync-clean FAIL**: An existing theme has a broken contract file; investigate before scaffolding a new theme.
 
 Skip flags exist for testing edge cases: `--skip-flask --skip-lvhme --skip-sync`. Don't skip in normal runs.
@@ -656,9 +673,11 @@ Two modes (auto-selected):
 
 The script outputs a manifest JSON at `tools/.theme-images/<theme-id>.json`
 with `{themeId, archetype, mode, images: { hero: { localPath, attribution },
-... }, warnings}`. Pass that path to `register_preview_brand.py --images
-<path>` in Phase 9.5 so the brand record's `images.<slot>` fields point
-at the local URLs.
+... }, warnings}`. The manifest is consumed at preview-creation time
+(in the dashboard's `/create` flow, or optionally by Appendix A's
+`register_preview_brand.py --images <path>` if you're running a local
+preview during development) so the brand record's `images.<slot>`
+fields point at the local URLs that ship with the theme.
 
 If the script reports warnings (slot couldn't be sourced, classic-fallback
 used), surface them in the Phase 12 report — the team will want to swap
@@ -823,22 +842,21 @@ files plus `theme/theme-manifest.json`. If it errors with `missing
 required contract files`, the new folder is incomplete — the scaffolder
 should never produce that, so investigate before re-running.
 
-## Phase 9.5 — Register a preview brand (OPTIONAL — local sanity-check only)
+## Appendix A — OPTIONAL local preview (dev-only; not part of the ship path)
 
-> **Scope change 2026-05-10:** the `/new-theme` skill no longer creates
-> brand records or wires domains as a required step. Themes ship as
-> reusable code; brand creation happens through the brandstudio dashboard
-> (`/create`) using the existing automation, which auto-provisions
-> Cloudflare DNS + Apache vhost + cert based on the operator-supplied
-> domain. The dropdown on `/create` reads `theme/theme-manifest.json`,
-> which is regenerated by `theme:sync` (Phase 9) and re-run on every
-> deploy by `.github/workflows/deploy.yml`. No manual steps required.
+> **Not a phase.** Renamed from "Phase 9.5" to "Appendix A" 2026-05-10
+> because the `/new-theme` skill no longer creates brand records, no
+> longer wires domains, and no longer interacts with previews on the
+> canonical path. Themes ship purely as code; preview creation happens
+> through the brandstudio dashboard (`/create`) where the operator picks
+> the new theme from the dropdown and the existing automation handles
+> Cloudflare DNS + Apache vhost + cert.
 >
-> **This phase is now OPTIONAL** — only run it if you want a quick local
-> preview at `<slug>.lvh.me:3000` to eyeball the new theme during
-> development. Skip it for the canonical Mode-A flow if you only intend
-> to ship the theme via git and let real previews come from the
-> dashboard later.
+> **Run this only if you want to eyeball the new theme on
+> `<slug>.lvh.me:3000` during development**, before the git push. Phase
+> 13 (Ship) does NOT depend on this. The dashboard's `/create` flow at
+> production time does NOT depend on this. It's purely a developer
+> convenience for visual sanity-checking.
 
 ```bash
 python tools/register_preview_brand.py \
@@ -988,24 +1006,25 @@ Multiple rules can be comma-separated: `audit-ignore: rule1, rule2`.
 
 `npm run build` only when the user explicitly asks for a build.
 
-## Phase 10d — End-to-end smoke test
+## Phase 10d — End-to-end smoke test (OPTIONAL — Appendix A only)
 
-After the audit is clean, prove the running stack actually serves the new
-theme. The audit only inspects source files; the smoke test verifies that
-MySQL, Flask, Next, and the registries all agree on the same theme.
+> **Scope change 2026-05-10:** this phase was previously part of the
+> canonical Mode A flow but is no longer. It depends on a registered
+> brand (Phase 9.5) and a running Next dev server, both of which are
+> Appendix A concerns (local development eyeballing). Skip on the
+> ship path; run only when Appendix A is also being run.
 
 ```bash
 node tools/smoke-test-preview.mjs --slug <brand-slug> --theme-id <theme-id>
 ```
 
-The brand slug is what `register_preview_brand.py` returned in Phase 9.5
-(typically `<theme-id minus -bespoke>-preview`). Five checks, all must be
-green before reporting done:
+The brand slug is what `register_preview_brand.py` returned in Appendix A
+(typically `<theme-id minus -bespoke>-preview`). Five checks:
 
 1. **brand-record-fetchable** — `/api/previews/<slug>` returns 200 with a
    non-empty body. Catches a missing or broken MySQL row.
 2. **brand-themeId-correct** — the brand's `themeId` field matches the
-   scaffolded theme id. Catches mode-A registrar bugs where the wrong
+   scaffolded theme id. Catches Appendix A registrar bugs where the wrong
    theme got linked.
 3. **brand-images-populated** — at least 5 of 7 expected slots
    (`hero`, `about`, `services`, `finance`, `partExchange`,
@@ -1042,20 +1061,24 @@ Use today's absolute date from system context.
 
 ## Phase 12 — Report
 
-Concise summary to the user, ~6 lines:
+Concise summary to the user, ~6 lines. **Theme deliverables only** — no
+preview URL, no brand record info. Preview creation is a separate
+operator-driven step (see Phase 13).
 
-- Theme id, display name, status, source (dealer name + URL / carous-platform app).
-- Path: `app/themes/<theme-id>/`.
+- Theme id, display name, archetype, source (dealer name + URL / carous-platform app).
+- Path: `app/themes/<theme-id>/` + assets at `public/themes/<theme-id>/`.
 - Color signature: `primary <hex>` + `accent <hex>`. Mention if A2c
   contrast had to be iterated (e.g. "primary darkened from #ffd700 →
   #595959 to pass white-on-primary AA").
-- Font pairing chosen + the logo-character category that drove it.
-- Hero image + 7-slot images: self-hosted under `/themes/<id>/images/*.jpg`
-  (or note any slots that fell back to the classic-archetype pool).
+- Font pairing + the logo-character category that drove it.
+- 7-slot imagery: archetype-default JPEGs at `/themes/<id>/images/*.jpg`
+  (note any slots that fell back to the classic-archetype pool — operator
+  can swap per-brand later via `/update/<slug>`).
 - Audit result: `0 blockers / N advisories` from `tools/audit-theme.mjs`.
-- **Ship instruction:** "commit + push to `main` (or open PR per branch
-  policy); CI will deploy and the theme will appear in `/create`'s
-  picker once the deploy finishes." — see Phase 13.
+- **Ship instruction (Phase 13):** "commit + push to `main` (or open PR
+  per branch policy); CI deploys; theme will appear in the dashboard's
+  `/create` picker. Then operator creates a preview against the new
+  theme to actually see it rendered for a specific dealer."
 - Anything that needs follow-up (WebFetch blocks, missing dealer fields,
   unusual layout flourishes the adaptation didn't capture).
 
@@ -1103,15 +1126,18 @@ is operator-driven, not skill-driven.
 once; brands are operator decisions made many times against the same
 theme (per dealer, per preview, per re-skin attempt). Conflating the two
 into the same skill made every theme ship a brand-record write, which
-locked the theme to one specific dealer and made the rollback story
-muddier. Now theme code lives in git, brand records live in MySQL, and
-they sync up at brand-creation time — operator picks the theme, the
-existing dashboard wires the rest.
+locked the theme to one specific dealer at scaffold time and made the
+rollback story muddier. Now theme code lives in git, brand records
+live in MySQL, and they sync up at brand-creation time — operator picks
+the theme from `/create`'s dropdown, the existing dashboard wires the
+brand, and the existing automation provisions Cloudflare DNS + Apache
+vhost + cert. **The skill stops at "theme files committed to git". It
+does not run `register_preview_brand.py` on the canonical path. It does
+not interact with MySQL. It does not trigger Cloudflare or Apache.**
 
-**If you also want a quick local preview:** run Phase 9.5 (optional)
-to register a `<slug>-preview` brand pointing at the new theme on
-`<slug>.lvh.me:3000`. That's for development eyeballing only, not a
-ship step.
+The `/new-theme` skill is purely a theme-builder. Preview creation is
+purely operator-driven via the existing dashboard. Two skills, two
+flows, no overlap.
 
 ## Failure modes & escape hatches
 
