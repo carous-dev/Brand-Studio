@@ -368,6 +368,54 @@ contract), document the gap in the final report. Don't ship silently.
   inventory page's JSX hasn't been touched relative to the springalls-classic
   baseline.
 
+**Autonomous independent designs — every page, every component (must-have, learned 2026-05-11 from NCR detail-page borrow):**
+- **Every page in a /new-theme build must be designed independently for the
+  theme.** That includes the vehicle detail page (`pages/used-cars/[slug]/page.tsx`),
+  the recently-sold page, the inventory list page, the contact form layout,
+  and every other inner page. Borrowing the render-layer structure from
+  `springalls-classic` or another sibling theme — even when keeping it under
+  an `audit-ignore-file` annotation — produces themes that feel like palette
+  swaps of the same site. Difatha flagged this on the `ncr-van-sales-bespoke`
+  vehicle detail page (it shipped with the Configurator-led pattern lifted
+  near-verbatim from the inventory-design-library) and on prior themes.
+- **The inventory-design-library is a REFERENCE / brain-prompt, not a copy
+  source.** Read the patterns, pull ideas you like, then **synthesize** a
+  fresh layout specific to this theme. Two themes ostensibly using the same
+  "list pattern" should still look materially different — different chip-row
+  composition, different sort/filter affordance, different empty/skeleton
+  states, different scroll/snap behavior, different card chrome.
+- **The vehicle detail page especially must have its own composition language**:
+  hero (full-bleed photo / split / mixed media / sticky-thumb-rail),
+  gallery (carousel / mosaic / scroll-stack / fullscreen-on-tap / lightbox),
+  spec presentation (table / pull-quotes / inline-with-prose / accordion /
+  pills / data-rings), finance presentation (sticky sidebar / dominant
+  calculator / inline band / footer drawer), enquiry surface (inline form /
+  drawer / WhatsApp-first / call-to-action panel). Mix-and-match — no two
+  themes ship the same combination, even within the same archetype.
+- **Required visual language for every theme** (extends the Motion &
+  light language requirement above):
+  - **Gradient backgrounds** — brand-token-driven, used on heroes, CTAs,
+    section bands, and as accent washes behind cards/lists. Linear, radial,
+    or conic; multi-stop with brand-mix; can layer with image. Do NOT use
+    flat single-color section backgrounds for an entire page — sterile,
+    dated. Reach for `--t-brand-gradient`, `--t-neon-gradient`,
+    `--t-band-gradient`, or compose your own with `color-mix(in srgb, …)`.
+  - **Geometric backgrounds** — abstract shapes (diagonal slashes,
+    hexagons, dot grids, mesh patterns, blob masks, decorative SVG lines,
+    corner-bracket reticles, scan-line accents). CSS-only patterns (no
+    asset weight) or decorative SVG. Brand-tinted, semi-transparent so
+    they sit behind content, not on top of it.
+  - **Professional + simple is the ceiling.** Don't go overboard — a busy
+    page with five competing patterns is worse than a clean page with one
+    strong gradient. Aim for ONE primary gradient direction per section,
+    ONE geometric motif per page, deployed consistently. Restraint reads
+    as "professional"; clutter reads as "amateur".
+- **The autonomy principle**: Claude decides the layout per page during
+  Phase 8 without operator hand-holding. The skill encodes the
+  constraints (Quality Bar + Pitfalls catalogue + reference libraries);
+  the skill does NOT prescribe the answer. If a page exists in the
+  skeleton, Phase 8 owns its design — full stop.
+
 ## Required widgets — use the brandstudio globals, don't re-roll
 
 Every theme's Shell **must** mount these brandstudio-global widgets
@@ -1544,6 +1592,7 @@ fire and block you, but recognising the pattern earlier saves a round trip.
 | 29 | Saved per-brand inventory JSON ignored — dealer uploaded vehicles via `/update/<slug>` but Latest Arrivals / `/used-cars` / Featured / Recently Sold all rendered empty or showed the default `inventory.json` instead of `<slug>-inventory.json`. | `/api/inventory/route.ts` only read the `x-brand` header and host for brand resolution; the `?brand=<slug>` query param that themes pass on server-side fetches was IGNORED. Server-to-server fetches resolve to `127.0.0.1` (no useful host, no x-brand header) so the API fell through to the `'fairfield'` default. The companion `/api/featured-vehicles` and `/api/recently-sold` routes correctly read `?brand=`, so they worked — but their themes were ALSO affected because `LatestArrivals.tsx` was parsing `data.vehicles` instead of the actual `{ items, meta }` response shape. First report: 2026-05-11, auto-wow-uk-bespoke preview. | (a) Updated `app/api/inventory/route.ts` to read `?brand=` first (with previews.db validation via `fetchBrandBySlug`, but accepts the literal slug if not yet in the previews table so freshly-scaffolded themes serve disk inventory). (b) Updated `app/api/featured-vehicles/route.ts` fallback: when no vehicle has `featured: true`, sort by newest-year + price-desc and take the first N instead of a random shuffle (the random shuffle made previews look different every reload, which dealers found unsettling). (c) SKILL Quality Bar §"Brand-scoped server fetches" stays in force — themes still must pass `?brand=`; the API is now equipped to actually use it. (d) Documented response shapes in this row: `/api/inventory` → `{ items, meta }`; `/api/featured-vehicles` → `Array<vehicle>`; `/api/recently-sold` → `Array<vehicle>`. Theme components must accept either array-or-`{items}` shape so they survive future shape tweaks. |
 | 30 | Inventory pages identical across every theme — the skeleton scaffolder keeps `pages/used-cars/page.tsx` and `[slug]/page.tsx` verbatim from `springalls-classic` because the data-layer logic is non-trivial, but Phase 8 was treating "kept" as "don't touch" → every prospect preview shipped with the same showroom-grid layout, lower visual differentiation than dealers expect. | Phase 8 conflated "keep the data layer" with "don't touch the file at all". The SKILL.md guidance for kept inventory was effectively `audit-ignore-file: ... — deferred work`, which was correct for the audit advisories but wrong as a design directive. | (a) Added a new SKILL Quality Bar §"Inventory pages MUST be redesigned per archetype" with the data-layer/render-layer split rule. (b) Created `docs/inventory-design-library.md` — 7 list patterns + 6 detail patterns sourced from reference dealers (Autotrader, Cinch, Cazoo, Hexagon, Vision Prestige, McLaren Approved, etc.), with a rotation table so no two themes ship the same layout. (c) New audit advisory rule **`inv-redesign-required`** (deferred — when shipped, flag inventory pages whose JSX is unchanged from springalls-classic baseline). Until the rule ships, the rotation table is the canonical check. |
 | 31 | Themes ship "static and dead" — palette-swapped Hero / Header / sections that don't move or glow at all once the page loads. Dealer feedback consistently described prospect previews as "fine but lifeless." | Phase 8 added decorative SVG and gradient layers but no motion. Static radial-gradient glows look intentional in static mockups but feel inert on a real device. `data-aos` attributes were sprinkled on a few sections but not used systematically — typical theme had 3-4 AOS attrs only on the homepage and zero on inner pages. No scroll-tied effects. Hero photos sat still while everything else moved. | Two-pronged: (a) New brandstudio-global widgets — `<MotionFX />` (animated keyframe library: `.mfx-glow-pulse`, `.mfx-glow-orbit`, `.mfx-pulse-dot`, `.mfx-shimmer`, `.mfx-text-glow`, `.mfx-border-glow`, `.mfx-scan`, `.mfx-float`, `.mfx-tilt`, etc — all brand-token-driven, all `prefers-reduced-motion`-respecting) and `<ScrollProgress />` (rAF scroll-tied driver that writes `--mfx-progress` per `[data-mfx-scroll]` element, paired with five built-in variants: `parallax-slow|medium|fast`, `fade-out-on-exit`, `blur-on-exit`, `zoom-on-enter`). AnimateOnScroll expanded from 7 variants to 18 (added flip-up/down/left/right, slide-up/down, fade-up-right/up-left/down-right/down-left, zoom-in-up/out-down, blur-in) plus per-element `data-aos-duration` and `data-aos-easing`. (b) New SKILL Quality Bar §"Motion & light language — REQUIRED, not optional" mandates: animated glows (no static radial-gradient divs in heroes), `.mfx-pulse-dot` on every status chip, 4+ data-aos elements per page with varied variants, at least 1 `data-mfx-scroll` effect on the homepage, `.mfx-shimmer` on primary CTAs, `.mfx-text-glow` on hero highlight phrase. (c) Skeleton scaffolder's Shell stub now mounts all three motion widgets by default so Phase 8 only sprinkles attributes; no plumbing per theme. First report: 2026-05-11 from operator feedback on auto-wow-uk-bespoke. |
+| 32 | Vehicle detail page (and other "kept" inner pages) reuse the springalls-classic / sibling-theme render structure verbatim — only colors and class names differ. Result: every theme's `/used-cars/<slug>` looks like the same page in a different palette. | Phase 8 lifted the configurator-led pattern from `docs/inventory-design-library.md` near-verbatim for `ncr-van-sales-bespoke` and kept the `audit-ignore-file: tp-use-client-on-page` annotation that the skeleton ships with. The design library was being used as a **template** rather than a **reference**. Audit rule `inv-redesign-required` (advisory) targets the LIST page only; no equivalent for the detail page. First report: 2026-05-11, Difatha on `ncr-van-sales-bespoke`. | (a) New SKILL Quality Bar §"Autonomous independent designs — every page, every component" explicitly forbids borrowing render structure from any baseline; inventory-design-library is documented as reference / brain-prompt only, not a copy source. (b) Required visual language extended to mandate gradient backgrounds + geometric backgrounds in addition to the existing motion requirements (`--t-brand-gradient`, `--t-neon-gradient`, `--t-band-gradient` already exist; geometric is CSS-only patterns or decorative SVG). (c) The "vehicle detail page must have its own composition language" clause enumerates the design axes (hero / gallery / spec / finance / enquiry) that must vary across themes. (d) Future audit rule `inv-detail-redesign-required` (deferred) should compare detail-page JSX structure against the springalls baseline. Until shipped, the SKILL clause is the contract. |
 
 When you add a new audit rule for a future bug, append a row here. The
 catalogue should grow as a record of "what we've already learned not to
