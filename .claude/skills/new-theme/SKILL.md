@@ -90,6 +90,17 @@ Phase 10c; the principles below cover what the tool can't reliably check.
   ships with this; preserve it through Phase 8 design.
 
 **Mobile-first responsive (must-have):**
+
+> **Core principle:** Mobile is **NOT** a shrunken desktop — it's a
+> simplified, focused experience. Carous dealer sites get 60%+ mobile
+> traffic, mostly older buyers on a single hand, in a hurry. Every section
+> on mobile should answer one question: "what is this for and what do I
+> tap?" Desktop can be rich, layered, and exploratory; mobile must be
+> calm, linear, and obvious. Design the mobile view _first_, then add
+> desktop complexity at `min-width` breakpoints — never the other way
+> around.
+
+_Mechanical rules:_
 - Base styles target the smallest viewport (~360–375px wide). Larger
   breakpoints _add_ via `@media (min-width: ...)`, never `max-width`. The
   audit warns on any `max-width` media query.
@@ -103,6 +114,72 @@ Phase 10c; the principles below cover what the tool can't reliably check.
   on mobile, grid on tablet+.
 - Test mentally at 360px, 768px, 1024px, 1440px. If a layout depends on
   one viewport size to look right, redo it.
+
+_Simplification rules (what mobile drops, hides, or collapses):_
+- **One column by default below 640px.** Multi-column grids (cards-in-3,
+  features-in-4, footer-in-5) stack to a single column. Two-column on
+  mobile is allowed only for genuinely paired items (e.g. icon + label
+  rows, label/value pairs in a spec table) — never for cards or sections.
+- **Hide decorative layers ≤ 640px.** `mfx-glow-pulse`, `mfx-grid-drift`,
+  `.scanline`, corner reticles, parallax, geometric SVG overlays, blur
+  blobs, gradient meshes — `display: none` or `opacity: 0` on narrow
+  viewports. Restate: zero or one decorative layer in the first mobile
+  viewport, max. (See also "Mobile strip" in the Pitfalls catalogue.)
+- **Demote secondary CTAs.** If desktop shows 3 CTAs in the hero
+  (Browse / Sell / Finance), mobile shows ONE primary CTA full-width
+  + at most one ghost-button below. Tertiary CTAs live in the nav or
+  further down the page — never compete in the hero on mobile.
+- **Trim chips and badges.** Trust badges, feature chips, stat
+  counters, "X years in business / Y cars sold / Z reviews" rows — pick
+  the strongest one or two for mobile. A horizontal scroll rail of chips
+  is allowed; a wrapping cluster of 8+ chips is not.
+- **Single-image hero on mobile.** Desktop split-screens, image collages,
+  before/after pairs, and stacked-card hero layouts collapse to ONE
+  hero image (or a solid brand-color/gradient panel) with the title +
+  one CTA. Save the layered visuals for ≥ 768px.
+- **Hide the redundant.** If a stat appears in the hero AND a stat band
+  below, hide one on mobile. If the sidebar repeats the price three
+  times on detail pages, show it once + sticky bottom bar (see Pitfalls
+  §"Hide the desktop sidebar's redundant info on mobile").
+- **Bottom-anchor sticky CTAs.** Long pages (vehicle detail, services,
+  finance) get a `position: fixed; bottom: 0` action bar on mobile with
+  the primary action (Enquire / Call / Apply). Desktop relies on sticky
+  sidebars; mobile relies on this bar.
+- **Vertical rhythm tightens, but breathes.** Section padding on mobile
+  should be ~60–70% of desktop (`clamp(2.5rem, 6vw, 5rem)` not a flat
+  `5rem`). Don't cram — but don't waste the half-screen either. Vertical
+  scrolling is cheap on mobile; horizontal density is not.
+- **Touch-rail any "row of N" that can't reasonably stack.** Logo
+  strips, brand-trust rails, similar-vehicles, image galleries — convert
+  to a horizontal swipeable rail (`overflow-x: auto; scroll-snap-type: x mandatory`)
+  on mobile, grid on tablet+. Never force-shrink a 6-up grid into a
+  6-up cramped row.
+- **Nav overlay is full-screen, list-style, large-tap.** No multi-column
+  mega-menus on mobile. Vertical list, each item ≥ 56px tall, with the
+  Home link first (see Quality Bar §"Always include a Home link in nav").
+  Include phone, WhatsApp, and social icons inside the overlay (see
+  feedback memory §"Top contact bar essentials").
+- **Forms: one field per row.** Even if desktop pairs first-name /
+  last-name on a row, mobile stacks them. Labels above inputs (not
+  side-by-side). Submit buttons full-width.
+- **Modals: full-screen sheets on mobile, centered cards on desktop.**
+  Don't render a centered 600px modal inside a 360px viewport with 90%
+  width — make it a full-height bottom sheet or a true full-screen
+  takeover with a clear close affordance in the top-right.
+- **Font sizes step down, but not into illegibility.** Body text ≥ 16px
+  on mobile (`text-base`). Hero titles use `clamp()` so they never
+  exceed 2 lines (see Quality Bar §"Hero title fit"). Captions / meta
+  ≥ 13px. Never use `text-xs` (12px) for anything a buyer needs to read.
+
+_Test discipline:_
+- Open Chrome DevTools in iPhone-13 mode (390×844) for the homepage and
+  the vehicle detail page during Phase 8. If you can see >2 decorative
+  layers, >1 multi-column grid, or any horizontal-scroll bleed at first
+  paint, it's not done.
+- A finished mobile view should let a first-time buyer reach the
+  primary CTA (Browse stock / Call / Enquire) within one thumb-swipe.
+  If they have to scroll past three decorative bands first, the
+  hierarchy is wrong.
 
 **Data fetching (must-have):**
 - Server Components by default. Reach for `'use client'` only when the
@@ -365,10 +442,69 @@ Phase 10c; the principles below cover what the tool can't reliably check.
   is fine, position between the copyright and the legal nav, never use a
   loud badge or logo block.
 
-**Modern / futuristic visual language is REQUIRED, not optional (must-have, learned 2026-05-10):**
-- "Plain and predictable" layouts are the regression. Every Phase-8
-  redesign must include a meaningful number of these futuristic /
-  imagery-rich devices in the FIRST visible viewport:
+**Restraint and visual hierarchy — professional, not hacky (must-have, learned 2026-05-11; supersedes the maximalist clauses below):**
+- The dominant failure mode for /new-theme themes is **overdesign**: too
+  many font sizes, too many gradient surfaces, too many decorative
+  layers stacked in every section, brand color dominating instead of
+  accenting. The result reads as amateur-busy, not premium. This rule
+  is the governing constraint — when a downstream rule (motion, futuristic,
+  archetype spec) collides with this one, restraint wins.
+- **Typography scale cap.** A single page may use ≤ 5 distinct font
+  sizes total. One display size for hero / page-title, one heading size
+  for section H2s, one sub-heading for H3, one body size, one small/
+  caption. Anything beyond reads as inconsistent. Use `clamp()` to
+  scale per viewport; don't introduce a new size for "this one card".
+- **Gradient budget.** ≤ 2 gradient-painted surface backgrounds per
+  page (hero gradient + one section band is the typical maximum).
+  Other sections sit on `var(--color-bg)` / `var(--color-surface)`
+  flat. Don't paint every alternating section in `--t-brand-gradient`
+  / `--t-neon-gradient` — the eye has no resting place.
+- **Brand color is the accent, not the surface.** The brand primary
+  occupies ≤ ~25% of pixel area per page (CTAs, eyebrows, focus rings,
+  one feature band). Most of the page surface is neutral (`var(--color-bg)`,
+  `var(--color-surface)`). The brand "feeling" comes from the few
+  high-impact moments, not from coverage. Filling every section with
+  a brand-tinted background = a 1990s billboard.
+- **Decorative-layer budget per section.** ≤ 2 decorative layers per
+  section (e.g. hero gets photo + ONE of: grid pattern / glow / scanline
+  / corner reticles — not all four). Section bands and inner pages
+  typically get zero decorative layers — just type and content.
+- **Mobile strip.** On viewports ≤ 640px, decorative layers (`mfx-glow-pulse`,
+  `mfx-grid-drift`, `.scanline`, corner reticles, parallax) either
+  hide via `display: none` / `opacity: 0` or scale to ≤ 50% intensity.
+  Mobile demands clarity; decorative depth that worked on desktop
+  becomes visual noise on a 360px screen. Test mentally at 360px during
+  Phase 8 — if there are more than 2 visible decorative layers in the
+  first viewport, cut.
+- **Status-indicator restraint.** One `.mfx-pulse-dot` per visible
+  viewport is the bar — typically the "Live stock" / "Available" chip.
+  Every chip getting a pulse-dot drains the indicator's meaning;
+  buyers stop noticing. Other chips stay static.
+- **Shimmer restraint.** `.mfx-shimmer` belongs on the ONE dominant
+  CTA per page (the "Browse stock" / "Apply" button in the hero). Not
+  on every button, not on cards, not on chips. Shimmer everywhere =
+  shimmer nowhere.
+- **AOS restraint.** 2–3 staggered entry animations per page (the
+  marquee moments) — NOT 4+. Quality > quantity. The previous "4+ per
+  page" rule was producing themes where every other element flickered
+  in; that's busyness, not liveliness.
+- **Visual hierarchy per section.** Each section has ONE focal element
+  — the headline, the photo, OR the CTA — not all three competing for
+  attention. Subordinate elements stay quiet (smaller, lower-contrast,
+  no motion). A hero with text-glow + chips with pulse-dots + shimmer
+  CTA + corner reticles + grid pattern + parallax + scan line all at
+  once has six attention-pullers; pick two.
+
+The maximalist rules below (Modern / futuristic visual language, Motion
+& light language) remain in force but should be read THROUGH this
+restraint rule: their device lists are MENUS to pick 2-3 from, not
+checklists to satisfy in full.
+
+**Modern / futuristic visual language — choose 2-3 devices, not all (must-have, learned 2026-05-10, tempered 2026-05-11):**
+- "Plain and predictable" layouts are a regression. So is "Phase 8
+  applied every device on the menu". Phase 8 picks **2-3 of the
+  devices below** — typically all concentrated in the hero, with the
+  rest of the page running clean. The menu (NOT a checklist):
   - layered hero imagery (photo + decorative SVG + gradient + glow)
   - neon-tinted brand glow blobs on/around hero
   - gridded dot-pattern or vector grid background, subtly visible
@@ -382,10 +518,12 @@ Phase 10c; the principles below cover what the tool can't reliably check.
     sections, paired with section-eyebrow accents
   - asymmetric / staggered card layouts (avoid uniform N-up grids on
     EVERY section — break the rhythm at least once per page)
-- Imagery-rich does NOT mean "more stock photos". It means decorative
-  visual interest: gradient washes, blurred neon orbs, mask cutouts,
-  and brand-tinted shadows. Most of these add zero asset weight (CSS-
-  only) and survive the brand-token rules cleanly.
+- Imagery-rich does NOT mean "more stock photos" and does NOT mean
+  "stack every CSS device in one section". It means **2-3 well-chosen
+  decorative moves per theme**, concentrated where they earn attention
+  (the hero, one feature band) and absent from the rest of the page.
+  Decorative tools survive the brand-token rules cleanly; they don't
+  survive the restraint rule above if used profligately.
 
 **Performance (should-have):**
 - LCP image (the hero) uses `priority` on the `next/image` and has explicit

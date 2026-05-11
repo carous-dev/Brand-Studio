@@ -3,45 +3,15 @@
   "defaultTheme": "classic-dealer",
   "themes": [
     {
-      "id": "auto-wow-uk-bespoke",
-      "name": "Auto Wow UK Ltd",
-      "description": "Bespoke theme for Auto Wow UK Ltd — bold red sport-signage rugged archetype, condensed display headings on a sharp-radius UI.",
-      "status": "experimental"
-    },
-    {
-      "id": "chesterfield-motor-empire-bespoke",
-      "name": "Chesterfield Motor Empire",
-      "description": "Bespoke rugged theme for Chesterfield Motor Empire (Shuttlewood, Derbyshire) — chrome-on-charcoal dealer-signage feel with bright orange accents and condensed display headings.",
-      "status": "experimental"
-    },
-    {
       "id": "classic-dealer",
       "name": "Classic Dealer",
       "description": "Current production-compatible theme.",
       "status": "stable"
     },
     {
-      "id": "columbus-vehicles-bespoke",
-      "name": "Columbus Vehicles Bespoke",
-      "description": "Rugged-archetype skeleton for Columbus.",
-      "status": "experimental"
-    },
-    {
-      "id": "ele-car-sales-bespoke",
-      "name": "ELE Car Sales",
-      "description": "Bespoke theme for ELE Car Sales (Shotts, Lanarkshire) — bold red-on-white modern sans-serif with a confident dealer-signage feel.",
-      "status": "experimental"
-    },
-    {
       "id": "gilded-drive",
       "name": "Gilded Drive",
       "description": "Futuristic showcase theme adapted for brand tokens.",
-      "status": "experimental"
-    },
-    {
-      "id": "ncr-van-sales-bespoke",
-      "name": "NCR Van Sales Ltd",
-      "description": "Bespoke rugged theme for NCR Van Sales Ltd — forest-green dealer-signage feel with condensed-italic wordmark, built for trade-friendly fleet specialists.",
       "status": "experimental"
     },
     {
