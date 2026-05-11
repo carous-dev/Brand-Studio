@@ -1151,6 +1151,12 @@
     backdrop-filter: blur(6px);
     animation: fadeIn 0.15s ease;
 }
+/* The HTML `hidden` attribute must beat `display: flex` above — otherwise the
+ * modal renders on every page load and clicking Cancel/X/backdrop doesn't
+ * actually take it away (setting el.hidden = true is a no-op visually). */
+.theme-modal-backdrop[hidden] {
+    display: none !important;
+}
 @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
 .theme-modal {
     background: var(--bg-card);
