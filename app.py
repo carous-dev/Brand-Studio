@@ -5,7 +5,8 @@ Standalone tool for creating and managing dealership brands
 
 from pathlib import Path
 import os
-from typing import Any
+import shutil
+from typing import Any, Dict, List, Optional
 from datetime import datetime
 import time
 
@@ -68,7 +69,12 @@ from backend.services.preview import (
     validate_brand,
     delete_preview_record,
 )
-from backend.services.theme_catalog import get_theme_catalog, resolve_theme_id
+from backend.services.theme_catalog import (
+    get_theme_catalog,
+    get_active_theme_catalog,
+    is_theme_disabled,
+    resolve_theme_id,
+)
 from backend.services.extractor import fetch_structured_text
 
 # Simple in-process lock to prevent concurrent AI generations per user/session
@@ -2619,12 +2625,313 @@ def resolve_preview_by_domain():
 @app.route('/api/themes', methods=['GET'])
 @auth_manager.login_required
 def get_themes():
-    """Return available preview themes from the shared manifest."""
-    catalog = get_theme_catalog()
+    """Return ACTIVE preview themes (disabled themes filtered out).
+
+    Used by the /create page's theme picker. Admin surfaces that need the full
+    catalog (including disabled themes) should hit `/api/themes/admin`.
+    """
+    catalog = get_active_theme_catalog()
     return jsonify({
         'themes': catalog.get('themes', []),
         'defaultTheme': catalog.get('defaultTheme'),
         'version': catalog.get('version'),
+    }), 200
+
+
+# -----------------------------------------------------------------------------
+# Theme administration (/templates page backend)
+# -----------------------------------------------------------------------------
+
+# Default theme is structurally important — brand-creation falls back to it,
+# every catalog method relies on it resolving. Don't allow disabling/deleting.
+_PROTECTED_THEME_IDS = {'classic-dealer'}
+
+
+def _themes_root() -> str:
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app', 'themes')
+
+
+def _public_themes_root() -> str:
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'public', 'themes')
+
+
+def _theme_meta_path(theme_id: str) -> str:
+    return os.path.join(_themes_root(), theme_id, 'theme.json')
+
+
+def _theme_folder_path(theme_id: str) -> str:
+    return os.path.join(_themes_root(), theme_id)
+
+
+def _public_theme_path(theme_id: str) -> str:
+    return os.path.join(_public_themes_root(), theme_id)
+
+
+def _validate_theme_id(raw: str) -> Optional[str]:
+    """Constrain to safe slug characters before any filesystem access."""
+    candidate = str(raw or '').strip().lower()
+    if not candidate or not re.match(r'^[a-z0-9][a-z0-9-]{0,62}$', candidate):
+        return None
+    return candidate
+
+
+def _read_theme_meta(theme_id: str) -> Optional[Dict[str, Any]]:
+    path = _theme_meta_path(theme_id)
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, 'r', encoding='utf-8') as fh:
+            return json.load(fh) or {}
+    except Exception as exc:
+        print(f'[THEME_ADMIN] failed reading {path}: {exc}')
+        return None
+
+
+def _write_theme_meta(theme_id: str, meta: Dict[str, Any]) -> bool:
+    path = _theme_meta_path(theme_id)
+    try:
+        with open(path, 'w', encoding='utf-8') as fh:
+            json.dump(meta, fh, indent=2, ensure_ascii=False)
+            fh.write('\n')
+        return True
+    except Exception as exc:
+        print(f'[THEME_ADMIN] failed writing {path}: {exc}')
+        return False
+
+
+def _run_theme_sync() -> bool:
+    """Regenerate manifest + 4 contract registries from disk.
+
+    Called after disable/enable/delete so `theme/theme-manifest.json` matches
+    each theme.json's current intent. Catalog discovery reads theme.json
+    directly so /api/themes is correct even without this; manifest is kept in
+    lockstep for CI/git consistency.
+    """
+    try:
+        result = subprocess.run(
+            ['npm', 'run', 'theme:sync'],
+            cwd=os.path.dirname(os.path.abspath(__file__)),
+            capture_output=True,
+            text=True,
+            timeout=60,
+            shell=(os.name == 'nt'),
+        )
+        if result.returncode != 0:
+            print(f'[THEME_ADMIN] theme:sync failed rc={result.returncode}: {result.stderr}')
+            return False
+        return True
+    except Exception as exc:
+        print(f'[THEME_ADMIN] theme:sync raised: {exc}')
+        return False
+
+
+def _brands_using_theme(theme_id: str) -> List[Dict[str, str]]:
+    """Return a list of brands currently configured to use this theme.
+
+    Each entry has at least 'slug' and 'name'. Used both for the admin panel
+    usage badge and as the delete guard rail.
+    """
+    matches: List[Dict[str, str]] = []
+    try:
+        for preview in list_previews():
+            preview_theme = (
+                preview.get('themeId')
+                or preview.get('theme_id')
+                or (preview.get('theme') or {}).get('themeId')
+                or (preview.get('theme') or {}).get('id')
+                or ''
+            )
+            if str(preview_theme).strip().lower() == theme_id:
+                matches.append({
+                    'slug': preview.get('slug', ''),
+                    'name': preview.get('name') or preview.get('slug') or '',
+                })
+    except Exception as exc:
+        print(f'[THEME_ADMIN] _brands_using_theme failed: {exc}')
+    return matches
+
+
+@app.route('/api/themes/admin', methods=['GET'])
+@auth_manager.login_required
+def get_themes_admin():
+    """Return the FULL theme catalog (active + disabled) with usage counts.
+
+    Used by the /templates management page. Each entry is augmented with:
+      - usageCount: number of brands targeting the theme
+      - usageBrands: lightweight list of {slug, name} of those brands
+      - heroImage: relative URL to the theme's hero JPG if it exists
+      - protected: True for themes the operator cannot disable/delete
+    """
+    catalog = get_theme_catalog()
+    themes_out: List[Dict[str, Any]] = []
+
+    # Pre-compute brand -> theme mapping once so we don't iterate previews N times.
+    brand_index: Dict[str, List[Dict[str, str]]] = {}
+    try:
+        for preview in list_previews():
+            preview_theme = str(
+                preview.get('themeId')
+                or preview.get('theme_id')
+                or (preview.get('theme') or {}).get('themeId')
+                or (preview.get('theme') or {}).get('id')
+                or ''
+            ).strip().lower()
+            if not preview_theme:
+                continue
+            brand_index.setdefault(preview_theme, []).append({
+                'slug': preview.get('slug', ''),
+                'name': preview.get('name') or preview.get('slug') or '',
+            })
+    except Exception as exc:
+        print(f'[THEME_ADMIN] brand index failed: {exc}')
+
+    for theme in catalog.get('themes', []):
+        theme_id = theme.get('id', '')
+        brands = brand_index.get(theme_id, [])
+        hero_relpath = f'/themes/{theme_id}/images/hero.jpg'
+        hero_absolute = os.path.join(_public_themes_root(), theme_id, 'images', 'hero.jpg')
+        themes_out.append({
+            **theme,
+            'usageCount': len(brands),
+            'usageBrands': brands[:8],   # cap the inline list to keep payload small
+            'heroImage': hero_relpath if os.path.exists(hero_absolute) else None,
+            'protected': theme_id in _PROTECTED_THEME_IDS,
+        })
+
+    return jsonify({
+        'themes': themes_out,
+        'defaultTheme': catalog.get('defaultTheme'),
+        'version': catalog.get('version'),
+    }), 200
+
+
+@app.route('/api/themes/<theme_id>/usage', methods=['GET'])
+@auth_manager.login_required
+def get_theme_usage(theme_id):
+    """Return the list of brands using this theme. Used by the delete confirmation."""
+    safe = _validate_theme_id(theme_id)
+    if not safe:
+        return jsonify({'error': 'Invalid theme id'}), 400
+    if not os.path.exists(_theme_folder_path(safe)):
+        return jsonify({'error': f'Theme {safe} not found'}), 404
+    brands = _brands_using_theme(safe)
+    return jsonify({'themeId': safe, 'count': len(brands), 'brands': brands}), 200
+
+
+@app.route('/api/themes/<theme_id>/disable', methods=['POST'])
+@auth_manager.login_required
+def disable_theme(theme_id):
+    """Mark a theme disabled so it disappears from the /create picker.
+
+    Existing brands targeting it keep rendering. Re-enable via /enable.
+    """
+    safe = _validate_theme_id(theme_id)
+    if not safe:
+        return jsonify({'error': 'Invalid theme id'}), 400
+    if safe in _PROTECTED_THEME_IDS:
+        return jsonify({'error': f'{safe} is the default theme and cannot be disabled'}), 409
+    meta = _read_theme_meta(safe)
+    if meta is None:
+        return jsonify({'error': f'Theme {safe} not found'}), 404
+    if meta.get('disabled'):
+        return jsonify({'ok': True, 'themeId': safe, 'disabled': True, 'noop': True}), 200
+    meta['disabled'] = True
+    if not _write_theme_meta(safe, meta):
+        return jsonify({'error': 'Failed to write theme.json'}), 500
+    _run_theme_sync()
+    sse_log_manager.info(f'Theme disabled: {safe}', source='theme-admin', metadata={'themeId': safe})
+    return jsonify({'ok': True, 'themeId': safe, 'disabled': True}), 200
+
+
+@app.route('/api/themes/<theme_id>/enable', methods=['POST'])
+@auth_manager.login_required
+def enable_theme(theme_id):
+    """Reverse a disable — clears the `disabled` flag on theme.json."""
+    safe = _validate_theme_id(theme_id)
+    if not safe:
+        return jsonify({'error': 'Invalid theme id'}), 400
+    meta = _read_theme_meta(safe)
+    if meta is None:
+        return jsonify({'error': f'Theme {safe} not found'}), 404
+    if not meta.get('disabled'):
+        return jsonify({'ok': True, 'themeId': safe, 'disabled': False, 'noop': True}), 200
+    meta['disabled'] = False
+    # Remove the falsy flag rather than leaving "disabled": false in the file —
+    # keeps theme.json diff-free for themes that have never been disabled.
+    if meta.get('disabled') is False:
+        meta.pop('disabled', None)
+    if not _write_theme_meta(safe, meta):
+        return jsonify({'error': 'Failed to write theme.json'}), 500
+    _run_theme_sync()
+    sse_log_manager.info(f'Theme enabled: {safe}', source='theme-admin', metadata={'themeId': safe})
+    return jsonify({'ok': True, 'themeId': safe, 'disabled': False}), 200
+
+
+@app.route('/api/themes/<theme_id>', methods=['DELETE'])
+@auth_manager.login_required
+def delete_theme(theme_id):
+    """Totally remove a theme from the system.
+
+    Deletes:
+      - app/themes/<id>/ (the theme contract code)
+      - public/themes/<id>/ (the per-theme imagery)
+    Then re-runs `theme:sync` to drop the manifest entry.
+
+    Refuses to delete:
+      - The default theme (classic-dealer) — too structurally important.
+      - Any theme with brands targeting it, UNLESS ?force=true is passed.
+        Force-deletion leaves those brands broken; the operator should
+        re-theme them via /update/<slug> first.
+    """
+    safe = _validate_theme_id(theme_id)
+    if not safe:
+        return jsonify({'error': 'Invalid theme id'}), 400
+    if safe in _PROTECTED_THEME_IDS:
+        return jsonify({'error': f'{safe} is the default theme and cannot be deleted'}), 409
+
+    theme_dir = _theme_folder_path(safe)
+    if not os.path.isdir(theme_dir):
+        return jsonify({'error': f'Theme {safe} not found'}), 404
+
+    force = request.args.get('force', '').strip().lower() in ('1', 'true', 'yes')
+    brands = _brands_using_theme(safe)
+    if brands and not force:
+        return jsonify({
+            'error': 'theme-in-use',
+            'message': f'Theme {safe} is in use by {len(brands)} brand(s). Re-theme them first or pass ?force=true to delete anyway.',
+            'count': len(brands),
+            'brands': brands,
+        }), 409
+
+    # Reversible-blast-radius warning: we delete folders below. The sse_log
+    # captures intent so a recovery can trace what was removed if needed.
+    sse_log_manager.info(
+        f'Deleting theme: {safe}',
+        source='theme-admin',
+        metadata={'themeId': safe, 'force': force, 'brandsAffected': len(brands)},
+    )
+
+    try:
+        shutil.rmtree(theme_dir)
+    except Exception as exc:
+        return jsonify({'error': f'Failed to remove theme folder: {exc}'}), 500
+
+    public_dir = _public_theme_path(safe)
+    if os.path.isdir(public_dir):
+        try:
+            shutil.rmtree(public_dir)
+        except Exception as exc:
+            # Theme code is already gone — log but don't error so the manifest
+            # still gets regenerated. The operator can clean stray images by hand.
+            print(f'[THEME_ADMIN] public images cleanup failed for {safe}: {exc}')
+
+    _run_theme_sync()
+    return jsonify({
+        'ok': True,
+        'themeId': safe,
+        'deleted': True,
+        'forced': force,
+        'brandsAffected': len(brands),
     }), 200
 
 

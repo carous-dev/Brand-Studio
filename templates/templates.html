@@ -4,132 +4,395 @@
 
 {% block content %}
 <section class="templates-section">
+    <header class="templates-header">
+        <div class="templates-header-text">
+            <h1 class="templates-title">Themes</h1>
+            <p class="templates-subtitle">
+                Theme code shipped in <code>app/themes/</code>. Disable hides a theme from the
+                <a href="/create">/create</a> picker; delete removes it from disk and regenerates the manifest.
+            </p>
+        </div>
+        <div class="templates-header-actions">
+            <span class="theme-count-pill" data-role="theme-summary">Loading…</span>
+        </div>
+    </header>
+
     <div class="filter-bar">
-        <div class="filter-tabs">
-            <button class="filter-tab active" data-filter="all">All Templates</button>
-            <button class="filter-tab" data-filter="homepage">Homepage</button>
-            <button class="filter-tab" data-filter="inventory">Inventory</button>
-            <button class="filter-tab" data-filter="modern">Modern</button>
-            <button class="filter-tab" data-filter="classic">Classic</button>
+        <div class="filter-tabs" role="tablist" aria-label="Filter themes">
+            <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">All</button>
+            <button class="filter-tab" data-filter="active" role="tab" aria-selected="false">Active</button>
+            <button class="filter-tab" data-filter="disabled" role="tab" aria-selected="false">Disabled</button>
+            <button class="filter-tab" data-filter="in-use" role="tab" aria-selected="false">In use</button>
         </div>
-        <select class="filter-select">
-            <option>Sort by: Featured</option>
-            <option>Sort by: Newest</option>
-            <option>Sort by: Popular</option>
-        </select>
-    </div>
-
-    <div class="templates-grid">
-        <!-- Template 1 -->
-        <div class="template-card" data-category="homepage modern">
-            <div class="template-preview">
-                <div class="preview-screenshot">
-                    <div class="skeleton-preview"></div>
-                </div>
-            </div>
-            <div class="template-info">
-                <h3>Modern Dealership Pro</h3>
-            </div>
-        </div>
-
-        <!-- Template 2 -->
-        <div class="template-card" data-category="inventory classic">
-            <div class="template-preview">
-                <div class="preview-screenshot">
-                    <div class="skeleton-preview"></div>
-                </div>
-            </div>
-            <div class="template-info">
-                <h3>Classic Auto Gallery</h3>
-            </div>
-        </div>
-
-        <!-- Template 3 -->
-        <div class="template-card" data-category="homepage modern">
-            <div class="template-preview">
-                <div class="preview-screenshot">
-                    <div class="skeleton-preview"></div>
-                </div>
-            </div>
-            <div class="template-info">
-                <h3>Luxury Motors</h3>
-            </div>
-        </div>
-
-        <!-- Template 4 -->
-        <div class="template-card" data-category="inventory modern">
-            <div class="template-preview">
-                <div class="preview-screenshot">
-                    <div class="skeleton-preview"></div>
-                </div>
-            </div>
-            <div class="template-info">
-                <h3>Smart Inventory</h3>
-            </div>
-        </div>
-
-        <!-- Template 5 -->
-        <div class="template-card" data-category="listing modern">
-            <div class="template-preview">
-                <div class="preview-screenshot">
-                    <div class="skeleton-preview"></div>
-                </div>
-            </div>
-            <div class="template-info">
-                <h3>Quick Listing Pro</h3>
-            </div>
-        </div>
-
-        <!-- Template 6 -->
-        <div class="template-card" data-category="homepage classic">
-            <div class="template-preview">
-                <div class="preview-screenshot">
-                    <div class="skeleton-preview"></div>
-                </div>
-            </div>
-            <div class="template-info">
-                <h3>Family Motors</h3>
-            </div>
+        <div class="filter-search">
+            <input type="search" id="themeSearch" class="filter-search-input" placeholder="Search by name or id…" aria-label="Search themes" />
         </div>
     </div>
 
-    <div class="templates-pagination">
-        <button class="pagination-btn" disabled>Previous</button>
-        <div class="pagination-numbers">
-            <button class="pagination-number active">1</button>
-            <button class="pagination-number">2</button>
-            <button class="pagination-number">3</button>
-            <span>...</span>
-            <button class="pagination-number">12</button>
-        </div>
-        <button class="pagination-btn">Next</button>
+    <div class="templates-grid" id="themeGrid" aria-live="polite">
+        <div class="theme-grid-state" data-role="loading">Loading themes…</div>
     </div>
 </section>
+
+<!-- Confirmation modal (delete + disable confirmations) -->
+<div class="theme-modal-backdrop" id="themeModal" role="dialog" aria-modal="true" aria-labelledby="themeModalTitle" hidden>
+    <div class="theme-modal">
+        <header class="theme-modal-head">
+            <h2 id="themeModalTitle">Confirm</h2>
+            <button type="button" class="theme-modal-close" data-action="modal-close" aria-label="Close">×</button>
+        </header>
+        <div class="theme-modal-body" id="themeModalBody"></div>
+        <footer class="theme-modal-foot">
+            <button type="button" class="btn btn-ghost" data-action="modal-cancel">Cancel</button>
+            <button type="button" class="btn btn-danger" data-action="modal-confirm">Confirm</button>
+        </footer>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Filter functionality
-    const filterTabs = document.querySelectorAll('.filter-tab');
-    const templateCards = document.querySelectorAll('.template-card');
-    
-    filterTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            filterTabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            
-            const filter = this.dataset.filter;
-            templateCards.forEach(card => {
-                if (filter === 'all' || card.dataset.category.includes(filter)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
+(function () {
+  'use strict';
+
+  // --- State ---------------------------------------------------------------
+  let allThemes = [];
+  let activeFilter = 'all';
+  let searchQuery = '';
+  let pendingAction = null;  // { type: 'disable'|'enable'|'delete', themeId, force }
+
+  // --- DOM refs ------------------------------------------------------------
+  const grid = document.getElementById('themeGrid');
+  const summary = document.querySelector('[data-role="theme-summary"]');
+  const filterTabs = document.querySelectorAll('.filter-tab');
+  const searchInput = document.getElementById('themeSearch');
+  const modal = document.getElementById('themeModal');
+  const modalTitle = document.getElementById('themeModalTitle');
+  const modalBody = document.getElementById('themeModalBody');
+  const modalConfirm = modal.querySelector('[data-action="modal-confirm"]');
+  const modalCancel = modal.querySelector('[data-action="modal-cancel"]');
+  const modalClose = modal.querySelector('[data-action="modal-close"]');
+
+  // --- Utilities -----------------------------------------------------------
+  function escapeHtml(input) {
+    return String(input ?? '').replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    }[c]));
+  }
+
+  function statusBadge(theme) {
+    if (theme.disabled) {
+      return '<span class="status-badge status-disabled">Disabled</span>';
+    }
+    const status = (theme.status || 'stable').toLowerCase();
+    const label = status.charAt(0).toUpperCase() + status.slice(1);
+    return `<span class="status-badge status-${escapeHtml(status)}">${escapeHtml(label)}</span>`;
+  }
+
+  function defaultBadge(theme, defaultId) {
+    if (theme.id === defaultId) return '<span class="status-badge status-default">Default</span>';
+    if (theme.protected) return '<span class="status-badge status-protected">Protected</span>';
+    return '';
+  }
+
+  function usageBadge(theme) {
+    const n = theme.usageCount || 0;
+    if (n === 0) return '<span class="usage-badge usage-empty">No brands</span>';
+    return `<span class="usage-badge usage-active" title="${n} brand${n === 1 ? '' : 's'} using this theme">${n} brand${n === 1 ? '' : 's'}</span>`;
+  }
+
+  function thumbnail(theme) {
+    if (theme.heroImage) {
+      return `<div class="preview-screenshot" style="background-image:url('${escapeHtml(theme.heroImage)}')"></div>`;
+    }
+    // Synthesize a placeholder using brand-derived gradient based on theme id
+    const hue = Math.abs(hashString(theme.id || '')) % 360;
+    return `<div class="preview-screenshot preview-placeholder" style="background:linear-gradient(135deg, hsl(${hue}, 28%, 22%), hsl(${(hue + 40) % 360}, 32%, 12%))">
+              <span class="preview-placeholder-id">${escapeHtml(theme.id || '')}</span>
+            </div>`;
+  }
+
+  function hashString(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) h = ((h << 5) - h) + str.charCodeAt(i);
+    return h;
+  }
+
+  // --- Rendering -----------------------------------------------------------
+  function renderCards() {
+    const themes = filteredThemes();
+    if (themes.length === 0) {
+      grid.innerHTML = `
+        <div class="theme-grid-state">
+          <p>No themes match your filters.</p>
+          <button type="button" class="btn btn-ghost" data-action="clear-filters">Clear filters</button>
+        </div>`;
+      return;
+    }
+
+    const defaultId = window.__themeDefaultId || 'classic-dealer';
+
+    grid.innerHTML = themes.map((theme) => {
+      const disabledActionsClass = theme.protected ? 'btn-disabled' : '';
+      const disableEnableBtn = theme.disabled
+        ? `<button type="button" class="btn btn-ghost btn-sm" data-action="enable" data-theme-id="${escapeHtml(theme.id)}">Enable</button>`
+        : `<button type="button" class="btn btn-ghost btn-sm ${disabledActionsClass}" data-action="disable" data-theme-id="${escapeHtml(theme.id)}" ${theme.protected ? 'disabled title="Default theme — cannot be disabled"' : ''}>Disable</button>`;
+      const deleteBtn = `<button type="button" class="btn btn-danger btn-sm ${disabledActionsClass}" data-action="delete" data-theme-id="${escapeHtml(theme.id)}" ${theme.protected ? 'disabled title="Default theme — cannot be deleted"' : ''}>Delete</button>`;
+      const usageInline = (theme.usageBrands && theme.usageBrands.length)
+        ? `<ul class="usage-brands-list">${theme.usageBrands.slice(0, 4).map(b => `<li>${escapeHtml(b.name || b.slug)}</li>`).join('')}${theme.usageCount > 4 ? `<li class="usage-more">+ ${theme.usageCount - 4} more</li>` : ''}</ul>`
+        : '';
+
+      return `
+        <article class="template-card ${theme.disabled ? 'template-card-disabled' : ''}" data-theme-id="${escapeHtml(theme.id)}">
+          <div class="template-preview">
+            ${thumbnail(theme)}
+            <div class="template-badges">
+              ${statusBadge(theme)}
+              ${defaultBadge(theme, defaultId)}
+            </div>
+          </div>
+          <div class="template-info">
+            <header class="template-info-head">
+              <div>
+                <h3>${escapeHtml(theme.name || theme.id)}</h3>
+                <code class="template-id">${escapeHtml(theme.id)}</code>
+              </div>
+              ${usageBadge(theme)}
+            </header>
+            ${theme.description ? `<p class="template-description">${escapeHtml(theme.description)}</p>` : ''}
+            ${usageInline}
+            <footer class="template-actions">
+              <a href="/create?theme=${encodeURIComponent(theme.id)}" class="btn btn-ghost btn-sm">Use in /create</a>
+              ${disableEnableBtn}
+              ${deleteBtn}
+            </footer>
+          </div>
+        </article>
+      `;
+    }).join('');
+  }
+
+  function filteredThemes() {
+    const q = searchQuery.trim().toLowerCase();
+    return allThemes.filter((theme) => {
+      if (activeFilter === 'active' && theme.disabled) return false;
+      if (activeFilter === 'disabled' && !theme.disabled) return false;
+      if (activeFilter === 'in-use' && (theme.usageCount || 0) === 0) return false;
+      if (q) {
+        const hay = `${theme.id} ${theme.name || ''} ${theme.description || ''}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
     });
-});
+  }
+
+  function renderSummary() {
+    const total = allThemes.length;
+    const disabled = allThemes.filter(t => t.disabled).length;
+    const inUse = allThemes.filter(t => (t.usageCount || 0) > 0).length;
+    summary.textContent = `${total} theme${total === 1 ? '' : 's'} · ${total - disabled} active · ${disabled} disabled · ${inUse} in use`;
+  }
+
+  // --- API calls -----------------------------------------------------------
+  async function fetchThemes() {
+    try {
+      const res = await fetch('/api/themes/admin', { credentials: 'same-origin', cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const payload = await res.json();
+      allThemes = Array.isArray(payload.themes) ? payload.themes : [];
+      window.__themeDefaultId = payload.defaultTheme || 'classic-dealer';
+      renderSummary();
+      renderCards();
+    } catch (err) {
+      grid.innerHTML = `<div class="theme-grid-state theme-grid-error">
+        <p>Failed to load themes.</p>
+        <p class="theme-grid-error-detail">${escapeHtml(err.message || String(err))}</p>
+        <button type="button" class="btn btn-ghost" data-action="retry">Retry</button>
+      </div>`;
+      summary.textContent = 'Failed to load';
+    }
+  }
+
+  async function callApi(method, path) {
+    const res = await fetch(path, { method, credentials: 'same-origin' });
+    let payload = null;
+    try { payload = await res.json(); } catch (_) { /* non-JSON */ }
+    if (!res.ok) {
+      const err = new Error(payload && payload.error ? payload.error : `HTTP ${res.status}`);
+      err.payload = payload;
+      err.status = res.status;
+      throw err;
+    }
+    return payload;
+  }
+
+  // --- Confirmation modal --------------------------------------------------
+  function openModal({ title, body, confirmLabel, confirmClass, dangerous }) {
+    modalTitle.textContent = title;
+    modalBody.innerHTML = body;
+    modalConfirm.textContent = confirmLabel || 'Confirm';
+    modalConfirm.className = `btn ${confirmClass || (dangerous ? 'btn-danger' : 'btn-primary')}`;
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => modalConfirm.focus(), 50);
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    modalBody.innerHTML = '';
+    pendingAction = null;
+    document.body.style.overflow = '';
+  }
+
+  function flashToast(message, kind) {
+    const el = document.createElement('div');
+    el.className = `theme-toast theme-toast-${kind || 'info'}`;
+    el.textContent = message;
+    document.body.appendChild(el);
+    requestAnimationFrame(() => el.classList.add('theme-toast-visible'));
+    setTimeout(() => {
+      el.classList.remove('theme-toast-visible');
+      setTimeout(() => el.remove(), 250);
+    }, 3200);
+  }
+
+  // --- Action handlers -----------------------------------------------------
+  async function handleDisable(themeId) {
+    const theme = allThemes.find(t => t.id === themeId);
+    const inUseCopy = theme && theme.usageCount > 0
+      ? `<p class="modal-warn">${theme.usageCount} brand(s) currently use this theme. They'll keep rendering, but you won't be able to assign this theme to new brands until you re-enable it.</p>`
+      : '<p class="modal-muted">No brands are currently using this theme.</p>';
+    pendingAction = { type: 'disable', themeId };
+    openModal({
+      title: `Disable ${theme?.name || themeId}?`,
+      body: `<p>This hides the theme from the <code>/create</code> picker. The theme code and images stay on disk and can be re-enabled at any time.</p>${inUseCopy}`,
+      confirmLabel: 'Disable theme',
+      confirmClass: 'btn-warn',
+    });
+  }
+
+  async function handleEnable(themeId) {
+    // No confirmation — enabling is reversible and harmless.
+    try {
+      await callApi('POST', `/api/themes/${encodeURIComponent(themeId)}/enable`);
+      flashToast(`Enabled ${themeId}`, 'success');
+      fetchThemes();
+    } catch (err) {
+      flashToast(`Failed to enable ${themeId}: ${err.message}`, 'error');
+    }
+  }
+
+  async function handleDelete(themeId) {
+    // Pull usage first so the modal shows the full impact.
+    let usage = { count: 0, brands: [] };
+    try {
+      usage = await callApi('GET', `/api/themes/${encodeURIComponent(themeId)}/usage`);
+    } catch (_) { /* keep zero */ }
+    const theme = allThemes.find(t => t.id === themeId);
+    pendingAction = { type: 'delete', themeId, force: usage.count > 0 };
+
+    const inUseCopy = usage.count > 0
+      ? `<p class="modal-warn">
+           <strong>${usage.count} brand(s) currently use ${escapeHtml(theme?.name || themeId)}.</strong>
+           Deleting will leave those brands broken — they fall back to the default theme on next render, but their saved theme reference becomes stale.
+         </p>
+         <p class="modal-muted">Re-theme them first via <code>/update/&lt;slug&gt;</code> for a clean delete.</p>
+         ${usage.brands.length ? `<ul class="modal-brand-list">${usage.brands.map(b => `<li>${escapeHtml(b.name || b.slug)}</li>`).join('')}</ul>` : ''}`
+      : `<p class="modal-muted">No brands are using this theme — safe to delete.</p>`;
+
+    openModal({
+      title: `Delete ${theme?.name || themeId}?`,
+      body: `<p>This permanently removes the theme folder (<code>app/themes/${escapeHtml(themeId)}/</code>) and its public images. The manifest is regenerated to drop the entry. This action is not reversible from the UI — restore from git if you change your mind.</p>${inUseCopy}`,
+      confirmLabel: usage.count > 0 ? 'Force delete' : 'Delete theme',
+      dangerous: true,
+    });
+  }
+
+  async function executeAction() {
+    if (!pendingAction) return;
+    const { type, themeId, force } = pendingAction;
+    closeModal();
+
+    try {
+      if (type === 'disable') {
+        await callApi('POST', `/api/themes/${encodeURIComponent(themeId)}/disable`);
+        flashToast(`Disabled ${themeId}`, 'success');
+      } else if (type === 'delete') {
+        const path = force
+          ? `/api/themes/${encodeURIComponent(themeId)}?force=true`
+          : `/api/themes/${encodeURIComponent(themeId)}`;
+        await callApi('DELETE', path);
+        flashToast(`Deleted ${themeId}`, 'success');
+      }
+      fetchThemes();
+    } catch (err) {
+      flashToast(`${type} failed: ${err.message}`, 'error');
+    }
+  }
+
+  // --- Event wiring --------------------------------------------------------
+  filterTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      filterTabs.forEach((t) => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      activeFilter = tab.dataset.filter;
+      renderCards();
+    });
+  });
+
+  if (searchInput) {
+    let searchTimer = null;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        searchQuery = searchInput.value;
+        renderCards();
+      }, 120);
+    });
+  }
+
+  // Event delegation for card actions + modal + grid empty/error states
+  document.addEventListener('click', (event) => {
+    const target = event.target.closest('[data-action]');
+    if (!target) return;
+    const action = target.dataset.action;
+    const themeId = target.dataset.themeId;
+
+    if (action === 'retry') return fetchThemes();
+    if (action === 'clear-filters') {
+      activeFilter = 'all';
+      searchQuery = '';
+      if (searchInput) searchInput.value = '';
+      filterTabs.forEach((t) => {
+        t.classList.toggle('active', t.dataset.filter === 'all');
+        t.setAttribute('aria-selected', String(t.dataset.filter === 'all'));
+      });
+      return renderCards();
+    }
+    if (action === 'modal-close' || action === 'modal-cancel') return closeModal();
+    if (action === 'modal-confirm') return executeAction();
+    if (!themeId) return;
+
+    if (action === 'disable') handleDisable(themeId);
+    else if (action === 'enable') handleEnable(themeId);
+    else if (action === 'delete') handleDelete(themeId);
+  });
+
+  // Close modal on backdrop click / Escape
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !modal.hidden) closeModal();
+  });
+
+  // --- Init ---------------------------------------------------------------
+  document.addEventListener('DOMContentLoaded', fetchThemes);
+})();
 </script>
 
 <style>
@@ -592,5 +855,412 @@ document.addEventListener('DOMContentLoaded', function() {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--primary-color);
 }
+
+/* ============================================================================
+ * Theme administration (rewritten 2026-05-11 to be data-driven)
+ * ============================================================================ */
+
+.templates-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    padding: 2rem 0 1.25rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.templates-header-text { flex: 1; min-width: 280px; }
+.templates-title {
+    font-size: clamp(1.6rem, 3vw, 2rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.01em;
+}
+.templates-subtitle {
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.55;
+    font-size: 0.95rem;
+    max-width: 64ch;
+}
+.templates-subtitle code {
+    background: var(--bg-tertiary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: var(--text-primary);
+}
+.templates-subtitle a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+.templates-subtitle a:hover { text-decoration: underline; }
+
+.theme-count-pill {
+    padding: 0.5rem 1rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.filter-search {
+    flex: 1;
+    min-width: 220px;
+    max-width: 360px;
+}
+.filter-search-input {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+.filter-search-input::placeholder { color: var(--text-muted); }
+.filter-search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgb(59 130 246 / 0.2);
+}
+
+/* Grid empty/error states */
+.theme-grid-state {
+    grid-column: 1 / -1;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    background: var(--bg-card);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+}
+.theme-grid-state p { margin: 0 0 1rem; }
+.theme-grid-error { border-color: var(--danger-color); color: var(--danger-color); }
+.theme-grid-error-detail {
+    font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem !important;
+}
+
+/* Card refinements (overlay on top of existing .template-card styles) */
+.template-card {
+    position: relative;
+    overflow: hidden;
+}
+.template-card-disabled { opacity: 0.62; }
+.template-card-disabled .preview-screenshot { filter: grayscale(0.7); }
+
+.template-preview {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+}
+.preview-screenshot {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--bg-tertiary);
+}
+.preview-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.preview-placeholder-id {
+    color: rgba(255, 255, 255, 0.85);
+    font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+}
+
+.template-badges {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    z-index: 2;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    backdrop-filter: blur(8px);
+}
+.status-stable { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; border: 1px solid rgba(110, 231, 183, 0.35); }
+.status-experimental { background: rgba(245, 158, 11, 0.18); color: #fcd34d; border: 1px solid rgba(252, 211, 77, 0.35); }
+.status-disabled { background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid rgba(252, 165, 165, 0.35); }
+.status-default { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(147, 197, 253, 0.4); }
+.status-protected { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid rgba(203, 213, 225, 0.35); }
+
+.template-info {
+    padding: 1.25rem 1.25rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.template-info-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+.template-info-head h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+}
+.template-id {
+    font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.usage-badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+.usage-empty { background: var(--bg-tertiary); color: var(--text-muted); border: 1px solid var(--border-color); }
+.usage-active { background: rgba(59, 130, 246, 0.16); color: #93c5fd; border: 1px solid rgba(147, 197, 253, 0.3); }
+
+.template-description {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.usage-brands-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 0.78rem;
+}
+.usage-brands-list li {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    padding: 3px 9px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+.usage-brands-list .usage-more {
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    font-style: italic;
+}
+
+.template-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+}
+.btn-sm {
+    padding: 0.5rem 0.95rem;
+    font-size: 0.82rem;
+}
+.btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    box-shadow: none;
+}
+.btn-ghost:hover {
+    background: var(--bg-hover);
+    border-color: var(--primary-color);
+    color: var(--primary-light);
+}
+.btn-ghost:disabled,
+.btn-disabled {
+    opacity: 0.4;
+    cursor: not-allowed !important;
+    pointer-events: none;
+}
+.btn-danger {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(252, 165, 165, 0.4);
+    color: #fca5a5;
+    box-shadow: none;
+}
+.btn-danger:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.22);
+    color: #fee2e2;
+    border-color: rgba(252, 165, 165, 0.7);
+}
+.btn-warn {
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(252, 211, 77, 0.4);
+    color: #fcd34d;
+    box-shadow: none;
+}
+.btn-warn:hover {
+    background: rgba(245, 158, 11, 0.22);
+    color: #fef3c7;
+}
+
+/* --- Modal --------------------------------------------------------------- */
+.theme-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.78);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    backdrop-filter: blur(6px);
+    animation: fadeIn 0.15s ease;
+}
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+.theme-modal {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    width: min(540px, 100%);
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
+    animation: slideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+.theme-modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.theme-modal-head h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+}
+.theme-modal-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 1.4rem;
+    line-height: 1;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+}
+.theme-modal-close:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+.theme-modal-body {
+    padding: 1.5rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+.theme-modal-body p { margin: 0 0 1rem; }
+.theme-modal-body p:last-child { margin-bottom: 0; }
+.theme-modal-body code {
+    background: var(--bg-tertiary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: var(--text-primary);
+}
+.modal-warn {
+    padding: 0.85rem 1rem;
+    background: rgba(245, 158, 11, 0.1);
+    border-left: 3px solid var(--warning-color);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    color: #fde68a;
+}
+.modal-warn strong { color: #fef3c7; }
+.modal-muted { color: var(--text-muted); font-size: 0.9rem; }
+.modal-brand-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.modal-brand-list li {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    font-size: 0.85rem;
+}
+.theme-modal-foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+}
+
+/* --- Toast --------------------------------------------------------------- */
+.theme-toast {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    padding: 0.875rem 1.25rem;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xl);
+    z-index: 2000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    font-size: 0.92rem;
+    max-width: 420px;
+}
+.theme-toast-visible { opacity: 1; transform: translateY(0); }
+.theme-toast-success { border-color: rgba(110, 231, 183, 0.5); color: #6ee7b7; }
+.theme-toast-error { border-color: rgba(252, 165, 165, 0.5); color: #fca5a5; }
+.theme-toast-info { border-color: var(--border-color); }
 </style>
 {% endblock %}

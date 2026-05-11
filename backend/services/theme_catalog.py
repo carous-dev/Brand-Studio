@@ -46,6 +46,11 @@ def _normalize_theme_entry(item: Any, *, fallback_id: str = "") -> Dict[str, Any
         "name": str(item.get("name") or theme_id),
         "description": str(item.get("description") or ""),
         "status": str(item.get("status") or "stable"),
+        # Operator-controlled flag (admin toggles via /templates page). Persisted
+        # in each theme's `theme.json` so it survives `theme:sync` regenerations.
+        # When True the theme is hidden from the /create picker and any new
+        # brand creation, but existing brands continue to render against it.
+        "disabled": bool(item.get("disabled")),
     }
 
 
@@ -164,13 +169,46 @@ def load_theme_catalog() -> Dict[str, Any]:
 
 
 def get_theme_catalog() -> Dict[str, Any]:
-    """Return the normalized theme catalog."""
+    """Return the normalized theme catalog including disabled themes.
+
+    Use this for admin-facing surfaces (e.g. the /templates management page).
+    For surfaces that should only show pickable themes (e.g. /create), use
+    `get_active_theme_catalog()` instead.
+    """
     return dict(load_theme_catalog())
 
 
-def list_theme_ids() -> List[str]:
+def get_active_theme_catalog() -> Dict[str, Any]:
+    """Return the catalog with disabled themes filtered out.
+
+    Used by `/api/themes` (the picker the /create page consumes) and by any
+    brand-creation flow that needs to reject disabled themes.
+    """
+    catalog = dict(load_theme_catalog())
+    themes = [theme for theme in catalog.get("themes", []) if not theme.get("disabled")]
+    if not themes:
+        # Safety net: if every theme is disabled we still need *something* the
+        # default-resolver can fall back to. Yield the FALLBACK_CATALOG.
+        themes = list(FALLBACK_CATALOG["themes"])
+
+    valid_ids = {theme["id"] for theme in themes}
+    default_theme = str(catalog.get("defaultTheme") or "").strip().lower()
+    if default_theme not in valid_ids:
+        default_theme = next(iter(valid_ids))
+
+    return {
+        "version": catalog.get("version", FALLBACK_CATALOG["version"]),
+        "defaultTheme": default_theme,
+        "themes": themes,
+    }
+
+
+def list_theme_ids(*, include_disabled: bool = True) -> List[str]:
     catalog = load_theme_catalog()
-    return [theme["id"] for theme in catalog.get("themes", [])]
+    themes = catalog.get("themes", [])
+    if not include_disabled:
+        themes = [theme for theme in themes if not theme.get("disabled")]
+    return [theme["id"] for theme in themes]
 
 
 def get_default_theme_id() -> str:
@@ -183,7 +221,12 @@ def get_default_theme_id() -> str:
 
 
 def resolve_theme_id(raw_theme_id: Any, *, fallback_to_default: bool = True) -> str:
-    """Resolve a requested theme id against the catalog."""
+    """Resolve a requested theme id against the catalog.
+
+    Includes disabled themes so existing brands that target a now-disabled
+    theme keep rendering. Brand *creation* paths should additionally check
+    `is_theme_disabled()` and reject the assignment if true.
+    """
     candidate = str(raw_theme_id or "").strip().lower()
     valid_ids = set(list_theme_ids())
     if candidate and candidate in valid_ids:
@@ -191,3 +234,14 @@ def resolve_theme_id(raw_theme_id: Any, *, fallback_to_default: bool = True) -> 
     if fallback_to_default:
         return get_default_theme_id()
     return ""
+
+
+def is_theme_disabled(theme_id: Any) -> bool:
+    """Return True if the named theme exists and is flagged disabled."""
+    candidate = str(theme_id or "").strip().lower()
+    if not candidate:
+        return False
+    for theme in load_theme_catalog().get("themes", []):
+        if theme.get("id") == candidate:
+            return bool(theme.get("disabled"))
+    return False

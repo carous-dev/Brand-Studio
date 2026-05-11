@@ -59,6 +59,9 @@ function normalizeThemeMeta(rawMeta, folderName) {
     description: String(rawMeta?.description || ''),
     status: String(rawMeta?.status || 'stable'),
     isDefault: Boolean(rawMeta?.isDefault),
+    // Operator toggle (set via /templates admin page). Hidden from the
+    // /create picker but kept in the catalog so existing brands still render.
+    disabled: Boolean(rawMeta?.disabled),
   }
 }
 
@@ -272,12 +275,19 @@ function buildManifestPayload(themes, defaultThemeId) {
   return {
     version: 1,
     defaultTheme: defaultThemeId,
-    themes: themes.map((theme) => ({
-      id: theme.id,
-      name: theme.name,
-      description: theme.description,
-      status: theme.status,
-    })),
+    themes: themes.map((theme) => {
+      const entry = {
+        id: theme.id,
+        name: theme.name,
+        description: theme.description,
+        status: theme.status,
+      }
+      // Persist the operator-controlled disabled flag so the manifest matches
+      // each theme.json's intent. Omitted when false to keep the manifest
+      // diff-free for themes that have never been disabled.
+      if (theme.disabled) entry.disabled = true
+      return entry
+    }),
   }
 }
 
