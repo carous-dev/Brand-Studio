@@ -1,0 +1,91 @@
+.bar {
+  position: relative;
+  background: var(--color-primary);
+  color: #ffffff;
+  border-bottom: 2px solid var(--color-accent);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.bgAccent {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(120deg,
+      color-mix(in srgb, var(--color-primary) 80%, #000) 0%,
+      color-mix(in srgb, var(--color-primary) 60%, var(--color-accent)) 100%);
+  opacity: 0.95;
+}
+
+.bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(45deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.04) 75%,
+    transparent 75%);
+  background-size: 8px 8px;
+  z-index: 0;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(28px, 4vw, 44px) clamp(20px, 4vw, 40px);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(20px, 3vw, 28px);
+}
+
+@media (min-width: 720px) {
+  .inner { grid-template-columns: repeat(4, 1fr); }
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 0 6px 16px;
+  border-left: 2px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
+}
+
+.statIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  color: var(--color-accent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
+  margin-bottom: 4px;
+}
+
+.statValue {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.statLabel {
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.3;
+}

@@ -1,0 +1,38 @@
+.heroAccent {
+  background: linear-gradient(120deg,
+    var(--color-accent) 0%,
+    color-mix(in srgb, var(--color-accent) 60%, #fff) 60%,
+    var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--color-accent);
+}
+
+.widgetSection {
+  padding: clamp(48px, 7vw, 88px) 0;
+  background: var(--color-bg);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.widgetSection::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  right: -100px;
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 14%, transparent) 0%, transparent 65%);
+  filter: blur(28px);
+  z-index: 0;
+}
+
+.widgetInner {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 40px);
+}

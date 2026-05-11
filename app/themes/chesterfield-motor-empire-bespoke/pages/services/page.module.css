@@ -1,0 +1,181 @@
+.heroAccent {
+  background: linear-gradient(120deg,
+    var(--color-accent) 0%,
+    color-mix(in srgb, var(--color-accent) 60%, #fff) 60%,
+    var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--color-accent);
+}
+
+.list {
+  padding: clamp(56px, 8vw, 96px) 0;
+  background: var(--color-bg);
+}
+
+.listInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(40px, 6vw, 72px);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 4vw, 48px);
+  align-items: center;
+  position: relative;
+}
+@media (min-width: 900px) {
+  .row { grid-template-columns: 1fr 1.2fr; }
+  .rowReversed .rowMedia { grid-column: 2; }
+  .rowReversed .rowCopy { grid-column: 1; grid-row: 1; }
+}
+
+.rowMedia {
+  position: relative;
+}
+
+.rowMediaInner {
+  position: relative;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--color-primary) 92%, #000) 0%,
+      color-mix(in srgb, var(--color-primary) 70%, var(--color-accent)) 100%);
+  color: #ffffff;
+  border-radius: 6px;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+.rowMediaInner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(45deg, rgba(255,255,255,0.04) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.04) 75%, transparent 75%);
+  background-size: 12px 12px;
+  opacity: 0.6;
+  z-index: 0;
+}
+
+.rowMediaCorner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-color: var(--color-accent);
+  border-style: solid;
+  z-index: 2;
+}
+.rowMediaCorner[data-pos="tl"] { top: 14px; left: 14px;    border-width: 2px 0 0 2px; }
+.rowMediaCorner[data-pos="br"] { bottom: 14px; right: 14px; border-width: 0 2px 2px 0; }
+
+.rowMediaIcon {
+  position: relative;
+  z-index: 1;
+  color: var(--color-accent);
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.4));
+}
+
+.rowMediaIndex {
+  position: absolute;
+  bottom: 16px;
+  left: 18px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.06);
+  letter-spacing: 0.04em;
+  z-index: 1;
+}
+
+.rowCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rowEyebrow {
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--color-accent);
+  font-size: 0.76rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.rowTitle {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(1.6rem, 3.2vw, 2.3rem);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.rowBlurb {
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.rowBullets {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (min-width: 540px) { .rowBullets { grid-template-columns: 1fr 1fr; column-gap: 18px; } }
+
+.rowBullets li {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+.rowBullets svg {
+  color: var(--color-accent);
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.rowCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  padding: 12px 22px;
+  background: var(--color-primary);
+  color: #ffffff;
+  text-decoration: none;
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.84rem;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 2px solid var(--color-primary);
+  transition: background 180ms ease, transform 160ms ease;
+  margin-top: 8px;
+  min-height: 44px;
+}
+.rowCta:hover {
+  background: color-mix(in srgb, var(--color-primary) 80%, var(--color-accent));
+  border-color: color-mix(in srgb, var(--color-primary) 80%, var(--color-accent));
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) { .rowCta { transition: none; } }
