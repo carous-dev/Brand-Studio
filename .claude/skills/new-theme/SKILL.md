@@ -584,7 +584,7 @@ separate; Phase 13a is a fast-path for operators who want both in one go.
 5. Synthesize DNA JSON (includes the hero image URL + chosen archetype).
 6. Derive theme id + display name from brand name.
 7. Run skeleton scaffolder with `--archetype <id>` (produces contract + plumbing stubs; strips visual layer for fresh design).
-7.5. Fetch theme imagery — 7 page-level archetype-default slots via `fetch-theme-images.mjs`.
+7.5. Fetch theme imagery + generate favicon — 7 page-level slots via `fetch-theme-images.mjs`, plus a 32×32 archetype-aware SVG mark via `generate-theme-favicon.mjs`.
 8. Design every page + component fresh per the archetype spec (`docs/theme-archetype-specs.md`) — no borrowing from any baseline.
 9. Sync registries (`npm run theme:sync`).
 10. Verify:
@@ -983,11 +983,11 @@ adaptation (text replacement) not redesign.
 
 Both scaffolders fail loudly if the target folder already exists.
 
-## Phase 7.5 — Fetch theme imagery (Mode A only)
+## Phase 7.5 — Fetch theme imagery + generate favicon (Mode A only)
 
-After scaffolding, source 7 page-level images for the new theme — hero,
-about, services, finance, partExchange, sellYourCar, recentlySold — and
-self-host them under `public/themes/<theme-id>/images/<slot>.jpg`.
+Two sub-steps run here. Both write into `public/themes/<theme-id>/`.
+
+### 7.5a — Source 7 page-level images
 
 ```bash
 node tools/fetch-theme-images.mjs \
@@ -1018,6 +1018,40 @@ automatically; the operator can override per slot via `/update/<slug>`.
 If the script reports warnings (slot couldn't be sourced, classic-fallback
 used), surface them in the Phase 12 report — the team will want to swap
 those slots in the dashboard before a real pitch.
+
+### 7.5b — Generate the theme favicon
+
+```bash
+node tools/generate-theme-favicon.mjs --theme-id <theme-id>
+```
+
+The generator reads the DNA JSON (auto-discovered from
+`tools/.theme-dna/<dealer-slug>.json`) for primary color + archetype +
+display name, then writes a 32×32 SVG favicon at
+`public/themes/<theme-id>/favicon.svg`. The SVG scales cleanly from
+16×16 tab icon up to 512×512 app icon without rasterizing.
+
+Five archetype-specific templates:
+- **classic** — rounded square with brand-color gradient, serif initial.
+  Trustworthy, family-run signature.
+- **modern** — sharp square, geometric sans initial, lightened-primary
+  accent underline. Tech-forward.
+- **rugged** — asymmetric cornered shape with skewed condensed-bold
+  initial + speed-line accents. Dealer-signage / fleet feel.
+- **luxury** — charcoal disk with metallic ring + italic serif initial.
+  Restrained, prestige.
+- **prestige** — hexagon with metallic glyph + thin top rule. Mixed-
+  media editorial.
+
+The glyph defaults to the first letter of the theme's display name
+(uppercase). Override with `--glyph X` if a specific initial fits the
+brand better. Override colors with `--primary #hex` / `--accent #hex` if
+the DNA isn't on disk yet.
+
+`DynamicFavicon.tsx` (already shipped in the skeleton) is wired to
+prefer `/themes/<theme-id>/favicon.svg` over the brand logo. Operators
+can still override per-brand by setting `brand.favicon` from the
+dashboard — that wins over the theme favicon.
 
 ## Phase 8 — Design every page fresh (Mode A)
 
@@ -1284,6 +1318,8 @@ operator-driven step (see Phase 13).
 - 7-slot imagery: archetype-default JPEGs at `/themes/<id>/images/*.jpg`
   (note any slots that fell back to the classic-archetype pool — operator
   can swap per-brand later via `/update/<slug>`).
+- Favicon: archetype-aware SVG mark at `/themes/<id>/favicon.svg`
+  (mention the glyph + archetype template used).
 - Audit result: `0 blockers / N advisories` from `tools/audit-theme.mjs`.
 - **Ship instruction (Phase 13):** "commit + push to `main` (or open PR
   per branch policy); CI deploys; theme will appear in the dashboard's
@@ -1527,7 +1563,8 @@ to broadcast. Don't post per-theme during automated batch runs.
   Header / Footer / per-theme cookie banner / WhatsApp widget. Three motion
   widgets mounted out of the box (AnimateOnScroll / MotionFX /
   ScrollProgress — Phase 8 only sprinkles attributes, no per-theme
-  plumbing). Garage context, Brand styles injection.
+  plumbing). Garage context, Brand styles injection, DynamicFavicon
+  pointed at the theme's archetype-aware SVG mark (generated in 7.5b).
 - AOS variants available: 18 (fade / fade-up / fade-down / fade-left /
   fade-right / fade-up-right / fade-up-left / fade-down-right /
   fade-down-left / zoom-in / zoom-out / zoom-in-up / zoom-out-down /
@@ -1627,6 +1664,7 @@ the row stays as institutional memory.
 | `tools/audit-theme.mjs` | Static-analysis quality gate. Rule prefixes: `a11y-` (accessibility), `std-` (standards), `data-` (data-fetching), `mobile-` (responsive), `perf-` (performance), `brand-` (token discipline), `tp-` (Turbopack collision avoidance), `lib-` (foundation/dependency). Blockers exit 1. Supports inline `audit-ignore: <rule>` and file-level `audit-ignore-file: <rule>` directives. See **Pitfalls catalogue** above for the historical bugs each rule prevents. | Both modes |
 | `tools/rollback-theme.mjs` | Partial-theme cleanup when a run fails between Phase 7 and 12. Removes theme folder, public images, DNA JSON, images manifest, logo-colors JSON, then re-runs theme:sync. Idempotent. Flag: `--dry-run`. (No longer touches MySQL — brand cleanup is dashboard-only.) | Both modes |
 | `tools/fetch-theme-images.mjs` | Source 7 page-level images (hero/about/services/finance/partExchange/sellYourCar/recentlySold). Curated Unsplash catalogue with classic-archetype fallback; live API mode when `UNSPLASH_ACCESS_KEY` is set. | Mode A only |
+| `tools/generate-theme-favicon.mjs` | Emit a 32×32 archetype-aware SVG favicon at `public/themes/<id>/favicon.svg`. Five templates (classic / modern / rugged / luxury / prestige). Auto-discovers primary color + archetype + glyph from the DNA JSON; accepts `--primary`, `--accent`, `--archetype`, `--glyph` overrides. | Both modes |
 | `tools/extract-theme-dna.mjs` | DNA extractor from a carous-platform sibling app. | Mode B only |
 | `tools/scaffold-theme.mjs` | Full clone-and-edit scaffolder. Used by Mode B — clones springalls-classic, applies DNA, downloads hero. | Mode B |
 | `tools/scaffold-theme-skeleton.mjs` | Skeleton-first scaffolder. Used by Mode A — produces ONLY contract + plumbing (~39 files), strips visual layer for Phase 8 fresh design. | Mode A |
