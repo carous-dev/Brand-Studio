@@ -77,8 +77,8 @@ Phase 10c; the principles below cover what the tool can't reliably check.
   any animation longer than ~200ms.
 - No color-only signals — pair color with icon/text (e.g. error = red +
   warning icon, not red alone). Older buyers and color-blind users matter.
-- Skip-to-content link in the shell. The springalls-classic template ships
-  with this; preserve it through adaptation.
+- Skip-to-content link in the shell. The skeleton scaffolder's Shell stub
+  ships with this; preserve it through Phase 8 design.
 
 **Mobile-first responsive (must-have):**
 - Base styles target the smallest viewport (~360–375px wide). Larger
@@ -349,24 +349,24 @@ contract), document the gap in the final report. Don't ship silently.
   classes + `data-aos` / `data-mfx-scroll` attributes; no per-theme
   motion plumbing required.
 
-**Inventory pages MUST be redesigned per archetype, not inherited verbatim (must-have, learned 2026-05-11):**
-- The skeleton scaffolder keeps `pages/used-cars/page.tsx` + `[slug]/page.tsx` because
-  they contain substantial filter / pagination / route-handler logic worth
-  preserving. **Phase 8 MUST still redesign their PRESENTATION layer** — the
-  JSX layout, the cards / list rows, the CSS module — so the inventory page
-  isn't visually identical to springalls-classic across every theme. Keep the
-  *data layer* (state, fetch logic, URL params, normalization helpers) and
-  rewrite the *render layer* per the archetype's design language.
-- See `docs/inventory-design-library.md` for the curated set of inventory list
-  and detail patterns to pick from. Each theme should pick ONE list pattern
-  and ONE detail pattern that fits its archetype. Across multiple themes the
-  patterns should rotate — `auto-wow-uk-bespoke` Showroom Grid, `columbus-vehicles-bespoke`
-  Filtered Sidebar, `springalls-classic` Compact List, etc. The catalogue is
-  a menu, not a rigid mapping; the constraint is "no two themes ship the
-  same inventory layout".
-- The audit's `inv-redesign-required` rule (new 2026-05-11) fires if the
-  inventory page's JSX hasn't been touched relative to the springalls-classic
-  baseline.
+**Inventory pages MUST be redesigned per archetype, not inherited verbatim (must-have, learned 2026-05-11; reinforced by the autonomous-design clause below):**
+- The skeleton scaffolder keeps the inventory list page's data layer
+  (`pages/used-cars/page.tsx` server-fetch + `UsedCarsClient.tsx` state /
+  filter / URL / normalization) because that logic is non-trivial and
+  has no design payoff to rewrite. **Phase 8 MUST still redesign their
+  presentation layer** — JSX, cards/list rows, CSS module — so the
+  inventory page isn't visually identical to other themes.
+- See `docs/inventory-design-library.md` for a **reference catalogue**
+  of patterns sourced from real dealers. Read it for inspiration, then
+  **synthesize** a fresh layout for this theme — don't copy a pattern
+  verbatim. Two themes "using" the same pattern should still look
+  materially different (chip-row composition, sort affordance, card
+  chrome, scroll/snap behavior). Append your choices to the rotation
+  table when the design lands.
+- The audit's `inv-redesign-required` rule (advisory) targets the list
+  page only — a future `inv-detail-redesign-required` rule should
+  cover the detail page. Until that rule ships, the autonomous-design
+  clause below is the contract.
 
 **Autonomous independent designs — every page, every component (must-have, learned 2026-05-11 from NCR detail-page borrow):**
 - **Every page in a /new-theme build must be designed independently for the
@@ -574,9 +574,9 @@ separate; Phase 13a is a fast-path for operators who want both in one go.
 4. Pick a paired Google Font from the character analysis.
 5. Synthesize DNA JSON (includes the hero image URL + chosen archetype).
 6. Derive theme id + display name from brand name.
-7. Run scaffolder with `--archetype <id>` (clones baseline + downloads default hero).
+7. Run skeleton scaffolder with `--archetype <id>` (produces contract + plumbing stubs; strips visual layer for fresh design).
 7.5. Fetch theme imagery — 7 page-level archetype-default slots via `fetch-theme-images.mjs`.
-8. Adapt per archetype design spec (`docs/theme-archetype-specs.md`).
+8. Design every page + component fresh per the archetype spec (`docs/theme-archetype-specs.md`) — no borrowing from any baseline.
 9. Sync registries (`npm run theme:sync`).
 10. Verify:
     a. `tsc --noEmit` clean against zero baseline.
@@ -590,11 +590,13 @@ separate; Phase 13a is a fast-path for operators who want both in one go.
 13. Ship — operator commits + pushes via git; CI deploys; theme appears in `/create`'s picker.
 
 **Phase 9.5 (brand registration) and Phase 10d (preview smoke test) are
-NO LONGER part of the canonical Mode A flow.** Both are documented as
-Appendix A — "Optional: local preview during development" — for cases
-where a developer wants to eyeball the theme on `<slug>.lvh.me:3000`
-before pushing. They are NOT a ship gate and are NOT how previews
-reach production.
+NO LONGER part of the canonical Mode A flow.** They were removed when
+the skill scope was narrowed to theme-building only (2026-05-10). The
+optional Phase 13a helper (`build-preview-from-theme.py`) lets a
+developer register a local preview brand if they want to eyeball the
+theme on `<slug>.lvh.me:3000` before pushing — but that's opt-in via
+AskUserQuestion, NOT a ship gate. The canonical production path is
+git-only (Phase 13).
 
 If anything fails between Phase 7 and 12, run
 `node tools/rollback-theme.mjs --theme-id <id>` to clean up the partial
@@ -625,8 +627,12 @@ preview-creation concerns — not the skill's job.
 
 **Mode B phases:** same as the Mode A flow but Phases 1–5 are replaced by
 running `tools/extract-theme-dna.mjs --source <app>` against the named
-carous-platform app. Phase 8 adaptation reads from the source app's files
-instead of the dealer URL.
+carous-platform app. **Mode B Phase 8 is adaptation, not redesign** —
+the full `scaffold-theme.mjs` produces a working springalls-classic
+clone and Phase 8 is text replacement (nav items, dealer copy, phone
+numbers, search defaults). Redesigning components in Mode B defeats the
+point of porting from a sibling. The autonomous-design rules in this
+SKILL apply to **Mode A only**.
 
 ## Mode A — Bespoke from logo + URL
 
@@ -1004,122 +1010,108 @@ If the script reports warnings (slot couldn't be sourced, classic-fallback
 used), surface them in the Phase 12 report — the team will want to swap
 those slots in the dashboard before a real pitch.
 
-## Phase 8 — Adapt to the dealer's content (Mode A)
+## Phase 8 — Design every page fresh (Mode A)
 
-This is the part that turns a recolored clone into a *bespoke* theme. In
-Mode A the dealer-specific copy from Phase A3 drives the edits.
+Phase 8 turns the skeleton scaffolder's stubs into a finished, bespoke
+theme. **Every page and every component is designed fresh** for this
+theme. Nothing is copy-pasted from `springalls-classic`, the skeleton
+baseline, or another sibling theme. Two themes that share JSX structure
+aren't two themes — they're one theme with paint swapped.
 
-**Mode A — fresh design, not adaptation.** The skeleton you scaffolded
-in Phase 7 has stub Header/Footer/Shell + 12 placeholder pages. In Mode
-A this phase **designs Hero, Header, Footer, the homepage composition,
-each section component, and each page body fresh** — drawing from the
-archetype spec, the dealer's brand voice (from Phase A3), the brand
-tokens (`var(--color-*)`, `var(--brand-image-*)`), and the chosen
-typography. **Never** copy-paste from springalls-classic or another
-theme's components — even with rewriting. Two themes that share JSX
-structure aren't two themes.
+**The contract surface that Phase 8 does NOT touch:**
+- `theme.json`, `tokens.ts`, `pages.ts`, `shell.tsx`, `recipes/index.ts`,
+  `sections/index.tsx` — the scaffolder produced these correctly from DNA
+- The five context files (`BrandClientWrapper`, `BrandStyles`,
+  `AuthContext`, `DynamicFavicon`, `GarageContext`) — wired by the
+  context-registry generator
+- The seven `lib/` helpers — same contract across themes
+- The 4 generated registries — gitignored, regenerated by `theme:sync`
+- The data layer of the inventory list page (`pages/used-cars/page.tsx`
+  server-fetch logic + `UsedCarsClient.tsx` state/filter/URL handling +
+  `normalizeInventoryItem`) — kept verbatim because rewriting it is
+  scope-creep with no design payoff
 
-**Read the archetype spec first.** Open `docs/theme-archetype-specs.md`
-and find the section matching the archetype you chose in A2d. The spec
-lists which components to design, the layout language, section
-composition, CSS classes to add, and new components to create. The
-spec is a **design brief**, not a copy-paste source — interpret and
-execute, don't transcribe.
+**Everything else is Phase 8's responsibility.** That includes Hero,
+Header, Footer, Shell composition (preserving the global widgets it
+mounts), each section component on the homepage, each inner page body
+(about / contact / services / finance / part-exchange / sell-my-car /
+compare / wishlist / privacy-policy / cookie-policy / recently-sold),
+the **render layer** of the inventory list page, the **entire vehicle
+detail page** (route handling stays the same; JSX + CSS + composition
+are fresh), and a per-theme cookie banner.
 
-**Read the inventory design library too.** Open `docs/inventory-design-library.md`
-and pick one list pattern (1–7) and one detail pattern (A–F) that hasn't been
-used by another theme of the same archetype. The inventory pages
-(`pages/used-cars/page.tsx` + `[slug]/page.tsx`) MUST be redesigned per the
-chosen pattern — the skeleton scaffolder keeps the *data layer* (filter state,
-URL handling, fetch, normalization) verbatim, but Phase 8 rewrites the *render
-layer* and the `page.module.css` per the chosen pattern. Append your theme to
-the rotation table in `docs/inventory-design-library.md` when the design lands.
+**Before designing, read these:**
+1. `docs/theme-archetype-specs.md` — the spec for your archetype. This
+   is a *design brief*, not a transcript. It lists layout language,
+   section composition, decorative motifs. Interpret it; don't
+   transcribe it.
+2. `docs/inventory-design-library.md` — a **reference catalogue** of
+   list and detail patterns sourced from real dealers (Cinch,
+   Autotrader, Hexagon, McLaren Approved, etc.). Pull patterns you
+   like, then **synthesize** something specific to this theme. The
+   library is brain-prompt, not a template — two themes "using" the
+   same list pattern should still look materially different (chip-row
+   composition, sort/filter affordance, card chrome, empty/skeleton
+   states, scroll/snap behavior). Append your theme's pattern choices
+   to the rotation table when the design lands.
+3. The full **Quality Bar** section earlier in this SKILL — every
+   must-have applies. Motion + gradient + geometric backgrounds, brand-
+   token discipline, canonical routes, header background, hero
+   contrast floor, footer attribution, per-theme cookie banner,
+   inventory + detail pages redesigned, autonomous independent designs.
 
-**Mode B — adaptation, not redesign.** Mode B uses the full
-clone-and-edit scaffolder, so the new theme starts as a working
-springalls-classic clone. Phase 8 in Mode B is text replacement (nav
-items, dealer copy, phone numbers, search defaults) — DON'T redesign
-components in Mode B; that defeats the point of porting from a sibling.
+**Design axes the vehicle detail page must vary across themes:**
+hero (full-bleed photo / split / mixed media / sticky-thumb-rail),
+gallery (carousel / mosaic / scroll-stack / fullscreen-on-tap /
+lightbox), spec presentation (table / pull-quotes / inline-prose /
+accordion / pills / data-rings), finance presentation (sticky sidebar /
+dominant calculator / inline band / footer drawer), enquiry surface
+(inline form / drawer / WhatsApp-first / call-to-action panel).
+Mix-and-match — no two themes ship the same combination, even within
+the same archetype.
 
-Every edit/design below must satisfy the **Quality Bar** section. The
-audit in Phase 10c will catch the mechanical violations.
+### Data-fetching rules (apply across every page Phase 8 writes)
 
-1. **`components/Hero.tsx`** — Replace the placeholder headline with the
-   dealer's tagline (or synthesize: `"Used Cars for Sale in <City>,
-   <County>"`). Wrap the hero in `<section>` with the headline as the
-   single `<h1>`. CTAs are real `<button type="button">` or `<a href>`,
-   never `<div onClick=>`. Search-field default makes/models become empty
-   states (brand-driven inventory will populate at runtime). Touch
-   targets ≥44px. If the dealer URL exposed a hero image, the scaffolder
-   already self-hosted it; nothing more to do here.
-2. **`components/Header.tsx`** — Replace `NAV_ITEMS` with the dealer's
-   actual nav items from A3 (preserve hrefs that map to existing pages:
-   `/`, `/used-cars`, `/services`, `/finance`, `/sell-my-car`,
-   `/part-exchange`, `/contact`). Items the dealer has that don't map
-   should be omitted (don't fabricate routes). Mobile hamburger must
-   collapse below ~768px; hamburger trigger is a `<button aria-expanded=>`
-   not a `<div>`. Nav uses `<nav aria-label="Primary">`. Each nav `<a>`
-   has visible focus state.
-3. **`components/Footer.tsx`** — Inject the dealer's address, phone,
-   opening hours from A3. Wrap in `<footer>` with column headings as
-   `<h3>` (no second `<h1>`). Phone is a `tel:` link, email is a `mailto:`
-   link, address is structured (use `<address>` element). Opening hours
-   in a `<dl>` (definition list) is semantically correct. Footer columns
-   stack on mobile, grid on tablet+.
-4. **`pages/contact/page.tsx`** — Replace the placeholder phone/email
-   `__contact` defaults with the dealer's actual numbers from A3. Form
-   uses real `<label>` for every `<input>`, `aria-required="true"` on
-   required fields, visible error messages tied via `aria-describedby`,
-   and submit handler that calls `form.submit()` (not `handleSubmit` —
-   that doesn't exist on the hook).
-5. **`pages/used-cars/[slug]/page.tsx`** — Update the
-   `<UPPER>_PHONE_TEL`, `<UPPER>_PHONE_DISPLAY`, `<UPPER>_WHATSAPP_URL`
-   fallback strings to the dealer's real numbers from A3. The constants
-   appear inside both `VehicleNotFoundTemplate` and the main detail
-   component; update both. Don't touch the `audit-ignore` annotations.
-6. **`context/BrandStyles.tsx`** — The scaffolder already pinned the hero
-   image fallback to `/themes/<id>/hero.jpg` if it downloaded one. If not,
-   the default placeholder remains. Don't hardcode dealer-specific colors
-   here — the scaffolder set defensible fallbacks; tenant overrides flow
-   through the brand's `theme.colors.*` fields.
-7. **`pages/home/page.tsx`** — Section composition order. Default order
-   from the template: Hero → TrustSignals → LatestArrivals (inventory
-   carousel) → ServiceHighlights → Services → CTA → Reviews → Directory.
-   If the dealer's homepage from A3 uses a noticeably different
-   composition (e.g. reviews higher, no directory), reorder these
-   imports to match. **Don't add new section components in this pass** —
-   defer to a follow-up if the dealer needs something the section
-   contract doesn't cover.
+- Page wrappers (`pages/**/page.tsx`) are **Server Components**. Never
+  put `'use client'` at the top of a page file (see Pitfall row 4
+  for the Turbopack chunk-item collision risk). Interactivity lives in
+  co-located `components/<Name>Island.tsx` client islands that the
+  Server page imports. Exception: the vehicle detail page is allowed to
+  be `'use client'` because the route + galleries + modals + slider
+  state cluster naturally there — keep the `audit-ignore-file:
+  tp-use-client-on-page` annotation but **redesign the JSX wholesale**.
+- Inventory list page server-fetches with `?brand=<slug>` and passes
+  `initialVehicles` + `initialMeta` to the client island. The client
+  shouldn't re-fetch on mount (the audit fires on `useEffect` + `fetch`
+  for initial data).
+- Homepage section components (LatestArrivals, RecentlySoldPreview)
+  that need brand-scoped inventory CAN use a client-side fetch with
+  `useBrand().slug` because the brand context is client-only — annotate
+  the `useEffect` with `// audit-ignore: data-useeffect-fetch` and
+  comment why (brand context client-side, home page composed of server
+  shell + client islands).
+- Server-side fetches MUST include `?brand=<slug>` so the API routes
+  the request to the right per-brand inventory (see Pitfall rows 14
+  and 29).
+- All forms (`pages/contact/`, `pages/part-exchange/`,
+  `pages/sell-your-car/SellYourCarMount.tsx`) submit via the shared
+  `useLeadsForm` hook at `@/app/hooks/useLeadsForm`. Validation uses
+  `aria-required` + `aria-invalid` + `aria-describedby`; error
+  messages are visible inline. The submit handler calls
+  `form.submit()` (the hook's bound method) inside an
+  `e.preventDefault()` wrapper.
+- Sell-your-car page mounts the global `<SellYourCarWidget />` from
+  `@/app/widgets/SellYourCarWidget` — do NOT write a hand-rolled
+  valuation form (see Pitfall row 28). Mount via a co-located client
+  island that passes `brand`/`contact` from `useBrand()` +
+  `getBrandContactInfo(brand)`.
 
-Data-fetching guidance for adapted pages:
-- Server Components stay server. Pages that don't already have
-  `'use client'` should not gain it during adaptation.
-- Inventory pages (`/used-cars`, `/recently-sold`) fetch on the server
-  with `next: { revalidate: 60 }` (one minute is a good default for
-  prospect previews). Don't add `useEffect` + `fetch` for inventory.
-- Vehicle detail page (`/used-cars/[slug]`) is `'use client'` because
-  it has galleries and modals. That's fine — it's interactive. Keep its
-  initial data fetched via the existing pattern (route param → API call).
-- Brand context (`useBrand`) is client-side. That's fine. Pages that
-  only read brand metadata for SSR (e.g. SEO meta) should use
-  `getBrand` from `@/lib/getBrand.server` (server variant) instead.
+### Time budget
 
-Quality bar:
-
-- Each edit must keep the file type-safe — no missing imports, no broken
-  JSX. The TS compiler runs in Phase 9 and catches most issues.
-- CSS must stay scoped under `[data-theme-id='<theme-id>']` (the
-  scaffolder already namespaced existing rules; preserve that).
-- Do not touch `theme.json`, `tokens.ts`, `pages.ts`, `shell.tsx`,
-  `recipes/index.ts`, `sections/index.tsx` — those are the contract
-  surface and the scaffolder produced them correctly.
-- Do not invent dealer information. If a field is missing from A3, leave
-  the scaffolder's placeholder and note it in the final report.
-
-Time budget for adaptation: 5–10 file edits. Don't expand scope. If the
-dealer's site has unusual layout flourishes (split heroes, video backs,
-custom 3D), note them in the report as "follow-up enhancements" and skip
-in this pass.
+A bespoke Mode A build typically lands **40–80 file edits** (10–12
+components, 12–14 page bodies, the same number of CSS modules, the
+per-theme cookie banner, plus the inventory list + detail rewrites).
+Don't ship a 5-file recolor and call it a theme.
 
 ## Mode B — Port from carous-platform sibling
 
@@ -1174,18 +1166,20 @@ should never produce that, so investigate before re-running.
 
 ## Phase 10 — Verify
 
-The template (`springalls-classic`) is type-clean as of 2026-05-09 — the
-former `SPRINGALLS_PHONE_TEL` out-of-scope reference and form-handler
-typing errors were fixed at the template level. New themes inherit a
-clean baseline.
+The `springalls-classic` baseline (used by Mode B's full scaffolder and
+the skeleton's data-layer carry-overs in Mode A) is type-clean as of
+2026-05-09 — the former `SPRINGALLS_PHONE_TEL` out-of-scope reference
+and form-handler typing errors were fixed at the source. New themes
+inherit a clean baseline.
 
 ```bash
 npx tsc --noEmit 2>&1 | grep "themes/<theme-id>"
 ```
 
-Expected: **zero errors**. If anything appears, it's scaffolder- or
-adaptation-introduced — fix in the new theme files only. Never edit the
-generated registries or other themes to make this one pass.
+Expected: **zero errors**. If anything appears, it's Phase-8-introduced
+(missing import, broken JSX, type mismatch in a new component) — fix in
+the new theme files only. Never edit the generated registries or other
+themes to make this one pass.
 
 Re-run the contrast check against the final scaffolded DNA (defense in
 depth — the scaffolder may have produced derived overlay/shadow values
@@ -1283,7 +1277,7 @@ operator-driven step (see Phase 13).
   `/create` picker. Then operator creates a preview against the new
   theme to actually see it rendered for a specific dealer."
 - Anything that needs follow-up (WebFetch blocks, missing dealer fields,
-  unusual layout flourishes the adaptation didn't capture).
+  unusual layout flourishes that the Phase 8 design didn't capture).
 
 ### 12b — Offer Phase 13a (optional E2E preview)
 
@@ -1437,14 +1431,13 @@ flows, no overlap.
 
 If a `/new-theme` run fails between Phase 7 (scaffold) and Phase 12
 (report), the system can be left in inconsistent states: theme folder
-present but incomplete, public images downloaded, MySQL row half-written,
-4 generated registries referencing a now-broken theme. Manual cleanup is
-error-prone — use the rollback tool:
+present but incomplete, public images downloaded, the 4 generated
+registries referencing a now-broken theme. Manual cleanup is error-prone
+— use the rollback tool:
 
 ```bash
 node tools/rollback-theme.mjs --theme-id <theme-id>
 node tools/rollback-theme.mjs --theme-id <theme-id> --dry-run     # preview only
-node tools/rollback-theme.mjs --theme-id <theme-id> --keep-brand  # keep MySQL row
 ```
 
 It removes (in order, each step tolerates "already gone"):
@@ -1454,10 +1447,14 @@ It removes (in order, each step tolerates "already gone"):
 3. `tools/.theme-dna/<theme-id>.json`
 4. `tools/.theme-images/<theme-id>.json`
 5. `tools/.logo-colors/<theme-id>.json`
-6. The MySQL preview row for `<theme-id minus -bespoke>-preview`
-   (skip with `--keep-brand` if you want to retry registration only)
-7. Re-runs `npm run theme:sync` so the 4 generated registries no longer
+6. Re-runs `npm run theme:sync` so the 4 generated registries no longer
    reference the deleted theme — without this, the dev server errors.
+
+The rollback tool no longer touches MySQL — brand-record cleanup is the
+dashboard's job (`/templates` admin page or `DELETE /api/brands/<slug>`).
+`/new-theme` doesn't create brand records on the canonical ship path,
+so a failed run can't leave a half-written MySQL row unless Phase 13a
+was already run and then aborted.
 
 Idempotent: safe to run multiple times. After rollback, fix the root
 cause (don't blindly retry — diagnose what blew up first), then start
@@ -1504,15 +1501,20 @@ to broadcast. Don't post per-theme during automated batch runs.
 
 ## Tested defaults (current)
 
-- Template: `springalls-classic` (cleanest theme, type-clean baseline as of 2026-05-09).
+- **Mode A scaffolder**: `tools/scaffold-theme-skeleton.mjs` — produces
+  ONLY contract + plumbing stubs (~39 files), strips visual layer. Phase 8
+  designs every page + component fresh.
+- **Mode B scaffolder**: `tools/scaffold-theme.mjs` — full clone-and-edit
+  from `springalls-classic` (cleanest theme, type-clean baseline). Phase 8
+  in Mode B is text replacement, not redesign.
 - Mode A inputs: 2 (logo file path + dealer URL). Optional: theme id,
   display name.
 - Mode B inputs: 0 if the skill auto-picks; 1 if `--from <app>` given.
-- Generated theme has: 14 page implementations, full Shell with Header /
-  Footer / per-theme cookie banner / WhatsApp widget. Three motion widgets
-  mounted out of the box (AnimateOnScroll / MotionFX / ScrollProgress —
-  Phase 8 only sprinkles attributes, no per-theme plumbing). Garage
-  context, Brand styles injection.
+- After Phase 8, the theme has: 14 page implementations, full Shell with
+  Header / Footer / per-theme cookie banner / WhatsApp widget. Three motion
+  widgets mounted out of the box (AnimateOnScroll / MotionFX /
+  ScrollProgress — Phase 8 only sprinkles attributes, no per-theme
+  plumbing). Garage context, Brand styles injection.
 - AOS variants available: 18 (fade / fade-up / fade-down / fade-left /
   fade-right / fade-up-right / fade-up-left / fade-down-right /
   fade-down-left / zoom-in / zoom-out / zoom-in-up / zoom-out-down /
@@ -1540,8 +1542,10 @@ to broadcast. Don't post per-theme during automated batch runs.
     `featured: true` (not random shuffle).
   - `/api/recently-sold?brand=<slug>&limit=N` → returns `Array<vehicle>`.
 - Inventory design library: `docs/inventory-design-library.md` lists 7
-  list patterns × 6 detail patterns with a rotation table. Phase 8 picks
-  one of each per archetype (no two themes ship the same combo).
+  list patterns × 6 detail patterns sourced from real dealers — a
+  reference catalogue / brain-prompt, NOT a template. Phase 8 reads it
+  for inspiration and synthesizes fresh layouts; the rotation table
+  records what each theme leaned on.
 - Optional Phase 13a: `python tools/build-preview-from-theme.py` registers
   a preview brand via `backend.services.preview.upsert_preview`. Local
   preview default `<slug>.lvh.me`; `--automation` triggers production
@@ -1561,7 +1565,7 @@ fire and block you, but recognising the pattern earlier saves a round trip.
 | # | Symptom | Bad pattern | How it's caught now |
 |---|---------|------------|---------------------|
 | 1 | Brand record's `logo`/`heroImage` paths come back as `C:/Program Files/Git/...` | Calling `register_preview_brand.py` from git-bash on Windows with leading-slash paths (`--logo "/themes/..."`). MSYS rewrites the arg before Python sees it. | _Tool removed 2026-05-10 with the brand-registration coupling._ Defensive `_undo_msys_path()` lived in `register_preview_brand.py`. If reintroducing CLI tools that take path args on Windows, mirror that pattern. |
-| 2 | `<slug>.preview.brandstudio.local` hits `DNS_PROBE_FINISHED_NXDOMAIN` | Fictional placeholder domain baked into the registrar default. | Default is now `<slug>.lvh.me` (public DNS that resolves all subdomains to 127.0.0.1). Phase 9.5 returns the real `previewUrl` for the Phase 12 report. |
+| 2 | `<slug>.preview.brandstudio.local` hits `DNS_PROBE_FINISHED_NXDOMAIN` | Fictional placeholder domain baked into the registrar default. | Default is now `<slug>.lvh.me` (public DNS that resolves all subdomains to 127.0.0.1). The optional Phase 13a helper (`build-preview-from-theme.py`) returns the real `previewUrl` for the Phase 12 report when run. |
 | 3 | `useBrand must be used within a BrandClientWrapper` runtime error on a freshly-scaffolded theme | Hand-maintained `app/themes/context-registry.ts` missing the new theme entry → layout falls back to wrong theme's wrapper → different `BrandContext` instance → `useBrand` returns null. | `theme-context-registry.generated.ts` is auto-generated by `tools/sync-theme-contracts.mjs` from the per-theme `context/` folders. New themes register automatically. |
 | 4 | `Code generation for chunk item errored / Expected export to be in eval context X, exports has Y` | Two parallel `'use client'` files at twin paths across themes (e.g. both `<theme-a>/pages/contact/page.tsx` and `<theme-b>/pages/contact/page.tsx` carrying the directive). Turbopack's chunk-item parsed-exports record gets shared between them. | Audit blocker rule **`tp-use-client-on-page`** — pages must be Server Components; extract interactivity into co-located `components/<Name>.tsx` client islands. Existing exemptions: deferred kept inventory pages (annotated `audit-ignore-file`). |
 | 5 | Same error as #4 but for files that imported a CSS module from a parent-relative path | `import styles from '../sell-your-car/page.module.css'` — Turbopack's `'use client'` export tracking is stricter when CSS module imports cross directory boundaries. | Audit blocker rule **`tp-cross-folder-css-module`** — CSS modules must be co-located with the file that imports them. |
@@ -1570,13 +1574,13 @@ fire and block you, but recognising the pattern earlier saves a round trip.
 | 8 | "COLUMBUS VEHICLES" wordmark in primary blue against the dark header | `:where(a)/:is(a) { color: var(--color-primary) }` blanket rule in `base.css` — `:where()` ties on specificity (0,1,0) with CSS-module classes, so `<Link>`-wrapped wordmarks inherited the wrong color depending on stylesheet load order. | Audit blocker rule **`std-link-color-blanket`** — flags any `:where(a) { color: ... }` / `:is(a) { color: ... }` in CSS files. Style links per-component instead. |
 | 9 | Hero section renders flat charcoal when `--brand-image-hero` is unset or 404s | Hero component painted only the brand image background; nothing behind it. | Audit advisory rule **`lib-hero-no-svg-fallback`** — flags `*Hero*.tsx` files that use `var(--brand-image-*)` but don't render `<HeroBackdrop>`. The skeleton scaffolder also keeps `components/HeroBackdrop.tsx` so the SVG fallback is always available. |
 | 10 | Newly-scaffolded theme's `recently-sold` page renders unstyled | `recently-sold/page.tsx` was kept by the skeleton's keep-list, but its inline class names (`sps-section-container`, `sps-vehicle-card`) referenced styles in pruned CSS files. | Phase 8 design guidance now treats the kept `recently-sold/page.tsx` as a stub to redesign per archetype — like any other inner page. |
-| 11 | Skill imports `app.py` for `maybe_start_linux_brand_automation` and crashes on Windows console (`'charmap' codec can't encode character '\U0001f527'`) | app.py prints emoji during startup; default cp1252 console can't encode it. | _Re-applied 2026-05-11 in `tools/build-preview-from-theme.py` (Phase 13a helper) — first action in `main()` is `sys.stdout.reconfigure(errors='replace')` + `sys.stderr.reconfigure(errors='replace')` so the optional `--automation` import of `app.maybe_start_linux_brand_automation` survives on Windows. Apply the same guard at the top of any future Python tool that imports app.py._ |
+| 11 | Skill imports `app.py` for `maybe_start_linux_brand_automation` and crashes on Windows console (`'charmap' codec can't encode character '\U0001f527'`) | app.py prints emoji during startup; default cp1252 console can't encode it. | Guard applied in `tools/build-preview-from-theme.py` (Phase 13a helper): first action in `main()` is `sys.stdout.reconfigure(errors='replace')` + `sys.stderr.reconfigure(errors='replace')` so the optional `--automation` import of `app.maybe_start_linux_brand_automation` survives on Windows. Apply the same guard at the top of any future Python tool that imports `app.py`. |
 | 12 | Identifier rewrite leaves UPPER_CASE constants like `SPRINGALLS_PHONE_TEL` | Scaffolder only handled Pascal/camel/kebab forms. | `scaffold-theme.mjs` and `scaffold-theme-skeleton.mjs` `replaceIdentifiers()` now also handles `upperShort` and `upperFull` forms (longest-first to avoid double-replacement). |
 | 13 | Gilded-drive's `.contact-item svg { stroke: none }` blanks classic-dealer's contact icons when both themes ship to the same preview | Unscoped class-rule in a global stylesheet (`base.css`) — competes on tied (0,1,0) specificity with the other theme's scoped rule, source order decides which wins. | Audit advisory rule **`std-css-unscoped-global-rule`** — flags class selectors at column 0 in any global `.css` that doesn't reference `data-theme-id` anywhere. Wrap every rule in `:where(body[data-theme-id='<this-theme>'])` so it can't bleed. |
 | 14 | Latest Arrivals / Directory / `/used-cars` show empty even though the dealer uploaded inventory via `/update/<slug>` | Server-side `fetch('/api/inventory')` from a theme component without `?brand=<slug>` — server-to-server requests resolve to 127.0.0.1 with no host or x-brand context, API falls back to default `inventory.json`. | Audit advisory rule **`data-fetch-no-brand-param`** — flags `fetch(...)` / `apiUrl(...)` to brand-scoped endpoints (`/api/inventory`, `/api/featured-vehicles`, `/api/recently-sold`, etc.) without a `brand=` parameter. Use `getBrandSlugFromRequest()` server-side or `useBrand().slug` client-side. |
 | 15 | Browser silently kills form submit; console reports "An invalid form control with name='X' is not focusable" | `<input required>` (or `<input type="hidden" required>`) on a tab that's `display:none` when not active. Browser tries to focus the invalid field to display its message, can't focus a hidden control, aborts submit. | Multi-tab forms must use `<form novalidate>` and rely on server-side validation; alternatively, validate per-tab in JS and switch tabs to surface errors. Caught at `templates/update.html` 2026-05-10. |
 | 16 | Theme ships without GDPR cookie consent — UK regulator complaints, no consent state captured | Phase 8 designed Hero / Header / Footer / sections fresh but forgot to mount a cookie banner; previous themes had a per-theme `CookieBanner.tsx` that was pruned by the skeleton scaffolder. | Two-pronged: (a) **Skeleton scaffolder's `componentShell` stub** mounts `<CookieBanner />` from `@/app/widgets/CookieBanner` by default — preserve through Phase 8 redesign. (b) Audit advisory rule **`lib-missing-cookie-banner`** — fires if Shell.tsx doesn't reference `CookieBanner`. The widget itself lives at `app/widgets/CookieBanner/` (theme-agnostic, brand-token-driven). |
-| 17 | Homepage feels static / dead — no entrance animations, sections just appear | Phase 8 didn't add any `data-aos="..."` attributes. Themes used to have a per-theme `AosProvider` that was extracted to `app/widgets/AnimateOnScroll`; if Phase 8 doesn't sprinkle the attributes, the observer has nothing to animate. | Two-pronged: (a) **Skeleton scaffolder's `componentShell` stub** mounts `<AnimateOnScroll />` from `@/app/widgets/AnimateOnScroll` by default — observer's always running. (b) Audit advisory rule **`lib-no-aos-on-homepage`** — flags `pages/home/page.tsx` if it has zero `data-aos` attributes. Variants: `fade-up` / `fade-down` / `fade-left` / `fade-right` / `fade` / `zoom-in` / `zoom-out`; optional `data-aos-delay="120"` (ms) for staggered reveals. Honors `prefers-reduced-motion`. |
+| 17 | Homepage feels static / dead — no entrance animations, sections just appear | Phase 8 didn't add any `data-aos="..."` attributes. Themes used to have a per-theme `AosProvider` that was extracted to `app/widgets/AnimateOnScroll`; if Phase 8 doesn't sprinkle the attributes, the observer has nothing to animate. | Two-pronged: (a) **Skeleton scaffolder's `componentShell` stub** mounts `<AnimateOnScroll />` from `@/app/widgets/AnimateOnScroll` by default — observer's always running. (b) Audit advisory rule **`lib-no-aos-on-homepage`** — flags `pages/home/page.tsx` if it has zero `data-aos` attributes. **Variant list now lives in the Required Widgets section** (18 variants — fade family, zoom family, flip family, slide, blur-in) — kept there to avoid drift; this row only flags the gap. Honors `prefers-reduced-motion`. |
 | 18 | Same form code duplicated across `pages/contact`, `pages/sell-your-car`, `pages/part-exchange` per theme — drift between themes, repeated debugging | Each theme writing its own `useLeadsForm`-wired form for the lead-capture pages. Field validation, error display, submit-handling, accessibility wiring — 150 lines of nearly-identical JSX per theme per form. | **Deferred work** (no rule yet). Plan: extract `<LeadCaptureForm config={{ leadType, fields, copy }} />` global widget at `app/widgets/LeadCaptureForm/` that themes consume with field config + className overrides. Until shipped, the per-theme forms are acceptable with the caveat that form fixes need to be applied to every theme's instance. |
 | 19 | "Sell your car" nav link 404s | Header `NAV_ITEMS` pointed to `/sell-your-car`, but the Next.js app route is `/sell-my-car` (only that folder exists in `app/`). Visible label and URL slug diverge. Multiple themes (columbus, gilded-drive, ele) had the same bug. | SKILL Quality Bar §"Canonical inner-page routes" enumerates the 12 routed slugs. New audit advisory rule **`std-unrouted-href`** (deferred) — flag any `<Link href="...">` / `<a href="...">` inside a theme that points to a path outside the whitelist. Until shipped: SKILL.md whitelist is the canonical reference; cross-check it during Phase 8. |
 | 20 | Header invisible at the top of the page on light backgrounds — nav links sit on top of page content, illegible | `background: transparent` on the default header, only filling in `headerScrolled` on scroll. On homepage, the hero often starts pale enough that the nav can't read. | SKILL Quality Bar §"Header must have a visible background" — default to translucent `color-mix(in srgb, var(--color-bg) 92%, transparent)` + `backdrop-filter: blur(...)`. Intensify on scroll. Add a thin brand-tinted gradient line below the header for separation. |
@@ -1590,7 +1594,7 @@ fire and block you, but recognising the pattern earlier saves a round trip.
 | 27b | "Sell your car" floating FAB tried and rejected | Built `<SellYourCarFab />` companion to the WhatsApp FAB on 2026-05-11, then removed the same day per dealer feedback. A second floating affordance in the corner crowded the WhatsApp button and didn't give the user a different decision to make. | SKILL §"Required widgets" includes the explicit "do NOT add a floating Sell your car CTA" note. Surfaces for the sell-your-car flow stay nav-bar link, dedicated page, homepage CtaBanner — no floating affordance. |
 | 28 | Skill-generated sell-your-car pages were hand-rolled per theme — drift between themes, lower fidelity than carous-platform's huntsmotors/csmotors pages, missing the 3-step wizard + UK plate flag + vehicle lookup + valuation reveal that buyers expect. | Phase 8 wrote a per-theme `ValuationFormIsland.tsx` (a single-step form with manual reg/mileage/make/model inputs) instead of mounting the carous-platform widget. The carous-platform monorepo has `packages/sell-your-car/` (`@carous/sell-your-car`) at ~2k LOC that handles plate formatting, mileage formatting, vehicle lookup via `/api/lookup`, trade-price reveal, contact panel — none of that was being replicated. First report: 2026-05-11. | (a) Ported the full carous-platform widget into `app/widgets/SellYourCarWidget/` (types + format + lookup + payload + DefaultInfoPanel + SellYourCarWidget + 910-line styles.css). (b) Added `/api/lookup` POST route that proxies to `/api/vehicles/lookup` and falls back to a synthesized minimal vehicle for prospect previews. (c) SKILL §"Required widgets" now mandates mounting `<SellYourCarWidget />` inside `pages/sell-your-car/` via a co-located client island — Phase 8 must NOT write a hand-rolled valuation form anymore. (d) ELE theme is the canonical example: `pages/sell-your-car/page.tsx` (Server Component) + `pages/sell-your-car/SellYourCarMount.tsx` (client island that calls `useBrand()` + passes brand context to the widget). |
 | 29 | Saved per-brand inventory JSON ignored — dealer uploaded vehicles via `/update/<slug>` but Latest Arrivals / `/used-cars` / Featured / Recently Sold all rendered empty or showed the default `inventory.json` instead of `<slug>-inventory.json`. | `/api/inventory/route.ts` only read the `x-brand` header and host for brand resolution; the `?brand=<slug>` query param that themes pass on server-side fetches was IGNORED. Server-to-server fetches resolve to `127.0.0.1` (no useful host, no x-brand header) so the API fell through to the `'fairfield'` default. The companion `/api/featured-vehicles` and `/api/recently-sold` routes correctly read `?brand=`, so they worked — but their themes were ALSO affected because `LatestArrivals.tsx` was parsing `data.vehicles` instead of the actual `{ items, meta }` response shape. First report: 2026-05-11, auto-wow-uk-bespoke preview. | (a) Updated `app/api/inventory/route.ts` to read `?brand=` first (with previews.db validation via `fetchBrandBySlug`, but accepts the literal slug if not yet in the previews table so freshly-scaffolded themes serve disk inventory). (b) Updated `app/api/featured-vehicles/route.ts` fallback: when no vehicle has `featured: true`, sort by newest-year + price-desc and take the first N instead of a random shuffle (the random shuffle made previews look different every reload, which dealers found unsettling). (c) SKILL Quality Bar §"Brand-scoped server fetches" stays in force — themes still must pass `?brand=`; the API is now equipped to actually use it. (d) Documented response shapes in this row: `/api/inventory` → `{ items, meta }`; `/api/featured-vehicles` → `Array<vehicle>`; `/api/recently-sold` → `Array<vehicle>`. Theme components must accept either array-or-`{items}` shape so they survive future shape tweaks. |
-| 30 | Inventory pages identical across every theme — the skeleton scaffolder keeps `pages/used-cars/page.tsx` and `[slug]/page.tsx` verbatim from `springalls-classic` because the data-layer logic is non-trivial, but Phase 8 was treating "kept" as "don't touch" → every prospect preview shipped with the same showroom-grid layout, lower visual differentiation than dealers expect. | Phase 8 conflated "keep the data layer" with "don't touch the file at all". The SKILL.md guidance for kept inventory was effectively `audit-ignore-file: ... — deferred work`, which was correct for the audit advisories but wrong as a design directive. | (a) Added a new SKILL Quality Bar §"Inventory pages MUST be redesigned per archetype" with the data-layer/render-layer split rule. (b) Created `docs/inventory-design-library.md` — 7 list patterns + 6 detail patterns sourced from reference dealers (Autotrader, Cinch, Cazoo, Hexagon, Vision Prestige, McLaren Approved, etc.), with a rotation table so no two themes ship the same layout. (c) New audit advisory rule **`inv-redesign-required`** (deferred — when shipped, flag inventory pages whose JSX is unchanged from springalls-classic baseline). Until the rule ships, the rotation table is the canonical check. |
+| 30 | Inventory pages identical across every theme — the skeleton scaffolder keeps `pages/used-cars/page.tsx` and `[slug]/page.tsx` verbatim from `springalls-classic` because the data-layer logic is non-trivial, but Phase 8 was treating "kept" as "don't touch" → every prospect preview shipped with the same showroom-grid layout, lower visual differentiation than dealers expect. | Phase 8 conflated "keep the data layer" with "don't touch the file at all". The SKILL.md guidance for kept inventory was effectively `audit-ignore-file: ... — deferred work`, which was correct for the audit advisories but wrong as a design directive. | (a) Added a new SKILL Quality Bar §"Inventory pages MUST be redesigned per archetype" with the data-layer/render-layer split rule. (b) Created `docs/inventory-design-library.md` — 7 list patterns + 6 detail patterns sourced from reference dealers (Autotrader, Cinch, Cazoo, Hexagon, Vision Prestige, McLaren Approved, etc.), with a rotation table so no two themes ship the same layout. (c) New audit advisory rule **`inv-redesign-required`** (deferred — when shipped, flag inventory pages whose JSX is unchanged from springalls-classic baseline). **Superseded 2026-05-11 by row 32**: the "pick ONE list pattern and ONE detail pattern" framing was too prescriptive. The library is now a reference catalogue / brain-prompt, not a template; themes synthesize fresh layouts. The rotation table still records what each theme leaned on, but the constraint is "no two themes ship the same layout", not "no two themes pick the same library entry". |
 | 31 | Themes ship "static and dead" — palette-swapped Hero / Header / sections that don't move or glow at all once the page loads. Dealer feedback consistently described prospect previews as "fine but lifeless." | Phase 8 added decorative SVG and gradient layers but no motion. Static radial-gradient glows look intentional in static mockups but feel inert on a real device. `data-aos` attributes were sprinkled on a few sections but not used systematically — typical theme had 3-4 AOS attrs only on the homepage and zero on inner pages. No scroll-tied effects. Hero photos sat still while everything else moved. | Two-pronged: (a) New brandstudio-global widgets — `<MotionFX />` (animated keyframe library: `.mfx-glow-pulse`, `.mfx-glow-orbit`, `.mfx-pulse-dot`, `.mfx-shimmer`, `.mfx-text-glow`, `.mfx-border-glow`, `.mfx-scan`, `.mfx-float`, `.mfx-tilt`, etc — all brand-token-driven, all `prefers-reduced-motion`-respecting) and `<ScrollProgress />` (rAF scroll-tied driver that writes `--mfx-progress` per `[data-mfx-scroll]` element, paired with five built-in variants: `parallax-slow|medium|fast`, `fade-out-on-exit`, `blur-on-exit`, `zoom-on-enter`). AnimateOnScroll expanded from 7 variants to 18 (added flip-up/down/left/right, slide-up/down, fade-up-right/up-left/down-right/down-left, zoom-in-up/out-down, blur-in) plus per-element `data-aos-duration` and `data-aos-easing`. (b) New SKILL Quality Bar §"Motion & light language — REQUIRED, not optional" mandates: animated glows (no static radial-gradient divs in heroes), `.mfx-pulse-dot` on every status chip, 4+ data-aos elements per page with varied variants, at least 1 `data-mfx-scroll` effect on the homepage, `.mfx-shimmer` on primary CTAs, `.mfx-text-glow` on hero highlight phrase. (c) Skeleton scaffolder's Shell stub now mounts all three motion widgets by default so Phase 8 only sprinkles attributes; no plumbing per theme. First report: 2026-05-11 from operator feedback on auto-wow-uk-bespoke. |
 | 32 | Vehicle detail page (and other "kept" inner pages) reuse the springalls-classic / sibling-theme render structure verbatim — only colors and class names differ. Result: every theme's `/used-cars/<slug>` looks like the same page in a different palette. | Phase 8 lifted the configurator-led pattern from `docs/inventory-design-library.md` near-verbatim for `ncr-van-sales-bespoke` and kept the `audit-ignore-file: tp-use-client-on-page` annotation that the skeleton ships with. The design library was being used as a **template** rather than a **reference**. Audit rule `inv-redesign-required` (advisory) targets the LIST page only; no equivalent for the detail page. First report: 2026-05-11, Difatha on `ncr-van-sales-bespoke`. | (a) New SKILL Quality Bar §"Autonomous independent designs — every page, every component" explicitly forbids borrowing render structure from any baseline; inventory-design-library is documented as reference / brain-prompt only, not a copy source. (b) Required visual language extended to mandate gradient backgrounds + geometric backgrounds in addition to the existing motion requirements (`--t-brand-gradient`, `--t-neon-gradient`, `--t-band-gradient` already exist; geometric is CSS-only patterns or decorative SVG). (c) The "vehicle detail page must have its own composition language" clause enumerates the design axes (hero / gallery / spec / finance / enquiry) that must vary across themes. (d) Future audit rule `inv-detail-redesign-required` (deferred) should compare detail-page JSX structure against the springalls baseline. Until shipped, the SKILL clause is the contract. |
 
