@@ -7,6 +7,7 @@ import styles from './page.module.css'
 import VehicleCard from '../../components/VehicleCard'
 import { useBrand } from '../../context/BrandClientWrapper'
 import { useGarage } from '../../context/GarageContext'
+import { getBrandContactInfo } from '../../lib/contact'
 import { apiUrl } from '../../lib/api'
 import { normalizeInventoryItem, type InventoryMeta, type InventoryVehicle } from '../../lib/inventory'
 
@@ -59,6 +60,13 @@ export default function UsedCarsClient({
   const brand = useBrand()
   const brandSlug = (brand?.slug || '').trim()
   const { wishlistCount, compareCount } = useGarage()
+  const contact = getBrandContactInfo(brand)
+  const locationChip = (() => {
+    const addr = (brand as any)?.location?.address || {}
+    const parts = [addr.city, addr.county].filter((p: any) => typeof p === 'string' && p.trim())
+    if (parts.length === 0 && contact.showroomAddress) return contact.showroomAddress.split(',').slice(-2).join(',').trim()
+    return parts.join(', ')
+  })()
   const searchInputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
@@ -425,26 +433,26 @@ export default function UsedCarsClient({
         <div className={styles.wideInner}>
           <div className={styles.inventoryHeroInner} data-aos="fade-up">
             <span className="shr-eyebrow">Used Cars</span>
-            <h1 className={styles.inventoryHeroTitle}>
-              Browse stock in Coventry &amp; the West Midlands.
-            </h1>
+            <h1 className={styles.inventoryHeroTitle}>Browse our stock</h1>
             <p className={styles.inventoryHeroLead}>
               500+ vehicles, prepared and HPI-checked. Filter, sort and shortlist
               the right one for your driveway.
             </p>
             <div className={styles.heroChips}>
-              <span className={`shr-chip shr-chip--dark`}>
+              <span className={`shr-chip shr-chip--dark ${styles.chipDesktop}`}>
                 <BadgeCheck size={14} strokeWidth={2.2} aria-hidden />
-                HPI & finance checks
+                HPI &amp; finance checks
               </span>
-              <span className={`shr-chip shr-chip--dark`}>
+              <span className={`shr-chip shr-chip--dark ${styles.chipDesktop}`}>
                 <Gauge size={14} strokeWidth={2.2} aria-hidden />
-                Inspected & prepared
+                Inspected &amp; prepared
               </span>
-              <span className={`shr-chip shr-chip--dark`}>
-                <MapPin size={14} strokeWidth={2.2} aria-hidden />
-                Coventry, CV5 9DA
-              </span>
+              {locationChip ? (
+                <span className={`shr-chip shr-chip--dark`}>
+                  <MapPin size={14} strokeWidth={2.2} aria-hidden />
+                  {locationChip}
+                </span>
+              ) : null}
             </div>
           </div>
         </div>
@@ -494,18 +502,26 @@ export default function UsedCarsClient({
                 {activeFilters.length > 0 ? <span className={styles.actionBadge}>{activeFilters.length}</span> : null}
               </button>
 
-              <label className={styles.action}>
-                <ArrowUpDown size={16} strokeWidth={2.2} aria-hidden />
-                <span className={styles.actionLabel}>Sort</span>
+              <label className={`${styles.action} ${styles.actionSort}`}>
+                <ArrowUpDown size={16} strokeWidth={2.2} aria-hidden className={styles.actionSortIcon} />
+                <span className={styles.actionSortLabel}>
+                  {sort === 'newest' && 'Newest'}
+                  {sort === 'price-asc' && 'Price ↑'}
+                  {sort === 'price-desc' && 'Price ↓'}
+                  {sort === 'mileage' && 'Mileage ↑'}
+                </span>
+                <svg className={styles.actionSortChevron} width="10" height="6" viewBox="0 0 10 6" aria-hidden>
+                  <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value)}
                   aria-label="Sort by"
-                  className={styles.actionSelect}
+                  className={styles.actionSortNative}
                 >
                   <option value="newest">Newest</option>
-                  <option value="price-asc">Price low–high</option>
-                  <option value="price-desc">Price high–low</option>
+                  <option value="price-asc">Price: low to high</option>
+                  <option value="price-desc">Price: high to low</option>
                   <option value="mileage">Lowest mileage</option>
                 </select>
               </label>

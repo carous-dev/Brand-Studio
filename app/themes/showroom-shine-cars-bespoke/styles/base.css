@@ -10,12 +10,25 @@
  * .shr-chip, etc). Component-specific styling lives in CSS modules.
  * ============================================================================= */
 
+/* Bottom-of-page paint: html + body both get the dark footer color so any
+ * space below the footer (overscroll, short pages, mobile rubber-band)
+ * paints seamlessly with the footer band — no white gap. globals.css
+ * sets `body { background: var(--brand-background) }` at specificity
+ * (0,0,1); the theme rule below at (0,1,0) overrides it. The html
+ * element rule has its own (0,0,1) specificity but globals.css doesn't
+ * touch html background, so this is uncontested. */
+html:has([data-theme-id='showroom-shine-cars-bespoke']),
+[data-theme-id='showroom-shine-cars-bespoke'] {
+  background-color: var(--surface-bg-dark) !important;
+}
+
 [data-theme-id='showroom-shine-cars-bespoke'] {
   color-scheme: light;
   font-family: var(--font-ui-family-override, 'DM Sans', system-ui, sans-serif);
-  background: var(--color-bg);
   color: var(--color-text);
   margin: 0;
+  padding: 0;
+  min-height: 100vh;
 }
 
 [data-theme-id='showroom-shine-cars-bespoke'] *,
@@ -89,8 +102,11 @@
 
 [data-theme-id='showroom-shine-cars-bespoke'] .shr-main {
   display: block;
-  min-height: calc(100vh - 240px);
   background: var(--surface-bg-light);
+  /* Lower bound so very short pages don't collapse the content area to
+   * the height of a single h1. The body's dark background fills any
+   * remaining viewport space below the footer if the page is still short. */
+  min-height: calc(100vh - 240px);
 }
 [data-theme-id='showroom-shine-cars-bespoke'] .shr-main.main-dashboard {
   background: var(--surface-bg-light);
@@ -243,7 +259,7 @@
 
 /* Section */
 [data-theme-id='showroom-shine-cars-bespoke'] .shr-section {
-  padding: clamp(48px, 8vw, 96px) 0;
+  padding: clamp(36px, 7vw, 96px) 0;
   position: relative;
 }
 [data-theme-id='showroom-shine-cars-bespoke'] .shr-section--dark {
@@ -282,7 +298,7 @@
  * ============================================================================ */
 [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero {
   position: relative;
-  padding: clamp(96px, 14vw, 160px) clamp(16px, 4vw, 32px) clamp(64px, 10vw, 112px);
+  padding: clamp(56px, 10vw, 160px) clamp(16px, 4vw, 32px) clamp(36px, 7vw, 112px);
   background-color: var(--surface-bg-dark);
   color: var(--text-on-dark-strong);
   background-position: center, center, center;
@@ -352,7 +368,7 @@
   max-width: 1240px;
   margin: 0 auto;
   display: grid;
-  gap: 18px;
+  gap: clamp(10px, 1.5vw, 18px);
 }
 [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__eyebrow {
   display: inline-flex;
@@ -375,18 +391,41 @@
 }
 [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__title {
   color: var(--text-on-dark-strong);
-  font-size: clamp(2.2rem, 4.6vw, 3.6rem);
+  font-size: clamp(1.7rem, 4.6vw, 3.6rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.01em;
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
+  line-height: 1.05;
 }
 [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__lead {
   color: var(--text-on-dark-strong);
   opacity: 0.92;
-  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  font-size: clamp(0.88rem, 1.4vw, 1.15rem);
   max-width: 64ch;
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.3);
+  line-height: 1.5;
+}
+
+/* Mobile-modest page hero: smaller eyebrow, tighter rhythm, no lead on
+ * extra-narrow viewports. Inner pages stay scannable instead of forcing
+ * the buyer past a marketing intro before the actual content. */
+@media (max-width: 640px) {
+  [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+  }
+  [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__eyebrow::before {
+    width: 24px;
+  }
+  [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__lead {
+    font-size: 0.92rem;
+  }
+}
+@media (max-width: 480px) {
+  [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__lead {
+    display: none;
+  }
 }
 
 /* ============================================================================
@@ -417,26 +456,40 @@
  * ============================================================================ */
 [data-theme-id='showroom-shine-cars-bespoke'] .shr-section-head {
   display: grid;
-  gap: 14px;
+  gap: 12px;
   max-width: 720px;
-  margin-bottom: clamp(32px, 5vw, 56px);
+  margin-bottom: clamp(20px, 4vw, 56px);
 }
 [data-theme-id='showroom-shine-cars-bespoke'] .shr-section-head__title {
-  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  font-size: clamp(1.5rem, 3.6vw, 2.6rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.01em;
   color: var(--text-on-light-strong);
+  line-height: 1.1;
 }
 [data-theme-id='showroom-shine-cars-bespoke'] .shr-section--dark .shr-section-head__title {
   color: var(--text-on-dark-strong);
 }
 [data-theme-id='showroom-shine-cars-bespoke'] .shr-section-head__lead {
   color: var(--text-on-light-muted);
-  font-size: clamp(1rem, 1.3vw, 1.1rem);
+  font-size: clamp(0.92rem, 1.3vw, 1.1rem);
+  line-height: 1.55;
 }
 [data-theme-id='showroom-shine-cars-bespoke'] .shr-section--dark .shr-section-head__lead {
   color: var(--text-on-dark-muted);
+}
+
+/* Mobile-modest section heads: drop the lead on very small screens so
+ * sections start with the title + content, not a marketing paragraph. */
+@media (max-width: 480px) {
+  [data-theme-id='showroom-shine-cars-bespoke'] .shr-section-head__lead {
+    display: none;
+  }
+  [data-theme-id='showroom-shine-cars-bespoke'] .shr-section-head {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
 }
 
 /* ============================================================================

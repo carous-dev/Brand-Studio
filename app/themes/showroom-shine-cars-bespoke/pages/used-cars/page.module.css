@@ -14,7 +14,7 @@
 
 .inventoryHero {
   position: relative;
-  padding: clamp(96px, 14vw, 160px) clamp(16px, 4vw, 32px) clamp(56px, 8vw, 96px);
+  padding: clamp(40px, 8vw, 96px) clamp(16px, 4vw, 32px) clamp(28px, 5vw, 64px);
   background-color: var(--surface-bg-dark);
   color: var(--text-on-dark-strong);
   overflow: hidden;
@@ -46,29 +46,49 @@
 .inventoryHeroInner {
   max-width: 720px;
   display: grid;
-  gap: 16px;
+  gap: 12px;
 }
 .inventoryHeroTitle {
   font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
-  font-size: clamp(2rem, 4.6vw, 3.2rem);
+  font-size: clamp(1.6rem, 4.6vw, 3.2rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.01em;
   color: var(--text-on-dark-strong);
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
   font-style: italic;
+  line-height: 1.05;
 }
 .inventoryHeroLead {
   color: var(--text-on-dark-strong);
   opacity: 0.92;
-  font-size: clamp(1rem, 1.4vw, 1.1rem);
+  font-size: clamp(0.88rem, 1.3vw, 1.05rem);
   max-width: 56ch;
+  line-height: 1.5;
 }
 .heroChips {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+/* Below 640px the inventory hero collapses to a tight intro: smaller
+ * title, no lead, just the location chip (HPI / Inspected chips hide).
+ * Buyers on mobile want to get to the listings, not read marketing copy. */
+@media (max-width: 640px) {
+  .inventoryHeroInner {
+    gap: 8px;
+  }
+  .inventoryHeroLead {
+    display: none;
+  }
+  .chipDesktop {
+    display: none;
+  }
+  .heroChips {
+    margin-top: 4px;
+  }
 }
 
 /* ============================================================================
@@ -256,14 +276,19 @@
   }
 }
 
-/* Action chip (shared base) */
+/* Action chip (shared base) — content-width, never stretches.
+ * `width: auto; flex: 0 0 auto` keeps each chip at the size of its content
+ * even when the rail collapses to a single item, so Filters doesn't blow
+ * up to full row width. */
 .action {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   height: 40px;
   padding: 0 14px;
+  width: auto;
   flex: 0 0 auto;
+  align-self: flex-start;
   scroll-snap-align: start;
   background: var(--surface-card-light);
   border: 1px solid var(--border-on-light);
@@ -292,32 +317,59 @@
 .actionLabel {
   font-weight: 700;
 }
-.actionSelect {
+/* Sort chip — single-row composition: icon + current value label + chevron.
+ * The native <select> sits invisibly on top (absolute, opacity 0) so clicking
+ * anywhere on the chip opens the OS-native dropdown. This avoids the "two
+ * pills mashed together" look the old `Sort | Price hi-lo` layout had. */
+.actionSort {
+  position: relative;
+  padding: 0 14px;
+  gap: 8px;
+}
+.actionSortIcon {
+  flex-shrink: 0;
+  color: var(--brand-primary);
+}
+.actionSortLabel {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--text-on-light-strong);
+  text-transform: uppercase;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.actionSortChevron {
+  color: var(--text-on-light-muted);
+  flex-shrink: 0;
+  pointer-events: none;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+.actionSort:hover .actionSortChevron {
+  color: var(--brand-primary);
+  transform: translateY(1px);
+}
+.actionSortNative {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font: inherit;
+  border: 0;
+  background: transparent;
+  margin: 0;
+  padding: 0;
   appearance: none;
   -webkit-appearance: none;
-  background: transparent;
-  border: 0;
-  padding: 0 18px 0 2px;
-  margin: 0;
-  height: 38px;
-  min-height: 38px;
-  font: inherit;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: none;
-  color: var(--text-on-light-strong);
-  cursor: pointer;
-  background-image:
-    linear-gradient(45deg, transparent 50%, currentColor 50%),
-    linear-gradient(135deg, currentColor 50%, transparent 50%);
-  background-position: calc(100% - 9px) 50%, calc(100% - 5px) 50%;
-  background-size: 4px 4px, 4px 4px;
-  background-repeat: no-repeat;
-  width: auto;
-  max-width: 130px;
 }
-.actionSelect:focus {
-  outline: none;
+.actionSortNative:focus-visible + .actionSortChevron,
+.actionSort:focus-within {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+  border-radius: 999px;
 }
 
 /* Filters action — brand-primary primary CTA */
@@ -382,14 +434,12 @@
   color: var(--brand-primary);
 }
 
-/* Hide labels on small screens — icon + count only */
+/* Labels always visible — Wishlist + Compare counts mean nothing without
+ * the label on mobile, and Filters needs to read "Filters" so buyers
+ * recognise it. The action rail is horizontally scrollable on small
+ * screens so showing all labels just means swiping to see them all. */
 .actionLabel {
-  display: none;
-}
-@media (min-width: 640px) {
-  .actionLabel {
-    display: inline;
-  }
+  display: inline;
 }
 
 /* Active filters strip */
@@ -718,7 +768,19 @@
   .toolbarSection {
     position: relative;
     top: auto;
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+  .resultsSection {
+    padding-top: 16px !important;
+  }
+  .resultsHead {
+    margin-bottom: 4px;
+  }
+  .resultsHint {
+    display: none;
+  }
+  .resultsCount {
+    font-size: 1rem;
   }
 }

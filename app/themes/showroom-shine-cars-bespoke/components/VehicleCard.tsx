@@ -76,11 +76,8 @@ export default function VehicleCard({ vehicle }: { vehicle: VehicleLike }) {
             aria-label={vehicle.title}
           />
         </Link>
-        <div className={styles.badges}>
+        <div className={styles.cardTopRow}>
           {vehicle.featured ? <span className={`${styles.badge} ${styles.badgeFeatured}`}>Featured</span> : null}
-          {vehicle.year ? <span className={styles.badge}>{vehicle.year}</span> : null}
-        </div>
-        <div className={styles.quickActions}>
           <button
             type="button"
             className={`${styles.iconButton} ${compared ? styles.iconButtonActive : ''}`}
@@ -88,7 +85,7 @@ export default function VehicleCard({ vehicle }: { vehicle: VehicleLike }) {
             aria-label={compared ? 'Remove from compare' : 'Add to compare'}
             onClick={() => toggleCompare(saved)}
           >
-            <GitCompare size={16} strokeWidth={2} />
+            <GitCompare size={16} strokeWidth={2.2} />
           </button>
           <button
             type="button"
@@ -97,13 +94,13 @@ export default function VehicleCard({ vehicle }: { vehicle: VehicleLike }) {
             aria-label={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
             onClick={() => toggleWishlist(saved)}
           >
-            <Heart size={16} strokeWidth={2} fill={wishlisted ? 'currentColor' : 'none'} />
+            <Heart size={16} strokeWidth={2.2} fill={wishlisted ? 'currentColor' : 'none'} />
           </button>
         </div>
       </div>
 
       <div className={styles.body}>
-        <h3 className={styles.title}>
+        <h3 className={styles.title} title={vehicle.title}>
           <Link href={href} className={styles.titleLink}>{vehicle.title || 'Vehicle'}</Link>
         </h3>
         {vehicle.make || vehicle.body || vehicle.color ? (

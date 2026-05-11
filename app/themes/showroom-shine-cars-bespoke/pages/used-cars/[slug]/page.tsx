@@ -232,18 +232,25 @@ export function ShowroomVehicleDetailPage() {
     <article className={styles.detailPage}>
       <nav className={styles.breadcrumb} aria-label="Breadcrumb">
         <div className="shr-container">
-          <Link href="/">Home</Link>
-          <span>/</span>
-          <Link href="/used-cars">Used Cars</Link>
-          <span>/</span>
-          <span aria-current="page">{vehicle.title}</span>
+          <Link href="/used-cars" className={styles.breadcrumbBack} aria-label="Back to all stock">
+            ← All stock
+          </Link>
+          <div className={styles.breadcrumbTrail}>
+            <Link href="/">Home</Link>
+            <span>/</span>
+            <Link href="/used-cars">Used Cars</Link>
+            <span>/</span>
+            <span aria-current="page">{vehicle.title}</span>
+          </div>
         </div>
       </nav>
 
       <section className={styles.heroBand}>
         <div className="shr-container">
           <div className={styles.layout}>
-            {/* Mosaic gallery */}
+            {/* GALLERY column — mosaic gallery only. Spec strip + description
+                are moved to a sibling .descSection so the info card can sit
+                between gallery and description on mobile. */}
             <div className={styles.gallery}>
               <div className={styles.galleryMosaic}>
                 <button
@@ -282,8 +289,60 @@ export function ShowroomVehicleDetailPage() {
                   })}
                 </div>
               </div>
+            </div>
 
-              {/* Spec strip + description */}
+            {/* INFO column — price + CTAs. Sticky on desktop, sits between
+                gallery and description on mobile so buyers see decision
+                info before they have to scroll past the specs table. */}
+            <aside className={styles.infoCard}>
+              <div className={styles.infoCardSticky}>
+                <div className={styles.priceBlock}>
+                  <span className={styles.priceLabel}>Cash price</span>
+                  <span className={styles.price}>{formatPrice(vehicle.price)}</span>
+                  {monthly ? (
+                    <span className={styles.monthly}>
+                      From <strong>£{monthly.toLocaleString()}</strong> /mo on finance*
+                    </span>
+                  ) : null}
+                </div>
+
+                <ul className={styles.featureList}>
+                  <li><Check size={14} strokeWidth={2.4} aria-hidden /> 3-month warranty included</li>
+                  <li><Check size={14} strokeWidth={2.4} aria-hidden /> HPI &amp; finance verified</li>
+                  <li><Check size={14} strokeWidth={2.4} aria-hidden /> Part-exchange welcome</li>
+                  <li><Check size={14} strokeWidth={2.4} aria-hidden /> Same-day finance decisions</li>
+                </ul>
+
+                <div className={styles.ctaStack}>
+                  <button type="button" onClick={enquiry.open} className={`shr-btn-primary mfx-shimmer ${styles.enquireCta}`}>
+                    Enquire now
+                    <ArrowRight size={16} strokeWidth={2.4} />
+                  </button>
+                  {contact.phoneTel ? (
+                    <a href={`tel:${contact.phoneTel}`} className={`shr-btn-ghost-light ${styles.callCta}`}>
+                      <Phone size={16} strokeWidth={2.4} aria-hidden />
+                      {contact.phoneDisplay}
+                    </a>
+                  ) : null}
+                  {contact.whatsappUrl ? (
+                    <a href={contact.whatsappUrl} target="_blank" rel="noopener noreferrer" className={styles.whatsCta}>
+                      <WhatsAppIcon size={18} aria-hidden />
+                      Chat on WhatsApp
+                    </a>
+                  ) : null}
+                </div>
+
+                <div className={styles.contactMini}>
+                  <MapPin size={14} strokeWidth={2.2} aria-hidden />
+                  <span>{contact.showroomAddress || 'Coventry, CV5 9DA, West Midlands'}</span>
+                </div>
+              </div>
+            </aside>
+
+            {/* DESCRIPTION column — spec strip + body + full specs table.
+                Sits below the gallery on desktop (left column, row 2) and
+                below the info card on mobile (after price + CTAs). */}
+            <div className={styles.descSection}>
               <div className={styles.specStrip}>
                 <div className={styles.specChip}>
                   <Calendar size={16} strokeWidth={2.2} aria-hidden />
@@ -344,78 +403,10 @@ export function ShowroomVehicleDetailPage() {
                 </div>
               </div>
             </div>
-
-            {/* Sticky info card */}
-            <aside className={styles.infoCard}>
-              <div className={styles.infoCardSticky}>
-                <div className={styles.priceBlock}>
-                  <span className={styles.priceLabel}>Cash price</span>
-                  <span className={styles.price}>{formatPrice(vehicle.price)}</span>
-                  {monthly ? (
-                    <span className={styles.monthly}>
-                      From <strong>£{monthly.toLocaleString()}</strong> /mo on finance*
-                    </span>
-                  ) : null}
-                </div>
-
-                <ul className={styles.featureList}>
-                  <li><Check size={14} strokeWidth={2.4} aria-hidden /> 3-month warranty included</li>
-                  <li><Check size={14} strokeWidth={2.4} aria-hidden /> HPI &amp; finance verified</li>
-                  <li><Check size={14} strokeWidth={2.4} aria-hidden /> Part-exchange welcome</li>
-                  <li><Check size={14} strokeWidth={2.4} aria-hidden /> Same-day finance decisions</li>
-                </ul>
-
-                <div className={styles.ctaStack}>
-                  <button type="button" onClick={enquiry.open} className={`shr-btn-primary mfx-shimmer ${styles.enquireCta}`}>
-                    Enquire now
-                    <ArrowRight size={16} strokeWidth={2.4} />
-                  </button>
-                  {contact.phoneTel ? (
-                    <a href={`tel:${contact.phoneTel}`} className={`shr-btn-ghost-light ${styles.callCta}`}>
-                      <Phone size={16} strokeWidth={2.4} aria-hidden />
-                      {contact.phoneDisplay}
-                    </a>
-                  ) : null}
-                  {contact.whatsappUrl ? (
-                    <a href={contact.whatsappUrl} target="_blank" rel="noopener noreferrer" className={styles.whatsCta}>
-                      <WhatsAppIcon size={18} aria-hidden />
-                      Chat on WhatsApp
-                    </a>
-                  ) : null}
-                </div>
-
-                <div className={styles.contactMini}>
-                  <MapPin size={14} strokeWidth={2.2} aria-hidden />
-                  <span>{contact.showroomAddress || 'Coventry, CV5 9DA, West Midlands'}</span>
-                </div>
-              </div>
-            </aside>
           </div>
         </div>
       </section>
 
-      {/* Mobile sticky bar */}
-      <div className={styles.mobileStickyBar}>
-        <div className={styles.mobileStickyPrice}>
-          <span className={styles.mobileStickyLabel}>Cash price</span>
-          <span className={styles.mobileStickyPriceValue}>{formatPrice(vehicle.price)}</span>
-        </div>
-        <div className={styles.mobileStickyActions}>
-          {contact.phoneTel ? (
-            <a href={`tel:${contact.phoneTel}`} aria-label="Call" className={styles.mobileStickyIcon}>
-              <Phone size={18} strokeWidth={2.4} />
-            </a>
-          ) : null}
-          {contact.whatsappUrl ? (
-            <a href={contact.whatsappUrl} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className={styles.mobileStickyIcon}>
-              <WhatsAppIcon size={18} />
-            </a>
-          ) : null}
-          <button type="button" onClick={enquiry.open} className={`shr-btn-primary ${styles.mobileStickyEnquire}`}>
-            Enquire
-          </button>
-        </div>
-      </div>
 
       {/* Similar vehicles */}
       <section className={`shr-section ${styles.similarSection}`}>
