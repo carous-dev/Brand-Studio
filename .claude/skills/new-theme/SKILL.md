@@ -425,6 +425,126 @@ contract), document the gap in the final report. Don't ship silently.
   the skill does NOT prescribe the answer. If a page exists in the
   skeleton, Phase 8 owns its design — full stop.
 
+**Vehicle detail page composition (must-have, learned 2026-05-11 from chesterfield-motor-empire-bespoke review):**
+
+The vehicle detail page is the deepest funnel surface — the single page where
+buyers commit. It deserves more compositional rigour than any other page in
+the theme. These six requirements apply to *every* `pages/used-cars/[slug]/page.tsx`:
+
+- **Vary the gallery layout per theme.** Pick from (don't always default to
+  carousel + thumbnail strip):
+  - **Full-bleed mosaic** — main image full-width on the left, 2×2 thumbnail
+    grid on the right, "+N gallery" pill on the last thumb that opens the
+    lightbox (this is the layout in the Hunts Motors reference screenshot).
+    Best for themes with strong photography.
+  - **Sticky thumbnail rail** — vertical column of thumbnails fixed left,
+    main image fills the rest. Compact, premium feel.
+  - **Carousel + counter** — single main image with prev/next + a compact
+    thumbnail strip below. Falls back gracefully on mobile.
+  - **Mosaic-on-scroll** — vertical stack of all images on desktop, swipe
+    carousel on mobile. Best for buyers who want to see everything before
+    committing.
+  Whichever pattern you pick, **thumbnails must be space-efficient** —
+  compact grids or strips, not row-after-row of huge tiles. The user
+  scrolling shouldn't have to wade through gallery to reach specs.
+
+- **Use the official WhatsApp brand icon.** Anywhere the page links to
+  `wa.me` / `whatsappUrl`, import `<WhatsAppIcon />` from
+  `@/app/widgets/WhatsAppFab` — NOT a generic `MessageCircle` from lucide.
+  The official mark reads as "WhatsApp" instantly; a generic chat bubble
+  reads as "third-party chat" and undermines trust. The WhatsAppFab widget
+  re-exports the icon from the same source of truth so there's no risk of
+  drift. The audit's `lib-whatsapp-icon-generic` rule fires if a file uses
+  `MessageCircle` alongside a wa.me link without importing `WhatsAppIcon`.
+
+- **Enquiry is a modal, not an inline form.** Mount
+  `<EnquiryModal />` from `@/app/widgets/EnquiryModal` and trigger it from
+  multiple call-out points (sticky sidebar "Enquire", sticky mobile bar,
+  hero "Enquire now", optional gallery overlay). The modal pattern:
+  - Keeps the page scannable — buyers don't scroll past a 6-field inline
+    form to reach the next section.
+  - Reuses one form state across triggers — no duplicated validation code.
+  - Matches the carous-platform vehicle apps' UX expectation (huntsmotors,
+    csmotors, etc.) so dealers find it familiar.
+
+  Pattern (Server-Component-safe — the modal is a client island invoked
+  from a button):
+  ```tsx
+  // co-located client island
+  'use client'
+  import { EnquiryModal, useEnquiryModal } from '@/app/widgets/EnquiryModal'
+  function Enquire({ vehicleTitle, contact }) {
+    const { isOpen, open, close } = useEnquiryModal()
+    return (
+      <>
+        <button onClick={open} className={styles.enquireBtn}>Enquire</button>
+        <EnquiryModal
+          open={isOpen} onClose={close}
+          subject={`Enquiry: ${vehicleTitle}`}
+          contact={contact}
+          leadType="vehicle-enquiry" leadSource="vehicle-detail-modal"
+          hiddenFields={{ vehicle: vehicleTitle, url: window.location.href }}
+        />
+      </>
+    )
+  }
+  ```
+  The audit's `inv-detail-enquiry-not-modal` rule fires when an inline
+  `<form onSubmit>` exists on the detail page without an `EnquiryModal`
+  import.
+
+- **Balance columns on large screens.** Avoid the "huge sidebar dwarfs the
+  content" trap. On 1024px+ the gallery+content column should be
+  visually dominant (≥ 60% of the row); the sticky info card column should
+  feel like an inset widget, not a panel.
+  - Recommended ratios: `1.5fr 1fr` for gallery-led pages,
+    `1.6fr 1fr` for full-bleed-mosaic, `1fr 1fr` only for split-screen
+    layouts where both columns share weight.
+  - On `< 720px`, stack with **the sticky-card content first** (price,
+    primary CTAs, key specs) and gallery second so the buyer sees decision
+    info before scrolling — the gallery can be revisited via a "Photos"
+    anchor in the in-page nav.
+  - Hide the desktop sidebar's redundant info on mobile (e.g. don't repeat
+    the price three times). The mobile sticky bar (price + Call +
+    WhatsApp + Enquire) carries the action affordances.
+
+- **Similar vehicles row — required.** After the spec/finance section and
+  before the SEO makes-list, render a single horizontal row of 3–4
+  vehicles ("More like this" / "Similar vehicles from {brand}").
+  - Source: `/api/inventory?brand=<slug>&make=<this make>&limit=4` (or
+    body type if make returns nothing). Filter out the current vehicle.
+  - Composition: same card chrome as the inventory list page (consistency
+    helps recognition), but in a horizontal scroll rail on mobile and a
+    3-up grid on desktop.
+  - Empty fallback: if the API returns nothing matching make/body, fall
+    back to "Latest arrivals" — never render an empty section.
+  - The audit's `inv-detail-no-similar-vehicles` rule fires if no
+    similar-vehicles strip is detected.
+
+- **SEO makes-list before footer — required.** A clean, scannable
+  "Browse by make" panel sits between the similar-vehicles row and the
+  footer. Purposes:
+  1. SEO surface — internal links to filtered inventory pages
+     (`/used-cars?make=BMW`) help search engines crawl the site graph.
+  2. Buyer pivot — buyers who didn't pick this car can jump to other
+     makes without going via the inventory list.
+  Composition rules:
+  - **Clean, not clumsy** — chip grid OR small-card grid (≤ 12 items).
+    Not a 50-link wall.
+  - **With counters** — "BMW (12)", "Audi (8)" etc. — sourced from
+    `/api/inventory?brand=<slug>` `meta.available.makes` (or a tally of
+    the inventory). Counters give SEO weight to the link AND signal
+    inventory depth to the buyer.
+  - Brand-token styled chips (use `--t-icon-bg` / `--color-border` etc.).
+  - Each chip is a `<Link href="/used-cars?make=<make>">`.
+  - The audit's `inv-detail-no-makes-seo` rule fires if no makes-list
+    section is detected on the detail page.
+
+These six are non-negotiable on every detail page — they're the difference
+between "viewing a listing" and "considering a purchase". The autonomous-
+design clause still applies — pick which patterns / compositions to combine,
+but include all six requirements.
+
 ## Required widgets — use the brandstudio globals, don't re-roll
 
 Every theme's Shell **must** mount these brandstudio-global widgets
@@ -484,6 +604,35 @@ Every theme's Shell **must** mount these brandstudio-global widgets
   across themes by design. Pass the `brand` from `useBrand()`. The
   widget reads `brand.location.phone` to build the wa.me link and
   returns `null` if no phone is set.
+
+- **`<WhatsAppIcon size={N} />`** also from `@/app/widgets/WhatsAppFab` —
+  the official WhatsApp brand glyph (speech bubble with phone) extracted
+  from the FAB so themes can reuse the SAME mark wherever they link to
+  WhatsApp (vehicle detail call-out, contact panel, modal CTA, footer
+  chat link). Use `<WhatsAppIcon size={16} />` instead of
+  `<MessageCircle />` from lucide so the icon reads as "WhatsApp" not
+  "third-party chat" — buyers recognise the official mark instantly. The
+  audit's `lib-whatsapp-icon-generic` rule fires if a file uses
+  `MessageCircle` alongside a WhatsApp link without importing
+  `WhatsAppIcon`. Inherits `currentColor` so the iconic green is for the
+  filled-button surface, not the glyph itself.
+
+- **`<EnquiryModal />`** from `@/app/widgets/EnquiryModal` — modal-based
+  enquiry form for vehicle detail pages, contact "request a callback"
+  call-outs, and any other surface where a focused enquiry beats a long
+  inline form. Mirrors the modal pattern used by carous-platform's
+  vehicle apps (huntsmotors / csmotors) so dealers find it familiar.
+  Triggered via the companion `useEnquiryModal()` hook (`open` / `close` /
+  `isOpen` / `toggle`); render the trigger button anywhere on the page
+  (sticky sidebar, mobile sticky bar, hero CTA, gallery overlay) and the
+  same modal serves them all — one form state, one validation surface.
+  Brand-token-driven (retints per brand automatically). Built-in side
+  panel renders Call / Email / WhatsApp shortcuts from the supplied
+  `contact` prop using the official `<WhatsAppIcon />`. Honours
+  `prefers-reduced-motion`. The audit's `inv-detail-enquiry-not-modal`
+  rule fires if a detail page renders an inline `<form onSubmit>` without
+  importing `EnquiryModal`. Phase 8 must NOT write a per-theme inline
+  enquiry form on `pages/used-cars/[slug]/page.tsx` — mount this modal.
 
 - **`<SellYourCarWidget />`** from `@/app/widgets/SellYourCarWidget` —
   the 3-step valuation wizard (Identify → Valuation → Details). Ported
@@ -1647,6 +1796,7 @@ fire and block you, but recognising the pattern earlier saves a round trip.
 | 30 | Inventory pages identical across every theme — the skeleton scaffolder keeps `pages/used-cars/page.tsx` and `[slug]/page.tsx` verbatim from `springalls-classic` because the data-layer logic is non-trivial, but Phase 8 was treating "kept" as "don't touch" → every prospect preview shipped with the same showroom-grid layout, lower visual differentiation than dealers expect. | Phase 8 conflated "keep the data layer" with "don't touch the file at all". The SKILL.md guidance for kept inventory was effectively `audit-ignore-file: ... — deferred work`, which was correct for the audit advisories but wrong as a design directive. | (a) Added a new SKILL Quality Bar §"Inventory pages MUST be redesigned per archetype" with the data-layer/render-layer split rule. (b) Created `docs/inventory-design-library.md` — 7 list patterns + 6 detail patterns sourced from reference dealers (Autotrader, Cinch, Cazoo, Hexagon, Vision Prestige, McLaren Approved, etc.), with a rotation table so no two themes ship the same layout. (c) New audit advisory rule **`inv-redesign-required`** (deferred — when shipped, flag inventory pages whose JSX is unchanged from springalls-classic baseline). **Superseded 2026-05-11 by row 32**: the "pick ONE list pattern and ONE detail pattern" framing was too prescriptive. The library is now a reference catalogue / brain-prompt, not a template; themes synthesize fresh layouts. The rotation table still records what each theme leaned on, but the constraint is "no two themes ship the same layout", not "no two themes pick the same library entry". |
 | 31 | Themes ship "static and dead" — palette-swapped Hero / Header / sections that don't move or glow at all once the page loads. Dealer feedback consistently described prospect previews as "fine but lifeless." | Phase 8 added decorative SVG and gradient layers but no motion. Static radial-gradient glows look intentional in static mockups but feel inert on a real device. `data-aos` attributes were sprinkled on a few sections but not used systematically — typical theme had 3-4 AOS attrs only on the homepage and zero on inner pages. No scroll-tied effects. Hero photos sat still while everything else moved. | Two-pronged: (a) New brandstudio-global widgets — `<MotionFX />` (animated keyframe library: `.mfx-glow-pulse`, `.mfx-glow-orbit`, `.mfx-pulse-dot`, `.mfx-shimmer`, `.mfx-text-glow`, `.mfx-border-glow`, `.mfx-scan`, `.mfx-float`, `.mfx-tilt`, etc — all brand-token-driven, all `prefers-reduced-motion`-respecting) and `<ScrollProgress />` (rAF scroll-tied driver that writes `--mfx-progress` per `[data-mfx-scroll]` element, paired with five built-in variants: `parallax-slow|medium|fast`, `fade-out-on-exit`, `blur-on-exit`, `zoom-on-enter`). AnimateOnScroll expanded from 7 variants to 18 (added flip-up/down/left/right, slide-up/down, fade-up-right/up-left/down-right/down-left, zoom-in-up/out-down, blur-in) plus per-element `data-aos-duration` and `data-aos-easing`. (b) New SKILL Quality Bar §"Motion & light language — REQUIRED, not optional" mandates: animated glows (no static radial-gradient divs in heroes), `.mfx-pulse-dot` on every status chip, 4+ data-aos elements per page with varied variants, at least 1 `data-mfx-scroll` effect on the homepage, `.mfx-shimmer` on primary CTAs, `.mfx-text-glow` on hero highlight phrase. (c) Skeleton scaffolder's Shell stub now mounts all three motion widgets by default so Phase 8 only sprinkles attributes; no plumbing per theme. First report: 2026-05-11 from operator feedback on auto-wow-uk-bespoke. |
 | 32 | Vehicle detail page (and other "kept" inner pages) reuse the springalls-classic / sibling-theme render structure verbatim — only colors and class names differ. Result: every theme's `/used-cars/<slug>` looks like the same page in a different palette. | Phase 8 lifted the configurator-led pattern from `docs/inventory-design-library.md` near-verbatim for `ncr-van-sales-bespoke` and kept the `audit-ignore-file: tp-use-client-on-page` annotation that the skeleton ships with. The design library was being used as a **template** rather than a **reference**. Audit rule `inv-redesign-required` (advisory) targets the LIST page only; no equivalent for the detail page. First report: 2026-05-11, Difatha on `ncr-van-sales-bespoke`. | (a) New SKILL Quality Bar §"Autonomous independent designs — every page, every component" explicitly forbids borrowing render structure from any baseline; inventory-design-library is documented as reference / brain-prompt only, not a copy source. (b) Required visual language extended to mandate gradient backgrounds + geometric backgrounds in addition to the existing motion requirements (`--t-brand-gradient`, `--t-neon-gradient`, `--t-band-gradient` already exist; geometric is CSS-only patterns or decorative SVG). (c) The "vehicle detail page must have its own composition language" clause enumerates the design axes (hero / gallery / spec / finance / enquiry) that must vary across themes. (d) Future audit rule `inv-detail-redesign-required` (deferred) should compare detail-page JSX structure against the springalls baseline. Until shipped, the SKILL clause is the contract. |
+| 33 | Vehicle detail page review (chesterfield-motor-empire-bespoke 2026-05-11): 6 missing must-haves — gallery layout was the same "main + thumbnail strip" as every other theme, generic `<MessageCircle />` icon used on the WhatsApp link, enquiry rendered as a 4-field inline form mid-page (buyers had to scroll past it to reach specs), columns balanced poorly on large screens, no "similar vehicles" row, no SEO makes-list before the footer. The page felt like "another listing template" rather than a deep-funnel commit surface. | Phase 8 designed the detail page autonomously per the autonomous-design clause but the SKILL didn't enforce these specific must-haves. The full-bleed mosaic gallery pattern (1 main + 4-thumb 2×2 mosaic, like the Hunts Motors reference screenshot Difatha shared) wasn't in the inventory-design-library. WhatsApp icon discipline was implicit in the WhatsAppFab widget but not surfaced as a per-theme rule. The EnquiryModal pattern existed in carous-platform but hadn't been ported to brandstudio as a shared widget. Similar-vehicles + makes-SEO sections were assumed obvious but absent from the SKILL. | Five-pronged: (a) New shared `<WhatsAppIcon />` extracted from `app/widgets/WhatsAppFab/WhatsAppIcon.tsx` (re-exports from the WhatsAppFab index) so themes use the same official mark. WhatsAppFab itself now imports the same icon — single source of truth. (b) New shared `<EnquiryModal />` widget at `app/widgets/EnquiryModal/` with the canonical modal pattern (carous-platform parity), brand-token-driven, two-column layout with form on the left + Call/Email/WhatsApp side panel using the official WhatsApp glyph. Companion `useEnquiryModal()` hook for trigger management. (c) New SKILL Quality Bar §"Vehicle detail page composition (must-have)" enumerates all 6 requirements with code patterns. (d) New SKILL Required Widgets entries for `<WhatsAppIcon />` and `<EnquiryModal />`. (e) Four new audit advisory rules: `lib-whatsapp-icon-generic` (file uses MessageCircle alongside wa.me), `inv-detail-enquiry-not-modal` (inline form on detail page without EnquiryModal), `inv-detail-no-similar-vehicles` (no similar-vehicles row detected), `inv-detail-no-makes-seo` (no Browse-by-make panel detected). Inventory design library extended with two new detail patterns: G. Full-bleed mosaic + H. Modal-led enquiry; new "Required detail-page sections" section listing the contract. |
 
 When you add a new audit rule for a future bug, append a row here. The
 catalogue should grow as a record of "what we've already learned not to
@@ -1661,7 +1811,7 @@ the row stays as institutional memory.
 | `tools/check-skill-env.mjs` | Phase 0.5 pre-flight. 3 gates: tools-present, node-deps (sharp), theme-sync-clean. Exit 1 on any fail. | Both modes |
 | `tools/extract-logo-colors.mjs` | Deterministic dominant-color extraction from a logo (sharp + saturation-filtered histogram). | Mode A only |
 | `tools/check-theme-contrast.mjs` | WCAG AA validator for theme color combos. Exit 1 on critical fail. | Both modes |
-| `tools/audit-theme.mjs` | Static-analysis quality gate. Rule prefixes: `a11y-` (accessibility), `std-` (standards), `data-` (data-fetching), `mobile-` (responsive), `perf-` (performance), `brand-` (token discipline), `tp-` (Turbopack collision avoidance), `lib-` (foundation/dependency). Blockers exit 1. Supports inline `audit-ignore: <rule>` and file-level `audit-ignore-file: <rule>` directives. See **Pitfalls catalogue** above for the historical bugs each rule prevents. | Both modes |
+| `tools/audit-theme.mjs` | Static-analysis quality gate. Rule prefixes: `a11y-` (accessibility), `std-` (standards), `data-` (data-fetching), `mobile-` (responsive), `perf-` (performance), `brand-` (token discipline), `tp-` (Turbopack collision avoidance), `lib-` (foundation/dependency), `motion-` (motion & light language), `inv-` (inventory page contracts — list and detail). Blockers exit 1. Supports inline `audit-ignore: <rule>` and file-level `audit-ignore-file: <rule>` directives. See **Pitfalls catalogue** above for the historical bugs each rule prevents. | Both modes |
 | `tools/rollback-theme.mjs` | Partial-theme cleanup when a run fails between Phase 7 and 12. Removes theme folder, public images, DNA JSON, images manifest, logo-colors JSON, then re-runs theme:sync. Idempotent. Flag: `--dry-run`. (No longer touches MySQL — brand cleanup is dashboard-only.) | Both modes |
 | `tools/fetch-theme-images.mjs` | Source 7 page-level images (hero/about/services/finance/partExchange/sellYourCar/recentlySold). Curated Unsplash catalogue with classic-archetype fallback; live API mode when `UNSPLASH_ACCESS_KEY` is set. | Mode A only |
 | `tools/generate-theme-favicon.mjs` | Emit a 32×32 archetype-aware SVG favicon at `public/themes/<id>/favicon.svg`. Five templates (classic / modern / rugged / luxury / prestige). Auto-discovers primary color + archetype + glyph from the DNA JSON; accepts `--primary`, `--accent`, `--archetype`, `--glyph` overrides. | Both modes |

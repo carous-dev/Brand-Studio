@@ -129,6 +129,69 @@ PRESENTATION layer only.
   rather than tabulated. Footer has a tabulated spec sheet for reference.
 - **CSS hooks:** `.detailStory`, `.detailStoryBreak`.
 
+### G. Full-bleed mosaic gallery
+- **Reference dealers:** Hunts Motors Bedford (the layout in Difatha's
+  feedback screenshot 2026-05-11), Carwow vehicle listing pages, AA Cars
+  premium tier.
+- **Best for:** modern / classic / luxury archetypes with strong forecourt
+  photography (≥ 5 high-quality images per vehicle).
+- **Layout:** wide hero gallery panel that fills the full available width
+  (~ 65% of desktop viewport). LEFT: one main image full-height. RIGHT:
+  2×2 mosaic of four thumbnails. Bottom-right thumbnail carries a
+  "Gallery (N)" pill that opens the lightbox on click. Below the gallery:
+  vehicle title + key spec chips in a horizontal rail, NOT a sidebar.
+  Price stamp sits in the gallery hero as a corner badge. Below the
+  gallery rail: a 2-column row with spec rings (left, dominant) and a
+  compact info card (right, narrow). Then similar vehicles, then
+  makes-list.
+- **Why it works:** maximises decision-relevant imagery above the fold
+  without dwarfing the spec content. Buyers scrolling past have already
+  seen 5 angles of the car before they hit "specs". Modal enquiry keeps
+  the page scannable past the gallery.
+- **CSS hooks:** `.detailMosaic`, `.detailMosaicMain`, `.detailMosaicThumbs`
+  (`grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr)`),
+  `.detailMosaicMore` (the +N pill on the last thumb).
+- **Mobile fallback:** mosaic collapses to swipe carousel; the +N pill
+  becomes a "Photos (N)" anchor link that opens the lightbox.
+
+### H. Modal-led enquiry (composition pattern, can pair with A–G)
+- **Reference dealers:** carous-platform vehicle apps (huntsmotors,
+  csmotors), Hexagon Premium, BMW Approved Used.
+- **Best for:** any archetype — this is a *composition pattern* you layer
+  on top of any of A–G, not an alternative.
+- **Layout:** instead of an inline enquiry form mid-page, the detail page
+  shows a sticky "Enquire" CTA (in the sidebar + mobile sticky bar + hero)
+  that opens the global `<EnquiryModal />` widget. The modal has its own
+  side-panel with Call / Email / WhatsApp shortcuts using the official
+  WhatsApp glyph. The page itself stays scannable: gallery → key chips →
+  specs → finance → similar vehicles → makes-list → footer. No inline
+  form to scroll past.
+- **CSS hooks:** none required per-theme — the modal is brand-token-driven
+  out of the box. Theme provides the trigger buttons in their own CSS
+  modules. Pair with A's sticky sidebar, B's vertical stack, etc.
+- **Why mandated:** see SKILL Quality Bar §"Vehicle detail page composition
+  → Enquiry is a modal" and Pitfall row 33.
+
+## Required detail-page sections (must-have, ALL themes, ALL detail patterns)
+
+These are sections every `pages/used-cars/[slug]/page.tsx` must include,
+regardless of which pattern A–H is chosen. They sit AFTER the gallery /
+specs / finance / enquiry trigger block:
+
+1. **Similar vehicles row.** Single horizontal strip of 3–4 vehicles
+   ("More like this", "Similar vehicles from {brand}", "More {make}s in
+   stock"). Source: `/api/inventory?brand=<slug>&make=<this make>&limit=4`
+   (filter out current vehicle, fall back to body type then to latest
+   arrivals). Same card chrome as the inventory list page for recognition.
+   Horizontal scroll-snap on mobile, 3-up grid on desktop. Audit rule:
+   `inv-detail-no-similar-vehicles`.
+2. **SEO makes-list panel.** Clean (≤ 12 items) chip OR small-card grid
+   labelled "Browse by make" / "Popular makes" / "All makes in stock" /
+   "Shop by make". Each chip links to `/used-cars?make=<make>` and shows
+   a counter ("BMW (12)", "Audi (8)") sourced from
+   `/api/inventory?brand=<slug>` `meta.available.makes`. Brand-token
+   styled. NOT a 50-link wall. Audit rule: `inv-detail-no-makes-seo`.
+
 ## Pattern rotation (record of which themes ship which pattern)
 
 | Theme | List pattern | Detail pattern |
@@ -140,6 +203,7 @@ PRESENTATION layer only.
 | `classic-dealer` | 6. Stacked cards | B. Spec-sheet vertical |
 | `auto-wow-uk-bespoke` | _redesign pending_ | _redesign pending_ |
 | `ncr-van-sales-bespoke` | 7. Carousel-per-make | D. Configurator-led |
+| `chesterfield-motor-empire-bespoke` | 1. Showroom grid (chip-rail variant) | A. Gallery-forward _(missing required sections — see Pitfall row 33; due for retrofit to G + H + similar-vehicles + makes-list)_ |
 
 **Rule:** if your archetype-natural pattern is already taken, pick the next
 best fit for the archetype. The point is no two themes look the same. Append

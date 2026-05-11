@@ -600,6 +600,93 @@ function checkMotionNoAnimatedGlow(file, content) {
   )]
 }
 
+function checkInvDetailNoSimilarVehicles(file, content) {
+  // Vehicle detail page should include a "similar vehicles" / "you might
+  // also like" / "more from this make" row so a buyer who bounces off the
+  // current car has a next-step. Heuristic: look for the obvious string
+  // matches anywhere in the file. Skip if the marker is found.
+  const norm = file.replace(/\\/g, '/')
+  if (!/\/pages\/used-cars\/\[slug\]\/page\.tsx$/.test(norm)) return []
+  const has = /(similar\s+vehicles|similar\s+cars|more\s+like\s+this|you[\s']+might\s+also\s+like|more\s+from\s+this|recommended\s+vehicles)/i.test(content)
+  if (has) return []
+  return [newFinding(
+    'inv-detail-no-similar-vehicles',
+    'advisory',
+    file,
+    content,
+    0,
+    `Vehicle detail page has no "similar vehicles" / "more like this" section — buyers who don't pick this car should land on a curated next set rather than a dead end. Render a single-row strip of 3–4 vehicles after the spec/finance section, sourced via /api/inventory?brand=<slug>&make=<this make>&limit=4.`,
+  )]
+}
+
+function checkInvDetailNoMakesSeo(file, content) {
+  // Vehicle detail page should include a "Browse by make" / makes-list panel
+  // before the footer for SEO juice (internal linking, head-keyword density)
+  // and to give buyers a pivot to other inventory. The list should be clean
+  // (chip or card grid with counters), not a giant link wall. Heuristic:
+  // find any of the obvious phrases.
+  const norm = file.replace(/\\/g, '/')
+  if (!/\/pages\/used-cars\/\[slug\]\/page\.tsx$/.test(norm)) return []
+  const has = /(browse\s+by\s+make|popular\s+makes|all\s+makes|makes?\s+(we|in)\s+stock|shop\s+by\s+make|by\s+manufacturer)/i.test(content)
+  if (has) return []
+  return [newFinding(
+    'inv-detail-no-makes-seo',
+    'advisory',
+    file,
+    content,
+    0,
+    `Vehicle detail page has no "Browse by make" / makes-list panel before the footer — this is SEO surface (internal linking, keyword density) and a useful next-step for buyers who didn't pick this car. Render a clean chip/card grid (≤12 makes, with counters from /api/inventory meta.available.makes) above the footer or after the similar-vehicles row.`,
+  )]
+}
+
+function checkLibWhatsappIconGeneric(file, content) {
+  // Themes that link to wa.me / whatsappUrl should use the official WhatsApp
+  // glyph from @/app/widgets/WhatsAppFab (`<WhatsAppIcon />`) rather than a
+  // generic chat icon (`MessageCircle` from lucide). The official mark is a
+  // recognised brand signal and reads as "WhatsApp" instantly; a generic
+  // chat bubble reads as "third-party chat" and undermines the trust
+  // affordance. Heuristic: file references a wa.me URL or whatsappUrl AND
+  // imports MessageCircle from lucide-react AND does not import WhatsAppIcon.
+  const usesWhatsapp = /(wa\.me\/|whatsappUrl|WhatsApp)/i.test(content)
+  if (!usesWhatsapp) return []
+  const usesMessageCircle = /from\s+['"]lucide-react['"]/.test(content) && /\bMessageCircle\b/.test(content)
+  if (!usesMessageCircle) return []
+  const usesOfficialIcon = /WhatsAppIcon|WhatsAppGlyph|widgets\/WhatsAppFab/.test(content)
+  if (usesOfficialIcon) return []
+  // Find the MessageCircle import for the line/col anchor.
+  const m = /\bMessageCircle\b/.exec(content)
+  return [newFinding(
+    'lib-whatsapp-icon-generic',
+    'advisory',
+    file,
+    content,
+    m ? m.index : 0,
+    `Generic <MessageCircle /> from lucide used alongside a WhatsApp link — buyers expect the official WhatsApp glyph here. Import { WhatsAppIcon } from '@/app/widgets/WhatsAppFab' and use <WhatsAppIcon size={16} /> so the call-out reads as a real WhatsApp affordance, not a third-party chat widget.`,
+  )]
+}
+
+function checkInvDetailEnquiryNotModal(file, content) {
+  // Vehicle detail pages should trigger enquiry via a modal (the global
+  // EnquiryModal widget) rather than rendering a long inline form mid-page.
+  // The modal is triggered from multiple call-outs (sticky sidebar, sticky
+  // mobile bar, hero CTA) and keeps the page scannable. Heuristic: detail
+  // page has a <form ... onSubmit> AND does not import EnquiryModal.
+  const norm = file.replace(/\\/g, '/')
+  if (!/\/pages\/used-cars\/\[slug\]\/page\.tsx$/.test(norm)) return []
+  const hasInlineForm = /<form\b[^>]*onSubmit/i.test(content) || /useLeadsForm\s*</.test(content)
+  if (!hasInlineForm) return []
+  const usesModal = /EnquiryModal|widgets\/EnquiryModal/.test(content)
+  if (usesModal) return []
+  return [newFinding(
+    'inv-detail-enquiry-not-modal',
+    'advisory',
+    file,
+    content,
+    0,
+    `Vehicle detail page renders an inline enquiry form instead of triggering the modal. Use <EnquiryModal /> from @/app/widgets/EnquiryModal so the same form can be invoked from the sticky sidebar, mobile sticky bar, hero CTA, and gallery overlay — keeps the page scannable and the form focused when invoked. Pattern: const { isOpen, open, close } = useEnquiryModal(); <EnquiryModal open={isOpen} onClose={close} subject="Enquiry: {vehicleTitle}" contact={contact} hiddenFields={{vehicle, url}} />.`,
+  )]
+}
+
 function checkMotionNoScrollTied(file, content) {
   // Every homepage should have at least one `data-mfx-scroll="..."`
   // attribute to drive a parallax / sticky-fade / blur-on-exit effect.
@@ -640,6 +727,10 @@ const RULES = [
   checkMotionAosMinCount,
   checkMotionNoAnimatedGlow,
   checkMotionNoScrollTied,
+  checkInvDetailNoSimilarVehicles,
+  checkInvDetailNoMakesSeo,
+  checkInvDetailEnquiryNotModal,
+  checkLibWhatsappIconGeneric,
 ]
 
 // --- ignore directives ------------------------------------------------------
