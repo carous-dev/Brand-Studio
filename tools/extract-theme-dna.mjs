@@ -16,21 +16,41 @@
  *   node tools/extract-theme-dna.mjs --source <app-folder> [--apps <abs-path>] [--out <path>]
  *
  *   --source   Folder name under apps/  (e.g. "huntsmotors")           [required]
- *   --apps     Absolute path to carous-platform/apps                   [optional]
- *              Defaults to F:\projects\carous-platform\apps
+ *   --apps     Path to carous-platform/apps                            [optional]
+ *              Resolution order (first match wins):
+ *                1. --apps CLI argument
+ *                2. CAROUS_PLATFORM_APPS env var (e.g. "/home/u/carous-platform/apps")
+ *                3. ../carous-platform/apps (sibling of the brandstudio repo)
+ *                4. ../../carous-platform/apps (grandparent fallback)
+ *              Cross-platform: works on Windows / macOS / Linux without code edits.
  *   --out      Where to write the DNA JSON                             [optional]
  *              Defaults to tools/.theme-dna/<source>.json
  */
 
 import { promises as fs } from 'node:fs'
+import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const THIS_FILE = fileURLToPath(import.meta.url)
 const TOOLS_DIR = path.dirname(THIS_FILE)
 const PROJECT_ROOT = path.resolve(TOOLS_DIR, '..')
-const DEFAULT_APPS_ROOT = 'F:\\projects\\carous-platform\\apps'
 const DEFAULT_OUT_DIR = path.join(TOOLS_DIR, '.theme-dna')
+
+// Resolve carous-platform/apps in a portable way. Mode B is internal-only,
+// so when we can't find it we error with a clear message — never silently
+// fall back to a nonexistent path.
+function resolveAppsRoot(cliArg) {
+  const candidates = []
+  if (cliArg) candidates.push(cliArg)
+  if (process.env.CAROUS_PLATFORM_APPS) candidates.push(process.env.CAROUS_PLATFORM_APPS)
+  candidates.push(path.resolve(PROJECT_ROOT, '..', 'carous-platform', 'apps'))
+  candidates.push(path.resolve(PROJECT_ROOT, '..', '..', 'carous-platform', 'apps'))
+  for (const candidate of candidates) {
+    if (candidate && existsSync(candidate)) return candidate
+  }
+  return null
+}
 
 // --- arg parsing ------------------------------------------------------------
 
@@ -282,7 +302,19 @@ async function main() {
     process.exit(1)
   }
 
-  const appsRoot = args.apps && typeof args.apps === 'string' ? args.apps : DEFAULT_APPS_ROOT
+  const cliApps = args.apps && typeof args.apps === 'string' ? args.apps : null
+  const appsRoot = resolveAppsRoot(cliApps)
+
+  if (!appsRoot) {
+    console.error('Could not locate carous-platform/apps. Tried:')
+    if (cliApps) console.error(`  --apps ${cliApps}`)
+    console.error(`  $CAROUS_PLATFORM_APPS = ${process.env.CAROUS_PLATFORM_APPS || '(unset)'}`)
+    console.error(`  ${path.resolve(PROJECT_ROOT, '..', 'carous-platform', 'apps')} (sibling of brandstudio)`)
+    console.error(`  ${path.resolve(PROJECT_ROOT, '..', '..', 'carous-platform', 'apps')} (grandparent fallback)`)
+    console.error('Pass --apps <path> or set CAROUS_PLATFORM_APPS env var to your carous-platform/apps directory.')
+    process.exit(1)
+  }
+
   const sourceDir = path.join(appsRoot, args.source)
 
   if (!(await exists(sourceDir))) {

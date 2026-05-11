@@ -41,10 +41,19 @@ Examples:
 
 Before doing anything else, confirm:
 
-1. Working directory is `F:\projects\brandstudio`. Pivot there if not.
-2. `tools/scaffold-theme.mjs` exists. (Mode A doesn't need
+1. Working directory is the **brandstudio repo root** — the folder
+   containing `package.json`, `app/`, and `tools/`. Path varies per
+   machine (Windows / macOS / Linux); the skill never assumes a
+   specific drive letter. If you're not at the repo root, `cd` there
+   first.
+2. `tools/scaffold-theme-skeleton.mjs` exists for Mode A and
+   `tools/scaffold-theme.mjs` exists for Mode B. (Mode A doesn't need
    `extract-theme-dna.mjs`; Mode B does.)
-3. For Mode B: `F:\projects\carous-platform\apps\` exists with source apps.
+3. **For Mode B only**: a `carous-platform` checkout is reachable.
+   Resolution order: `--apps <path>` CLI arg → `CAROUS_PLATFORM_APPS`
+   env var → `../carous-platform/apps` (sibling of brandstudio) →
+   `../../carous-platform/apps`. `extract-theme-dna.mjs` errors with
+   a clear "could not locate" message if none of those resolve.
 
 ## Quality Bar — every theme must clear this
 
@@ -1120,8 +1129,12 @@ Mode A.
 
 ### B1 — Pick a source app
 
-Source apps live in `F:\projects\carous-platform\apps\`. Available pool
-(`Glob "apps/*"` to refresh):
+Source apps live under `<carous-platform>/apps/`. The carous-platform
+checkout is discovered automatically by `extract-theme-dna.mjs` in
+this order: `--apps <path>` CLI arg → `CAROUS_PLATFORM_APPS` env var
+→ `../carous-platform/apps` (sibling of brandstudio) →
+`../../carous-platform/apps`. Use `Glob` against the resolved apps
+directory to enumerate the current pool — examples from recent runs:
 
 ```
 a2zautocompletezltd, amcarsalesltd, berksmotors, carsofmanchester, cnhcars,
