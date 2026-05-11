@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { isWithinWorkingHours, WorkingHoursConfig } from '@/app/lib/working-status'
 
-export function useWorkingHours(config: WorkingHoursConfig) {
+export function useWorkingHours(config: WorkingHoursConfig | null | undefined) {
   const computeStatus = useCallback(() => {
     return isWithinWorkingHours(config)
   }, [config])

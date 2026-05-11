@@ -1,0 +1,104 @@
+.cookieBody {
+  background: var(--surface-bg-light);
+}
+.intro {
+  max-width: 720px;
+  margin: 0 0 36px;
+}
+.intro p {
+  color: var(--text-on-light-strong);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.intro strong {
+  color: var(--brand-primary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 720px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.card {
+  padding: 24px;
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-top: 3px solid var(--brand-primary);
+  border-radius: 6px;
+  display: grid;
+  gap: 12px;
+}
+.cardIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-radius: 4px;
+}
+.cardTitle {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-on-light-strong);
+}
+.cardBody {
+  color: var(--text-on-light-muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+.examples {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.examples code {
+  display: inline-block;
+  padding: 4px 8px;
+  background: var(--surface-bg-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 3px;
+  font-size: 0.78rem;
+  font-family: 'Courier New', monospace;
+  color: var(--text-on-light-strong);
+}
+
+.controlPanel {
+  margin-top: 36px;
+  padding: 28px;
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 6px;
+}
+.controlTitle {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-style: italic;
+  color: var(--text-on-light-strong);
+  margin-bottom: 12px;
+}
+.controlPanel p {
+  color: var(--text-on-light-strong);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.controlActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}

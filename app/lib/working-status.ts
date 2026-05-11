@@ -24,7 +24,8 @@ export interface WorkingHoursConfig {
   timezone?: string
 }
 
-export function isWithinWorkingHours(config: WorkingHoursConfig, now = new Date()): boolean {
+export function isWithinWorkingHours(config: WorkingHoursConfig | null | undefined, now = new Date()): boolean {
+  if (!config || !Array.isArray(config.periods) || config.periods.length === 0) return false
   const local = new Date(now.toLocaleString('en-GB', { timeZone: config.timezone }))
   const day = local.getDay()
   const minutes = local.getHours() * 60 + local.getMinutes()

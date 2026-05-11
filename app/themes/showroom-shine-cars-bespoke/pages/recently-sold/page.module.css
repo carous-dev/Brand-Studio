@@ -1,0 +1,135 @@
+.sold {
+  background: var(--surface-bg-light);
+}
+.intro {
+  max-width: 720px;
+  margin: 0 0 32px;
+}
+.intro p {
+  color: var(--text-on-light-muted);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.empty {
+  text-align: center;
+  padding: 48px 24px;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+.empty h2 {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  font-style: italic;
+  color: var(--text-on-light-strong);
+}
+.empty p {
+  color: var(--text-on-light-muted);
+  max-width: 48ch;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+@media (min-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1280px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+
+.card {
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+.mediaWrap {
+  position: relative;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+}
+.media {
+  position: absolute;
+  inset: 0;
+  background-color: var(--surface-bg-light);
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(50%);
+}
+.soldStamp {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-radius: 4px;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.body {
+  padding: 18px;
+  display: grid;
+  gap: 6px;
+}
+.title {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-on-light-strong);
+}
+.price {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--brand-primary);
+}
+.meta {
+  color: var(--text-on-light-muted);
+  font-size: 0.85rem;
+}
+
+.cta {
+  margin-top: 48px;
+  padding: 32px;
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-top: 3px solid var(--brand-primary);
+  border-radius: 6px;
+  text-align: center;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+.ctaTitle {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.4rem, 2.6vw, 1.8rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-style: italic;
+  color: var(--text-on-light-strong);
+}
+.cta p {
+  color: var(--text-on-light-muted);
+  max-width: 56ch;
+  font-size: 0.95rem;
+}
+.ctaActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 12px;
+}

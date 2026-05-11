@@ -1,0 +1,130 @@
+.banner {
+  position: relative;
+  min-height: 340px;
+  display: flex;
+  align-items: center;
+  background: #0a0e14;
+  color: #ffffff;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  /* Layered fallback — see Hero.module.css comment. */
+  background-image:
+    var(--brand-image-hero, none),
+    url('/themes/auto-wow-uk-bespoke/images/hero.jpg');
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  filter: saturate(0.8) contrast(1.05);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(110deg, rgba(8, 11, 17, 0.92) 0%, rgba(8, 11, 17, 0.6) 60%, rgba(140, 9, 12, 0.55) 100%);
+}
+
+.glow {
+  position: absolute;
+  bottom: -15%;
+  right: -8%;
+  width: clamp(280px, 32vw, 420px);
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(253, 19, 23, 0.42) 0%, rgba(253, 19, 23, 0.16) 35%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(56px, 9vw, 96px) clamp(20px, 4vw, 48px);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: center;
+  width: 100%;
+}
+
+.copy {
+  max-width: 640px;
+}
+
+.eyebrow {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin: 0 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 2px;
+  background: var(--color-primary);
+}
+
+.title {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 16px;
+  max-width: 18ch;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
+}
+
+.lead {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  max-width: 54ch;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.cta {
+  min-width: 180px;
+}
+
+@media (min-width: 980px) {
+  .inner {
+    grid-template-columns: 1.4fr 1fr;
+    gap: 48px;
+  }
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 640px) {
+  .glow {
+    opacity: 0.55;
+  }
+  .actions .cta {
+    flex: 1 1 100%;
+  }
+}

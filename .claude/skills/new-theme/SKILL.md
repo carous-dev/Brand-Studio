@@ -62,6 +62,150 @@ and a sale. These are the non-negotiables every generated theme must hit.
 The audit tool (`tools/audit-theme.mjs`) enforces the mechanical ones in
 Phase 10c; the principles below cover what the tool can't reliably check.
 
+**Color palette policy — paired surface + foreground tokens (must-have, learned 2026-05-11 from cross-brand contrast bugs):**
+
+> **Canonical home for color policy.** This section is the source of
+> truth for how `/new-theme` derives + uses color. If any downstream rule
+> (archetype spec, motion CSS examples, etc.) implies a generic
+> `color: var(--color-text)` pattern, this policy supersedes it.
+
+The previous approach (extract palette from logo via
+`extract-logo-colors.mjs`, then run post-hoc contrast check) produced
+contrast bugs that survived to prospect previews. Two failure classes:
+(1) the logo-extracted primary often failed AA white-on-primary and
+required iterative manual darkening; (2) generic foreground tokens
+(`var(--color-text)`) painted onto components whose surface was
+brand-record-overridden flipped to invisible (dark-on-dark or
+light-on-light) at runtime. The new policy is **structural** — contrast
+can't fail because surface and foreground are paired at the token level
+and brand records can't break the pairing.
+
+**The policy:**
+
+1. **One brand color input from the user** (NOT extracted from logo).
+   Phase A1 asks for ONE primary hex. The logo is for character/shape
+   vision analysis only.
+
+2. **The palette policy generator validates + expands the primary** into
+   the full token set: `tools/check-palette-policy.mjs --primary <hex>`.
+   It auto-darkens the primary until AA white-on-primary passes (or
+   flips `--brand-on-primary` to dark if no AA-passing darken exists),
+   derives `--brand-primary-strong` (12% darker for hover), and pairs
+   the brand triad with two FIXED neutral tiers:
+
+   ```
+   Light tier (always paired):
+     --surface-bg-light: #ffffff
+     --surface-card-light: #f6f7fb
+     --text-on-light-strong: #0f1623   (AAA 18.11:1 on light bg)
+     --text-on-light-muted: #5b6573    (AA 6.36:1 on light bg)
+     --border-on-light: #e3e6ee
+
+   Dark tier (always paired):
+     --surface-bg-dark: #0a0e14
+     --surface-card-dark: #14181f
+     --text-on-dark-strong: #ffffff    (AAA on dark)
+     --text-on-dark-muted: rgba(255,255,255,0.78)
+     --border-on-dark: rgba(255,255,255,0.12)
+
+   Brand triad (from user primary):
+     --brand-primary: <validated, post-darken if needed>
+     --brand-primary-strong: <12% darker for hover/pressed>
+     --brand-on-primary: #ffffff or #0a0e14 (whichever passes AA)
+   ```
+
+   The generator walks all 11 surface/foreground pairs (light ×
+   {strong, muted} × {bg, card} + dark × same + brand triad) and exits 1
+   if any pair fails AA. **No theme ships with even one failing pair.**
+
+3. **Brand records may ONLY override the brand triad.** The
+   `--surface-*` / `--text-on-*` / `--border-on-*` tokens are
+   theme-locked (defined in `tokens.ts` + `BrandStyles.tsx` as constants,
+   never set from the brand record's `theme.colors`). This means a brand
+   record cannot break contrast — the neutrals are guaranteed AA against
+   their paired foregrounds at all times.
+
+4. **Component rule (the structural part).** Every CSS rule that paints
+   `background:` from a surface token MUST set `color:` from the paired
+   foreground token in the same rule or an enclosing scope. **No more
+   `color: var(--color-text)` floating around** hoping the cascading
+   surface matches.
+
+   Wrong (the failure mode):
+   ```css
+   .card {
+     background: var(--color-surface);  /* might be overridden to dark */
+     /* no color set — inherits --color-text which assumes light surface */
+   }
+   .card .title {
+     color: var(--color-text);  /* invisible when card flips dark */
+   }
+   ```
+
+   Right:
+   ```css
+   .card {
+     background: var(--surface-card-light);    /* light tier surface */
+     color: var(--text-on-light-strong);       /* paired foreground */
+     border: 1px solid var(--border-on-light);
+   }
+   /* OR for a dark card: */
+   .heroCard {
+     background: var(--surface-card-dark);     /* dark tier surface */
+     color: var(--text-on-dark-strong);        /* paired foreground */
+   }
+   ```
+
+   The brand-primary token still applies for accents (button bg, links,
+   eyebrows, focus rings) — that's the one color that retints per brand.
+
+5. **Hero images need a guaranteed dark overlay.** When the hero
+   background is `var(--brand-image-hero)` (operator-uploaded; brightness
+   unknown), pair it with a strong dark gradient so
+   `--text-on-dark-strong` always passes contrast regardless of image
+   brightness:
+
+   ```css
+   .hero {
+     background:
+       linear-gradient(rgba(8,11,17,0.86), rgba(8,11,17,0.62)),
+       var(--brand-image-hero) center / cover no-repeat;
+     color: var(--text-on-dark-strong);
+   }
+   ```
+
+**Why:** Difatha reviewed an auto-wow-uk-bespoke preview rendered through
+the Columbus Vehicles brand record. Three classes of bug appeared in the
+same screenshot: (a) `LatestArrivalsSection` card titles invisible
+(dark `--color-text` on dark `--color-surface` after Columbus's brand
+record overrode the surface token); (b) hero ghost-CTA content invisible
+(`color: var(--color-text)` painted dark on the hero's fixed dark
+background because the ghost button rule wasn't scoped to dark surfaces);
+(c) topbar social icons hidden when the brand record had no
+`socialLinks` populated. The first two are direct color-policy failures
+caused by relying on cascading `--color-text` inheritance.
+
+**How to apply:**
+
+- Phase A1: ask the user for the primary hex (don't extract from logo).
+- Phase A2c: run `tools/check-palette-policy.mjs` to validate +
+  generate the full token set. Block on any failing pair.
+- Phase A5: copy the token set verbatim into DNA `colors`. Don't
+  hand-pick values.
+- Phase 7 (scaffolder): emit `tokens.ts` with the paired-token CSS
+  variable shape (`--surface-*`, `--text-on-*`, `--border-on-*`, plus
+  the brand triad). Legacy `--color-bg` / `--color-text` aliases stay
+  for backward compatibility but reference the light-tier values.
+- Phase 8: every CSS rule consumes paired tokens. Never paint `color:
+  var(--color-text)` on a component whose surface might flip per brand.
+- Phase 10c audit: `lib-unpaired-foreground` rule (deferred) flags any
+  CSS rule that sets `color: var(--color-text)` without setting
+  `background:` from the same tier in the same selector / scope.
+
+See also memory `feedback_color_palette_policy.md` for the full
+component pattern catalogue and `feedback_no_logo_color_extraction.md`
+for the input policy.
+
 **Web standards (must-have):**
 - Semantic HTML — `<main>`, `<nav>`, `<header>`, `<footer>`, `<article>`,
   `<section>` over generic `<div>`. Single `<h1>` per page (paired
@@ -343,13 +487,22 @@ _Test discipline:_
   in the footer of the overlay sheet) so they're discoverable on touch
   devices where the desktop top bar is collapsed.
 
-**Brand-uploaded images must render — `var(--brand-image-*)` plumbing (must-have, learned 2026-05-11):**
+**Brand-uploaded images must render — `var(--brand-image-*)` plumbing + 3-tier fallback chain (must-have, learned 2026-05-11):**
+
+> The dashboard upload → CSS var → component pipeline must be wired
+> end-to-end for every theme. There are TWO failure surfaces: (1)
+> theme components using hardcoded paths instead of `var(--brand-image-<slot>)`,
+> and (2) BrandStyles emitting a 404'ing placeholder URL instead of the
+> theme's own curated default when no operator upload is available.
+> Both have been seen in real previews and both need explicit policy.
+
 - The dashboard's `/update/<slug>` lets operators upload custom hero /
   about / services / finance / partExchange / sellYourCar / recentlySold
   images that override the theme's archetype defaults. The brand record
   stores them in `brand.images.<slot>` (URL strings); `BrandStyles.tsx`
   writes them as CSS variables (`--brand-image-hero`,
   `--brand-image-about`, etc.) onto `:root`.
+
 - **Every visible image in every theme must reference these CSS variables**
   — not hardcoded paths, not inline `src` attributes, not theme-folder-
   scoped image references. The pattern: `background-image: var(--brand-image-<slot>)`
@@ -357,6 +510,119 @@ _Test discipline:_
   `.media` element. The exception: dynamic inventory thumbnails sourced
   from `/api/inventory` (those are per-vehicle URLs and pass through as
   `<img src={v.image}>`).
+
+- **`BrandStyles.tsx` must emit ALL 7 `--brand-image-<slot>` vars
+  unconditionally with the per-slot fallback chain below. NEVER gate
+  on "if operator uploaded".**
+
+  **Hero slot — `brand.heroImage` is the source of truth, NOT
+  `brand.images.hero`.** The dashboard's update_brand handler keeps
+  `brand.heroImage` fresh on every save, but `brand.images.hero` is a
+  derived alias that often goes STALE — a real brand record
+  (`columbus-vehicles-preview`) had `images.hero = "/images/hero-bg.png"`
+  (a generic placeholder from initial brand creation) while
+  `brand.heroImage = "/images/<slug>-hero.png"` (the operator's actual
+  upload). Read `brand.heroImage` FIRST, fall through to
+  `brand.images.hero` as backup, then theme default.
+
+  **Other slots** use `brand.images.<slot>` → theme default. No
+  cross-fall to hero.
+
+  Canonical implementation:
+
+  ```ts
+  const THEME_ID = '<this-theme-id>'
+  const themeDefault = (slotFile: string) =>
+    `/themes/${THEME_ID}/images/${slotFile}.jpg`
+
+  const brandImages: Record<string, unknown> = (brand as any)?.images || {}
+
+  const pickString = (...candidates: Array<unknown>): string | null => {
+    for (const c of candidates) {
+      if (typeof c === 'string' && c.trim()) return c.trim()
+    }
+    return null
+  }
+
+  // HERO: brand.heroImage (authoritative) → brand.images.hero (may be stale) → theme default.
+  const heroImageSlot =
+    pickString(brand.heroImage, brandImages['hero']) || themeDefault('hero')
+
+  // Other slots: brand.images.<slot> → theme default. No cross-fall to hero.
+  const resolveSlot = (slotKey: string, slotFile: string): string =>
+    pickString(brandImages[slotKey]) || themeDefault(slotFile)
+
+  const aboutImage        = resolveSlot('about',        'about')
+  const servicesImage     = resolveSlot('services',     'services')
+  const financeImage      = resolveSlot('finance',      'finance')
+  const partExchangeImage = resolveSlot('partExchange', 'partExchange')
+  const sellYourCarImage  = resolveSlot('sellYourCar',  'sellYourCar')
+  const recentlySoldImage = resolveSlot('recentlySold', 'recentlySold')
+  ```
+
+- **Layered-background CSS fallback (mandatory belt-and-braces).** Even
+  with the correct BrandStyles chain, brand URLs can still 404 at the
+  HTTP layer — stale records pointing to deleted files, URLs from a
+  different deploy environment, file-server misroutes. CSS `var(name,
+  fallback)` does NOT save you: BrandStyles emits a non-empty `url(...)`
+  even when the URL 404s, so the var IS set and the fallback never
+  triggers. The browser silently fails the layer and you see nothing.
+
+  **The fix is multi-layer `background-image`** where the theme default
+  sits underneath the brand URL. If the top layer 404s, the bottom layer
+  shows through.
+
+  ```css
+  /* Component CSS module — Hero, CtaBanner, About PageHero etc. */
+  .heroImage {
+    background-image:
+      var(--brand-image-hero, none),
+      url('/themes/<theme-id>/images/hero.jpg');
+    background-size: cover, cover;
+    background-position: center, center;
+    background-repeat: no-repeat, no-repeat;
+  }
+
+  /* PageHero pattern with overlay gradient — 3 layers stacked top-to-bottom. */
+  .auto-page-hero--finance {
+    background-image:
+      linear-gradient(180deg, rgba(10,14,20,0.86), rgba(10,14,20,0.62)),
+      var(--brand-image-finance, none),
+      url('/themes/<theme-id>/images/finance.jpg');
+    background-size: auto, cover, cover;
+    background-position: center, center, center;
+    background-repeat: no-repeat, no-repeat, no-repeat;
+  }
+  ```
+
+  Use `var(--brand-image-X, none)` (not `var(--brand-image-X)`) so the
+  layer is `none` (renders nothing) when the var is undeclared, rather
+  than making the entire `background-image` declaration invalid.
+
+  Prefer **per-page CSS classes** (e.g. `.auto-page-hero--finance`) over
+  inline `style={{ backgroundImage: ... }}` in JSX — the class lives in
+  base.css, gets the multi-layer pattern correct once, and every page
+  using `<section className="auto-page-hero auto-page-hero--finance">`
+  picks it up cleanly. Inline styles are harder to keep consistent and
+  obscure the multi-layer intent.
+
+- **NEVER fall back to a generic placeholder like
+  `/images/hero-placeholder.jpg`.** That file typically 404s on
+  deployments and the browser-level `var(name, fallback)` CSS fallback
+  WILL NOT kick in, because BrandStyles has already set the var to a
+  non-empty (but broken) URL. CSS-level `var(name, fallback)` only fires
+  when the var is undeclared, NEVER when it's set to a 404'ing string.
+  The theme's curated `/themes/<id>/images/<slot>.jpg` is the only
+  acceptable terminal fallback — those 7 files are shipped on disk by
+  Phase 7.5a and ALWAYS exist for the theme.
+
+- **No cross-fall between slots.** The previous pattern of "about
+  defaults to hero" (so if operator only uploads hero, every page shows
+  the same hero) was a regression. Each slot falls back to its OWN
+  curated theme default — that way operator-uploads-hero-only previews
+  still render distinctive per-page imagery (the curated about,
+  services, finance, etc photos) rather than the same hero five times.
+
 - Slots and their canonical use:
   - `--brand-image-hero` — homepage Hero photo backdrop
   - `--brand-image-about` — About page PageHero, About section panels
@@ -365,19 +631,44 @@ _Test discipline:_
   - `--brand-image-part-exchange` — Part-ex page PageHero
   - `--brand-image-sell-your-car` — Sell-your-car page PageHero
   - `--brand-image-recently-sold` — Recently-sold page PageHero
-- If the operator uploads via the dashboard but the image doesn't render,
-  the fault is almost always: (a) a theme component using a hardcoded
-  image path instead of the CSS variable, OR (b) a missing slot mapping
-  in `BrandStyles.tsx` (the scaffolder generates all 7 by default — never
-  remove them). Diagnose with `getComputedStyle(document.documentElement).getPropertyValue('--brand-image-hero')`
-  in the browser console; if it's `none` or empty, the brand record
-  doesn't have the slot set; if it's `url("...")` but the image doesn't
-  render, the URL itself is wrong.
+  (Note the camelCase ↔ kebab-case translation: `brand.images.partExchange`
+  is read from the brand record but written as `--brand-image-part-exchange`
+  to CSS. The translation table is explicit, not derived programmatically.)
+
+- **Diagnostic when imagery is missing in a deployed preview:**
+
+  ```js
+  // Browser console
+  getComputedStyle(document.documentElement).getPropertyValue('--brand-image-hero')
+  ```
+
+  - Returns `none` / empty → BrandStyles isn't mounting. Check the brand
+    record's `themeId` and whether the new theme is deployed to the
+    target environment.
+  - Returns `url("/images/<slug>-hero.png")` and the image is missing →
+    Flask didn't save the upload to `public/images/`. Check the upload
+    handler logs.
+  - Returns `url("/themes/<id>/images/hero.jpg")` → operator hasn't
+    uploaded; theme default is rendering correctly. Verify the file
+    exists at `public/themes/<id>/images/hero.jpg`.
+  - Returns `url("/images/hero-placeholder.jpg")` or similar generic
+    fallback URL → this rule's failure mode; BrandStyles needs the
+    3-tier fallback chain fix.
+
+- **Cross-theme caveat:** older themes that only emit
+  `--classic-hero-image` (classic-dealer + gilded-drive) DON'T support
+  the 7-slot brand-image system. Brand records bound to those themes
+  will show only a hero image, with about/services/finance pages
+  falling back to nothing. Migrating those themes to emit the full
+  7-slot set is a follow-up. **New themes scaffolded by `/new-theme`
+  MUST emit all 7 by default with the 3-tier fallback chain above.**
+
 - Audit rule `lib-image-not-brand-driven` (deferred — when shipped, flag
   any `background-image: url(...)` in a theme CSS module that's NOT
-  `var(--brand-image-*)` and NOT a decorative SVG data-URI). Until
-  shipped: cross-check every Hero / PageHero / decorative image
-  during Phase 8.
+  `var(--brand-image-*)` and NOT a decorative SVG data-URI). Additional
+  audit rule `lib-brand-styles-incomplete-slots` (deferred — flag any
+  theme's `BrandStyles.tsx` that doesn't emit all 7 `--brand-image-*`
+  vars OR uses a placeholder URL as the terminal fallback).
 
 **Hero & PageHero text-contrast floor (must-have, learned 2026-05-10):**
 - Any title/lead rendered ON TOP of an image or dark background must
@@ -1087,26 +1378,33 @@ SKILL apply to **Mode A only**.
 
 ### A1 — Gather inputs
 
-If the user passed both `--logo <path>` and `--url <url>` inline, use
-those and skip prompting. Otherwise:
+**Three inputs required: logo, dealer URL, primary hex.** Color is NEVER
+extracted from the logo (see Pitfall row 38 + memory
+`feedback_no_logo_color_extraction.md`). The logo is used only for
+vision-based character analysis (font + radius decisions) and as the
+brand wordmark/favicon glyph. The palette is designed by Claude from the
+user-supplied primary hex via `tools/check-palette-policy.mjs`.
 
-**Step 1 — Confirm direction with AskUserQuestion** (so the user knows the
-skill engaged and what's coming):
+If the user passed `--logo <path>`, `--url <url>`, and `--primary <hex>`
+inline, use those and skip prompting. Otherwise:
+
+**Step 1 — Confirm direction with AskUserQuestion**:
 
 ```
-Question: "Ready to build a bespoke theme? I'll need a logo file and the
-          dealer's website URL."
+Question: "Ready to build a bespoke theme? I'll need a logo, the dealer's
+          website URL, and ONE primary brand hex (e.g. #be0e11). I'll
+          design the rest of the palette around that primary."
 Header: "Inputs"
 Options:
-  - "Yes — I'll paste the logo path and URL in my next message"
-  - "Yes — but the logo is at a public URL, not a local file"
+  - "Yes — I'll paste logo + URL + primary hex in my next message"
+  - "Yes — logo is at a public URL (not a local file)"
   - "Cancel — abort the skill"
 ```
 
 If the user picks Cancel, exit cleanly with a one-line message.
 
-**Step 2 — Read the user's next message** as natural text containing the
-logo path/URL and the dealer URL. Parse defensively:
+**Step 2 — Read the user's next message** as natural text containing all
+three inputs. Parse defensively:
 
 - A line containing `http(s)://...ext` (where `ext` is `.png`, `.jpg`,
   `.jpeg`, `.svg`, `.webp`) is the logo URL.
@@ -1114,10 +1412,11 @@ logo path/URL and the dealer URL. Parse defensively:
   logo file path.
 - A line containing `http(s)://` without an image extension is the dealer
   URL.
-- If the user labels them ("logo: …", "url: …"), respect the labels.
+- A bare `#RRGGBB` (or `#RGB`) is the primary hex.
+- If the user labels them (`logo:`, `url:`, `primary:`), respect the labels.
 
-If only one of the two is provided, send a short text message asking for
-the missing one and wait for the next message. Don't loop on
+If any of the three is missing, send a short text message asking for
+the missing field and wait for the next message. Don't loop on
 AskUserQuestion — the user already engaged.
 
 **Step 3 — Validate**:
@@ -1127,40 +1426,23 @@ AskUserQuestion — the user already engaged.
   it accepts remote image URLs).
 - URL: well-formed `https://` prefix, valid host. If not, ask once for
   a corrected URL.
+- Primary hex: must match `^#?[0-9a-fA-F]{3,6}$`. Normalize to lowercase
+  `#rrggbb`. If invalid, ask once for a valid hex.
 
 If the user gave a theme id inline (`/new-theme cobalt-modern`), use it.
 Otherwise the skill derives one in A6.
 
-### A2 — Analyze the logo (deterministic colors + vision character)
+### A2 — Analyze the logo (vision character ONLY — no color extraction)
 
-**Step A2a — Run the deterministic color extractor first:**
+**DO NOT extract colors from the logo.** Color comes from the user-supplied
+primary hex in A1 and is validated/expanded into the full palette by the
+policy generator in A2c. The logo is for character + shape analysis only.
 
-```bash
-node tools/extract-logo-colors.mjs --logo <path-or-url> --out tools/.logo-colors/<dealer-slug>.json
-```
+(`tools/extract-logo-colors.mjs` still exists for retrospective use but is
+NOT part of the canonical Mode A flow as of the color-policy update —
+see memory `feedback_no_logo_color_extraction.md` + Pitfall row 38.)
 
-This uses sharp + a saturation-filtered histogram to surface dominant
-brand colors. Output JSON shape: `{dominant: [...], suggested: { primary,
-primaryDark, accent, text }, warnings: [...]}`. Read it with the Read tool
-and use `suggested.primary`, `suggested.primaryDark`, `suggested.accent`
-as the authoritative colors. **Do not eyeball colors yourself** — the
-script is more reproducible than vision-based estimation. If the script
-emits warnings (`primary color is weak`, `no usable pixels`), surface
-them in the final report.
-
-**Persist the A2b character (see next step) into the same artifact:** after
-A2b runs and you've categorized the typography character, re-run the
-extractor with `--character "<category>"` (or call once with the flag if
-you do A2b before A2a). The flag writes a `logoCharacter` field into the
-JSON so downstream phases can read it without you having to remember
-across tool calls.
-
-```bash
-node tools/extract-logo-colors.mjs --logo <...> --character "condensed-bold" --out tools/.logo-colors/<slug>.json
-```
-
-**Step A2b — Use vision (Read tool on the logo) for character analysis,
-not color:**
+**Step A2a — Vision character analysis (Read tool on the logo):**
 
 Inspect typography and shape language. Extract:
 
@@ -1191,6 +1473,17 @@ Inspect typography and shape language. Extract:
 If the logo is ambiguous, default to `humanist-sans` + balanced shapes.
 Better to ship a defensible default than block on a perfect read.
 
+**Step A2b — Persist character to a sidecar artifact** (optional, but
+keeps the value retrievable across tool calls):
+
+```bash
+mkdir -p tools/.logo-character
+echo '{"logoCharacter": "<category>", "shapeLanguage": "<rounded|balanced|sharp>"}' > tools/.logo-character/<slug>.json
+```
+
+The DNA JSON written in Phase A5 carries `notes.logoCharacter` as the
+authoritative copy; the sidecar is for resilience.
+
 ### A2d — Map logo character to ARCHETYPE
 
 Each new theme is one of five archetypes (see `docs/theme-archetype-specs.md`
@@ -1210,36 +1503,64 @@ redesigns components per that spec — the scaffolder always clones the
 same `springalls-classic` baseline, so the visual difference between
 archetypes is driven by Phase 8 redesign work, not by template choice.
 
-### A2c — Validate contrast against bg/text
+### A2c — Run the palette policy generator
 
-After A2a/b but before scaffolding, dry-run the contrast checker against
-the colors you'll use:
-
-```bash
-node tools/check-theme-contrast.mjs \
-  --primary <suggested.primary> \
-  --accent <suggested.accent or suggested.primary> \
-  --bg "#ffffff" \
-  --text "#0f1623"
-```
-
-Exit code 1 = critical fail (white-on-primary, body text, link contrast).
-Read the suggestions block — the tool offers a darken/lighten amount that
-would pass. **Apply the correction in-place** so the on-disk logo-colors
-artifact matches the DNA's final primary:
+This step replaces the old extract-then-contrast-check flow. The policy
+generator takes the user's primary hex from A1, auto-darkens it (if
+needed) to pass AA white-on-primary, derives `primary-strong` and
+`on-primary`, and walks the **full 11-pair surface×foreground contrast
+matrix** (light tier × {strong, muted} × {bg, card} = 4, dark tier × same
+= 4, brand triad = 3). Errors with exit 1 if any pair fails — no theme
+can ship that has even one failing pair.
 
 ```bash
-node tools/check-theme-contrast.mjs \
-  --dna tools/.theme-dna/<slug>.json \
-  --write-corrected tools/.logo-colors/<slug>.json
+node tools/check-palette-policy.mjs \
+  --primary "<user-supplied hex>" \
+  --slug <dealer-slug>
 ```
 
-`--write-corrected` patches `suggested.primary` (and `suggested.accent` if
-that critically failed) to the suggested hex, recomputes `primaryDark`,
-and appends a `warnings[]` entry recording the change. Re-update the DNA
-JSON's `colors.primary` to match before scaffolding. **Do not ship a
-theme that fails the critical contrast check** — dealers will see
-unreadable button labels.
+The tool writes the full token set to `tools/.palette/<dealer-slug>.json`
+(structured for direct consumption in Phase A5 + the scaffolder). Exit 0
+means proceed; exit 1 means a pair failed AA — surface the failing pair
+to the user and ask whether to (a) accept further auto-darkening with
+`--max-darken 0.8`, (b) flip `--brand-on-primary` to dark text and
+re-run, or (c) pick a different primary.
+
+**What the tool does (in short):**
+
+1. Validates the input hex and normalizes to lowercase `#rrggbb`.
+2. Walks darken steps (2% increments, default cap 60%) until
+   white-on-primary clears AA (4.5:1). If white-on-primary can't reach
+   AA even at full darken, flips `--brand-on-primary` to `#0a0e14` and
+   uses the deepest variant.
+3. Derives `--brand-primary-strong` as the primary darkened a further 12%
+   for hover/pressed states.
+4. Pairs the brand triad with two FIXED neutral tiers (never derived from
+   primary, never overridable by brand records):
+
+   ```
+   Light tier:                       Dark tier:
+     --surface-bg-light  #ffffff       --surface-bg-dark   #0a0e14
+     --surface-card-light #f6f7fb      --surface-card-dark #14181f
+     --text-on-light-strong #0f1623    --text-on-dark-strong #ffffff
+     --text-on-light-muted #5b6573     --text-on-dark-muted rgba(255,255,255,0.78)
+     --border-on-light #e3e6ee         --border-on-dark rgba(255,255,255,0.12)
+   ```
+
+5. Asserts WCAG AA on every paired combination (text on each surface +
+   on-primary on each primary variant + primary on light surface). Writes
+   the full token JSON to `tools/.palette/<slug>.json`.
+
+**Read the resulting tokens with the Read tool** and use them directly
+in Phase A5's DNA `colors` block. **Do not invent additional colors** —
+the policy intentionally constrains the palette to enforce structural
+contrast safety.
+
+See **Quality Bar §"Color palette policy — paired surface + foreground
+tokens"** for the full rationale and the component-level rule
+(every CSS rule that paints `background:` from a surface token MUST set
+`color:` from the paired foreground token in the same rule or enclosing
+scope).
 
 ### A3 — Scrape the dealer site
 
@@ -1304,14 +1625,39 @@ Compose a DNA object matching the schema the scaffolder consumes:
   "capturedAt": "<ISO date>",
   "profile": "<one-paragraph dealer summary from A3, max ~220 chars>",
   "colors": {
-    "primary": "<hex from A2>",
-    "primaryDark": "<darker variant or null>",
-    "accent": "<hex from A2 or null>",
+    // Brand triad (from tools/.palette/<slug>.json — DO NOT hand-pick).
+    "primary": "<brand.primary from palette policy>",
+    "primaryStrong": "<brand.primaryStrong from palette policy>",
+    "onPrimary": "<brand.onPrimary from palette policy (#fff or #0a0e14)>",
+
+    // Fixed neutral tiers — copied verbatim from palette policy output.
+    // Theme components reference these by their CSS variable names; brand
+    // records may NEVER override the neutrals.
+    "neutralsLight": {
+      "surfaceBg": "#ffffff",
+      "surfaceCard": "#f6f7fb",
+      "textStrong": "#0f1623",
+      "textMuted": "#5b6573",
+      "border": "#e3e6ee"
+    },
+    "neutralsDark": {
+      "surfaceBg": "#0a0e14",
+      "surfaceCard": "#14181f",
+      "textStrong": "#ffffff",
+      "textMuted": "rgba(255,255,255,0.78)",
+      "border": "rgba(255,255,255,0.12)"
+    },
+
+    // Legacy aliases kept for scaffolder/registry consumers that still
+    // read --color-bg / --color-text / --color-surface. These mirror the
+    // light tier by default; archetype-dark themes (rugged, luxury) MUST
+    // additionally pair components with the dark tier directly (don't
+    // rely on these legacy aliases for dark surfaces).
     "bg": "#ffffff",
-    "surface": "#f7f9fc",
+    "surface": "#f6f7fb",
     "text": "#0f1623",
-    "muted": "#6b7280",
-    "border": "#e5e7eb"
+    "muted": "#5b6573",
+    "border": "#e3e6ee"
   },
   "fonts": {
     "heading": "'<Heading family>', '<fallback>', sans-serif",
@@ -1572,19 +1918,46 @@ node tools/generate-theme-workpackage.mjs \
   --dna tools/.theme-dna/<dealer-slug>.json
 ```
 
-Writes a checklist JSON to `tools/.theme-work/<theme-id>.json` listing
-every file Phase 8 must redesign — stubs, kept render layers,
-archetype-required components (pulled from
-`docs/theme-archetype-specs.md` for the theme's archetype), and
-cross-cutting Quality Bar items (per-theme CookieBanner, brand-image
-vars, hero title cap, mobile simplification, motion budget, audit
-clean). Typical output is 30–40 items.
+Writes two artifacts:
 
-**Phase 8 entry rule:** read this JSON into TodoWrite as the first
-action of Phase 8. Each item becomes a todo with a clear definition of
-done (`stub-implementation` / `kept-redesign` / `archetype-required` /
-`quality-bar`). Mark items complete as they land. Don't claim Phase 8
-done until every item is checked.
+1. `tools/.theme-work/<theme-id>.json` — the work package Claude reads
+   into TodoWrite. Items are categorised:
+   - `checklist-component` — every required (`[1]`) item from
+     `.claude/skills/new-theme/Checklist.md`, the **canonical source**
+     for what components must exist in every theme. This is the
+     definition of "no component is omitted".
+   - `stub-implementation` — pages/shell files the skeleton scaffolder
+     ships as placeholders.
+   - `kept-redesign` — inventory list + detail data-layer files whose
+     JSX + CSS still need redesign (Pitfall row 30).
+   - `archetype-required` — visual/layout specs from
+     `docs/theme-archetype-specs.md` for the theme's archetype
+     (provides the *how* for shared component slots like Hero, Header,
+     Featured Stock).
+   - `quality-bar` — cross-cutting checks (per-theme CookieBanner,
+     brand-image vars, hero title cap, mobile simplification, motion
+     budget, audit clean).
+2. `app/themes/<theme-id>/CHECKLIST.md` — a **marked copy of
+   `Checklist.md`** scoped to this theme. Required items are rendered
+   unchecked (`[ ]`); optional ones carry an `(optional)` suffix and
+   should only be filled if the archetype calls for them.
+
+**Phase 8 entry rule:** read the JSON into TodoWrite as the first action
+of Phase 8. As each component lands, tick the matching item in
+`app/themes/<theme-id>/CHECKLIST.md` from `[ ]` to `[x]` and mark the
+TodoWrite item complete. Phase 8 is not done until **every required item
+in CHECKLIST.md is `[x]`** and the audit phases pass. The per-theme
+CHECKLIST.md ships with the theme and serves as a permanent
+build-completeness record.
+
+**Canonical source rule (must-have, learned 2026-05-11):**
+`Checklist.md` is the **only** place Phase 8 looks for "what components
+to build". Do NOT invent components from elsewhere, do NOT skip required
+items because the archetype spec didn't mention them, and do NOT pad the
+build with components that aren't in Checklist.md. Archetype specs
+describe *how* a slot looks for that archetype; Checklist.md decides
+*whether* the slot must exist at all. When the two disagree, Checklist.md
+wins on scope and the archetype spec wins on visual treatment.
 
 Without this checklist, Phase 8 has no definition of done — that's the
 regression class that caused the 5 May 2026 theme purge.
@@ -1620,11 +1993,18 @@ detail page** (route handling stays the same; JSX + CSS + composition
 are fresh), and a per-theme cookie banner.
 
 **Before designing, read these:**
-1. `docs/theme-archetype-specs.md` — the spec for your archetype. This
+1. `app/themes/<theme-id>/CHECKLIST.md` — the **per-theme marked copy
+   of `Checklist.md`** generated in Phase 7.5c. This is the canonical
+   "what components must exist" list. Open it now; you will tick items
+   off as you build, and Phase 8 is not done until every required item
+   is `[x]`. If a component is not in this checklist, don't build it
+   (and don't omit one that is).
+2. `docs/theme-archetype-specs.md` — the spec for your archetype. This
    is a *design brief*, not a transcript. It lists layout language,
    section composition, decorative motifs. Interpret it; don't
-   transcribe it.
-2. `docs/inventory-design-library.md` — a **reference catalogue** of
+   transcribe it. Use it to decide *how* each CHECKLIST.md slot looks,
+   never to decide whether a slot exists.
+3. `docs/inventory-design-library.md` — a **reference catalogue** of
    list and detail patterns sourced from real dealers (Cinch,
    Autotrader, Hexagon, McLaren Approved, etc.). Pull patterns you
    like, then **synthesize** something specific to this theme. The
@@ -1633,7 +2013,7 @@ are fresh), and a per-theme cookie banner.
    composition, sort/filter affordance, card chrome, empty/skeleton
    states, scroll/snap behavior). Append your theme's pattern choices
    to the rotation table when the design lands.
-3. The full **Quality Bar** section earlier in this SKILL — every
+4. The full **Quality Bar** section earlier in this SKILL — every
    must-have applies. Motion + gradient + geometric backgrounds, brand-
    token discipline, canonical routes, header background, hero
    contrast floor, footer attribution, per-theme cookie banner,
@@ -1776,6 +2156,14 @@ Critical fail (exit code 1) = stop and adjust the primary color before
 reporting done.
 
 ## Phase 10c — Theme audit (Quality Bar enforcement)
+
+**Pre-flight: checklist completeness.** Before invoking the static audit,
+open `app/themes/<theme-id>/CHECKLIST.md` and verify **every required
+item is `[x]`**. Any required item still on `[ ]` means a canonical
+component is missing — go build it before continuing. The audit tool
+doesn't grep CHECKLIST.md (intentional — manual ticking is the discipline);
+the gate is your read of the file. Optional `(optional)` items can stay
+unchecked.
 
 Run the static-analysis audit against the new theme:
 
@@ -2109,6 +2497,23 @@ to broadcast. Don't post per-theme during automated batch runs.
   match it and note the deviation).
 - Don't generate a logo or alter the input logo. The dealer's logo is
   authoritative — read, don't modify.
+- **Don't extract colors from the logo.** The user supplies one primary
+  hex in Phase A1; the policy generator derives the rest. See Quality
+  Bar §"Color palette policy" and memory
+  `feedback_no_logo_color_extraction.md`.
+- **Don't paint `color: var(--color-text)` on components whose surface
+  comes from a brand-overridable token.** Use the paired surface +
+  foreground tokens (`--surface-*-light` + `--text-on-light-*` or
+  `--surface-*-dark` + `--text-on-dark-*`) so brand-record overrides
+  can't break contrast.
+- **Don't invent components Phase 8 must build from anywhere other than
+  `Checklist.md`.** That file is the canonical "what components must
+  exist" source — Phase 7.5c parses it, the work package ingests every
+  required (`[1]`) item, and the per-theme `app/themes/<id>/CHECKLIST.md`
+  is the build-completeness record. Don't omit required items because
+  the archetype spec didn't mention them, and don't pad the build with
+  components that aren't on the list. Archetype specs decide *how* a
+  slot looks; `Checklist.md` decides *whether* it exists at all.
 
 ## Tested defaults (current)
 
@@ -2118,8 +2523,9 @@ to broadcast. Don't post per-theme during automated batch runs.
 - **Mode B scaffolder**: `tools/scaffold-theme.mjs` — full clone-and-edit
   from `springalls-classic` (cleanest theme, type-clean baseline). Phase 8
   in Mode B is text replacement, not redesign.
-- Mode A inputs: 2 (logo file path + dealer URL). Optional: theme id,
-  display name.
+- Mode A inputs: 3 (logo file path + dealer URL + primary brand hex).
+  Optional: theme id, display name. Color is NEVER extracted from the
+  logo — see Quality Bar §"Color palette policy".
 - Mode B inputs: 0 if the skill auto-picks; 1 if `--from <app>` given.
 - After Phase 8, the theme has: 14 page implementations, full Shell with
   Header / Footer / per-theme cookie banner / WhatsApp widget /
@@ -2216,6 +2622,9 @@ fire and block you, but recognising the pattern earlier saves a round trip.
 | 35 | Hero title rendered too large on desktop, wrapping to 3-4 lines, looking clumpsy and amateurish. Title text "BUILT FOR THE ROAD, BACKED FOR THE LONG HAUL." at `clamp(2.8rem, 6.4vw, 5.6rem)` filled the entire hero column at 1920px. | Phase 8 used the rugged-archetype recommendation `clamp(2.8rem, 6vw, 5.5rem)` directly without considering the actual title text length. Without a `max-width` character cap, the title stretched edge-to-edge. The "bigger is better" intuition for hero titles overrode the "fit-in-2-lines" constraint that defines a polished hero. First report: 2026-05-11, Difatha with screenshot of NCR Van Sales preview. | New SKILL Quality Bar §"Hero title sizing — fit-in-2-lines max" caps the upper bound of the `clamp()` to ~3.6rem for single-clause headlines and ~4.4rem for two-word brand statements. ALL hero titles get a `max-width: 14ch` (single clause) or `max-width: 18ch` (two clause) on the title element. Title text must be ≤ ~50 characters and ≤ 2 clauses; three-clause titles split into eyebrow + title + lead. Audit rule `lib-hero-title-too-big` (deferred — flag clamp upper bound ≥ 4.5rem alongside title text > 50 chars). |
 | 36 | Top contact bar (the strip above the Header) didn't include social icons — dealers reported that the missing Facebook/Instagram links made the site look incomplete. Multiple themes also failed to surface the live-stock pulsing chip + showroom-location chip + phone-CTA in the canonical UK-dealer order. | Phase 8 designed Headers organically per archetype without a top-bar composition contract. Social icons existed in the brand record (`brand.socialLinks.facebook/instagram/youtube/linkedin`) but Phase 8 didn't know to surface them. The status-strip pattern was implemented inconsistently — some themes had pulsing chips, others didn't; some had the phone CTA, others didn't. | New SKILL Quality Bar §"Top contact bar — required composition" enumerates the 4 required elements in canonical order: (1) showroom location chip with map-pin icon, (2) live-stock / status chip with `.mfx-pulse-dot` tied to `brand.openingHours`, (3) social icons sourced from `brand.socialLinks` (hide individual icons whose URL is empty; hide group entirely if `socialLinks` absent), (4) phone CTA pulled from `brand.location.phone` (always rightmost). PreviewBanner sits ABOVE the top contact bar (`position: sticky; top: 0`); when `NEXT_PUBLIC_PREVIEW=1` is set, the banner is first; otherwise contact bar is topmost (no layout shift). Mobile overlay nav must also surface social icons. |
 | 37 | Operator uploaded custom hero / about / services images via the dashboard `/update/<slug>` page, but they don't render on the deployed preview — the theme keeps showing its archetype-default photos instead. | Phase 8 theme component hardcoded `background-image: url('/themes/<id>/images/hero.jpg')` (or a literal remote URL) directly in the CSS module instead of `var(--brand-image-hero)`. The dashboard saved the URL into `brand.images.hero` and `BrandStyles.tsx` wrote it into `--brand-image-hero` correctly, but the component never consumed the var. Result: dashboard edits silently drop. First report: 2026-05-11, Difatha after testing dashboard image upload against multiple themes. | (a) New SKILL Quality Bar §"Brand-uploaded images must render — `var(--brand-image-*)` plumbing" enumerating all 7 image slots and the consumption contract. (b) Every Hero / PageHero / CtaBanner / decorative-image component MUST use `background-image: var(--brand-image-<slot>)` on a CSS-module class — never a hardcoded URL. (c) `BrandStyles.tsx` ships all 7 slot mappings by default; the rule is "never remove them" rather than "set them up". (d) Diagnostic: `getComputedStyle(document.documentElement).getPropertyValue('--brand-image-hero')` in the browser console shows what the brand record resolves to. (e) Audit rule `lib-image-not-brand-driven` (deferred — flag any `background-image: url(...)` in a theme CSS module that isn't `var(--brand-image-*)` or a decorative data-URI). |
+| 38b | Difatha re-reported the same class of bug a day later: "the images persisted on brandstudio dashboard are not wiring correctly into themed previews — previews are lacking imagery completely for the new theme." Rule 37 had been encoded but Phase 8 still produced a theme whose BrandStyles couldn't surface dashboard uploads consistently. Three distinct failure modes were all hiding behind the same symptom (empty image areas in the preview). | (i) BrandStyles fell back to `/images/hero-placeholder.jpg` when neither `brand.images.hero` nor `brand.heroImage` was set. That file 404s on most deployments, AND the CSS-level `var(name, fallback)` defensive fallback NEVER fires because BrandStyles had already set the var to a non-empty (but broken) URL. CSS `var(name, fallback)` only kicks in when the var is undeclared, never when set to a 404'ing string. (ii) Per-slot fallback cross-fell to the hero (`aboutImage = brand.images.about OR heroImageSlot`), so an operator who uploaded only a hero saw every page render the same hero — masking the curated theme defaults entirely and making the preview look monotonous. (iii) Older themes (classic-dealer, gilded-drive) only emit `--classic-hero-image`, not the 7-slot `--brand-image-*` set; a brand record bound to those themes shows no per-page imagery at all. The new theme inherited the bogus-placeholder fallback from the scaffolder's default BrandStyles template. | (a) New BrandStyles fallback chain mandated by Quality Bar §"Brand-uploaded images must render". (b) No cross-fall: each slot independently falls back to its own theme-curated default so operator-uploads-hero-only previews still render distinctive per-page imagery rather than five copies of the hero. (c) Helper pattern `pickString(...)` + `resolveSlot(...)` shipped in the SKILL as the canonical implementation; future scaffolders should emit this shape by default. (d) Memory `feedback_brand_image_plumbing.md` rewritten with diagnostic flow (`getComputedStyle(...).getPropertyValue('--brand-image-hero')` in browser console, with response→cause table). (e) Audit rule `lib-brand-styles-incomplete-slots` (deferred — flag any theme's BrandStyles.tsx that doesn't emit all 7 `--brand-image-*` vars OR uses a placeholder URL as the terminal fallback). (f) Older themes (classic-dealer, gilded-drive) flagged as "cross-theme caveat" — they only emit `--classic-hero-image`; brand records bound to those themes don't get per-page imagery. Migrating them to emit all 7 is a follow-up. |
+| 38c | Difatha came back AGAIN the same day with a screenshot showing the dashboard had an uploaded hero (forecourt photo with "AUTOWOW" signage clearly visible in the Brand Assets section of `/update/columbus-vehicles-preview`) but the rendered preview hero was the curated theme default Unsplash photo, NOT the dashboard upload. Rule 38b's 3-tier chain was already shipped (`brand.images.hero` first, then `brand.heroImage`, then theme default). | Direct inspection of the brand record via `GET /api/previews/columbus-vehicles-preview` showed: `heroImage: "/images/columbus-vehicles-preview-hero.png"` (the real upload, file present on disk) but `images.hero: "/images/hero-bg.png"` (a stale placeholder from initial brand creation that pre-dated the operator's hero upload). The dashboard's update_brand handler tries to sync `images.hero` from `heroImage` on each save, but this brand record's `images.hero` was set during initial brand creation and never re-synced (the operator updated the hero AFTER creation through a save path that didn't fire the sync, OR through a different version of the handler that didn't have the sync code). My 3-tier chain checked `brand.images.hero` FIRST → returned the stale placeholder → CSS layered fallback served the THEME default underneath (because the placeholder URL 404'd) → user saw theme default, not the dashboard upload they'd just shipped. The chain was structurally correct but had the wrong PRIORITY for the hero slot. | (a) **Reorder the hero slot specifically**: read `brand.heroImage` FIRST (the authoritative top-level field — the dashboard always refreshes it on every save), then `brand.images.hero` as backup, then theme default. Other slots stay the same (they don't have an authoritative top-level alias). (b) **Add layered-background CSS as a defensive belt-and-braces** for the rare case the brand URL 404s anyway: every component that consumes `var(--brand-image-<slot>)` does multi-layer `background-image: var(--brand-image-X, none), url('/themes/<id>/images/<slotFile>.jpg')` so the theme default always renders if the brand URL fails to load. The CSS-level `var(name, fallback)` idiom is NOT used here — it doesn't trigger when the var is set to a broken URL. Use `var(name, none)` so the layer is `none` (renders nothing) when undeclared, rather than making the entire declaration invalid. (c) **Prefer per-page hero variant CSS classes over inline styles**: `.auto-page-hero--finance` etc. live in base.css with the multi-layer pattern, and pages use `<section className="auto-page-hero auto-page-hero--finance">` instead of inline `style={{ backgroundImage: ... }}` — keeps the multi-layer intent in one place and easier to keep consistent. (d) Memory `feedback_brand_image_plumbing.md` updated with the special-cased hero ordering + the layered-CSS pattern. (e) Future audit rule `data-images-hero-stale` (deferred) could fetch the brand record, compare `brand.heroImage` vs `brand.images.hero`, and warn if they disagree. |
+| 38 | Three contrast bugs in the same auto-wow-uk-bespoke preview screenshot (rendered through the Columbus Vehicles brand record): (a) `LatestArrivalsSection` vehicle card titles invisible — dark `--color-text` painted on a card whose `--color-surface` had been overridden to dark by Columbus's brand record; (b) hero ghost-CTA content invisible — `auto-btn--ghost` rule painted `color: var(--color-text)` (dark) on the hero's fixed dark background because the ghost-button-on-dark variant was only scoped under `.auto-section--dark` and the hero wasn't wrapped in it; (c) topbar social icons hid entirely when `brand.socialLinks` was empty — the previous rule "hide individual icons whose URL is empty; hide group entirely if `socialLinks` absent" made the bar look incomplete on real-world brand records. Compounded: the original logo-extracted primary `#fd1317` also failed AA white-on-primary out of the gate and required iterative manual darkening. | The brandstudio token system treats `--color-surface` and `--color-text` as INDEPENDENT brand-overridable tokens. When a brand record overrides one but not the other (or the theme assumes light tier and the brand assumes dark), components painted from `color: var(--color-text)` against `background: var(--color-surface)` lose contrast. Generic foreground inheritance is structurally fragile; brand-record cross-rendering exposes it. The logo-extraction path was also unreliable as a color SOURCE: it would happily return an AA-failing primary and force iterative darkening before the theme could ship. | Three-pronged: (a) New tool `tools/check-palette-policy.mjs --primary <hex>` validates the user-supplied primary, auto-darkens if needed, and emits the full 11-pair contrast-checked token set (light tier × 2 surfaces × 2 fg-strengths + dark tier × same + brand triad). Exits 1 if any pair fails AA. Phase A2c now runs this instead of the old extract+contrast flow. (b) New SKILL Quality Bar §"Color palette policy — paired surface + foreground tokens" mandates: ONE brand color input from user (not extracted from logo); two FIXED neutral tiers (light + dark) that brand records may NEVER override; brand records may ONLY override the brand triad; every CSS rule that sets `background:` from a surface token MUST set `color:` from the paired foreground token in the same rule or enclosing scope. (c) Updated `feedback_topbar_essentials.md` memory to require ALWAYS rendering all 4 social icons in canonical order; render unconfigured icons as muted non-clickable spans (never hide the group). Memories `feedback_no_logo_color_extraction.md` + `feedback_color_palette_policy.md` capture the new invariants. Future audit rule `lib-unpaired-foreground` (deferred) will flag any CSS rule that sets `color: var(--color-text*)` without a same-scope `background:` from the paired tier. |
 
 When you add a new audit rule for a future bug, append a row here. The
 catalogue should grow as a record of "what we've already learned not to
@@ -2228,8 +2637,9 @@ the row stays as institutional memory.
 | Tool | Purpose | Mode |
 |------|---------|------|
 | `tools/check-skill-env.mjs` | Phase 0.5 pre-flight. 3 gates: tools-present, node-deps (sharp), theme-sync-clean. Exit 1 on any fail. | Both modes |
-| `tools/extract-logo-colors.mjs` | Deterministic dominant-color extraction from a logo (sharp + saturation-filtered histogram). | Mode A only |
-| `tools/check-theme-contrast.mjs` | WCAG AA validator for theme color combos. Exit 1 on critical fail. | Both modes |
+| `tools/check-palette-policy.mjs` | Phase A2c color-policy generator + validator. Takes user-supplied primary hex, auto-darkens to AA if needed, derives the full token set (two fixed neutral tiers + brand triad), walks the 11-pair surface×foreground contrast matrix, emits `tools/.palette/<slug>.json`. Exits 1 if any pair fails AA. Flags: `--primary <hex>`, `--slug <slug>`, `--out <path>`, `--json`, `--max-darken 0.6`. | Both modes (required) |
+| `tools/extract-logo-colors.mjs` | DEPRECATED for color decisions as of the color-policy update — kept for retrospective inspection of dominant logo colors but NOT part of the canonical Mode A flow. Phase A2 now uses vision for character analysis only. | (deprecated) |
+| `tools/check-theme-contrast.mjs` | Legacy WCAG AA validator for individual color combos. Superseded by `check-palette-policy.mjs` which walks the full matrix and emits paired tokens. Retained for one-off contrast checks against arbitrary fg/bg pairs. | Both modes (legacy) |
 | `tools/audit-theme.mjs` | Static-analysis quality gate. Rule prefixes: `a11y-` (accessibility), `std-` (standards), `data-` (data-fetching), `mobile-` (responsive), `perf-` (performance), `brand-` (token discipline), `tp-` (Turbopack collision avoidance), `lib-` (foundation/dependency), `motion-` (motion & light language), `inv-` (inventory page contracts — list and detail). Blockers exit 1. Supports inline `audit-ignore: <rule>` and file-level `audit-ignore-file: <rule>` directives. See **Pitfalls catalogue** above for the historical bugs each rule prevents. | Both modes |
 | `tools/rollback-theme.mjs` | Partial-theme cleanup when a run fails between Phase 7 and 12. Removes theme folder, public images, DNA JSON, images manifest, logo-colors JSON, then re-runs theme:sync. Idempotent. Flag: `--dry-run`. (No longer touches MySQL — brand cleanup is dashboard-only.) | Both modes |
 | `tools/fetch-theme-images.mjs` | Source 7 page-level images (hero/about/services/finance/partExchange/sellYourCar/recentlySold). Curated Unsplash catalogue with classic-archetype fallback; live API mode when `UNSPLASH_ACCESS_KEY` is set. | Mode A only |

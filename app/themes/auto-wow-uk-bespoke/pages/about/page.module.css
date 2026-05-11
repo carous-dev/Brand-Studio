@@ -1,0 +1,142 @@
+.intro {
+  background: var(--color-bg);
+}
+
+.introInner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: center;
+}
+
+.copy h2 {
+  max-width: 18ch;
+}
+
+.ctaRow {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-card, 8px);
+  overflow: hidden;
+  border: 2px solid var(--color-border);
+}
+
+.mediaInner {
+  position: absolute;
+  inset: 0;
+  /* Layered fallback — operator upload on top, theme default underneath. */
+  background-image:
+    var(--brand-image-about, none),
+    url('/themes/auto-wow-uk-bespoke/images/about.jpg');
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  filter: saturate(0.9);
+  transition: transform 480ms ease;
+}
+
+.media:hover .mediaInner {
+  transform: scale(1.05);
+}
+
+.mediaBadge {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+  background: rgba(10, 14, 20, 0.92);
+  color: #ffffff;
+  padding: 14px 18px;
+  border-left: 3px solid var(--color-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mediaBadge strong {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+.mediaBadge span {
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+@media (min-width: 880px) {
+  .introInner {
+    grid-template-columns: 1.2fr 1fr;
+    gap: 56px;
+  }
+}
+
+.values .auto-section-title {
+  max-width: 24ch;
+}
+
+.valueGrid {
+  list-style: none;
+  margin: 32px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.valueGrid li {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-card, 8px);
+  padding: 28px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 220ms ease, background 220ms ease;
+}
+
+.valueGrid li:hover {
+  border-color: var(--color-primary);
+  background: rgba(190, 14, 17, 0.08);
+}
+
+.valueNum {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: var(--color-primary);
+}
+
+.valueGrid h3 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0;
+}
+
+.valueGrid p {
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 0.94rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+@media (min-width: 880px) {
+  .valueGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -1,0 +1,75 @@
+.wizardSection {
+  background: var(--surface-bg-light);
+}
+
+.benefits {
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+}
+.benefitsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 720px) {
+  .benefitsGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.benefit {
+  padding: 28px 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 3px solid var(--brand-primary);
+  border-radius: 6px;
+  display: grid;
+  gap: 10px;
+}
+.benefitIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-radius: 4px;
+}
+.benefit h3 {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-on-dark-strong);
+}
+.benefit p {
+  color: var(--text-on-dark-muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.contactStrip {
+  margin-top: 32px;
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.contactStrip p {
+  color: var(--text-on-dark-strong);
+  margin: 0;
+}
+.contactStrip a {
+  color: var(--brand-primary);
+  font-weight: 700;
+  text-decoration: none;
+}
+.contactStrip a:hover {
+  text-decoration: underline;
+}

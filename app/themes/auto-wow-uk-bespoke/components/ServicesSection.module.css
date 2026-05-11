@@ -1,0 +1,121 @@
+.section {
+  position: relative;
+  background:
+    radial-gradient(circle at 85% 10%, rgba(190, 14, 17, 0.18) 0%, transparent 45%),
+    #0a0e14;
+  isolation: isolate;
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.5) 30%, rgba(0, 0, 0, 0.5) 70%, transparent 100%);
+  z-index: -1;
+}
+
+.inner {
+  position: relative;
+}
+
+.header {
+  max-width: 720px;
+  margin-bottom: clamp(40px, 5vw, 64px);
+}
+
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-card, 8px);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 220ms ease, background 220ms ease, transform 220ms ease;
+}
+
+.card:hover {
+  border-color: var(--color-primary);
+  background: rgba(190, 14, 17, 0.08);
+  transform: translateY(-4px);
+}
+
+.iconWrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  background: rgba(190, 14, 17, 0.18);
+  border: 1px solid rgba(190, 14, 17, 0.36);
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardTitle {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0;
+}
+
+.cardBlurb {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.cardLink {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding-top: 8px;
+}
+
+.cardLink:hover {
+  color: #ff6b6e;
+}
+
+@media (min-width: 720px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .section::before {
+    display: none;
+  }
+}

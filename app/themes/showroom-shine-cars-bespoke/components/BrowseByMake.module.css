@@ -1,0 +1,89 @@
+.section {
+  background: var(--surface-card-light);
+  color: var(--text-on-light-strong);
+  padding: clamp(40px, 6vw, 64px) 0;
+  border-top: 1px solid var(--border-on-light);
+}
+.head {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 22px;
+  max-width: 720px;
+}
+.title {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  color: var(--text-on-light-strong);
+}
+.grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+@media (min-width: 640px) {
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+  .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--surface-bg-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 4px;
+  color: var(--text-on-light-strong);
+  text-decoration: none;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  min-height: 36px;
+}
+.chip:hover {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-color: var(--brand-primary);
+}
+.chipArrow {
+  color: var(--brand-primary);
+  flex-shrink: 0;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+.chip:hover .chipArrow {
+  color: var(--brand-on-primary);
+  transform: translateX(2px);
+}
+.chipName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chipCount {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  font-style: italic;
+  line-height: 1.5;
+  flex-shrink: 0;
+}
+.chip:hover .chipCount {
+  background: var(--brand-on-primary);
+  color: var(--brand-primary);
+}

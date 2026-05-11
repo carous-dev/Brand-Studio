@@ -1,0 +1,225 @@
+.section {
+  background: var(--color-bg);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.copy {
+  max-width: 640px;
+}
+
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.steps li {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 16px;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-card, 8px);
+  padding: 18px 20px;
+}
+
+.steps strong {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.02em;
+}
+
+.steps h3 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 4px;
+}
+
+.steps p {
+  color: var(--color-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.trustRow {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 24px;
+}
+
+.trustRow li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--color-text);
+}
+
+.trustRow svg {
+  color: var(--color-primary);
+}
+
+.disclaimer {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-primary);
+  padding: 16px 18px;
+  font-size: 0.82rem;
+  color: var(--color-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.disclaimer strong {
+  color: var(--color-text);
+}
+
+/* Calculator */
+
+.calcCard {
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-card, 8px);
+  overflow: hidden;
+  position: sticky;
+  top: 96px;
+}
+
+.calc {
+  padding: clamp(24px, 3vw, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.calcTitle {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+}
+
+.calcField {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 12px;
+  align-items: center;
+}
+
+.calcField > span:first-child {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.calcValue {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+}
+
+.calcField input[type="range"] {
+  grid-column: 1 / -1;
+  width: 100%;
+  appearance: none;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 999px;
+  outline: none;
+  margin: 4px 0 2px;
+}
+
+.calcField input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(140, 9, 12, 0.3);
+}
+
+.calcField input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  cursor: pointer;
+  border: 2px solid #ffffff;
+}
+
+.calcResult {
+  margin-top: 10px;
+  background: #0a0e14;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 3px solid var(--color-primary);
+  padding: 18px 20px;
+  border-radius: 6px;
+  color: #ffffff;
+}
+
+.calcResultLabel {
+  display: block;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 4px;
+}
+
+.calcResultValue {
+  font-family: 'Oswald', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.01em;
+  display: block;
+  line-height: 1;
+}
+
+.calcResultSub {
+  margin: 6px 0 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.calcFoot {
+  padding: 0 clamp(24px, 3vw, 32px) clamp(24px, 3vw, 32px);
+}
+
+.calcCta {
+  width: 100%;
+}
+
+@media (min-width: 980px) {
+  .layout {
+    grid-template-columns: 1.3fr 1fr;
+    gap: 48px;
+  }
+}

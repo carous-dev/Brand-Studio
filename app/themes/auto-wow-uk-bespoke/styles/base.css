@@ -1,0 +1,544 @@
+/* =============================================================================
+ * BASE STYLES — auto-wow-uk-bespoke
+ * Archetype: rugged (condensed-bold display headings + DM Sans body)
+ *
+ * Discipline:
+ *   - Every class rule is scoped under [data-theme-id='auto-wow-uk-bespoke']
+ *     so this theme can ship alongside any other on the same domain.
+ *   - Colors come from var(--color-*); images from var(--brand-image-*).
+ *   - No blanket :where(a) color rule — that paints wordmarks the wrong color.
+ *   - [hidden] override so modals close cleanly even with display:flex on
+ *     the same element.
+ * ============================================================================= */
+
+[data-theme-id='auto-wow-uk-bespoke'] {
+  color-scheme: light;
+  font-family: var(--font-ui-family-override, 'DM Sans', 'Inter', 'Helvetica Neue', Arial, sans-serif);
+  background: var(--color-bg);
+  color: var(--color-text);
+  margin: 0;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] *,
+[data-theme-id='auto-wow-uk-bespoke'] *::before,
+[data-theme-id='auto-wow-uk-bespoke'] *::after {
+  box-sizing: border-box;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] :where(h1, h2, h3, h4) {
+  /* Typography-only rule. Color cascades from body (light surfaces) or is
+     set per-component (dark surfaces) — never declared here. */
+  font-family: var(--font-brand-family-override, 'Oswald', 'Arial Narrow', 'Helvetica Condensed', sans-serif);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] [hidden] {
+  display: none !important;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] :where(input, select, textarea) {
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] :where(button) {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] :where(img) {
+  max-width: 100%;
+  display: block;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] :where(:focus-visible) {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-skip-link:focus {
+  left: 12px;
+  top: 12px;
+  width: auto;
+  height: auto;
+  padding: 12px 16px;
+  background: #0a0e14;
+  color: #ffffff;
+  z-index: 1000;
+  text-decoration: none;
+  border: 2px solid var(--color-primary);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-main {
+  display: block;
+  min-height: calc(100vh - 240px);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ----------------------------------------------------------------------------
+ * Rugged-archetype shared utility classes — referenced by section components
+ * and kept inventory pages. Brand-token-driven so dashboard color edits
+ * propagate without CSS rebuild.
+ * ---------------------------------------------------------------------------- */
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-section {
+  padding: clamp(48px, 8vw, 96px) clamp(20px, 4vw, 48px);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-section--dark {
+  background: #0a0e14;
+  color: #ffffff;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--color-primary);
+  margin: 0 0 14px;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 2px;
+  background: var(--color-primary);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-section-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin: 0 0 20px;
+  max-width: 28ch;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-section-lead {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+  max-width: 60ch;
+  margin: 0 0 36px;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-section--dark .auto-section-lead {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 26px;
+  min-height: 48px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 2px solid transparent;
+  border-radius: var(--radius-button, 6px);
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-btn--primary {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-btn--primary:hover {
+  background: var(--color-primary-dark, #8c090c);
+  border-color: var(--color-primary-dark, #8c090c);
+  transform: translateY(-1px);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-btn--ghost {
+  background: transparent;
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-section--dark .auto-btn--ghost {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-btn--ghost:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 2px;
+  transition: border-color 180ms ease;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-cta-link:hover {
+  border-bottom-color: var(--color-primary);
+}
+
+/* Sharp-edged card chrome for the rugged archetype. */
+[data-theme-id='auto-wow-uk-bespoke'] .auto-card {
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-card, 8px);
+  transition: border-color 200ms ease, transform 200ms ease;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-3px);
+}
+
+/* Diagonal SOLD banner used by RecentlySold and recently-sold page. */
+[data-theme-id='auto-wow-uk-bespoke'] .auto-sold-banner {
+  position: absolute;
+  top: 18px;
+  right: -36px;
+  transform: rotate(35deg);
+  background: var(--color-primary);
+  color: #ffffff;
+  padding: 6px 40px;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 0.86rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 14px rgba(140, 9, 12, 0.4);
+  pointer-events: none;
+  z-index: 2;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-diagonal-divider {
+  position: relative;
+  height: 24px;
+  overflow: hidden;
+}
+[data-theme-id='auto-wow-uk-bespoke'] .auto-diagonal-divider::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-primary);
+  transform: skewY(-1.5deg) translateY(50%);
+  transform-origin: bottom left;
+  opacity: 0.92;
+}
+
+/* ----------------------------------------------------------------------------
+ * Used-cars + recently-sold legacy class hooks (consumed by kept pages).
+ * Keep names so we don't have to touch the JSX of the kept render layer,
+ * but every rule is brand-token-driven and scoped to this theme.
+ * ---------------------------------------------------------------------------- */
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(48px, 7vw, 96px) clamp(20px, 4vw, 32px);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-section-header {
+  margin-bottom: 36px;
+  text-align: left;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-section-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin: 0 0 12px;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-section-subtitle {
+  color: var(--color-muted);
+  max-width: 60ch;
+  margin: 0;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-section-empty {
+  text-align: center;
+  color: var(--color-muted);
+  padding: 64px 24px;
+  background: var(--color-surface);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-card, 8px);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-vehicle-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 640px) {
+  [data-theme-id='auto-wow-uk-bespoke'] .sps-vehicle-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 960px) {
+  [data-theme-id='auto-wow-uk-bespoke'] .sps-vehicle-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-vehicle-card {
+  position: relative;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-card, 8px);
+  overflow: hidden;
+  transition: border-color 200ms ease, transform 200ms ease;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-vehicle-card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-4px);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-vehicle-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-vehicle-card-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: #0a0e14;
+  overflow: hidden;
+  filter: saturate(0.85);
+  transition: filter 240ms ease;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-vehicle-card:hover .sps-vehicle-card-media {
+  filter: saturate(1);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-vehicle-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform 400ms ease;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-vehicle-card:hover .sps-vehicle-card-media img {
+  transform: scale(1.04);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-vehicle-card-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1f2a 0%, #0a0e14 100%);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-vehicle-card-body {
+  padding: 18px 20px 22px;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-vehicle-card-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+  color: var(--color-text);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-vehicle-card-price {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 8px;
+  letter-spacing: 0.01em;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .sps-vehicle-card-meta {
+  font-size: 0.86rem;
+  color: var(--color-muted);
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+/* PageHero shared treatment (used by inner pages). */
+[data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero {
+  position: relative;
+  min-height: 280px;
+  padding: clamp(72px, 12vw, 140px) clamp(20px, 4vw, 48px) clamp(56px, 8vw, 100px);
+  /* Layered fallback — operator upload (if present) on top, theme default
+     underneath. CSS `var(name, fallback)` does not save us when the var
+     is set to a 404'ing URL; multi-layer backgrounds do. The default
+     uses the hero slot; per-page variants below swap to their own slot. */
+  background-image:
+    linear-gradient(180deg, rgba(10, 14, 20, 0.86) 0%, rgba(10, 14, 20, 0.62) 100%),
+    var(--brand-image-hero, none),
+    url('/themes/auto-wow-uk-bespoke/images/hero.jpg');
+  background-size: auto, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  color: #ffffff;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero--about {
+  background-image:
+    linear-gradient(180deg, rgba(10, 14, 20, 0.86) 0%, rgba(10, 14, 20, 0.62) 100%),
+    var(--brand-image-about, none),
+    url('/themes/auto-wow-uk-bespoke/images/about.jpg');
+}
+[data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero--services {
+  background-image:
+    linear-gradient(180deg, rgba(10, 14, 20, 0.86) 0%, rgba(10, 14, 20, 0.62) 100%),
+    var(--brand-image-services, none),
+    url('/themes/auto-wow-uk-bespoke/images/services.jpg');
+}
+[data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero--finance {
+  background-image:
+    linear-gradient(180deg, rgba(10, 14, 20, 0.86) 0%, rgba(10, 14, 20, 0.62) 100%),
+    var(--brand-image-finance, none),
+    url('/themes/auto-wow-uk-bespoke/images/finance.jpg');
+}
+[data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero--part-exchange {
+  background-image:
+    linear-gradient(180deg, rgba(10, 14, 20, 0.86) 0%, rgba(10, 14, 20, 0.62) 100%),
+    var(--brand-image-part-exchange, none),
+    url('/themes/auto-wow-uk-bespoke/images/partExchange.jpg');
+}
+[data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero--sell-your-car {
+  background-image:
+    linear-gradient(180deg, rgba(10, 14, 20, 0.86) 0%, rgba(10, 14, 20, 0.62) 100%),
+    var(--brand-image-sell-your-car, none),
+    url('/themes/auto-wow-uk-bespoke/images/sellYourCar.jpg');
+}
+[data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero--recently-sold {
+  background-image:
+    linear-gradient(180deg, rgba(10, 14, 20, 0.86) 0%, rgba(10, 14, 20, 0.62) 100%),
+    var(--brand-image-recently-sold, none),
+    url('/themes/auto-wow-uk-bespoke/images/recentlySold.jpg');
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 18% 30%, rgba(190, 14, 17, 0.34) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(2rem, 4.4vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #ffffff;
+  max-width: 18ch;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+  margin: 0 0 14px;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero p {
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 56ch;
+  margin: 0;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.32);
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero-crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.76rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0 0 18px;
+}
+
+[data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero-crumb::before {
+  content: '';
+  width: 28px;
+  height: 2px;
+  background: var(--color-primary);
+  display: inline-block;
+}
+
+/* Mobile simplification — hide decorative layers, single column. */
+@media (max-width: 640px) {
+  [data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero::before {
+    display: none;
+  }
+  [data-theme-id='auto-wow-uk-bespoke'] .auto-diagonal-divider {
+    display: none;
+  }
+}

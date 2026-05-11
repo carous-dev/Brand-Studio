@@ -1,0 +1,188 @@
+.options {
+  background: var(--surface-bg-light);
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 720px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.card {
+  display: grid;
+  gap: 14px;
+  padding: 28px 24px;
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-top: 3px solid var(--brand-primary);
+  border-radius: 6px;
+}
+.cardTitle {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-on-light-strong);
+}
+.cardBody {
+  color: var(--text-on-light-muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+.bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.bullets li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-on-light-strong);
+  font-size: 0.88rem;
+}
+.bullets svg {
+  color: var(--brand-primary);
+  flex-shrink: 0;
+}
+
+.process {
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+}
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  counter-reset: step;
+}
+@media (min-width: 720px) {
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .steps {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.steps li {
+  position: relative;
+  padding: 28px 22px 22px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  display: grid;
+  gap: 8px;
+}
+.stepNum {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 2.4rem;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1;
+  color: var(--brand-primary);
+}
+.stepTitle {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-on-dark-strong);
+}
+.steps p {
+  color: var(--text-on-dark-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.assurance {
+  background: var(--surface-card-light);
+}
+.assuranceLayout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 5vw, 56px);
+  align-items: start;
+}
+@media (min-width: 1024px) {
+  .assuranceLayout {
+    grid-template-columns: 1.5fr 1fr;
+  }
+}
+.assuranceTitle {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.6rem, 3.2vw, 2.2rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-style: italic;
+  color: var(--text-on-light-strong);
+  margin: 6px 0 12px;
+}
+.assuranceLead {
+  color: var(--text-on-light-muted);
+  max-width: 56ch;
+  margin-bottom: 16px;
+  font-size: 1rem;
+}
+.assuranceBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.assuranceBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--surface-bg-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 4px;
+  color: var(--text-on-light-strong);
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.assuranceBadge svg {
+  color: var(--brand-primary);
+}
+
+.contactCard {
+  padding: 28px;
+  background: var(--surface-bg-light);
+  border: 1px solid var(--border-on-light);
+  border-top: 3px solid var(--brand-primary);
+  border-radius: 6px;
+  display: grid;
+  gap: 14px;
+}
+.contactTitle {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-style: italic;
+  color: var(--text-on-light-strong);
+}
+.contactCard p {
+  color: var(--text-on-light-muted);
+  font-size: 0.95rem;
+}
+.contactCta {
+  min-height: 52px;
+}
+.contactSecondary {
+  min-height: 52px;
+}

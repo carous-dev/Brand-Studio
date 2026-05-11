@@ -1,0 +1,153 @@
+.section {
+  position: relative;
+  background-color: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+  overflow: hidden;
+  isolation: isolate;
+  padding-top: clamp(56px, 8vw, 96px);
+  padding-bottom: clamp(56px, 8vw, 96px);
+}
+.bgImage {
+  position: absolute;
+  inset: 0;
+  background-image:
+    var(--brand-image-hero, none),
+    url('/themes/showroom-shine-cars-bespoke/images/hero.jpg');
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  z-index: -3;
+  opacity: 0.6;
+}
+.overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 80% at 80% 50%, rgba(173, 11, 27, 0.4) 0%, transparent 60%),
+    linear-gradient(120deg, rgba(8, 11, 17, 0.96) 0%, rgba(8, 11, 17, 0.72) 60%, rgba(8, 11, 17, 0.92) 100%);
+  z-index: -2;
+}
+.glow {
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  transform: translateY(-50%);
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(173, 11, 27, 0.34) 0%, transparent 70%);
+  filter: blur(60px);
+  z-index: -1;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 5vw, 56px);
+  align-items: center;
+}
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}
+
+.left {
+  display: grid;
+  gap: 18px;
+}
+.title {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(2rem, 4.2vw, 3rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: var(--text-on-dark-strong);
+  font-style: italic;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
+}
+.lead {
+  color: var(--text-on-dark-strong);
+  opacity: 0.92;
+  max-width: 52ch;
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+.primary {
+  min-height: 54px;
+}
+.secondary {
+  min-height: 54px;
+}
+
+.right {
+  display: flex;
+  justify-content: flex-end;
+}
+.valuationCard {
+  width: 100%;
+  max-width: 460px;
+  padding: 28px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-top: 3px solid var(--brand-primary);
+  border-radius: 6px;
+  display: grid;
+  gap: 14px;
+}
+.valuationTitle {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--text-on-dark-strong);
+  font-style: italic;
+}
+.valuationLead {
+  color: var(--text-on-dark-muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.valuationCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 22px;
+  margin-top: 4px;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-radius: 4px;
+  text-decoration: none;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.valuationCta:hover {
+  background: var(--brand-primary-strong);
+  transform: translateX(4px);
+}
+
+@media (max-width: 640px) {
+  .glow {
+    display: none;
+  }
+  .primary,
+  .secondary {
+    width: 100%;
+  }
+  .secondary {
+    display: none;
+  }
+}

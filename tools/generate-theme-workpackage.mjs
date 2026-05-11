@@ -7,29 +7,42 @@
  * every file/component Phase 8 must redesign. Claude reads the JSON into
  * TodoWrite so Phase 8 has a definition of done.
  *
- * Inputs come from three sources:
- *   1. The scaffolder's STUB_FILES — pages and shell components that ship
- *      as type-safe placeholders and need fresh designs.
- *   2. The scaffolder's KEEP_PATTERNS — files kept from the springalls-classic
+ * Inputs:
+ *   1. .claude/skills/new-theme/Checklist.md — CANONICAL component source.
+ *      Items marked `[1]` are required for every theme. Items marked `[ ]`
+ *      are optional/aspirational and skipped unless the archetype calls
+ *      for them. This is the single source of truth for "what components
+ *      must exist" — Claude must NOT invent components from elsewhere.
+ *   2. The scaffolder's STUB_FILES — pages and shell components that ship
+ *      as type-safe placeholders and need fresh designs (these map back
+ *      onto checklist sections like Sticky Header, Footer Mega Footer,
+ *      etc., but are tracked separately because the file path matters).
+ *   3. The scaffolder's KEEP_PATTERNS — files kept from the springalls-classic
  *      baseline (mostly inventory data-layer logic) whose presentation
  *      layer still must be redesigned per archetype.
- *   3. The archetype spec from docs/theme-archetype-specs.md — the
- *      "Components Phase 8 must redesign" list for the theme's archetype.
- *   4. The detail-page contract from docs/inventory-design-library.md —
- *      sections every vehicle detail page must include.
+ *   4. The archetype spec from docs/theme-archetype-specs.md — the
+ *      "Components Phase 8 must redesign" list for the theme's archetype
+ *      (provides the *how* — visual + layout spec — for shared component
+ *      slots like Hero, Header, Featured Stock).
  *   5. Always-required Quality Bar items (PreviewBanner mount, Carous
  *      credit, Home link in nav, per-theme CookieBanner, etc.).
  *
- * Output: tools/.theme-work/<id>.json (a flat array of items, each with
- * an id, kind, title, file path, description, and references).
+ * Outputs (two files per run):
+ *   • tools/.theme-work/<id>.json — flat array of work items for TodoWrite.
+ *   • app/themes/<id>/CHECKLIST.md — marked copy of Checklist.md scoped
+ *     to this theme. Required items appear unchecked (`[ ]`) for Phase 8
+ *     to tick off as each component lands. Optional items appear with an
+ *     `(optional)` suffix. The theme is not shippable until every
+ *     required item is `[x]`.
  *
  * Usage:
  *   node tools/generate-theme-workpackage.mjs --id <theme-id> --dna <dna.json>
  *   node tools/generate-theme-workpackage.mjs --id <theme-id> --dna <dna.json> --out <path>
+ *   node tools/generate-theme-workpackage.mjs --id <theme-id> --dna <dna.json> --name "<Display Name>"
  *
  * Exit codes:
  *   0  work package written
- *   1  invalid input / theme missing
+ *   1  invalid input / theme missing / Checklist.md unreadable
  *   2  unrecognized archetype
  */
 
@@ -42,6 +55,13 @@ const TOOLS_DIR = path.dirname(THIS_FILE)
 const PROJECT_ROOT = path.resolve(TOOLS_DIR, '..')
 const THEMES_ROOT = path.join(PROJECT_ROOT, 'app', 'themes')
 const WORKPKG_DIR = path.join(TOOLS_DIR, '.theme-work')
+const CHECKLIST_PATH = path.join(
+  PROJECT_ROOT,
+  '.claude',
+  'skills',
+  'new-theme',
+  'Checklist.md',
+)
 
 function parseArgs(argv) {
   const out = {}
@@ -151,12 +171,141 @@ async function loadDna(dnaPath) {
   return JSON.parse(raw)
 }
 
+/**
+ * Parse .claude/skills/new-theme/Checklist.md into a flat list of entries
+ * preserving section hierarchy. Returns:
+ *   [{ section: "Global Website Structure", subsection: null, item: "Sticky Header", required: true, line: "- [1] Sticky Header" }, ...]
+ *
+ * Recognised bullet patterns:
+ *   - [1] Item    -> required
+ *   - [ ] Item    -> optional (skip unless archetype calls for it)
+ * Lines that don't match are ignored. Header parens (e.g. "Hero Section(Combinations of any)") are preserved.
+ */
+async function parseChecklist() {
+  const raw = await fs.readFile(CHECKLIST_PATH, 'utf8')
+  const lines = raw.split(/\r?\n/)
+  const entries = []
+  let topSection = null
+  let subSection = null
+  for (const line of lines) {
+    const h1 = line.match(/^#\s+(.+?)\s*$/)
+    const h2 = line.match(/^##\s+(.+?)\s*$/)
+    const h3 = line.match(/^###\s+(.+?)\s*$/)
+    if (h1) {
+      topSection = h1[1].trim()
+      subSection = null
+      continue
+    }
+    if (h2) {
+      subSection = h2[1].trim()
+      continue
+    }
+    if (h3) {
+      subSection = h3[1].trim()
+      continue
+    }
+    const bullet = line.match(/^- \[([1 xX])\]\s+(.+?)\s*$/)
+    if (!bullet) continue
+    const marker = bullet[1]
+    const item = bullet[2].trim()
+    const required = marker === '1'
+    entries.push({
+      section: topSection,
+      subsection: subSection,
+      item,
+      required,
+    })
+  }
+  return entries
+}
+
+function slugifyChecklistItem(section, subsection, item) {
+  const base = `${subsection || section || 'misc'}-${item}`
+  return base
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 80)
+}
+
+/**
+ * Render a per-theme CHECKLIST.md from the parsed Checklist.md entries.
+ * Required items become unchecked `[ ]` for Phase 8 to tick off as each
+ * component lands. Optional items keep `[ ]` but get an `(optional)`
+ * suffix so they're visually distinct.
+ */
+function renderThemeChecklist({ themeId, displayName, archetype, entries, generatedAt }) {
+  const lines = []
+  lines.push(`# ${displayName} — Component Checklist`)
+  lines.push('')
+  lines.push(`Theme id: \`${themeId}\``)
+  lines.push(`Archetype: \`${archetype}\``)
+  lines.push(`Generated: ${generatedAt}`)
+  lines.push(`Source of truth: \`.claude/skills/new-theme/Checklist.md\``)
+  lines.push('')
+  lines.push('## How to use this file')
+  lines.push('')
+  lines.push('- This file is the **definition of done** for Phase 8 of `/new-theme`.')
+  lines.push('- Every required item is rendered as `[ ]`. Tick to `[x]` as each component lands.')
+  lines.push('- Optional items show an `(optional)` suffix — skip unless your archetype calls for them.')
+  lines.push('- Do NOT invent components from elsewhere. The canonical source is `Checklist.md`.')
+  lines.push('- The theme is not shippable until every required item is `[x]`.')
+  lines.push('')
+  let currentTop = null
+  let currentSub = null
+  for (const entry of entries) {
+    if (entry.section && entry.section !== currentTop) {
+      currentTop = entry.section
+      currentSub = null
+      lines.push('')
+      lines.push(`## ${currentTop}`)
+    }
+    if (entry.subsection && entry.subsection !== currentSub) {
+      currentSub = entry.subsection
+      lines.push('')
+      lines.push(`### ${currentSub}`)
+      lines.push('')
+    }
+    const suffix = entry.required ? '' : ' _(optional)_'
+    lines.push(`- [ ] ${entry.item}${suffix}`)
+  }
+  lines.push('')
+  return lines.join('\n')
+}
+
+async function writeThemeChecklist(themeDir, payload) {
+  const out = path.join(themeDir, 'CHECKLIST.md')
+  const body = renderThemeChecklist(payload)
+  await fs.writeFile(out, body, 'utf8')
+  return out
+}
+
 async function fileExists(p) {
   try { await fs.access(p); return true } catch { return false }
 }
 
-function buildItems(themeId, archetype) {
+function buildItems(themeId, archetype, checklistEntries) {
   const items = []
+  // Canonical components from Checklist.md — required items become work
+  // items with kind 'checklist-component'. Phase 8 ticks each off in
+  // app/themes/<id>/CHECKLIST.md as the corresponding component lands.
+  for (const entry of checklistEntries) {
+    if (!entry.required) continue
+    items.push({
+      id: `checklist-${slugifyChecklistItem(entry.section, entry.subsection, entry.item)}`,
+      kind: 'checklist-component',
+      path: null,
+      title: `${entry.item} — ${entry.subsection || entry.section || 'Component'}`,
+      description: `Required by Checklist.md (section: ${[entry.section, entry.subsection].filter(Boolean).join(' › ')}). Build the component, then tick it off in app/themes/${themeId}/CHECKLIST.md.`,
+      references: ['.claude/skills/new-theme/Checklist.md', `app/themes/${themeId}/CHECKLIST.md`],
+      priority: 'high',
+      checklist: {
+        section: entry.section,
+        subsection: entry.subsection,
+        item: entry.item,
+      },
+    })
+  }
   for (const stub of STUB_ITEMS) {
     items.push({
       id: `stub-${stub.path.replace(/[/.]/g, '-')}`,
@@ -229,18 +378,39 @@ async function main() {
     console.error(`Unrecognized archetype "${archetype}". Expected one of: ${Object.keys(ARCHETYPE_ITEMS).join(', ')}`)
     process.exit(2)
   }
-  const items = buildItems(themeId, archetype)
+  let checklistEntries
+  try {
+    checklistEntries = await parseChecklist()
+  } catch (err) {
+    console.error(`Failed to read Checklist.md at ${path.relative(PROJECT_ROOT, CHECKLIST_PATH)}: ${err instanceof Error ? err.message : String(err)}`)
+    process.exit(1)
+  }
+  const displayName = (typeof args.name === 'string' && args.name)
+    || dna?.brand?.displayName
+    || dna?.brand?.brandName
+    || dna?.notes?.displayName
+    || dna?.notes?.brandName
+    || dna?.displayName
+    || themeId
+  const generatedAt = new Date().toISOString()
+  const items = buildItems(themeId, archetype, checklistEntries)
+  const requiredChecklistCount = checklistEntries.filter((e) => e.required).length
+  const optionalChecklistCount = checklistEntries.length - requiredChecklistCount
   const summary = {
+    checklistComponents: items.filter((i) => i.kind === 'checklist-component').length,
     stubs: items.filter((i) => i.kind === 'stub-implementation').length,
     kept: items.filter((i) => i.kind === 'kept-redesign').length,
     archetypeRequired: items.filter((i) => i.kind === 'archetype-required').length,
     qualityBar: items.filter((i) => i.kind === 'quality-bar').length,
     total: items.length,
+    checklistOptional: optionalChecklistCount,
   }
   const out = {
     themeId,
     archetype,
-    generatedAt: new Date().toISOString(),
+    displayName,
+    generatedAt,
+    checklistSource: path.relative(PROJECT_ROOT, CHECKLIST_PATH).replace(/\\/g, '/'),
     summary,
     items,
   }
@@ -249,11 +419,19 @@ async function main() {
     : path.join(WORKPKG_DIR, `${themeId}.json`)
   await fs.mkdir(path.dirname(outPath), { recursive: true })
   await fs.writeFile(outPath, JSON.stringify(out, null, 2) + '\n', 'utf8')
+  const themeChecklistPath = await writeThemeChecklist(themeDir, {
+    themeId,
+    displayName,
+    archetype,
+    entries: checklistEntries,
+    generatedAt,
+  })
   console.log(`Work package for ${themeId} (archetype: ${archetype})`)
-  console.log(`  ${summary.total} items — ${summary.stubs} stubs + ${summary.kept} kept-redesigns + ${summary.archetypeRequired} archetype-required + ${summary.qualityBar} quality-bar`)
+  console.log(`  ${summary.total} items — ${summary.checklistComponents} checklist-components + ${summary.stubs} stubs + ${summary.kept} kept-redesigns + ${summary.archetypeRequired} archetype-required + ${summary.qualityBar} quality-bar`)
   console.log(`  written to ${path.relative(PROJECT_ROOT, outPath)}`)
+  console.log(`  per-theme checklist: ${path.relative(PROJECT_ROOT, themeChecklistPath).replace(/\\/g, '/')}  (${requiredChecklistCount} required, ${optionalChecklistCount} optional)`)
   console.log('')
-  console.log('Phase 8 entry: read this JSON into TodoWrite and work through items in order.')
+  console.log('Phase 8 entry: read the JSON into TodoWrite and tick off CHECKLIST.md as components land.')
 }
 
 main().catch((error) => {

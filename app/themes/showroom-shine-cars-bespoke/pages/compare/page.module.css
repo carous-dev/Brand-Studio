@@ -1,0 +1,177 @@
+.compareSection {
+  background: var(--surface-bg-light);
+}
+.empty {
+  text-align: center;
+  padding: 48px 24px;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+.empty svg {
+  color: var(--brand-primary);
+}
+.empty h2 {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.6rem;
+  text-transform: uppercase;
+  font-style: italic;
+  color: var(--text-on-light-strong);
+}
+.empty p {
+  color: var(--text-on-light-muted);
+  max-width: 48ch;
+  margin-bottom: 12px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.toolbar p {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-on-light-muted);
+}
+.clearAll {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: transparent;
+  color: var(--brand-primary);
+  border: 1px solid var(--brand-primary);
+  border-radius: 4px;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.clearAll:hover {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 720px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+
+.card {
+  position: relative;
+  display: grid;
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.media {
+  aspect-ratio: 16 / 10;
+  background-color: var(--surface-bg-light);
+  background-size: cover;
+  background-position: center;
+}
+.removeBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 0;
+  color: var(--text-on-light-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.removeBtn:hover {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+}
+.body {
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+}
+.title {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-on-light-strong);
+}
+.price {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--brand-primary);
+}
+.specs {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-on-light);
+}
+.specRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.85rem;
+}
+.specRow dt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-on-light-muted);
+}
+.specRow dt svg {
+  color: var(--brand-primary);
+}
+.specRow dd {
+  margin: 0;
+  color: var(--text-on-light-strong);
+  font-weight: 600;
+}
+.viewCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  margin-top: 4px;
+  background: var(--surface-bg-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 4px;
+  color: var(--text-on-light-strong);
+  text-decoration: none;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.viewCta:hover {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-color: var(--brand-primary);
+}

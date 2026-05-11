@@ -1,0 +1,511 @@
+/* =============================================================================
+ * BASE STYLES — showroom-shine-cars-bespoke (rugged motoring archetype)
+ *
+ * Every rule is scoped under [data-theme-id='showroom-shine-cars-bespoke'] so
+ * cross-theme bundling cannot leak class rules between themes.
+ *
+ * Rules apply only to: globals (typography defaults, focus, skip-link),
+ * shared inner-page chrome (auto-page-hero variants with multi-layer
+ * background-image), and a few reusable utility classes (.shr-btn-*,
+ * .shr-chip, etc). Component-specific styling lives in CSS modules.
+ * ============================================================================= */
+
+[data-theme-id='showroom-shine-cars-bespoke'] {
+  color-scheme: light;
+  font-family: var(--font-ui-family-override, 'DM Sans', system-ui, sans-serif);
+  background: var(--color-bg);
+  color: var(--color-text);
+  margin: 0;
+}
+
+[data-theme-id='showroom-shine-cars-bespoke'] *,
+[data-theme-id='showroom-shine-cars-bespoke'] *::before,
+[data-theme-id='showroom-shine-cars-bespoke'] *::after {
+  box-sizing: border-box;
+}
+
+/* Headings — typography only. Never set `color` here; CSS modules and
+ * cascade from body handle color so per-component overrides (white-on-image
+ * heroes, dark-section titles) win cleanly. Use :where(...) so specificity
+ * stays at (0,0,0) and component classes always win. */
+[data-theme-id='showroom-shine-cars-bespoke'] :where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-brand-family-override, 'Oswald', 'Arial Narrow', sans-serif);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin: 0;
+  line-height: 1.08;
+}
+
+[data-theme-id='showroom-shine-cars-bespoke'] :where(p, li, dt, dd) {
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* [hidden] must beat display: flex/grid set by CSS modules. */
+[data-theme-id='showroom-shine-cars-bespoke'] [hidden] {
+  display: none !important;
+}
+
+/* Skip-link */
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-skip-link:focus {
+  left: 12px;
+  top: 12px;
+  width: auto;
+  height: auto;
+  padding: 12px 16px;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  z-index: 10000;
+}
+
+[data-theme-id='showroom-shine-cars-bespoke'] :where(a) {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+[data-theme-id='showroom-shine-cars-bespoke'] :where(a):focus-visible,
+[data-theme-id='showroom-shine-cars-bespoke'] :where(button):focus-visible,
+[data-theme-id='showroom-shine-cars-bespoke'] :where(input, select, textarea):focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+[data-theme-id='showroom-shine-cars-bespoke'] :where(img) {
+  max-width: 100%;
+  height: auto;
+}
+
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-main {
+  display: block;
+  min-height: calc(100vh - 240px);
+  background: var(--surface-bg-light);
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-main.main-dashboard {
+  background: var(--surface-bg-light);
+}
+
+/* ============================================================================
+ * Reusable utility classes (rugged style)
+ * ============================================================================ */
+
+/* Eyebrow — small uppercase tag above titles */
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 2px;
+  background: var(--brand-primary);
+}
+
+/* Primary CTA */
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 24px;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  position: relative;
+  overflow: hidden;
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-btn-primary:hover {
+  background: var(--brand-primary-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 30px rgba(173, 11, 27, 0.36);
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Ghost CTA on dark surfaces — explicit color so it can't inherit dark
+ * --color-text against a dark hero. */
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-btn-ghost-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 24px;
+  background: transparent;
+  color: var(--text-on-dark-strong);
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-btn-ghost-dark:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--text-on-dark-strong);
+}
+
+/* Ghost CTA on light surfaces */
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-btn-ghost-light {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 24px;
+  background: transparent;
+  color: var(--text-on-light-strong);
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 2px solid var(--text-on-light-strong);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-btn-ghost-light:hover {
+  background: var(--text-on-light-strong);
+  color: var(--surface-bg-light);
+}
+
+/* Chip — for live-stock indicator, status badges */
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--surface-card-light);
+  color: var(--text-on-light-strong);
+  border: 1px solid var(--border-on-light);
+  border-radius: 999px;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-chip--dark {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-on-dark-strong);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-chip--brand {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-color: transparent;
+}
+
+/* Container */
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding-left: clamp(16px, 4vw, 32px);
+  padding-right: clamp(16px, 4vw, 32px);
+}
+
+/* Section */
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-section {
+  padding: clamp(48px, 8vw, 96px) 0;
+  position: relative;
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-section--dark {
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-section--card {
+  background: var(--surface-card-light);
+  color: var(--text-on-light-strong);
+}
+
+/* ============================================================================
+ * Form inputs — solid token border, never alpha-faded mix
+ * ============================================================================ */
+[data-theme-id='showroom-shine-cars-bespoke'] :where(input, textarea, select):not([type='checkbox']):not([type='radio']) {
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text-on-light-strong);
+  background: var(--surface-bg-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 4px;
+  padding: 10px 12px;
+  min-height: 44px;
+  width: 100%;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+[data-theme-id='showroom-shine-cars-bespoke'] :where(input, textarea, select):not([type='checkbox']):not([type='radio']):focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(173, 11, 27, 0.18);
+  outline: none;
+}
+
+/* ============================================================================
+ * PageHero — used on every inner page. Multi-layer background-image so a
+ * 404 on the brand URL still reveals the theme default underneath.
+ * ============================================================================ */
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero {
+  position: relative;
+  padding: clamp(96px, 14vw, 160px) clamp(16px, 4vw, 32px) clamp(64px, 10vw, 112px);
+  background-color: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+  background-position: center, center, center;
+  background-size: cover, cover, cover;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  overflow: hidden;
+  isolation: isolate;
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 80% at 12% 20%, rgba(173, 11, 27, 0.30) 0%, transparent 60%),
+    linear-gradient(rgba(8, 11, 17, 0.88) 0%, rgba(8, 11, 17, 0.62) 100%);
+  z-index: -1;
+}
+
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero--about {
+  background-image:
+    linear-gradient(rgba(8, 11, 17, 0.86), rgba(8, 11, 17, 0.62)),
+    var(--brand-image-about, none),
+    url('/themes/showroom-shine-cars-bespoke/images/about.jpg');
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero--services {
+  background-image:
+    linear-gradient(rgba(8, 11, 17, 0.86), rgba(8, 11, 17, 0.62)),
+    var(--brand-image-services, none),
+    url('/themes/showroom-shine-cars-bespoke/images/services.jpg');
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero--finance {
+  background-image:
+    linear-gradient(rgba(8, 11, 17, 0.86), rgba(8, 11, 17, 0.62)),
+    var(--brand-image-finance, none),
+    url('/themes/showroom-shine-cars-bespoke/images/finance.jpg');
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero--part-exchange {
+  background-image:
+    linear-gradient(rgba(8, 11, 17, 0.86), rgba(8, 11, 17, 0.62)),
+    var(--brand-image-part-exchange, none),
+    url('/themes/showroom-shine-cars-bespoke/images/partExchange.jpg');
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero--sell-your-car {
+  background-image:
+    linear-gradient(rgba(8, 11, 17, 0.86), rgba(8, 11, 17, 0.62)),
+    var(--brand-image-sell-your-car, none),
+    url('/themes/showroom-shine-cars-bespoke/images/sellYourCar.jpg');
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero--recently-sold {
+  background-image:
+    linear-gradient(rgba(8, 11, 17, 0.86), rgba(8, 11, 17, 0.62)),
+    var(--brand-image-recently-sold, none),
+    url('/themes/showroom-shine-cars-bespoke/images/recentlySold.jpg');
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero--contact,
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero--compare,
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero--wishlist,
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero--legal {
+  background-image:
+    linear-gradient(rgba(8, 11, 17, 0.92), rgba(8, 11, 17, 0.78)),
+    var(--brand-image-hero, none),
+    url('/themes/showroom-shine-cars-bespoke/images/hero.jpg');
+}
+
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__inner {
+  position: relative;
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  gap: 18px;
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-on-dark-strong);
+  opacity: 0.92;
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 36px;
+  height: 2px;
+  background: var(--brand-primary);
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__title {
+  color: var(--text-on-dark-strong);
+  font-size: clamp(2.2rem, 4.6vw, 3.6rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__lead {
+  color: var(--text-on-dark-strong);
+  opacity: 0.92;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  max-width: 64ch;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================================================
+ * Decorative SVG pattern — angular sport grid (used by hero, sections)
+ * ============================================================================ */
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-grid-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+/* Diagonal stripe accent (rugged signature) */
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-stripe-accent {
+  position: absolute;
+  width: 280px;
+  height: 4px;
+  background: var(--brand-primary);
+  transform: skewX(-24deg);
+  pointer-events: none;
+}
+
+/* ============================================================================
+ * Section-header pair (eyebrow + title + lead)
+ * ============================================================================ */
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-section-head {
+  display: grid;
+  gap: 14px;
+  max-width: 720px;
+  margin-bottom: clamp(32px, 5vw, 56px);
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-section-head__title {
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: var(--text-on-light-strong);
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-section--dark .shr-section-head__title {
+  color: var(--text-on-dark-strong);
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-section-head__lead {
+  color: var(--text-on-light-muted);
+  font-size: clamp(1rem, 1.3vw, 1.1rem);
+}
+[data-theme-id='showroom-shine-cars-bespoke'] .shr-section--dark .shr-section-head__lead {
+  color: var(--text-on-dark-muted);
+}
+
+/* ============================================================================
+ * AOS scroll-reveal — theme-local copy of the widget's animation rules.
+ *
+ * The global widget at @/app/widgets/AnimateOnScroll exports its CSS through
+ * `import './aos.css'` in an index.ts barrel. When the default export is
+ * pulled through `@/app/widgets/AnimateOnScroll`, Turbopack sometimes
+ * tree-shakes the side-effect CSS import even though Next defaults treat
+ * CSS as side-effects. Inlining the rules here guarantees they load with
+ * the theme and removes the dependency on barrel-import behavior.
+ *
+ * Scoped under [data-theme-id='...'] so they don't leak across themes,
+ * which also bumps specificity to (0,1,0) so per-component CSS modules
+ * can still override per-element.
+ * ============================================================================ */
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos] {
+  opacity: 0;
+  will-change: transform, opacity;
+  transition:
+    opacity var(--aos-duration, 720ms) var(--aos-easing, cubic-bezier(0.22, 1, 0.36, 1)) var(--aos-delay, 0ms),
+    transform var(--aos-duration, 760ms) var(--aos-easing, cubic-bezier(0.22, 1, 0.36, 1)) var(--aos-delay, 0ms),
+    filter var(--aos-duration, 760ms) var(--aos-easing, cubic-bezier(0.22, 1, 0.36, 1)) var(--aos-delay, 0ms);
+  transform-origin: center;
+  backface-visibility: hidden;
+}
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='fade']            { transform: none; }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='fade-up']         { transform: translate3d(0, 28px, 0); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='fade-down']       { transform: translate3d(0, -28px, 0); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='fade-left']       { transform: translate3d(28px, 0, 0); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='fade-right']      { transform: translate3d(-28px, 0, 0); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='fade-up-right']   { transform: translate3d(-22px, 22px, 0); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='fade-up-left']    { transform: translate3d(22px, 22px, 0); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='fade-down-right'] { transform: translate3d(-22px, -22px, 0); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='fade-down-left']  { transform: translate3d(22px, -22px, 0); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='zoom-in']         { transform: scale(0.92); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='zoom-out']        { transform: scale(1.06); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='zoom-in-up']      { transform: scale(0.92) translate3d(0, 28px, 0); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='zoom-out-down']   { transform: scale(1.06) translate3d(0, -28px, 0); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='flip-up']    { transform: perspective(800px) rotateX(-60deg); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='flip-down']  { transform: perspective(800px) rotateX(60deg); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='flip-left']  { transform: perspective(800px) rotateY(60deg); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='flip-right'] { transform: perspective(800px) rotateY(-60deg); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='slide-up']   { transform: translate3d(0, 60px, 0); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='slide-down'] { transform: translate3d(0, -60px, 0); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos='blur-in']    { filter: blur(12px); transform: scale(1.02); }
+[data-theme-id='showroom-shine-cars-bespoke'] [data-aos][data-aos-animate='true'] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1) perspective(800px) rotate(0deg);
+  filter: blur(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-theme-id='showroom-shine-cars-bespoke'] [data-aos] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+}
+
+/* ============================================================================
+ * Mobile simplification ≤ 640px
+ * ============================================================================ */
+@media (max-width: 640px) {
+  [data-theme-id='showroom-shine-cars-bespoke'] .shr-grid-pattern,
+  [data-theme-id='showroom-shine-cars-bespoke'] .shr-stripe-accent {
+    display: none;
+  }
+  [data-theme-id='showroom-shine-cars-bespoke'] .shr-section {
+    padding: clamp(32px, 12vw, 56px) 0;
+  }
+}

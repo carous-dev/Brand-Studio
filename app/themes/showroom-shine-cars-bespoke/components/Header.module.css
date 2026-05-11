@@ -1,0 +1,461 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: color-mix(in srgb, var(--surface-bg-light) 92%, transparent);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+.headerScrolled {
+  background: var(--surface-bg-light);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+/* Top contact bar */
+.topbar {
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.topbarInner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 6px clamp(14px, 4vw, 32px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  row-gap: 4px;
+}
+.topbarLeft,
+.topbarRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  row-gap: 4px;
+  min-height: 28px;
+}
+.topChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-on-dark-strong);
+  opacity: 0.86;
+}
+.topChipStatus {
+  opacity: 1;
+}
+.dotOpen,
+.dotClosed {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+.dotOpen {
+  --mfx-dot-color: #4ade80;
+}
+.dotClosed {
+  --mfx-dot-color: var(--brand-primary);
+}
+
+.socials {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-on-dark-strong);
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+.socialLink:hover {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  transform: translateY(-1px);
+}
+.socialLinkDisabled {
+  opacity: 0.32;
+  pointer-events: none;
+}
+
+.topPhone {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-on-dark-strong);
+  text-decoration: none;
+  font-weight: 700;
+}
+.topPhone:hover {
+  color: var(--brand-primary);
+}
+
+/* Main bar */
+.mainBar {
+  background: transparent;
+  position: relative;
+}
+.mainBarInner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 14px clamp(16px, 4vw, 32px);
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 3vw, 36px);
+}
+
+.brandLink {
+  display: inline-flex;
+  flex-direction: column;
+  text-decoration: none;
+  line-height: 1;
+  gap: 2px;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+}
+.brandWordmarkAccent {
+  color: var(--brand-primary);
+  font-size: clamp(1.15rem, 4.4vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-style: italic;
+  white-space: nowrap;
+}
+.brandWordmarkSub {
+  color: var(--text-on-light-strong);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+}
+
+.primaryNav {
+  display: none;
+  align-items: center;
+  gap: clamp(16px, 1.6vw, 28px);
+  flex: 1;
+  justify-content: center;
+}
+.navLink {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-on-light-strong);
+  text-decoration: none;
+  padding: 8px 0;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  transition: color 0.15s ease;
+}
+.navLink::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: 0;
+  height: 2px;
+  background: var(--brand-primary);
+  transition: right 0.18s ease;
+}
+.navLink:hover {
+  color: var(--brand-primary);
+}
+.navLink:hover::after {
+  right: 0;
+}
+
+/* Active route — italic skew + persistent underline + brand-tinted soft
+ * fill behind the label. The leading slash mark gives it a dealer-signage
+ * "you are here" feel that hover-only states can't match. */
+.navLinkActive {
+  color: var(--brand-primary);
+  position: relative;
+}
+.navLinkActive::after {
+  right: 0;
+  height: 3px;
+  background: var(--brand-primary);
+}
+.navLinkActive::before {
+  content: '/';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-52%) skewX(-12deg);
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.95rem;
+  font-weight: 800;
+  font-style: italic;
+  color: var(--brand-primary);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.mainBarActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+/* Mobile-first: hide desktop-only CTAs. `!important` beats the global
+ * `.shr-btn-primary` (display: inline-flex) which has higher specificity due
+ * to the theme-id scope wrapper in base.css. */
+.callCta {
+  display: none !important;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  min-height: 44px;
+  border-radius: 4px;
+  background: var(--surface-card-light);
+  color: var(--text-on-light-strong);
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--border-on-light);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.callCta:hover {
+  background: var(--text-on-light-strong);
+  color: var(--surface-bg-light);
+  border-color: var(--text-on-light-strong);
+}
+
+.browseCta {
+  display: none !important;
+}
+
+.hamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  background: transparent;
+  border: 1px solid var(--border-on-light);
+  color: var(--text-on-light-strong);
+  cursor: pointer;
+}
+
+.accentLine {
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--brand-primary) 40%, var(--brand-primary) 60%, transparent 100%);
+  opacity: 0.6;
+}
+
+/* Mobile nav overlay — rendered as a sibling of <header> (NOT inside it),
+ * so the header's backdrop-filter stacking context can't trap it. z-index
+ * 9999 beats WhatsAppFab, CookieBanner, PreviewBanner and any future
+ * floating widget. */
+.mobileNav {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.28s ease;
+  overflow-y: auto;
+}
+.mobileNavOpen {
+  transform: translateX(0);
+}
+.mobileNavHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px clamp(16px, 4vw, 32px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.mobileBrand {
+  display: inline-flex;
+  flex-direction: column;
+  text-decoration: none;
+  gap: 2px;
+}
+.mobileBrand .brandWordmarkAccent {
+  color: var(--brand-primary);
+}
+.mobileBrand .brandWordmarkSub {
+  color: var(--text-on-dark-strong);
+}
+.mobileClose {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-on-dark-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.mobileNavLinks {
+  display: flex;
+  flex-direction: column;
+  padding: 16px clamp(16px, 4vw, 32px);
+  gap: 4px;
+  flex: 1;
+}
+.mobileNavLink {
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-on-dark-strong);
+  text-decoration: none;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+}
+.mobileNavLink:hover {
+  color: var(--brand-primary);
+}
+.mobileNavLinkActive {
+  color: var(--brand-primary);
+  padding-left: 16px;
+  border-left: 3px solid var(--brand-primary);
+  background: rgba(173, 11, 27, 0.06);
+}
+.mobileNavLinkActive::before {
+  content: '›';
+  display: inline-block;
+  margin-right: 10px;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-style: italic;
+  color: var(--brand-primary);
+  font-size: 1.2rem;
+}
+
+.mobileNavFooter {
+  padding: 20px clamp(16px, 4vw, 32px) 40px;
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.mobileCallCta,
+.mobileEmailCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 24px;
+  border-radius: 4px;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+.mobileCallCta {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+}
+.mobileEmailCta {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-on-dark-strong);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+.mobileSocials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+/* Desktop breakpoint — show nav inline, hide hamburger.
+ * `!important` here mirrors the mobile-default rule so specificity ties
+ * resolve cleanly regardless of CSS module hash order. */
+@media (min-width: 960px) {
+  .primaryNav {
+    display: inline-flex;
+  }
+  .callCta {
+    display: inline-flex !important;
+  }
+  .browseCta {
+    display: inline-flex !important;
+  }
+  .hamburger {
+    display: none;
+  }
+}
+
+/* Mobile compact top bar (≤ 640px) — single row when possible, smaller
+ * chips, hide social icons (they live in the mobile overlay nav). */
+@media (max-width: 640px) {
+  .topbar {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+  }
+  .topbarInner {
+    padding: 5px 14px;
+    gap: 6px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .topbarInner::-webkit-scrollbar {
+    display: none;
+  }
+  .topbarLeft,
+  .topbarRight {
+    gap: 8px;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+  }
+  .topChip {
+    white-space: nowrap;
+  }
+  .socials {
+    display: none;
+  }
+  .mainBarInner {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+  .brandWordmarkAccent {
+    font-size: 1.25rem;
+  }
+  .brandWordmarkSub {
+    font-size: 0.55rem;
+    letter-spacing: 0.32em;
+  }
+  .hamburger {
+    width: 40px;
+    height: 40px;
+  }
+}
