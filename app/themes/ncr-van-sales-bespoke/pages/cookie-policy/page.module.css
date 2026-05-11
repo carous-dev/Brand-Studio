@@ -1,0 +1,106 @@
+.article {
+  background: var(--color-bg);
+  padding: clamp(56px, 8vw, 96px) clamp(16px, 4vw, 64px);
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.article section { margin: 0 0 48px; }
+.article section:last-child { margin-bottom: 0; }
+.article h2 {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.4rem, 2.6vw, 1.8rem);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 18px;
+}
+.article p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--t-text);
+  margin: 0 0 14px;
+}
+
+.catalogue {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  margin-top: 24px;
+}
+@media (min-width: 760px) { .catalogue { grid-template-columns: repeat(3, 1fr); } }
+
+.categoryCard {
+  background: var(--color-surface);
+  border: 2px solid var(--t-border);
+  border-radius: 6px;
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+.categoryCard:hover { border-color: var(--color-primary); transform: translateY(-3px); }
+
+.categoryHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.categoryCard h3 {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.statusOn,
+.statusOff {
+  font-family: var(--font-brand-family-override, sans-serif);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.statusOn {
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  color: var(--color-primary);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+.statusOff {
+  background: var(--t-section-tint);
+  color: var(--color-muted);
+  border: 1px solid var(--t-border);
+}
+
+.examplesLabel {
+  font-family: var(--font-brand-family-override, sans-serif) !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase;
+  color: var(--color-muted) !important;
+  margin: 8px 0 4px !important;
+}
+
+.examples {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.examples code {
+  font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+  font-size: 0.78rem;
+  color: var(--t-text);
+  background: var(--t-section-tint);
+  padding: 2px 6px;
+  border-radius: 3px;
+}

@@ -9,9 +9,21 @@
       "status": "stable"
     },
     {
+      "id": "columbus-vehicles-bespoke",
+      "name": "Columbus Vehicles Bespoke",
+      "description": "Rugged-archetype skeleton for Columbus.",
+      "status": "experimental"
+    },
+    {
       "id": "gilded-drive",
       "name": "Gilded Drive",
       "description": "Futuristic showcase theme adapted for brand tokens.",
+      "status": "experimental"
+    },
+    {
+      "id": "ncr-van-sales-bespoke",
+      "name": "NCR Van Sales Ltd",
+      "description": "Bespoke rugged theme for NCR Van Sales Ltd — forest-green dealer-signage feel with condensed-italic wordmark, built for trade-friendly fleet specialists.",
       "status": "experimental"
     },
     {

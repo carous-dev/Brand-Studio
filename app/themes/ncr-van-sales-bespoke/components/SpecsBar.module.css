@@ -1,0 +1,95 @@
+.section {
+  position: relative;
+  background: #0a0e14;
+  color: #ffffff;
+  padding: clamp(40px, 6vw, 64px) clamp(16px, 4vw, 64px);
+  overflow: hidden;
+  isolation: isolate;
+  border-block: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glow {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 720px;
+  height: 320px;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--color-primary) 30%, transparent) 0%, transparent 70%);
+  filter: blur(50px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+@media (min-width: 640px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 24px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 4px;
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  border-left-color: color-mix(in srgb, var(--color-primary) 60%, #fff);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+}
+
+.iconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: color-mix(in srgb, var(--color-primary) 22%, transparent);
+  border-radius: 4px;
+  color: color-mix(in srgb, var(--color-primary) 60%, #fff);
+  margin-bottom: 8px;
+}
+
+.value {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+}
+
+.label {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.sub {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.65);
+}

@@ -1,0 +1,207 @@
+.banner {
+  position: fixed;
+  left: clamp(12px, 4vw, 32px);
+  bottom: clamp(12px, 4vw, 32px);
+  width: min(420px, calc(100vw - 24px));
+  background: #0a0e14;
+  color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+  z-index: 9000;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  animation: slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--font-ui-family-override, sans-serif);
+}
+@media (prefers-reduced-motion: reduce) {
+  .banner { animation: none; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.accentBar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), color-mix(in srgb, var(--color-accent) 70%, #fff), var(--color-primary));
+}
+
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.close:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+.close:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.body {
+  display: flex;
+  gap: 14px;
+  padding: 24px 26px 16px;
+}
+
+.iconWrap {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--color-primary) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 50%, transparent);
+  color: color-mix(in srgb, var(--color-accent) 70%, #fff);
+  border-radius: 4px;
+}
+
+.copy { flex: 1; min-width: 0; padding-right: 24px; }
+.title {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+  color: #ffffff;
+}
+.lead {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0;
+}
+.policyLink {
+  color: color-mix(in srgb, var(--color-accent) 80%, #fff);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.policyLink:hover { color: #ffffff; }
+
+.toggleGroup {
+  margin: 14px 0 0;
+  padding: 0;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toggleLegend {
+  font-family: var(--font-brand-family-override, sans-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 4px;
+  padding: 0;
+}
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.toggleRow strong {
+  display: block;
+  font-family: var(--font-brand-family-override, sans-serif);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+}
+.toggleRow em {
+  display: block;
+  font-style: normal;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 2px;
+}
+.toggleRow input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 26px 22px;
+}
+
+.btnGhost,
+.btnOutline,
+.btnPrimary {
+  flex: 1;
+  min-height: 40px;
+  padding: 10px 14px;
+  font-family: var(--font-brand-family-override, sans-serif);
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.btnGhost {
+  background: transparent;
+  border: 1px solid transparent;
+  color: rgba(255, 255, 255, 0.75);
+}
+.btnGhost:hover { color: #ffffff; }
+
+.btnOutline {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+.btnOutline:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.btnPrimary {
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+.btnPrimary:hover {
+  background: var(--t-action-bg-hover);
+}
+.btnGhost:focus-visible,
+.btnOutline:focus-visible,
+.btnPrimary:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

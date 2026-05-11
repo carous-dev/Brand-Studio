@@ -1,0 +1,157 @@
+.intro {
+  background: var(--color-bg);
+  padding: clamp(56px, 8vw, 96px) clamp(16px, 4vw, 64px);
+}
+.introInner {
+  max-width: 820px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.eyebrow {
+  font-size: 0.85rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  font-weight: 600;
+  margin: 0 0 12px;
+  font-family: var(--font-brand-family-override, sans-serif);
+}
+
+.headline {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  margin: 0 0 24px;
+}
+.headlineAccent { color: var(--color-primary); }
+
+.body {
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: var(--t-text);
+  margin: 0 0 16px;
+}
+.body:last-of-type { margin-bottom: 0; }
+
+.pillars {
+  background: var(--t-section-tint);
+  padding: clamp(64px, 9vw, 112px) clamp(16px, 4vw, 64px);
+  border-block: 1px solid var(--t-border);
+}
+.pillarsInner {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.pillarsGrid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 720px) {
+  .pillarsGrid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+}
+
+.pillarCard {
+  padding: 28px 26px;
+  background: var(--color-surface);
+  border: 2px solid var(--t-border);
+  border-radius: 6px;
+  position: relative;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+.pillarCard:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-primary);
+}
+.pillarCard p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--t-text);
+}
+
+.pillarNumber {
+  display: block;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--color-primary);
+  margin-bottom: 10px;
+}
+
+.pillarTitle {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+  color: var(--t-text);
+}
+
+.ctaWrap {
+  background: #0a0e14;
+  color: #ffffff;
+  padding: clamp(56px, 8vw, 96px) clamp(16px, 4vw, 64px);
+  text-align: center;
+}
+.ctaInner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.ctaWrap h2 {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  text-transform: uppercase;
+  margin: 0 0 24px;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+.ctaRow {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ctaPrimary,
+.ctaSecondary {
+  padding: 14px 28px;
+  font-family: var(--font-brand-family-override, sans-serif);
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+}
+.ctaPrimary {
+  background: var(--color-primary);
+  color: #ffffff;
+  border: 2px solid var(--color-primary);
+}
+.ctaPrimary:hover {
+  background: var(--t-action-bg-hover);
+  transform: translateY(-2px);
+}
+.ctaSecondary {
+  background: transparent;
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+}
+.ctaSecondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px);
+}
