@@ -217,6 +217,91 @@ Phase 10c; the principles below cover what the tool can't reliably check.
   "click the logo" as discovery is a regression we've been called out on.
 - Mobile overlay nav and footer's primary nav must include Home as well.
 
+**Hero title sizing — fit-in-2-lines max (must-have, learned 2026-05-11):**
+- Hero titles that span 3+ lines on desktop look clumpsy. The headline
+  should fit in **1 line on desktop, 2 lines maximum on mobile**. Cap the
+  upper bound of the title `clamp()` to roughly `3.6rem` for a single-
+  clause headline (e.g. "Quality used cars, honestly sold."); shorter
+  two-word brand statements can go up to `4.4rem`; never beyond.
+- The wrong pattern: `font-size: clamp(2.8rem, 6.4vw, 5.6rem)` on a long
+  title like "BUILT FOR THE ROAD, BACKED FOR THE LONG HAUL." — at a 1920px
+  viewport this lands at 5.6rem (89.6px) and wraps to 4 lines, looking
+  oversized and amateurish. The right pattern: `clamp(2.2rem, 4.4vw, 3.6rem)`
+  PLUS `max-width: 14ch` (or similar character cap, ~18ch for two-clause
+  titles) on the title element so it never stretches edge-to-edge on
+  ultrawide displays.
+- Title text itself must be short. Two-clause headlines like "Quality
+  used cars, built for the road." are the upper bound — three clauses
+  is too many. If the dealer's brand voice needs three statements, split
+  into eyebrow + title + lead (NOT one wrapped title).
+- Audit rule `lib-hero-title-too-big` (deferred — when shipped, flag any
+  hero CSS with a `clamp(...)` upper bound ≥ 4.5rem AND any title text
+  longer than ~50 characters). Until shipped: eyeball at 1920px during
+  Phase 8 and shrink if it wraps to 3+ lines.
+
+**Top contact bar — required composition (must-have, learned 2026-05-11):**
+- Every theme's top contact bar (above or as part of the Header) must
+  include four things, in this order, to match the canonical UK-dealer
+  layout that dealers expect:
+  1. **Showroom location chip** — "{city}, {county}" pulled from
+     `brand.location.address`. Use a small map-pin icon next to the text.
+  2. **Live-stock / status chip** — pulsing `.mfx-pulse-dot` + "LIVE STOCK"
+     or "OPEN NOW" label tied to `brand.openingHours` via the
+     `use-working-hours` hook. Shows the dealer is operational without
+     forcing the user to read the hours table.
+  3. **Social icons** — Facebook, Instagram, YouTube, LinkedIn icons
+     sourced from `brand.socialLinks` (UK dealers care about social
+     presence; missing them makes the site look incomplete). Hide
+     individual icons whose URL is empty in the brand record; if
+     `brand.socialLinks` is absent entirely, hide the icon group but
+     do NOT crash. Use accessible `<a>` elements with `aria-label`.
+  4. **Phone CTA** — `tel:` link with a phone glyph, pulled from
+     `brand.location.phone`. Always rightmost.
+- The PreviewBanner widget sits **ABOVE** the top contact bar
+  (`position: sticky; top: 0` on the banner; the contact bar below it).
+  When `NEXT_PUBLIC_PREVIEW=1` is set, the banner is the first visible
+  strip. When the env var isn't set, the banner returns null and the
+  contact bar becomes the topmost strip — no layout shift either way.
+- The mobile overlay nav must also surface the social icons (typically
+  in the footer of the overlay sheet) so they're discoverable on touch
+  devices where the desktop top bar is collapsed.
+
+**Brand-uploaded images must render — `var(--brand-image-*)` plumbing (must-have, learned 2026-05-11):**
+- The dashboard's `/update/<slug>` lets operators upload custom hero /
+  about / services / finance / partExchange / sellYourCar / recentlySold
+  images that override the theme's archetype defaults. The brand record
+  stores them in `brand.images.<slot>` (URL strings); `BrandStyles.tsx`
+  writes them as CSS variables (`--brand-image-hero`,
+  `--brand-image-about`, etc.) onto `:root`.
+- **Every visible image in every theme must reference these CSS variables**
+  — not hardcoded paths, not inline `src` attributes, not theme-folder-
+  scoped image references. The pattern: `background-image: var(--brand-image-<slot>)`
+  on a CSS-module class that the component sets via its `.image` or
+  `.media` element. The exception: dynamic inventory thumbnails sourced
+  from `/api/inventory` (those are per-vehicle URLs and pass through as
+  `<img src={v.image}>`).
+- Slots and their canonical use:
+  - `--brand-image-hero` — homepage Hero photo backdrop
+  - `--brand-image-about` — About page PageHero, About section panels
+  - `--brand-image-services` — Services page PageHero, services section
+  - `--brand-image-finance` — Finance page PageHero, CtaBanner image
+  - `--brand-image-part-exchange` — Part-ex page PageHero
+  - `--brand-image-sell-your-car` — Sell-your-car page PageHero
+  - `--brand-image-recently-sold` — Recently-sold page PageHero
+- If the operator uploads via the dashboard but the image doesn't render,
+  the fault is almost always: (a) a theme component using a hardcoded
+  image path instead of the CSS variable, OR (b) a missing slot mapping
+  in `BrandStyles.tsx` (the scaffolder generates all 7 by default — never
+  remove them). Diagnose with `getComputedStyle(document.documentElement).getPropertyValue('--brand-image-hero')`
+  in the browser console; if it's `none` or empty, the brand record
+  doesn't have the slot set; if it's `url("...")` but the image doesn't
+  render, the URL itself is wrong.
+- Audit rule `lib-image-not-brand-driven` (deferred — when shipped, flag
+  any `background-image: url(...)` in a theme CSS module that's NOT
+  `var(--brand-image-*)` and NOT a decorative SVG data-URI). Until
+  shipped: cross-check every Hero / PageHero / decorative image
+  during Phase 8.
+
 **Hero & PageHero text-contrast floor (must-have, learned 2026-05-10):**
 - Any title/lead rendered ON TOP of an image or dark background must
   reach AAA-class legibility, not just AA. The pattern that has worked:
@@ -1812,6 +1897,9 @@ fire and block you, but recognising the pattern earlier saves a round trip.
 | 32 | Vehicle detail page (and other "kept" inner pages) reuse the springalls-classic / sibling-theme render structure verbatim — only colors and class names differ. Result: every theme's `/used-cars/<slug>` looks like the same page in a different palette. | Phase 8 lifted the configurator-led pattern from `docs/inventory-design-library.md` near-verbatim for `ncr-van-sales-bespoke` and kept the `audit-ignore-file: tp-use-client-on-page` annotation that the skeleton ships with. The design library was being used as a **template** rather than a **reference**. Audit rule `inv-redesign-required` (advisory) targets the LIST page only; no equivalent for the detail page. First report: 2026-05-11, Difatha on `ncr-van-sales-bespoke`. | (a) New SKILL Quality Bar §"Autonomous independent designs — every page, every component" explicitly forbids borrowing render structure from any baseline; inventory-design-library is documented as reference / brain-prompt only, not a copy source. (b) Required visual language extended to mandate gradient backgrounds + geometric backgrounds in addition to the existing motion requirements (`--t-brand-gradient`, `--t-neon-gradient`, `--t-band-gradient` already exist; geometric is CSS-only patterns or decorative SVG). (c) The "vehicle detail page must have its own composition language" clause enumerates the design axes (hero / gallery / spec / finance / enquiry) that must vary across themes. (d) Future audit rule `inv-detail-redesign-required` (deferred) should compare detail-page JSX structure against the springalls baseline. Until shipped, the SKILL clause is the contract. |
 | 33 | Vehicle detail page review (chesterfield-motor-empire-bespoke 2026-05-11): 6 missing must-haves — gallery layout was the same "main + thumbnail strip" as every other theme, generic `<MessageCircle />` icon used on the WhatsApp link, enquiry rendered as a 4-field inline form mid-page (buyers had to scroll past it to reach specs), columns balanced poorly on large screens, no "similar vehicles" row, no SEO makes-list before the footer. The page felt like "another listing template" rather than a deep-funnel commit surface. | Phase 8 designed the detail page autonomously per the autonomous-design clause but the SKILL didn't enforce these specific must-haves. The full-bleed mosaic gallery pattern (1 main + 4-thumb 2×2 mosaic, like the Hunts Motors reference screenshot Difatha shared) wasn't in the inventory-design-library. WhatsApp icon discipline was implicit in the WhatsAppFab widget but not surfaced as a per-theme rule. The EnquiryModal pattern existed in carous-platform but hadn't been ported to brandstudio as a shared widget. Similar-vehicles + makes-SEO sections were assumed obvious but absent from the SKILL. | Five-pronged: (a) New shared `<WhatsAppIcon />` extracted from `app/widgets/WhatsAppFab/WhatsAppIcon.tsx` (re-exports from the WhatsAppFab index) so themes use the same official mark. WhatsAppFab itself now imports the same icon — single source of truth. (b) New shared `<EnquiryModal />` widget at `app/widgets/EnquiryModal/` with the canonical modal pattern (carous-platform parity), brand-token-driven, two-column layout with form on the left + Call/Email/WhatsApp side panel using the official WhatsApp glyph. Companion `useEnquiryModal()` hook for trigger management. (c) New SKILL Quality Bar §"Vehicle detail page composition (must-have)" enumerates all 6 requirements with code patterns. (d) New SKILL Required Widgets entries for `<WhatsAppIcon />` and `<EnquiryModal />`. (e) Four new audit advisory rules: `lib-whatsapp-icon-generic` (file uses MessageCircle alongside wa.me), `inv-detail-enquiry-not-modal` (inline form on detail page without EnquiryModal), `inv-detail-no-similar-vehicles` (no similar-vehicles row detected), `inv-detail-no-makes-seo` (no Browse-by-make panel detected). Inventory design library extended with two new detail patterns: G. Full-bleed mosaic + H. Modal-led enquiry; new "Required detail-page sections" section listing the contract. |
 | 34 | Newly-scaffolded themes shipped without a preview-mode notice strip — when the preview-deploy env set `NEXT_PUBLIC_PREVIEW=1`, dealers and prospects had no visual confirmation they were on a preview vs. the live site, so dealers shared preview URLs as if they were production. Older themes (`classic-dealer`, `gilded-drive`, `springalls-classic`) had per-theme `components/PreviewBanner.tsx` files; the skeleton scaffolder pruned them when it stripped the visual layer, so every new bespoke theme (columbus, ele, auto-wow) shipped without one. | The PreviewBanner lived as a per-theme component reading `usePreviewBanner` from `app/hooks/`. The skeleton scaffolder kept the hook but pruned the component file. Phase 8 was meant to redesign it but instead skipped it entirely — the "preview banner is a preview-deploy concern, not a theme concern" mental model meant it kept dropping off the Phase 8 checklist. First report: 2026-05-11 from Difatha after the auto-wow-uk-bespoke build. | (a) Promoted to a brandstudio-global widget at `app/widgets/PreviewBanner/` — single brand-token-driven implementation (uses `--color-primary` background, white text) that themes consume with `<PreviewBanner brand={brand} />`. Renders nothing when `NEXT_PUBLIC_PREVIEW !== '1'` so it's always-mountable. Optional `force` prop for dev preview. (b) Updated `tools/scaffold-theme-skeleton.mjs` Shell stub to mount `<PreviewBanner brand={brand} />` BEFORE `<Header />` by default — so every future theme inherits the banner without re-rolling. (c) SKILL §"Required widgets" expanded with the widget contract — themes must NOT re-implement a per-theme preview banner; mount the global widget. (d) Hooked into auto-wow-uk-bespoke's Shell as the reference implementation. |
+| 35 | Hero title rendered too large on desktop, wrapping to 3-4 lines, looking clumpsy and amateurish. Title text "BUILT FOR THE ROAD, BACKED FOR THE LONG HAUL." at `clamp(2.8rem, 6.4vw, 5.6rem)` filled the entire hero column at 1920px. | Phase 8 used the rugged-archetype recommendation `clamp(2.8rem, 6vw, 5.5rem)` directly without considering the actual title text length. Without a `max-width` character cap, the title stretched edge-to-edge. The "bigger is better" intuition for hero titles overrode the "fit-in-2-lines" constraint that defines a polished hero. First report: 2026-05-11, Difatha with screenshot of NCR Van Sales preview. | New SKILL Quality Bar §"Hero title sizing — fit-in-2-lines max" caps the upper bound of the `clamp()` to ~3.6rem for single-clause headlines and ~4.4rem for two-word brand statements. ALL hero titles get a `max-width: 14ch` (single clause) or `max-width: 18ch` (two clause) on the title element. Title text must be ≤ ~50 characters and ≤ 2 clauses; three-clause titles split into eyebrow + title + lead. Audit rule `lib-hero-title-too-big` (deferred — flag clamp upper bound ≥ 4.5rem alongside title text > 50 chars). |
+| 36 | Top contact bar (the strip above the Header) didn't include social icons — dealers reported that the missing Facebook/Instagram links made the site look incomplete. Multiple themes also failed to surface the live-stock pulsing chip + showroom-location chip + phone-CTA in the canonical UK-dealer order. | Phase 8 designed Headers organically per archetype without a top-bar composition contract. Social icons existed in the brand record (`brand.socialLinks.facebook/instagram/youtube/linkedin`) but Phase 8 didn't know to surface them. The status-strip pattern was implemented inconsistently — some themes had pulsing chips, others didn't; some had the phone CTA, others didn't. | New SKILL Quality Bar §"Top contact bar — required composition" enumerates the 4 required elements in canonical order: (1) showroom location chip with map-pin icon, (2) live-stock / status chip with `.mfx-pulse-dot` tied to `brand.openingHours`, (3) social icons sourced from `brand.socialLinks` (hide individual icons whose URL is empty; hide group entirely if `socialLinks` absent), (4) phone CTA pulled from `brand.location.phone` (always rightmost). PreviewBanner sits ABOVE the top contact bar (`position: sticky; top: 0`); when `NEXT_PUBLIC_PREVIEW=1` is set, the banner is first; otherwise contact bar is topmost (no layout shift). Mobile overlay nav must also surface social icons. |
+| 37 | Operator uploaded custom hero / about / services images via the dashboard `/update/<slug>` page, but they don't render on the deployed preview — the theme keeps showing its archetype-default photos instead. | Phase 8 theme component hardcoded `background-image: url('/themes/<id>/images/hero.jpg')` (or a literal remote URL) directly in the CSS module instead of `var(--brand-image-hero)`. The dashboard saved the URL into `brand.images.hero` and `BrandStyles.tsx` wrote it into `--brand-image-hero` correctly, but the component never consumed the var. Result: dashboard edits silently drop. First report: 2026-05-11, Difatha after testing dashboard image upload against multiple themes. | (a) New SKILL Quality Bar §"Brand-uploaded images must render — `var(--brand-image-*)` plumbing" enumerating all 7 image slots and the consumption contract. (b) Every Hero / PageHero / CtaBanner / decorative-image component MUST use `background-image: var(--brand-image-<slot>)` on a CSS-module class — never a hardcoded URL. (c) `BrandStyles.tsx` ships all 7 slot mappings by default; the rule is "never remove them" rather than "set them up". (d) Diagnostic: `getComputedStyle(document.documentElement).getPropertyValue('--brand-image-hero')` in the browser console shows what the brand record resolves to. (e) Audit rule `lib-image-not-brand-driven` (deferred — flag any `background-image: url(...)` in a theme CSS module that isn't `var(--brand-image-*)` or a decorative data-URI). |
 
 When you add a new audit rule for a future bug, append a row here. The
 catalogue should grow as a record of "what we've already learned not to
