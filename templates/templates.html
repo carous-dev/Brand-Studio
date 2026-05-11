@@ -34,6 +34,14 @@
     </div>
 </section>
 
+<!-- Detail modal (opens when a card is clicked — shows full info + actions) -->
+<div class="theme-modal-backdrop theme-detail-backdrop" id="themeDetailModal" role="dialog" aria-modal="true" aria-labelledby="themeDetailTitle" hidden>
+    <div class="theme-modal theme-detail-modal">
+        <button type="button" class="theme-modal-close theme-detail-close" data-action="detail-close" aria-label="Close">×</button>
+        <div class="theme-detail-body" id="themeDetailBody"></div>
+    </div>
+</div>
+
 <!-- Confirmation modal (delete + disable confirmations) -->
 <div class="theme-modal-backdrop" id="themeModal" role="dialog" aria-modal="true" aria-labelledby="themeModalTitle" hidden>
     <div class="theme-modal">
@@ -72,6 +80,9 @@
   const modalConfirm = modal.querySelector('[data-action="modal-confirm"]');
   const modalCancel = modal.querySelector('[data-action="modal-cancel"]');
   const modalClose = modal.querySelector('[data-action="modal-close"]');
+  const detailModal = document.getElementById('themeDetailModal');
+  const detailBody = document.getElementById('themeDetailBody');
+  let activeDetailThemeId = null;  // remember to re-open after a successful action
 
   // --- Utilities -----------------------------------------------------------
   function escapeHtml(input) {
@@ -133,43 +144,96 @@
     const defaultId = window.__themeDefaultId || 'classic-dealer';
 
     grid.innerHTML = themes.map((theme) => {
-      const disabledActionsClass = theme.protected ? 'btn-disabled' : '';
-      const disableEnableBtn = theme.disabled
-        ? `<button type="button" class="btn btn-ghost btn-sm" data-action="enable" data-theme-id="${escapeHtml(theme.id)}">Enable</button>`
-        : `<button type="button" class="btn btn-ghost btn-sm ${disabledActionsClass}" data-action="disable" data-theme-id="${escapeHtml(theme.id)}" ${theme.protected ? 'disabled title="Default theme — cannot be disabled"' : ''}>Disable</button>`;
-      const deleteBtn = `<button type="button" class="btn btn-danger btn-sm ${disabledActionsClass}" data-action="delete" data-theme-id="${escapeHtml(theme.id)}" ${theme.protected ? 'disabled title="Default theme — cannot be deleted"' : ''}>Delete</button>`;
-      const usageInline = (theme.usageBrands && theme.usageBrands.length)
-        ? `<ul class="usage-brands-list">${theme.usageBrands.slice(0, 4).map(b => `<li>${escapeHtml(b.name || b.slug)}</li>`).join('')}${theme.usageCount > 4 ? `<li class="usage-more">+ ${theme.usageCount - 4} more</li>` : ''}</ul>`
+      const usageInlineCount = theme.usageCount || 0;
+      const usageLine = usageInlineCount > 0
+        ? `<span class="card-meta-usage">${usageInlineCount} brand${usageInlineCount === 1 ? '' : 's'}</span>`
         : '';
 
       return `
-        <article class="template-card ${theme.disabled ? 'template-card-disabled' : ''}" data-theme-id="${escapeHtml(theme.id)}">
+        <button type="button"
+                class="template-card ${theme.disabled ? 'template-card-disabled' : ''}"
+                data-theme-id="${escapeHtml(theme.id)}"
+                data-action="open-detail"
+                aria-label="Open ${escapeHtml(theme.name || theme.id)} details">
           <div class="template-preview">
             ${thumbnail(theme)}
             <div class="template-badges">
               ${statusBadge(theme)}
               ${defaultBadge(theme, defaultId)}
             </div>
-          </div>
-          <div class="template-info">
-            <header class="template-info-head">
-              <div>
+            <div class="template-overlay">
+              <div class="template-overlay-head">
                 <h3>${escapeHtml(theme.name || theme.id)}</h3>
                 <code class="template-id">${escapeHtml(theme.id)}</code>
               </div>
-              ${usageBadge(theme)}
-            </header>
-            ${theme.description ? `<p class="template-description">${escapeHtml(theme.description)}</p>` : ''}
-            ${usageInline}
-            <footer class="template-actions">
-              <a href="/create?theme=${encodeURIComponent(theme.id)}" class="btn btn-ghost btn-sm">Use in /create</a>
-              ${disableEnableBtn}
-              ${deleteBtn}
-            </footer>
+              <div class="template-overlay-meta">
+                ${usageLine}
+                <span class="card-cta-hint">View details →</span>
+              </div>
+            </div>
           </div>
-        </article>
+        </button>
       `;
     }).join('');
+  }
+
+  // Renders the detail modal body for a given theme. Called when a card opens.
+  function renderDetail(theme) {
+    if (!theme) return '';
+    const defaultId = window.__themeDefaultId || 'classic-dealer';
+    const isDefault = theme.id === defaultId;
+    const protectedTheme = theme.protected || isDefault;
+
+    const heroBlock = theme.heroImage
+      ? `<div class="detail-hero" style="background-image:url('${escapeHtml(theme.heroImage)}')"></div>`
+      : `<div class="detail-hero detail-hero-placeholder" style="background:linear-gradient(135deg, hsl(${Math.abs(hashString(theme.id || '')) % 360}, 30%, 24%), hsl(${(Math.abs(hashString(theme.id || '')) % 360 + 40) % 360}, 34%, 12%))">
+           <span class="preview-placeholder-id">${escapeHtml(theme.id)}</span>
+         </div>`;
+
+    const brandList = (theme.usageBrands && theme.usageBrands.length)
+      ? `<ul class="detail-brand-list">${theme.usageBrands.map(b => `<li>${escapeHtml(b.name || b.slug)}</li>`).join('')}${theme.usageCount > theme.usageBrands.length ? `<li class="usage-more">+ ${theme.usageCount - theme.usageBrands.length} more</li>` : ''}</ul>`
+      : '<p class="detail-empty-row">No brands targeting this theme yet.</p>';
+
+    const disableBtn = theme.disabled
+      ? `<button type="button" class="btn btn-ghost" data-action="enable" data-theme-id="${escapeHtml(theme.id)}">Enable</button>`
+      : `<button type="button" class="btn btn-warn" data-action="disable" data-theme-id="${escapeHtml(theme.id)}" ${protectedTheme ? 'disabled title="Default theme cannot be disabled"' : ''}>Disable</button>`;
+    const deleteBtn = `<button type="button" class="btn btn-danger" data-action="delete" data-theme-id="${escapeHtml(theme.id)}" ${protectedTheme ? 'disabled title="Default theme cannot be deleted"' : ''}>Delete</button>`;
+
+    return `
+      ${heroBlock}
+      <div class="detail-body">
+        <header class="detail-head">
+          <div>
+            <h2 id="themeDetailTitle">${escapeHtml(theme.name || theme.id)}</h2>
+            <code class="detail-id">${escapeHtml(theme.id)}</code>
+          </div>
+          <div class="detail-badges">
+            ${statusBadge(theme)}
+            ${defaultBadge(theme, defaultId)}
+          </div>
+        </header>
+
+        ${theme.description ? `<p class="detail-description">${escapeHtml(theme.description)}</p>` : ''}
+
+        <dl class="detail-stats">
+          <div><dt>Status</dt><dd>${theme.disabled ? 'Disabled' : escapeHtml((theme.status || 'stable').charAt(0).toUpperCase() + (theme.status || 'stable').slice(1))}</dd></div>
+          <div><dt>Brands using it</dt><dd>${theme.usageCount || 0}</dd></div>
+          <div><dt>Folder</dt><dd><code>app/themes/${escapeHtml(theme.id)}/</code></dd></div>
+          ${isDefault ? '<div><dt>Default theme</dt><dd>Yes — protected</dd></div>' : ''}
+        </dl>
+
+        <section class="detail-section">
+          <h3>Brands targeting this theme</h3>
+          ${brandList}
+        </section>
+
+        <footer class="detail-actions">
+          <a href="/create?theme=${encodeURIComponent(theme.id)}" class="btn btn-primary">Use in /create</a>
+          ${disableBtn}
+          ${deleteBtn}
+        </footer>
+      </div>
+    `;
   }
 
   function filteredThemes() {
@@ -203,6 +267,7 @@
       window.__themeDefaultId = payload.defaultTheme || 'classic-dealer';
       renderSummary();
       renderCards();
+      refreshDetailIfOpen();
     } catch (err) {
       grid.innerHTML = `<div class="theme-grid-state theme-grid-error">
         <p>Failed to load themes.</p>
@@ -241,7 +306,40 @@
     modal.hidden = true;
     modalBody.innerHTML = '';
     pendingAction = null;
-    document.body.style.overflow = '';
+    // Don't drop body overflow if the detail modal is still open behind us.
+    if (detailModal.hidden) document.body.style.overflow = '';
+  }
+
+  // --- Detail modal --------------------------------------------------------
+  function openDetail(themeId) {
+    const theme = allThemes.find(t => t.id === themeId);
+    if (!theme) return;
+    activeDetailThemeId = themeId;
+    detailBody.innerHTML = renderDetail(theme);
+    detailModal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => {
+      const closer = detailModal.querySelector('[data-action="detail-close"]');
+      if (closer) closer.focus();
+    }, 50);
+  }
+
+  function closeDetail() {
+    detailModal.hidden = true;
+    detailBody.innerHTML = '';
+    activeDetailThemeId = null;
+    if (modal.hidden) document.body.style.overflow = '';
+  }
+
+  function refreshDetailIfOpen() {
+    if (detailModal.hidden || !activeDetailThemeId) return;
+    const theme = allThemes.find(t => t.id === activeDetailThemeId);
+    if (theme) {
+      detailBody.innerHTML = renderDetail(theme);
+    } else {
+      // Theme was deleted out from under us — close.
+      closeDetail();
+    }
   }
 
   function flashToast(message, kind) {
@@ -375,19 +473,27 @@
     }
     if (action === 'modal-close' || action === 'modal-cancel') return closeModal();
     if (action === 'modal-confirm') return executeAction();
+    if (action === 'detail-close') return closeDetail();
     if (!themeId) return;
 
-    if (action === 'disable') handleDisable(themeId);
+    if (action === 'open-detail') openDetail(themeId);
+    else if (action === 'disable') handleDisable(themeId);
     else if (action === 'enable') handleEnable(themeId);
     else if (action === 'delete') handleDelete(themeId);
   });
 
-  // Close modal on backdrop click / Escape
+  // Close modal on backdrop click / Escape — confirm modal layers on top of
+  // the detail modal, so close it first if it's open.
   modal.addEventListener('click', (event) => {
     if (event.target === modal) closeModal();
   });
+  detailModal.addEventListener('click', (event) => {
+    if (event.target === detailModal) closeDetail();
+  });
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !modal.hidden) closeModal();
+    if (event.key !== 'Escape') return;
+    if (!modal.hidden) return closeModal();
+    if (!detailModal.hidden) return closeDetail();
   });
 
   // --- Init ---------------------------------------------------------------
@@ -633,78 +739,11 @@
     margin-bottom: 3rem;
 }
 
-.template-card {
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-xl);
-    overflow: hidden;
-    background: var(--bg-card);
-    transition: var(--transition);
-    position: relative;
-}
-
-.template-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--primary-color);
-}
-
-.template-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary-color), #8b5cf6, #ec4899);
-    opacity: 0;
-    transition: var(--transition);
-}
-
-.template-card:hover::before {
-    opacity: 1;
-}
-
-/* Template Preview Styles */
-.template-preview {
-    position: relative;
-    height: 200px;
-    overflow: hidden;
-    background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-hover));
-}
-
-.preview-screenshot {
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-
-.skeleton-preview {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, var(--bg-hover) 25%, var(--bg-active) 50%, var(--bg-hover) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    position: relative;
-}
-
-@keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
-/* Template Info Styles */
-.template-info {
-    padding: 1.5rem;
-    background: var(--bg-card);
-    text-align: center;
-}
-
-.template-info h3 {
-    margin: 0;
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    line-height: 1.3;
-}
+/* Card + preview styles for the data-driven theme cards live further down,
+ * under "Minimal cards (full-bleed hero image...)". The hardcoded-card
+ * specific rules that used to live here were removed when the page became
+ * data-driven (2026-05-11) — they conflicted with the new layout (fixed
+ * height vs aspect-ratio, centered text vs overlay positioning). */
 
 /* Pagination Styles */
 .templates-pagination {
@@ -950,18 +989,58 @@
     margin-bottom: 1rem !important;
 }
 
-/* Card refinements (overlay on top of existing .template-card styles) */
+/* ============================================================================
+ * Minimal cards (full-bleed hero image, overlay title, click-to-open detail)
+ * ============================================================================ */
+
+.templates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Card is a <button> so the whole surface is keyboard-accessible. Override
+ * default button chrome so it reads as a content card. */
 .template-card {
     position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
     overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.2s ease,
+                box-shadow 0.25s ease;
+    font: inherit;
+    color: inherit;
 }
-.template-card-disabled { opacity: 0.62; }
-.template-card-disabled .preview-screenshot { filter: grayscale(0.7); }
+.template-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary-color);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(59, 130, 246, 0.3);
+}
+.template-card:focus-visible {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+}
+.template-card:active { transform: translateY(-2px); }
+
+.template-card-disabled { opacity: 0.65; }
+.template-card-disabled:hover { opacity: 0.85; }
+.template-card-disabled .preview-screenshot { filter: grayscale(0.55) brightness(0.85); }
 
 .template-preview {
     position: relative;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 4 / 3;
     overflow: hidden;
+    background: var(--bg-tertiary);
 }
 .preview-screenshot {
     width: 100%;
@@ -969,7 +1048,9 @@
     background-size: cover;
     background-position: center;
     background-color: var(--bg-tertiary);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
+.template-card:hover .preview-screenshot { transform: scale(1.04); }
 .preview-placeholder {
     display: flex;
     align-items: center;
@@ -978,7 +1059,7 @@
 .preview-placeholder-id {
     color: rgba(255, 255, 255, 0.85);
     font-family: ui-monospace, 'SF Mono', Consolas, monospace;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     letter-spacing: 0.02em;
     text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
 }
@@ -986,119 +1067,107 @@
 .template-badges {
     position: absolute;
     top: 12px;
-    left: 12px;
+    right: 12px;
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
-    z-index: 2;
+    z-index: 3;
 }
-
 .status-badge {
     display: inline-flex;
     align-items: center;
     padding: 3px 10px;
     border-radius: 999px;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     backdrop-filter: blur(8px);
 }
-.status-stable { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; border: 1px solid rgba(110, 231, 183, 0.35); }
-.status-experimental { background: rgba(245, 158, 11, 0.18); color: #fcd34d; border: 1px solid rgba(252, 211, 77, 0.35); }
-.status-disabled { background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid rgba(252, 165, 165, 0.35); }
-.status-default { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(147, 197, 253, 0.4); }
-.status-protected { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid rgba(203, 213, 225, 0.35); }
+.status-stable { background: rgba(16, 185, 129, 0.22); color: #6ee7b7; border: 1px solid rgba(110, 231, 183, 0.4); }
+.status-experimental { background: rgba(245, 158, 11, 0.22); color: #fcd34d; border: 1px solid rgba(252, 211, 77, 0.4); }
+.status-disabled { background: rgba(239, 68, 68, 0.22); color: #fca5a5; border: 1px solid rgba(252, 165, 165, 0.4); }
+.status-default { background: rgba(59, 130, 246, 0.26); color: #bfdbfe; border: 1px solid rgba(147, 197, 253, 0.5); }
+.status-protected { background: rgba(148, 163, 184, 0.22); color: #e2e8f0; border: 1px solid rgba(203, 213, 225, 0.4); }
 
-.template-info {
-    padding: 1.25rem 1.25rem 1.25rem;
+/* Overlay that fades from transparent at top to opaque at the bottom of the
+ * image. Contains title + meta line. Whole card surface remains a button. */
+.template-overlay {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    justify-content: flex-end;
+    padding: 1.25rem 1.25rem 1.1rem;
+    background: linear-gradient(180deg,
+        transparent 0%,
+        transparent 45%,
+        rgba(15, 23, 42, 0.55) 70%,
+        rgba(15, 23, 42, 0.96) 100%);
+    color: #f1f5f9;
+    z-index: 2;
 }
-.template-info-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 0.75rem;
-}
-.template-info-head h3 {
+.template-overlay-head h3 {
     font-size: 1.05rem;
     font-weight: 700;
-    color: var(--text-primary);
     margin: 0 0 4px;
+    line-height: 1.25;
     letter-spacing: -0.01em;
-    line-height: 1.3;
-}
-.template-id {
-    font-family: ui-monospace, 'SF Mono', Consolas, monospace;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    background: var(--bg-tertiary);
-    padding: 2px 6px;
-    border-radius: 4px;
-}
-
-.usage-badge {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-}
-.usage-empty { background: var(--bg-tertiary); color: var(--text-muted); border: 1px solid var(--border-color); }
-.usage-active { background: rgba(59, 130, 246, 0.16); color: #93c5fd; border: 1px solid rgba(147, 197, 253, 0.3); }
-
-.template-description {
-    color: var(--text-secondary);
-    font-size: 0.88rem;
-    line-height: 1.55;
-    margin: 0;
+    color: #ffffff;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+    /* Don't truncate — wrap to a second line if needed */
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-
-.usage-brands-list {
-    list-style: none;
-    margin: 0;
-    padding: 0.5rem 0 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    font-size: 0.78rem;
-}
-.usage-brands-list li {
-    background: var(--bg-tertiary);
-    color: var(--text-secondary);
-    padding: 3px 9px;
+.template-overlay-head .template-id {
+    font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+    font-size: 0.72rem;
+    color: rgba(241, 245, 249, 0.7);
+    background: rgba(0, 0, 0, 0.32);
+    padding: 2px 6px;
     border-radius: 4px;
-    border: 1px solid var(--border-color);
+    backdrop-filter: blur(6px);
+    display: inline-block;
+    margin-top: 2px;
 }
-.usage-brands-list .usage-more {
-    background: transparent;
-    color: var(--text-muted);
-    border: none;
-    font-style: italic;
+.template-overlay-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 0.6rem;
+    font-size: 0.78rem;
+    color: rgba(241, 245, 249, 0.78);
+}
+.card-meta-usage {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    background: rgba(59, 130, 246, 0.28);
+    border: 1px solid rgba(147, 197, 253, 0.4);
+    color: #dbeafe;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    backdrop-filter: blur(6px);
+}
+.card-cta-hint {
+    font-size: 0.72rem;
+    color: rgba(241, 245, 249, 0.62);
+    letter-spacing: 0.04em;
+    margin-left: auto;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+.template-card:hover .card-cta-hint {
+    color: var(--primary-light);
+    transform: translateX(2px);
 }
 
-.template-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: auto;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--border-color);
-}
-.btn-sm {
-    padding: 0.5rem 0.95rem;
-    font-size: 0.82rem;
-}
+/* Button variants used in modals + buttons that aren't cards */
+.btn-sm { padding: 0.5rem 0.95rem; font-size: 0.82rem; }
 .btn-ghost {
     background: transparent;
     border: 1px solid var(--border-color);
@@ -1117,26 +1186,214 @@
     pointer-events: none;
 }
 .btn-danger {
-    background: rgba(239, 68, 68, 0.12);
-    border: 1px solid rgba(252, 165, 165, 0.4);
+    background: rgba(239, 68, 68, 0.14);
+    border: 1px solid rgba(252, 165, 165, 0.45);
     color: #fca5a5;
     box-shadow: none;
 }
 .btn-danger:hover:not(:disabled) {
-    background: rgba(239, 68, 68, 0.22);
+    background: rgba(239, 68, 68, 0.26);
     color: #fee2e2;
-    border-color: rgba(252, 165, 165, 0.7);
+    border-color: rgba(252, 165, 165, 0.75);
 }
 .btn-warn {
-    background: rgba(245, 158, 11, 0.12);
-    border: 1px solid rgba(252, 211, 77, 0.4);
+    background: rgba(245, 158, 11, 0.14);
+    border: 1px solid rgba(252, 211, 77, 0.45);
     color: #fcd34d;
     box-shadow: none;
 }
 .btn-warn:hover {
-    background: rgba(245, 158, 11, 0.22);
+    background: rgba(245, 158, 11, 0.24);
     color: #fef3c7;
 }
+
+/* ============================================================================
+ * Detail modal (opens on card click — full info + actions)
+ * ============================================================================ */
+.theme-detail-backdrop { z-index: 990; }
+.theme-detail-modal {
+    width: min(720px, 100%);
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    padding: 0;
+    position: relative;
+}
+.theme-detail-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    width: 36px;
+    height: 36px;
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #f1f5f9;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 1.4rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+    transition: var(--transition);
+}
+.theme-detail-close:hover {
+    background: rgba(15, 23, 42, 0.85);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.detail-hero {
+    width: 100%;
+    aspect-ratio: 21 / 9;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--bg-tertiary);
+}
+.detail-hero-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.detail-body {
+    padding: 1.75rem 1.75rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.detail-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.detail-head h2 {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+}
+.detail-id {
+    font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+.detail-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.detail-description {
+    color: var(--text-secondary);
+    font-size: 0.96rem;
+    line-height: 1.65;
+    margin: 0;
+}
+
+.detail-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin: 0;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+.detail-stats > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.detail-stats > div:nth-last-child(-n+2) { border-bottom: none; }
+.detail-stats > div:nth-child(2n) { border-left: 1px solid var(--border-color); }
+.detail-stats dt {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+.detail-stats dd {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    text-align: right;
+}
+.detail-stats dd code {
+    font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    background: var(--bg-primary);
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+@media (max-width: 540px) {
+    .detail-stats { grid-template-columns: 1fr; }
+    .detail-stats > div:nth-child(2n) { border-left: none; }
+    .detail-stats > div { border-bottom: 1px solid var(--border-color); }
+    .detail-stats > div:last-child { border-bottom: none; }
+}
+
+.detail-section h3 {
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin: 0 0 0.6rem;
+}
+.detail-brand-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.detail-brand-list li {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    font-size: 0.85rem;
+}
+.detail-brand-list .usage-more {
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    font-style: italic;
+}
+.detail-empty-row {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    margin: 0;
+    font-style: italic;
+}
+
+.detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+.detail-actions .btn { flex: 0 1 auto; }
+.detail-actions .btn-primary { flex: 1 1 180px; }
 
 /* --- Modal --------------------------------------------------------------- */
 .theme-modal-backdrop {
