@@ -2819,6 +2819,32 @@ def create_brand():
                     app.logger.exception("Failed to save inventory for brand slug=%s", slug)
                     return jsonify({'error': 'Failed to save inventory', 'details': str(e)}), 400
 
+        # Save uploaded per-page image overrides (about, services, finance,
+        # partExchange, sellYourCar, recentlySold). Each is optional; uploads
+        # land at /public/images/<slug>-<slot>.<ext> and the resulting path
+        # populates brand.images[<slot>].
+        PAGE_IMAGE_SLOTS = (
+            'about', 'services', 'finance',
+            'partExchange', 'sellYourCar', 'recentlySold',
+        )
+        uploaded_page_image_paths = {}
+        for slot in PAGE_IMAGE_SLOTS:
+            field_name = f'{slot}ImageFile'
+            if field_name not in request.files:
+                continue
+            slot_file = request.files[field_name]
+            if not (slot_file and slot_file.filename and allowed_file(slot_file.filename)):
+                continue
+            try:
+                uploaded_page_image_paths[slot] = save_image_file(slot_file, slug, slot)
+            except Exception as e:
+                app.logger.exception(
+                    "Failed to save %s image for brand slug=%s", slot, slug
+                )
+                return jsonify({
+                    'error': f'Failed to save {slot} image', 'details': str(e),
+                }), 400
+
         # Import FormHandler to use the createBrandConfig method
         import sys
         sys.path.append(os.path.join(os.path.dirname(__file__), 'static', 'modules'))
@@ -2842,6 +2868,26 @@ def create_brand():
                 brand['heroImage'] = hero_image_path
             if inventory_path:
                 brand['inventory'] = inventory_path
+
+            # Per-page image overrides: start from any preserved existing
+            # brand.images (when recreating an existing slug), layer text-field
+            # URL overrides from data (image<Slot>Url), then layer uploaded file
+            # paths (uploads win).
+            prior_images = {}
+            prior_brand = load_preview(slug) or {}
+            if isinstance(prior_brand.get('images'), dict):
+                prior_images = dict(prior_brand['images'])
+            images_dict = dict(prior_images)
+            if brand.get('heroImage'):
+                images_dict['hero'] = brand['heroImage']
+            for slot in PAGE_IMAGE_SLOTS:
+                url_field = f'image{slot[0].upper()}{slot[1:]}Url'
+                url_val = data.get(url_field)
+                if isinstance(url_val, str) and url_val.strip():
+                    images_dict[slot] = url_val.strip()
+                if slot in uploaded_page_image_paths:
+                    images_dict[slot] = uploaded_page_image_paths[slot]
+            brand['images'] = images_dict
 
         except ImportError as e:
             app.logger.exception("Could not import FormHandler; falling back to manual construction (slug=%s)", slug)
@@ -2948,6 +2994,7 @@ def create_brand():
                 'logo',
                 'favicon',
                 'heroImage',
+                'images',
                 'location',
                 'socialLinks',
                 'openingHours',
@@ -2960,6 +3007,7 @@ def create_brand():
                 'email',
                 'api',
                 'theme',
+                'themeId',
                 'aaApprovedDealer',
             )
             for key in overwrite_keys:
@@ -2973,22 +3021,43 @@ def create_brand():
                 merged['pages'] = existing_pages
 
             merged.setdefault('pages', {})
-            # Apply home hero changes without overwriting the rest of pages.*
-            new_home = brand.get('pages') if isinstance(brand.get('pages'), dict) else {}
-            new_home_hero = new_home.get('home', {}).get('hero', {}) if isinstance(new_home.get('home'), dict) else {}
-            if isinstance(new_home_hero, dict) and new_home_hero:
-                merged['pages'].setdefault('home', {})
-                merged['pages']['home'].setdefault('hero', {})
-                for hero_key in ('title', 'description', 'cta'):
-                    if new_home_hero.get(hero_key):
-                        merged['pages']['home']['hero'][hero_key] = new_home_hero.get(hero_key)
 
+            # Keep services list/faqs in sync, then let per-page hero overrides
+            # run after so a dealer-supplied servicesHeroTitle wins.
             merged['pages'].setdefault('services', {})
             if isinstance(merged['pages'].get('services'), dict):
                 merged['pages']['services']['services'] = brand.get('services', {}).get('items', [])
                 merged['pages']['services']['faqs'] = brand.get('faq', [])
                 merged['pages']['services'].setdefault('hero', {})
                 merged['pages']['services']['hero']['title'] = brand.get('services', {}).get('title', merged['pages']['services']['hero'].get('title'))
+
+            # Per-page hero overrides. Map from form-field prefix → pages key.
+            PAGE_HERO_FIELD_MAP = {
+                'home': 'home',
+                'about': 'about',
+                'services': 'services',
+                'contact': 'contact',
+                'usedCars': 'used-cars',
+                'finance': 'finance',
+                'sellYourCar': 'sell-your-car',
+                'recentlySold': 'recently-sold',
+                'partExchange': 'part-exchange',
+            }
+            for field_prefix, pages_key in PAGE_HERO_FIELD_MAP.items():
+                merged['pages'].setdefault(pages_key, {})
+                page = merged['pages'][pages_key]
+                if not isinstance(page, dict):
+                    continue
+                page.setdefault('hero', {})
+                title_val = data.get(f'{field_prefix}HeroTitle')
+                desc_val = data.get(f'{field_prefix}HeroDescription')
+                subtitle_val = data.get(f'{field_prefix}HeroSubtitle')
+                if isinstance(title_val, str) and title_val.strip():
+                    page['hero']['title'] = title_val.strip()
+                if isinstance(desc_val, str) and desc_val.strip():
+                    page['hero']['description'] = desc_val.strip()
+                if isinstance(subtitle_val, str) and subtitle_val.strip():
+                    page['hero']['subtitle'] = subtitle_val.strip()
 
             brand = merged
 
@@ -3516,6 +3585,7 @@ def update_brand(slug):
                 brand['name'] = existing_name
             errors = validate_brand(brand)
             if errors:
+                print(f"[UPDATE] Validation failed for {slug} (full config): {errors}")
                 return jsonify({'error': 'Validation failed', 'details': errors}), 400
 
             upsert_preview(slug, brand)
@@ -3628,6 +3698,32 @@ def update_brand(slug):
                     app.logger.exception("Failed to save inventory for brand slug=%s", slug)
                     return jsonify({'error': 'Failed to save inventory', 'details': str(e)}), 400
 
+        # Save uploaded per-page image overrides (about, services, finance,
+        # partExchange, sellYourCar, recentlySold). Each is optional; uploads
+        # land at /public/images/<slug>-<slot>.<ext> and the resulting path
+        # populates brand.images[<slot>].
+        PAGE_IMAGE_SLOTS = (
+            'about', 'services', 'finance',
+            'partExchange', 'sellYourCar', 'recentlySold',
+        )
+        uploaded_page_image_paths = {}
+        for slot in PAGE_IMAGE_SLOTS:
+            field_name = f'{slot}ImageFile'
+            if field_name not in request.files:
+                continue
+            slot_file = request.files[field_name]
+            if not (slot_file and slot_file.filename and allowed_file(slot_file.filename)):
+                continue
+            try:
+                uploaded_page_image_paths[slot] = save_image_file(slot_file, slug, slot)
+            except Exception as e:
+                app.logger.exception(
+                    "Failed to save %s image for brand slug=%s", slot, slug
+                )
+                return jsonify({
+                    'error': f'Failed to save {slot} image', 'details': str(e),
+                }), 400
+
         # Build config from the shared FormHandler logic (keeps services/testimonials/faq/etc).
         import sys
         sys.path.append(os.path.join(os.path.dirname(__file__), 'static', 'modules'))
@@ -3647,6 +3743,24 @@ def update_brand(slug):
                 brand_from_form['heroImage'] = hero_image_path
             if inventory_path:
                 brand_from_form['inventory'] = inventory_path
+
+            # Per-page image overrides: start from existing brand.images, layer
+            # any text-field URL overrides from `prepared` (image<Slot>Url), then
+            # layer uploaded file paths (uploads win).
+            existing_images = existing.get('images') if isinstance(existing.get('images'), dict) else {}
+            images_dict = dict(existing_images)
+            # Top-level heroImage doubles as images.hero for theme components
+            # that read brand.images.hero (Columbus, ELE) — keep them in sync.
+            if brand_from_form.get('heroImage'):
+                images_dict['hero'] = brand_from_form['heroImage']
+            for slot in PAGE_IMAGE_SLOTS:
+                url_field = f'image{slot[0].upper()}{slot[1:]}Url'
+                url_val = (prepared.get(url_field) or '').strip() if isinstance(prepared.get(url_field), str) else None
+                if url_val:
+                    images_dict[slot] = url_val
+                if slot in uploaded_page_image_paths:
+                    images_dict[slot] = uploaded_page_image_paths[slot]
+            brand_from_form['images'] = images_dict
                 
         except Exception as e:
             print(f"Warning: Could not use FormHandler: {e}")
@@ -3689,6 +3803,7 @@ def update_brand(slug):
             'logo',
             'favicon',
             'heroImage',
+            'images',
             'location',
             'socialLinks',
             'openingHours',
@@ -3716,12 +3831,6 @@ def update_brand(slug):
             merged['pages'] = existing_pages
 
         merged.setdefault('pages', {})
-        merged['pages'].setdefault('home', {})
-        merged['pages']['home'].setdefault('hero', {})
-        if prepared.get('homeHeroTitle'):
-            merged['pages']['home']['hero']['title'] = prepared.get('homeHeroTitle')
-        if prepared.get('homeHeroDescription'):
-            merged['pages']['home']['hero']['description'] = prepared.get('homeHeroDescription')
 
         # Keep services/contact/about page content from existing, but keep services lists in sync.
         merged['pages'].setdefault('services', {})
@@ -3732,11 +3841,46 @@ def update_brand(slug):
             merged['pages']['services']['services'] = brand_from_form.get('services', {}).get('items', [])
             merged['pages']['services']['faqs'] = brand_from_form.get('faq', [])
 
+        # Per-page hero overrides. Map from form-field prefix → pages key.
+        # Form posts e.g. aboutHeroTitle / aboutHeroDescription; we route them
+        # onto pages.<key>.hero.{title,description}. Fields are only applied
+        # when the user sent a non-empty value, so existing copy stays put for
+        # any field the dealer didn't touch. Runs AFTER the legacy services
+        # block so an explicit servicesHeroTitle wins over the services-section
+        # title fallback.
+        PAGE_HERO_FIELD_MAP = {
+            'home': 'home',
+            'about': 'about',
+            'services': 'services',
+            'contact': 'contact',
+            'usedCars': 'used-cars',
+            'finance': 'finance',
+            'sellYourCar': 'sell-your-car',
+            'recentlySold': 'recently-sold',
+            'partExchange': 'part-exchange',
+        }
+        for field_prefix, pages_key in PAGE_HERO_FIELD_MAP.items():
+            merged['pages'].setdefault(pages_key, {})
+            page = merged['pages'][pages_key]
+            if not isinstance(page, dict):
+                continue
+            page.setdefault('hero', {})
+            title_val = prepared.get(f'{field_prefix}HeroTitle')
+            desc_val = prepared.get(f'{field_prefix}HeroDescription')
+            subtitle_val = prepared.get(f'{field_prefix}HeroSubtitle')
+            if isinstance(title_val, str) and title_val.strip():
+                page['hero']['title'] = title_val.strip()
+            if isinstance(desc_val, str) and desc_val.strip():
+                page['hero']['description'] = desc_val.strip()
+            if isinstance(subtitle_val, str) and subtitle_val.strip():
+                page['hero']['subtitle'] = subtitle_val.strip()
+
         brand = merged
         
         # Validate the brand data
         errors = validate_brand(brand)
         if errors:
+            print(f"[UPDATE] Validation failed for {slug} (form): {errors}")
             return jsonify({
                 'error': 'Validation failed',
                 'details': errors

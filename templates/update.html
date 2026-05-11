@@ -101,6 +101,14 @@
                     </svg>
                     Theme Colors
                 </button>
+                <button type="button" class="tab-btn" data-tab="images">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                    Page Images
+                </button>
                 <button type="button" class="tab-btn" data-tab="content">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -328,9 +336,24 @@
                             </div>
                         </div>
                         <div class="form-grid three-columns">
+                            <div class="form-group">
+                                <label for="address1">Address Line 1</label>
+                                <input type="text" id="address1" name="address1" value="{{ brand_data.location.address.line1 if brand_data.location and brand_data.location.address else '' }}" placeholder="Street name and number">
+                            </div>
+                            <div class="form-group">
+                                <label for="address2">Address Line 2</label>
+                                <input type="text" id="address2" name="address2" value="{{ brand_data.location.address.line2 if brand_data.location and brand_data.location.address else '' }}" placeholder="Unit, suite, building (optional)">
+                            </div>
+                            <div class="form-group">
+                                <label for="county">County</label>
+                                <input type="text" id="county" name="county" value="{{ brand_data.location.address.county if brand_data.location and brand_data.location.address else '' }}" placeholder="e.g. Lanarkshire">
+                            </div>
+                        </div>
+                        <div class="form-grid three-columns">
                             <div class="form-group full-width">
-                                <label for="address">Address *</label>
+                                <label for="address">Full Address (display) *</label>
                                 <input type="text" id="address" name="address" value="{{ brand_data.location.fullAddress if brand_data.location else '' }}" required>
+                                <small>Used as the single-line address shown on the site. Left blank, the structured fields above are joined automatically.</small>
                             </div>
                         </div>
                     </div>
@@ -518,6 +541,87 @@
                                 <input type="hidden" id="textColor" name="textColor" value="{{ brand_data.theme.colors.textColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.textColor else '#1f2937' }}">
                                 <input type="color" class="color-picker-hidden" id="textColorPicker" value="{{ brand_data.theme.colors.textColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.textColor else '#1f2937' }}">
                             </div>
+
+                            <!-- Border Color Swatch -->
+                            <div class="color-swatch-card" data-color="borderColor">
+                                <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.borderColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.borderColor else '#e5e7eb' }}">
+                                    <div class="swatch-overlay">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                        <span>Click to change</span>
+                                    </div>
+                                </div>
+                                <div class="swatch-info">
+                                    <div class="swatch-header">
+                                        <h4>Border Color</h4>
+                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('borderColor')">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <p class="color-value">{{ brand_data.theme.colors.borderColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.borderColor else '#e5e7eb' }}</p>
+                                    <span class="color-description">Card / divider borders</span>
+                                </div>
+                                <input type="hidden" id="borderColor" name="borderColor" value="{{ brand_data.theme.colors.borderColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.borderColor else '#e5e7eb' }}">
+                                <input type="color" class="color-picker-hidden" id="borderColorPicker" value="{{ brand_data.theme.colors.borderColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.borderColor else '#e5e7eb' }}">
+                            </div>
+
+                            <!-- Muted Color Swatch -->
+                            <div class="color-swatch-card" data-color="mutedColor">
+                                <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.mutedColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.mutedColor else '#6b7280' }}">
+                                    <div class="swatch-overlay">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                        <span>Click to change</span>
+                                    </div>
+                                </div>
+                                <div class="swatch-info">
+                                    <div class="swatch-header">
+                                        <h4>Muted Color</h4>
+                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('mutedColor')">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <p class="color-value">{{ brand_data.theme.colors.mutedColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.mutedColor else '#6b7280' }}</p>
+                                    <span class="color-description">Secondary text / labels</span>
+                                </div>
+                                <input type="hidden" id="mutedColor" name="mutedColor" value="{{ brand_data.theme.colors.mutedColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.mutedColor else '#6b7280' }}">
+                                <input type="color" class="color-picker-hidden" id="mutedColorPicker" value="{{ brand_data.theme.colors.mutedColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.mutedColor else '#6b7280' }}">
+                            </div>
+
+                            <!-- Surface Color Swatch -->
+                            <div class="color-swatch-card" data-color="surfaceColor">
+                                <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.surfaceColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.surfaceColor else '#ffffff' }}">
+                                    <div class="swatch-overlay">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                        <span>Click to change</span>
+                                    </div>
+                                </div>
+                                <div class="swatch-info">
+                                    <div class="swatch-header">
+                                        <h4>Surface Color</h4>
+                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('surfaceColor')">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <p class="color-value">{{ brand_data.theme.colors.surfaceColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.surfaceColor else '#ffffff' }}</p>
+                                    <span class="color-description">Card / panel background</span>
+                                </div>
+                                <input type="hidden" id="surfaceColor" name="surfaceColor" value="{{ brand_data.theme.colors.surfaceColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.surfaceColor else '#ffffff' }}">
+                                <input type="color" class="color-picker-hidden" id="surfaceColorPicker" value="{{ brand_data.theme.colors.surfaceColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.surfaceColor else '#ffffff' }}">
+                            </div>
                         </div>
                     </div>
 
@@ -563,8 +667,85 @@
                     </div>
                 </div>
 
+                <!-- Page Images Tab -->
+                <div class="tab-pane" id="images-tab">
+                    <div class="form-section">
+                        <h3>🖼️ Per-page Images</h3>
+                        <p class="form-section-hint">Upload page-specific imagery or paste a remote/CDN URL. Uploaded files win over URLs. Leave both blank to keep the existing image.</p>
+
+                        {% set page_image_slots = [
+                            ('about', 'About page'),
+                            ('services', 'Services page'),
+                            ('finance', 'Finance page'),
+                            ('partExchange', 'Part Exchange page'),
+                            ('sellYourCar', 'Sell Your Car page'),
+                            ('recentlySold', 'Recently Sold page'),
+                        ] %}
+                        <div class="form-grid two-columns">
+                            {% for slot, label in page_image_slots %}
+                            {% set current = brand_data.images[slot] if brand_data.images and brand_data.images[slot] else '' %}
+                            <div class="form-group">
+                                <label>{{ label }} image</label>
+                                <div class="file-upload-area" data-field="{{ slot }}ImageFile">
+                                    <input type="file" id="{{ slot }}ImageFile" name="{{ slot }}ImageFile" accept="image/png,image/jpeg,image/gif,image/svg+xml,image/webp" hidden data-file-type="{{ slot }}Image">
+                                    <div class="file-upload-content">
+                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="17,8 12,3 7,8"></polyline>
+                                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        </svg>
+                                        <p class="file-upload-text">Click to upload or drag and drop</p>
+                                        <p class="file-upload-subtitle">PNG, JPG, GIF, SVG, WEBP (max. 16MB)</p>
+                                    </div>
+                                    <div class="file-upload-preview" id="{{ slot }}ImagePreview" style="{% if current %}display: flex;{% else %}display: none;{% endif %}">
+                                        <img src="{{ asset_url(current) }}" alt="{{ label }} preview" class="preview-image">
+                                        <button type="button" class="remove-file" onclick="clearFile('{{ slot }}ImageFile')">×</button>
+                                    </div>
+                                </div>
+                                <label for="image{{ slot[0]|upper }}{{ slot[1:] }}Url" class="form-sub-label">Or paste image URL</label>
+                                <input type="url" id="image{{ slot[0]|upper }}{{ slot[1:] }}Url" name="image{{ slot[0]|upper }}{{ slot[1:] }}Url" value="{{ current if current and (current.startswith('http://') or current.startswith('https://')) else '' }}" placeholder="https://...">
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Content Tab -->
                 <div class="tab-pane" id="content-tab">
+                    <div class="form-section">
+                        <h3>🎯 Page Heroes</h3>
+                        <p class="form-section-hint">Override the title / description shown in the hero band of each page. Leave a field blank to keep the existing copy.</p>
+
+                        {% set page_heroes = [
+                            ('about', 'About', brand_data.pages.about.hero.title if brand_data.pages and brand_data.pages.about and brand_data.pages.about.hero else '', brand_data.pages.about.hero.description if brand_data.pages and brand_data.pages.about and brand_data.pages.about.hero else '', None),
+                            ('services', 'Services', brand_data.pages.services.hero.title if brand_data.pages and brand_data.pages.services and brand_data.pages.services.hero else '', brand_data.pages.services.hero.description if brand_data.pages and brand_data.pages.services and brand_data.pages.services.hero else '', None),
+                            ('contact', 'Contact', brand_data.pages.contact.hero.title if brand_data.pages and brand_data.pages.contact and brand_data.pages.contact.hero else '', brand_data.pages.contact.hero.description if brand_data.pages and brand_data.pages.contact and brand_data.pages.contact.hero else '', brand_data.pages.contact.hero.subtitle if brand_data.pages and brand_data.pages.contact and brand_data.pages.contact.hero else ''),
+                            ('usedCars', 'Used Cars', brand_data.pages['used-cars'].hero.title if brand_data.pages and brand_data.pages['used-cars'] and brand_data.pages['used-cars'].hero else '', brand_data.pages['used-cars'].hero.description if brand_data.pages and brand_data.pages['used-cars'] and brand_data.pages['used-cars'].hero else '', None),
+                            ('finance', 'Finance', brand_data.pages.finance.hero.title if brand_data.pages and brand_data.pages.finance and brand_data.pages.finance.hero else '', brand_data.pages.finance.hero.description if brand_data.pages and brand_data.pages.finance and brand_data.pages.finance.hero else '', None),
+                            ('sellYourCar', 'Sell Your Car', brand_data.pages['sell-your-car'].hero.title if brand_data.pages and brand_data.pages['sell-your-car'] and brand_data.pages['sell-your-car'].hero else '', brand_data.pages['sell-your-car'].hero.description if brand_data.pages and brand_data.pages['sell-your-car'] and brand_data.pages['sell-your-car'].hero else '', None),
+                            ('recentlySold', 'Recently Sold', brand_data.pages['recently-sold'].hero.title if brand_data.pages and brand_data.pages['recently-sold'] and brand_data.pages['recently-sold'].hero else '', brand_data.pages['recently-sold'].hero.description if brand_data.pages and brand_data.pages['recently-sold'] and brand_data.pages['recently-sold'].hero else '', None),
+                            ('partExchange', 'Part Exchange', brand_data.pages['part-exchange'].hero.title if brand_data.pages and brand_data.pages['part-exchange'] and brand_data.pages['part-exchange'].hero else '', brand_data.pages['part-exchange'].hero.description if brand_data.pages and brand_data.pages['part-exchange'] and brand_data.pages['part-exchange'].hero else '', None),
+                        ] %}
+                        {% for key, label, title_val, desc_val, subtitle_val in page_heroes %}
+                        <div class="form-grid {% if subtitle_val is not none %}three-columns{% else %}two-columns{% endif %}">
+                            <div class="form-group">
+                                <label for="{{ key }}HeroTitle">{{ label }} Hero Title</label>
+                                <input type="text" id="{{ key }}HeroTitle" name="{{ key }}HeroTitle" value="{{ title_val }}" placeholder="{{ label }} page hero title">
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ key }}HeroDescription">{{ label }} Hero Description</label>
+                                <input type="text" id="{{ key }}HeroDescription" name="{{ key }}HeroDescription" value="{{ desc_val }}" placeholder="One-line description">
+                            </div>
+                            {% if subtitle_val is not none %}
+                            <div class="form-group">
+                                <label for="{{ key }}HeroSubtitle">{{ label }} Hero Subtitle</label>
+                                <input type="text" id="{{ key }}HeroSubtitle" name="{{ key }}HeroSubtitle" value="{{ subtitle_val }}" placeholder="Sub-heading (optional)">
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
                     <div class="form-section">
                         <h3>📄 Page Content</h3>
                         <div class="form-grid three-columns">
@@ -1680,7 +1861,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }, 2000);
                 } else {
-                    showAlert(result.error || 'Failed to update brand', 'error');
+                    const baseMsg = result.error || 'Failed to update brand';
+                    let detailMsg = '';
+                    if (Array.isArray(result.details) && result.details.length) {
+                        detailMsg = ': ' + result.details.join('; ');
+                    } else if (typeof result.details === 'string' && result.details) {
+                        detailMsg = ': ' + result.details;
+                    }
+                    showAlert(baseMsg + detailMsg, 'error');
                 }
             })
             .catch(error => {

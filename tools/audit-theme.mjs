@@ -70,6 +70,7 @@
  */
 
 import { promises as fs } from 'node:fs'
+import * as fsSync from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -502,6 +503,122 @@ function checkLibHeroNoSvgFallback(file, content) {
   )]
 }
 
+function checkLibNoAosOnHomepage(file, content) {
+  // The homepage is the single most-visible page in any theme. If its
+  // page.tsx body has zero `data-aos="..."` attributes, the page renders
+  // statically with no scroll-reveal — feels dead. Advisory rather than
+  // blocker: an editorial archetype might be intentionally still, but the
+  // default is "homepage should breathe".
+  const norm = file.replace(/\\/g, '/')
+  if (!/\/pages\/home\/page\.tsx$/.test(norm)) return []
+  if (/data-aos\s*=/.test(content)) return []
+  return [newFinding(
+    'lib-no-aos-on-homepage',
+    'advisory',
+    file,
+    content,
+    0,
+    `Homepage has no data-aos="..." attributes. Mount <AnimateOnScroll /> from app/widgets/AnimateOnScroll in Shell, then sprinkle data-aos="fade-up" / "zoom-in" etc. on at least the marquee sections so the page feels lively.`,
+  )]
+}
+
+function checkMotionAosMinCount(file, content) {
+  // Every page (home + inner pages) should have at least 2 data-aos entries
+  // at the page level — section components mounted by the page typically carry
+  // their own internal data-aos attrs, so 2 page-level entries is the bar
+  // that ensures the page composes "with intent" rather than dropping in
+  // sections statically. The home page gets a higher bar (4) since it's
+  // the showpiece. Kept inventory pages are skipped.
+  const norm = file.replace(/\\/g, '/')
+  if (!/\/pages\/[^/]+\/page\.tsx$/.test(norm)) return []
+  if (/\/pages\/used-cars\/page\.tsx$/.test(norm)) return []
+  if (/\/pages\/used-cars\/\[slug\]\/page\.tsx$/.test(norm)) return []
+  const isHome = /\/pages\/home\/page\.tsx$/.test(norm)
+  const minCount = isHome ? 4 : 2
+  const matches = content.match(/data-aos\s*=/g) || []
+  if (matches.length >= minCount) return []
+  return [newFinding(
+    'motion-aos-min-count',
+    'advisory',
+    file,
+    content,
+    0,
+    `Page has only ${matches.length} data-aos attribute(s) — Quality Bar requires at least ${minCount} staggered entry animations per ${isHome ? 'homepage' : 'page'}. Vary the variants (fade-up / zoom-in / slide-up / flip-up / blur-in etc) and stagger via data-aos-delay so the page feels lively rather than mechanical.`,
+  )]
+}
+
+function checkMotionNoAnimatedGlow(file, content) {
+  // Theme-wide check anchored to base.css. Looks at base.css + every sibling
+  // .tsx/.css under the theme directory for any of:
+  //   - mfx-glow-pulse / mfx-glow-orbit / mfx-pulse-dot / mfx-shimmer /
+  //     mfx-scan / mfx-text-glow / mfx-border-glow / mfx-float / mfx-tilt
+  //     (the MotionFX utility classes)
+  //   - @keyframes definitions (per-theme custom animations)
+  //   - data-mfx-scroll attributes (scroll-tied effects)
+  // If none found anywhere in the theme, surface the advisory once on the
+  // base.css file. Themes without motion feel lifeless on real devices.
+  const norm = file.replace(/\\/g, '/')
+  if (!/\/styles\/base\.css$/.test(norm)) return []
+  const themeDir = norm.replace(/\/styles\/base\.css$/, '')
+  let hasMotion = false
+  try {
+    const walk = (dir) => {
+      let entries
+      try { entries = fsSync.readdirSync(dir, { withFileTypes: true }) } catch { return }
+      for (const entry of entries) {
+        if (hasMotion) return
+        const full = path.join(dir, entry.name)
+        if (entry.isDirectory()) {
+          walk(full)
+        } else if (/\.(tsx?|css)$/.test(entry.name)) {
+          let text
+          try { text = fsSync.readFileSync(full, 'utf8') } catch { continue }
+          if (
+            /mfx-(glow|pulse-dot|shimmer|scan|float|tilt|border-glow|text-glow|rotate-slow|grid-drift|fade-loop)/.test(text) ||
+            /data-mfx-scroll\s*=/.test(text) ||
+            /@keyframes\s+\w+/i.test(text)
+          ) {
+            hasMotion = true
+            return
+          }
+        }
+      }
+    }
+    walk(themeDir.split('/').join(path.sep))
+  } catch {
+    // If filesystem walk fails for any reason, default to "no motion" so
+    // the advisory still fires — better to nag than to silently pass.
+  }
+  if (hasMotion) return []
+  return [newFinding(
+    'motion-no-animated-glow',
+    'advisory',
+    file,
+    content,
+    0,
+    `Theme has no animated glow / motion primitives anywhere. Add at least one of: <span className="mfx-glow-pulse" />, <div className="mfx-glow-orbit" />, .mfx-pulse-dot on a status chip, .mfx-shimmer on the primary CTA, .mfx-text-glow on the hero highlight phrase, data-mfx-scroll on the hero, OR a per-theme @keyframes definition. Static radial-gradient backdrops feel lifeless on real devices.`,
+  )]
+}
+
+function checkMotionNoScrollTied(file, content) {
+  // Every homepage should have at least one `data-mfx-scroll="..."`
+  // attribute to drive a parallax / sticky-fade / blur-on-exit effect.
+  // The companion <ScrollProgress /> widget sets `--mfx-progress` on
+  // these elements; without any, the homepage has zero scroll-tied motion
+  // and the parallax driver runs for nothing. Advisory.
+  const norm = file.replace(/\\/g, '/')
+  if (!/\/pages\/home\/page\.tsx$/.test(norm)) return []
+  if (/data-mfx-scroll\s*=/.test(content)) return []
+  return [newFinding(
+    'motion-no-scroll-tied',
+    'advisory',
+    file,
+    content,
+    0,
+    `Homepage has no data-mfx-scroll="..." attributes. Wire at least one scroll-tied effect (parallax-slow / parallax-medium / fade-out-on-exit / zoom-on-enter) so the user feels page depth as they scroll. See @/app/widgets/ScrollProgress.`,
+  )]
+}
+
 const RULES = [
   checkA11yImgAlt,
   checkA11yH1Multiple,
@@ -519,6 +636,10 @@ const RULES = [
   checkStdCssUnscopedGlobalRule,
   checkDataFetchNoBrandParam,
   checkLibHeroNoSvgFallback,
+  checkLibNoAosOnHomepage,
+  checkMotionAosMinCount,
+  checkMotionNoAnimatedGlow,
+  checkMotionNoScrollTied,
 ]
 
 // --- ignore directives ------------------------------------------------------
@@ -706,6 +827,40 @@ async function main() {
         `Theme references --t-* role tokens in ${usesRoleTokens.length} file(s) but is missing styles/color-policy.css. ` +
         `The role tokens won't resolve, leaving form-field borders + card surfaces effectively invisible. ` +
         `Add styles/color-policy.css mapping each --t-* used to its --color-* brand-token equivalent (see columbus-vehicles-bespoke for the minimum 7-token mapping).`,
+    })
+  }
+
+  // `lib-missing-cookie-banner`: every dealer site needs a GDPR consent
+  // banner. Fires if the theme's Shell.tsx exists but doesn't mount one.
+  // Acceptable mounts: <CookieBanner …/> from @/app/widgets/CookieBanner
+  // (preferred — the brandstudio global widget) OR a per-theme component
+  // imported via './CookieBanner' (legacy springalls-classic pattern).
+  // Advisory rather than blocker because some preview contexts (embedded
+  // admin views, intranet) legitimately don't need consent.
+  let shellPath = null
+  let shellMountsCookieBanner = false
+  for (const filePath of auditFiles) {
+    const norm = filePath.replace(/\\/g, '/')
+    if (/\/components\/Shell\.tsx$/.test(norm)) {
+      shellPath = filePath
+      const raw = await fs.readFile(filePath, 'utf8').catch(() => '')
+      // Any <CookieBanner ... /> JSX mount counts. Also accept a default-import
+      // alias under a different name as long as the import path mentions
+      // CookieBanner (catches `import Banner from '..../CookieBanner'`).
+      if (/<CookieBanner\b/.test(raw) || /CookieBanner\b[^'"]*['"]/.test(raw)) {
+        shellMountsCookieBanner = true
+      }
+    }
+  }
+  if (shellPath && !shellMountsCookieBanner) {
+    findings.push({
+      rule: 'lib-missing-cookie-banner',
+      severity: 'advisory',
+      file: path.relative(PROJECT_ROOT, shellPath),
+      line: 1,
+      col: 1,
+      message:
+        `Shell does not mount a CookieBanner. UK dealer sites need GDPR consent — prefer the brandstudio global widget at @/app/widgets/CookieBanner over re-rolling per theme.`,
     })
   }
 

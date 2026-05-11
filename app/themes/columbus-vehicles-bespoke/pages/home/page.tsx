@@ -35,14 +35,23 @@ export async function ColumbusHomePage({ brand }: ThemePageProps) {
     <>
       <Hero />
 
-      <section className={styles.specsBar} aria-labelledby="specs-headline">
+      <section
+        className={styles.specsBar}
+        aria-labelledby="specs-headline"
+        data-aos="fade-up"
+      >
         <div className={styles.specsInner}>
           <h2 id="specs-headline" className={styles.specsHeadline}>
             Why {dealerName}
           </h2>
           <ul className={styles.specsList} role="list">
-            {SPECS.map((spec) => (
-              <li key={spec.label} className={styles.specCard}>
+            {SPECS.map((spec, i) => (
+              <li
+                key={spec.label}
+                className={styles.specCard}
+                data-aos="fade-up"
+                data-aos-delay={String(80 + i * 80)}
+              >
                 <span className={styles.specValue}>{spec.value}</span>
                 <span className={styles.specLabel}>{spec.label}</span>
               </li>
@@ -51,12 +60,12 @@ export async function ColumbusHomePage({ brand }: ThemePageProps) {
         </div>
       </section>
 
-      <LatestArrivalsSection brandSlug={brandSlug} />
-      <ServicesSection />
-      <RecentlySoldPreview brandSlug={brandSlug} />
-      <CtaSection />
-      <ReviewsSection testimonials={(brand as any)?.testimonials} />
-      <DirectorySection brandSlug={brandSlug} />
+      <div data-aos="fade-up"><LatestArrivalsSection brandSlug={brandSlug} /></div>
+      <div data-aos="fade-up"><ServicesSection /></div>
+      <div data-aos="fade-up"><RecentlySoldPreview brandSlug={brandSlug} /></div>
+      <div data-aos="zoom-in"><CtaSection /></div>
+      <div data-aos="fade-up"><ReviewsSection testimonials={(brand as any)?.testimonials} /></div>
+      <div data-aos="fade"><DirectorySection brandSlug={brandSlug} /></div>
     </>
   )
 }

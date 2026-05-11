@@ -20,12 +20,18 @@ export async function GET(request: Request) {
         return bYear - aYear
       })
 
-    // If no featured vehicles, get random vehicles from inventory
+    // If no featured vehicles, fall back to the newest stock (year desc, then
+    // price desc as a tiebreak) so prospect previews show a sensible "highlight
+    // reel" rather than a random shuffle every reload.
     if (featured.length === 0) {
-      console.log(`[/api/featured-vehicles] No featured vehicles found, selecting random vehicles`)
+      console.log(`[/api/featured-vehicles] No featured flag set — using newest-stock fallback`)
       featured = [...inventory]
-        .sort(() => 0.5 - Math.random()) // Shuffle randomly
-        .slice(0, limit) // Take requested number
+        .sort((a, b) => {
+          const yearDelta = (Number(b.year) || 0) - (Number(a.year) || 0)
+          if (yearDelta !== 0) return yearDelta
+          return (Number(b.price) || 0) - (Number(a.price) || 0)
+        })
+        .slice(0, limit)
     } else {
       featured = featured.slice(0, limit)
     }

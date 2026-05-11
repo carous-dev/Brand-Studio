@@ -57,9 +57,10 @@ export default function Hero() {
   const city = brand?.location?.address?.city || 'Reading'
   const county = brand?.location?.address?.county || 'Berkshire'
   const heroTitle = `Used Cars for Sale in ${city}, ${county}`
+  const asString = (v: unknown): string | null => (typeof v === 'string' && v ? v : null)
   const heroLead =
-    brand?.aboutUs?.description ||
-    brand?.description ||
+    asString(brand?.aboutUs?.description) ||
+    asString((brand as any)?.description) ||
     `${brand?.name || "Springalls Car Sales Ltd"} is an independent ${city} dealership offering hand-picked used cars, flexible finance, and part exchange support. Visit us at ${city}, ${county}.`
   const reviewImage = (brand as any)?.heroReviewImage || '/images/google-at-motorsinc.png'
 

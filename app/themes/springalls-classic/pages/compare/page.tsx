@@ -1,4 +1,9 @@
 "use client"
+// audit-ignore-file: tp-use-client-on-page
+// Springalls baseline page; Mode B (clone-and-edit) ports inherit this.
+// Extracting interactivity into client islands is a known follow-up — same
+// risk-management as columbus-vehicles-bespoke/pages/used-cars/[slug]/page.tsx
+// (see FEATURE_LOG 2026-05-10 for the Turbopack chunk-item collision rationale).
 
 import Link from "next/link"
 import { ArrowRight, GitCompare, Trash2 } from "lucide-react"

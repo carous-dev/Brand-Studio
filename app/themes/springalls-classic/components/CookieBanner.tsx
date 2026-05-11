@@ -106,6 +106,7 @@ export default function CookieBanner() {
         </div>
       </div>
 
+      {/* audit-ignore: a11y-div-as-button — backdrop overlay; aside dialog below has its own keyboard close */}
       <div
         className={`${styles.cookieOverlay} ${panelOpen ? styles.isOpen : ''}`}
         onClick={() => setPanelOpen(false)}

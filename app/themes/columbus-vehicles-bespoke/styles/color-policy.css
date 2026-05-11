@@ -1,0 +1,37 @@
+/* =============================================================================
+ * COLUMBUS VEHICLES — ROLE TOKEN POLICY
+ * =============================================================================
+ *
+ * The kept inventory pages (`pages/used-cars/page.tsx`,
+ * `pages/used-cars/UsedCarsClient.tsx`, `pages/used-cars/[slug]/page.tsx`)
+ * reference role-level tokens (`--t-border`, `--t-card`, etc.) that were
+ * originally defined in springalls-classic's `color-policy.css`. The
+ * skeleton scaffolder prunes that file to keep new themes free to define
+ * their own role-token system — but the inventory pages still need the
+ * tokens, so we provide a minimal mapping here.
+ *
+ * Each `--t-*` resolves to the brand-driven `--color-*` system that
+ * `BrandStyles.tsx` injects per tenant. Dashboard edits to a brand's
+ * primary/border/muted colors flow through automatically.
+ * ============================================================================= */
+
+[data-theme-id='columbus-vehicles-bespoke'] {
+  /* Surface tokens */
+  --t-page: var(--color-bg, #ffffff);
+  --t-card: var(--color-surface, #ffffff);
+
+  /* Border — full strength so input/select bounding boxes are visibly framed.
+   * The previous fallback was undefined and rendered borders as currentcolor
+   * (washed-out / invisible). Audit rule `a11y-form-field-faded-border` flags
+   * any reintroduction of color-mix(... transparent) at <70% on form fields. */
+  --t-border: var(--color-border, #d3d7dc);
+
+  /* Text + muted */
+  --t-text: var(--color-text, #0f1623);
+  --t-muted: var(--color-muted, #6b7280);
+
+  /* Icon container backgrounds — tinted versions of the brand primary so
+   * they sit naturally against white surfaces while staying brand-coloured. */
+  --t-icon-bg: color-mix(in srgb, var(--color-primary, #1e293b) 10%, transparent);
+  --t-icon-bg-strong: color-mix(in srgb, var(--color-primary, #1e293b) 18%, transparent);
+}

@@ -22,9 +22,19 @@
   overflow: hidden;
 }
 
+.heroBackdrop {
+  /* SVG fallback — sits behind the photo. HeroBackdrop's inline styles
+     already set position:absolute + inset:0; we only need to push it
+     below the photo layer. */
+  z-index: -3 !important;
+}
+
 .heroPhoto {
   position: absolute;
   inset: 0;
+  /* Two-step fallback: dealer's brand image var → theme-default downloaded
+     hero. When neither is available, background-image: none lets the
+     HeroBackdrop SVG (z-index -3) show through. */
   background-image: var(--brand-image-hero, url('/themes/columbus-vehicles-bespoke/hero.jpg'));
   background-size: cover;
   background-position: center 35%;

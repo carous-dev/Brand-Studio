@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { ArrowRight, Phone } from 'lucide-react'
 import { useBrand } from '../context/BrandClientWrapper'
+import HeroBackdrop from './HeroBackdrop'
 import styles from './Hero.module.css'
 
 /**
@@ -28,6 +29,11 @@ export default function Hero() {
 
   return (
     <section className={styles.hero} aria-labelledby="hero-headline">
+      {/* SVG decorative fallback — renders behind .heroPhoto. When the photo URL
+          resolves and loads, the photo covers it; when no `--brand-image-hero`
+          is set or the file 404s, the geometric brand-tinted backdrop shows
+          through so the hero never renders as plain charcoal. */}
+      <HeroBackdrop className={styles.heroBackdrop} />
       <div className={styles.heroPhoto} aria-hidden="true" />
       <div className={styles.heroOverlay} aria-hidden="true" />
       <div className={styles.heroInner}>

@@ -6,8 +6,13 @@ import { useBrand } from '../context/BrandClientWrapper'
 import { GarageProvider } from '../context/GarageContext'
 import Header from './Header'
 import Footer from './Footer'
+// Brandstudio global widgets — same implementation across every theme.
+// `@/*` maps to project root in tsconfig, so widgets live at `@/app/widgets/...`.
+import AnimateOnScroll from '@/app/widgets/AnimateOnScroll'
+import CookieBanner from '@/app/widgets/CookieBanner'
 
 import '../styles/base.css'
+import '../styles/color-policy.css'
 
 const KNOWN_ROUTES = new Set([
   '/', '/about', '/about-us', '/contact', '/contact-us',
@@ -48,11 +53,13 @@ export function ColumbusShell({ children }: { children: ReactNode }) {
   return (
     <GarageProvider brandSlug={brand?.slug || 'default'}>
       <a href="#content" className="columbus-skip-link">Skip to content</a>
+      <AnimateOnScroll />
       <Header />
       <main id="content" role="main" className="columbus-main">
         {children}
       </main>
       <Footer />
+      <CookieBanner brandSlug={brand?.slug} cookiePolicyHref="/cookie-policy" />
     </GarageProvider>
   )
 }

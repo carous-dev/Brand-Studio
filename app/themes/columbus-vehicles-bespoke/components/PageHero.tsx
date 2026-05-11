@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import HeroBackdrop from './HeroBackdrop'
 import styles from './PageHero.module.css'
 
 /**
@@ -29,6 +30,10 @@ export default function PageHero({ eyebrow, title, lead, imageSlot = 'hero', chi
   const bg = SLOT_VAR[imageSlot]
   return (
     <section className={styles.hero} style={{ ['--page-hero-bg' as any]: bg }}>
+      {/* SVG decorative fallback behind the photo div — when the slot's
+          --brand-image-* var is unset the photo's background-image becomes
+          `none` and this backdrop shows through. */}
+      <HeroBackdrop className={styles.backdrop} />
       <div className={styles.bg} aria-hidden="true" />
       <div className={styles.overlay} aria-hidden="true" />
       <div className={styles.inner}>

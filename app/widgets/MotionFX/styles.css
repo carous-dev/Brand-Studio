@@ -1,0 +1,302 @@
+/* =============================================================================
+ * MotionFX — neon-light & motion primitives (brandstudio global)
+ * =============================================================================
+ *
+ * Reusable @keyframes + utility classes for animated neon glows, shimmers,
+ * scan lines, float loops, and scroll-tied effects. Every animation uses
+ * brand tokens (var(--color-primary), var(--color-accent)) so it retints
+ * per brand automatically.
+ *
+ * IMPORTANT: Every utility class is additive — you put them on a
+ * decorative element (usually a positioned ::before pseudo or a transparent
+ * <span aria-hidden>). Don't apply them to content elements (text, buttons)
+ * unless the class explicitly targets that surface (.mfx-text-glow, etc.).
+ *
+ * Honours `prefers-reduced-motion: reduce` — all infinite loops freeze;
+ * one-shot transitions still run.
+ * ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+ * KEYFRAMES — neon / light
+ * ------------------------------------------------------------------------- */
+
+@keyframes mfx-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes mfx-glow-breathe {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.78;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes mfx-orbit {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(40px, -30px); }
+  50%  { transform: translate(0, -60px); }
+  75%  { transform: translate(-40px, -30px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes mfx-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes mfx-scan {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes mfx-text-glow {
+  0%, 100% {
+    text-shadow:
+      0 0 8px color-mix(in srgb, var(--color-primary) 40%, transparent),
+      0 0 18px color-mix(in srgb, var(--color-primary) 24%, transparent);
+  }
+  50% {
+    text-shadow:
+      0 0 14px color-mix(in srgb, var(--color-primary) 70%, transparent),
+      0 0 32px color-mix(in srgb, var(--color-primary) 44%, transparent);
+  }
+}
+
+@keyframes mfx-border-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-primary) 60%, transparent),
+      0 0 16px color-mix(in srgb, var(--color-primary) 30%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--color-primary) 80%, transparent),
+      0 0 32px color-mix(in srgb, var(--color-primary) 50%, transparent);
+  }
+}
+
+@keyframes mfx-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+@keyframes mfx-float-large {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-14px) rotate(2deg); }
+}
+
+@keyframes mfx-tilt {
+  0%, 100% { transform: rotate(-1.2deg); }
+  50%      { transform: rotate(1.2deg); }
+}
+
+@keyframes mfx-grid-drift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 70px 70px; }
+}
+
+@keyframes mfx-rotate-slow {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes mfx-fade-loop {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+
+/* ---------------------------------------------------------------------------
+ * UTILITY CLASSES — additive, decorative
+ *
+ * All classes use `:where(...)` scoping so specificity stays at (0,1,0) and
+ * theme component CSS modules can override timing / size / color trivially.
+ * ------------------------------------------------------------------------- */
+
+:where(.mfx-pulse-dot) {
+  position: relative;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  /* Default to primary; override with `--mfx-dot-color: …` on the parent (or
+   * just on this element) to recolor (e.g. green for "live" / "available",
+   * amber for "limited", red for "sold-out"). */
+  background: var(--mfx-dot-color, var(--color-primary));
+  flex-shrink: 0;
+}
+
+:where(.mfx-pulse-dot)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  animation: mfx-pulse 2s ease-out infinite;
+  z-index: -1;
+}
+
+:where(.mfx-glow-pulse) {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 70%, transparent) 0%, transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+  animation: mfx-glow-breathe 6s ease-in-out infinite;
+  opacity: 0.55;
+}
+
+:where(.mfx-glow-orbit) {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 60%, transparent) 0%, transparent 70%);
+  filter: blur(50px);
+  pointer-events: none;
+  animation: mfx-orbit 18s ease-in-out infinite;
+  opacity: 0.4;
+}
+
+:where(.mfx-shimmer) {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+:where(.mfx-shimmer)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg,
+    transparent 0%,
+    color-mix(in srgb, #ffffff 30%, transparent) 50%,
+    transparent 100%);
+  transform: translateX(-100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+:where(.mfx-shimmer:hover)::after,
+:where(.mfx-shimmer.is-active)::after {
+  animation: mfx-shimmer 1.2s ease-out;
+}
+
+:where(.mfx-shimmer-loop)::after {
+  animation: mfx-shimmer 3.2s ease-in-out infinite;
+}
+
+:where(.mfx-scan) {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+:where(.mfx-scan)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 80px;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--color-primary) 22%, transparent) 50%,
+    transparent 100%);
+  animation: mfx-scan 4.5s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+:where(.mfx-text-glow) {
+  animation: mfx-text-glow 3.6s ease-in-out infinite;
+}
+
+:where(.mfx-border-glow) {
+  animation: mfx-border-glow 3.2s ease-in-out infinite;
+}
+
+:where(.mfx-float) {
+  animation: mfx-float 4s ease-in-out infinite;
+}
+
+:where(.mfx-float-large) {
+  animation: mfx-float-large 6s ease-in-out infinite;
+}
+
+:where(.mfx-tilt) {
+  animation: mfx-tilt 5s ease-in-out infinite;
+}
+
+:where(.mfx-grid-drift) {
+  animation: mfx-grid-drift 22s linear infinite;
+}
+
+:where(.mfx-rotate-slow) {
+  animation: mfx-rotate-slow 28s linear infinite;
+}
+
+:where(.mfx-fade-loop) {
+  animation: mfx-fade-loop 3.5s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------------------------
+ * SCROLL-TIED — for use with <ScrollProgress />
+ *
+ * Themes register a section with `data-mfx-scroll="parallax"` (or other
+ * variants below) and ScrollProgress writes `--mfx-progress` (0 → 1) on the
+ * element as the user scrolls past. Themes consume `--mfx-progress` to drive
+ * parallax / sticky reveal / fade-on-leave effects. All transform tied
+ * effects use `will-change: transform` to GPU-accelerate.
+ * ------------------------------------------------------------------------- */
+
+:where([data-mfx-scroll]) {
+  --mfx-progress: 0;
+  will-change: transform, opacity, filter;
+}
+
+:where([data-mfx-scroll='parallax-slow'])    > * { transform: translate3d(0, calc(var(--mfx-progress) * -40px), 0); }
+:where([data-mfx-scroll='parallax-medium'])  > * { transform: translate3d(0, calc(var(--mfx-progress) * -90px), 0); }
+:where([data-mfx-scroll='parallax-fast'])    > * { transform: translate3d(0, calc(var(--mfx-progress) * -160px), 0); }
+:where([data-mfx-scroll='fade-out-on-exit']) > * { opacity: calc(1 - var(--mfx-progress)); }
+:where([data-mfx-scroll='blur-on-exit'])     > * { filter: blur(calc(var(--mfx-progress) * 8px)); }
+:where([data-mfx-scroll='zoom-on-enter'])    > * { transform: scale(calc(0.95 + var(--mfx-progress) * 0.05)); }
+
+/* ---------------------------------------------------------------------------
+ * REDUCED-MOTION — freeze every loop, skip every transition
+ * ------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.mfx-pulse-dot)::before,
+  :where(.mfx-glow-pulse),
+  :where(.mfx-glow-orbit),
+  :where(.mfx-shimmer-loop)::after,
+  :where(.mfx-scan)::after,
+  :where(.mfx-text-glow),
+  :where(.mfx-border-glow),
+  :where(.mfx-float),
+  :where(.mfx-float-large),
+  :where(.mfx-tilt),
+  :where(.mfx-grid-drift),
+  :where(.mfx-rotate-slow),
+  :where(.mfx-fade-loop) {
+    animation: none !important;
+  }
+
+  :where(.mfx-shimmer:hover)::after,
+  :where(.mfx-shimmer.is-active)::after {
+    animation: none !important;
+  }
+
+  :where([data-mfx-scroll]) {
+    --mfx-progress: 0 !important;
+  }
+}

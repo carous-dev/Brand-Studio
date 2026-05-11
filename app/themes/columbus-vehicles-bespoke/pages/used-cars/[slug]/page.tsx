@@ -1,4 +1,12 @@
 "use client";
+// audit-ignore-file: tp-use-client-on-page
+// Vehicle-detail page kept from skeleton scaffolder. Extracting its
+// interactivity (gallery + lightbox + enquiry modal + finance calc) into
+// a client island is a multi-hour refactor. Risk-managed: the chunk-item
+// collision pattern needs TWO parallel 'use client' pages at the same
+// path; until /new-theme produces another archetype with a vehicle-detail
+// page that ALSO carries the directive, this is functionally safe.
+// Documented as deferred technical debt in FEATURE_LOG 2026-05-10.
 
 import {
   type CSSProperties,

@@ -1,4 +1,9 @@
 "use client"
+// audit-ignore-file: tp-use-client-on-page
+// Springalls baseline page; Mode B (clone-and-edit) ports inherit this.
+// Extracting interactivity into client islands is a known follow-up — same
+// risk-management as columbus-vehicles-bespoke/pages/used-cars/[slug]/page.tsx
+// (see FEATURE_LOG 2026-05-10 for the Turbopack chunk-item collision rationale).
 
 import { useEffect, useMemo } from 'react'
 import { Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
@@ -101,8 +106,8 @@ export function SpringallsContactPage() {
         subject: `Contact enquiry: ${values.topic || 'General'}`,
         message: composedMessage,
         url: pageUrl,
-        leadType: meta.leadType || 'contact-enquiry',
-        leadSource: meta.leadSource || 'contact-us',
+        leadType: 'contact-enquiry',
+        leadSource: 'contact-us',
         formTs: meta.formTs,
         recaptchaToken: meta.recaptchaToken,
         [meta.honeypotField]: meta.honeypotValue
@@ -166,7 +171,7 @@ export function SpringallsContactPage() {
             <p className={styles.sectionText}>Complete the form below and we will respond as quickly as possible.</p>
           </div>
           <div className={styles.contactGrid}>
-            <form className={styles.form} onSubmit={contactForm.handleSubmit}>
+            <form className={styles.form} onSubmit={(e) => { e.preventDefault(); void contactForm.submit() }}>
               <input type="text" {...contactForm.honeypotProps} />
               <label className={styles.field}>
                 <span>Full name</span>

@@ -1,0 +1,196 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--color-bg) 96%, transparent) 0%,
+      color-mix(in srgb, var(--color-bg) 92%, transparent) 100%);
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 80%, var(--color-bg));
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, height 0.18s ease;
+}
+.headerScrolled {
+  background: var(--color-bg);
+  border-bottom-color: var(--color-border);
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.08);
+}
+.header::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 -1px 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--color-primary) 50%, transparent 100%);
+  opacity: 0.45;
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  text-decoration: none;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+.brandMark {
+  font-family: 'DM Sans', 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--color-primary);
+  letter-spacing: 0.02em;
+}
+.brandText {
+  font-family: 'DM Sans', 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--color-text);
+}
+
+.nav {
+  display: none;
+}
+@media (min-width: 960px) {
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(18px, 2vw, 28px);
+  }
+}
+
+.navLink {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text);
+  text-decoration: none;
+  padding: 8px 4px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.navLink:hover {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.callCta {
+  display: none;
+}
+.callLabel {
+  white-space: nowrap;
+}
+@media (min-width: 720px) {
+  .callCta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px 16px;
+    background: var(--color-primary);
+    color: #ffffff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.15s ease;
+  }
+  .callCta:hover {
+    background: color-mix(in srgb, var(--color-primary) 88%, #000);
+  }
+}
+
+.menuToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.menuToggle:hover {
+  background: var(--color-surface);
+  border-color: var(--color-text);
+}
+@media (min-width: 960px) {
+  .menuToggle {
+    display: none;
+  }
+}
+
+/* Mobile overlay menu */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 0 clamp(16px, 4vw, 32px) 32px;
+}
+.overlayHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  border-bottom: 1px solid var(--color-border);
+}
+.overlayNav {
+  display: flex;
+  flex-direction: column;
+  padding-top: 24px;
+  gap: 4px;
+}
+.overlayLink {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  padding: 12px 8px;
+  font-family: 'DM Sans', 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+  color: var(--color-text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-border);
+}
+.overlayLink:hover {
+  color: var(--color-primary);
+}
+.overlayCall {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 32px;
+  min-height: 56px;
+  padding: 14px 24px;
+  background: var(--color-primary);
+  color: #ffffff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.05rem;
+}

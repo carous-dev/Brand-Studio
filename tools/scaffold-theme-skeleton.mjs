@@ -66,6 +66,13 @@ const KEEP_PATTERNS = [
   /^pages\/used-cars\/\[slug\]\/page\.module\.css$/,
   /^pages\/recently-sold\/page\.tsx$/,    // already a thin component, keep
   /^components\/HeroBackdrop\.tsx$/,      // dependency of used-cars pages — kept
+  // Role-token system — used by the kept inventory CSS modules. Without it
+  // their `var(--t-border)` / `var(--t-card)` references resolve undefined
+  // and form-field borders render washed out (caught the hard way in
+  // columbus-vehicles-bespoke). The scaffolder's identifier rewrite
+  // automatically reskins the [data-theme-id='springalls-classic'] scope to
+  // the new theme's id, so the kept file just works for the new theme.
+  /^styles\/color-policy\.css$/,
 ]
 
 // Files to REPLACE with minimal stubs (these names exist in the template but
@@ -257,8 +264,17 @@ import { useBrand } from '../context/BrandClientWrapper'
 import { GarageProvider } from '../context/GarageContext'
 import Header from './Header'
 import Footer from './Footer'
+// Brandstudio global widgets — same implementation across every theme.
+// Don't re-roll AOS / cookie consent / motion FX per theme; mount the
+// widgets and pass brand-aware props.
+import AnimateOnScroll from '@/app/widgets/AnimateOnScroll'
+import { MotionFX } from '@/app/widgets/MotionFX'
+import ScrollProgress from '@/app/widgets/ScrollProgress'
+import CookieBanner from '@/app/widgets/CookieBanner'
+import WhatsAppFab from '@/app/widgets/WhatsAppFab'
 
 import '../styles/base.css'
+import '../styles/color-policy.css'
 
 const KNOWN_ROUTES = new Set([
   '/', '/about', '/about-us', '/contact', '/contact-us',
@@ -268,15 +284,38 @@ const KNOWN_ROUTES = new Set([
 ])
 
 /**
- * SKELETON Shell — replace with archetype-appropriate composition during
- * Phase 8. Currently provides minimal structural plumbing only:
- *  - GarageProvider for wishlist/compare state
- *  - Header / main / Footer
- *  - Special-area handling for /dashboard and /login
+ * SKELETON Shell — Phase 8 redesigns this per the chosen archetype.
  *
- * Phase 8 ADDITIONS to consider per archetype: skip-to-content link,
- * AOS provider, cookie banner, WhatsApp widget, preview banner. None of
- * these are mandatory — keep only what the archetype calls for.
+ * What this stub already wires up (don't remove unless you have a strong
+ * archetype-specific reason):
+ *  - GarageProvider for wishlist/compare state.
+ *  - Skip-to-content link for keyboard users.
+ *  - <AnimateOnScroll /> — global widget mounting the scroll-reveal observer.
+ *    Use data-aos="<variant>" on any element (18 variants supported — fade,
+ *    fade-up/down/left/right, fade-up-right/up-left/down-right/down-left,
+ *    zoom-in/out, zoom-in-up, zoom-out-down, flip-up/down/left/right,
+ *    slide-up/down, blur-in). Optional: data-aos-delay / -duration / -easing.
+ *  - <MotionFX /> — CSS-only injector for animated neon/light primitives:
+ *    .mfx-glow-pulse, .mfx-glow-orbit, .mfx-pulse-dot, .mfx-shimmer,
+ *    .mfx-text-glow, .mfx-border-glow, .mfx-scan, .mfx-float, .mfx-tilt,
+ *    .mfx-grid-drift. All brand-token-driven, all reduced-motion safe.
+ *  - <ScrollProgress /> — rAF-throttled scroll-tied progress driver. Add
+ *    data-mfx-scroll="parallax-slow|parallax-medium|parallax-fast|
+ *    fade-out-on-exit|blur-on-exit|zoom-on-enter" to any container — its
+ *    children get the effect for free. Themes can also consume
+ *    var(--mfx-progress) (0 → 1) directly in their own CSS modules.
+ *  - <CookieBanner /> — UK GDPR consent. Replace with a per-theme bespoke
+ *    banner under \`components/<Theme>CookieBanner.tsx\` during Phase 8
+ *    (the shared widget is a fallback / starter, not the default for
+ *    bespoke themes — see SKILL Quality Bar §"Cookie banners must NOT
+ *    be one-size-fits-all").
+ *  - <WhatsAppFab /> — floating WhatsApp CTA with online/offline status
+ *    derived from \`brand.openingHours\`. Theme-agnostic, brand-token-driven.
+ *
+ * Phase 8 typically does NOT add: per-theme AOS reimplementations,
+ * ad-hoc preview banners, hand-rolled WhatsApp widgets. Use the global
+ * widgets and add archetype-specific decoration (Header/Footer styling,
+ * hero patterns, section composition) on top.
  */
 export function ${toNames.pascalShort}Shell({ children }: { children: ReactNode }) {
   const brand = useBrand()
@@ -299,11 +338,16 @@ export function ${toNames.pascalShort}Shell({ children }: { children: ReactNode 
   return (
     <GarageProvider brandSlug={brand?.slug || 'default'}>
       <a href="#content" className="${toNames.camelShort}-skip-link">Skip to content</a>
+      <AnimateOnScroll />
+      <MotionFX />
+      <ScrollProgress />
       <Header />
       <main id="content" role="main" className="${toNames.camelShort}-main">
         {children}
       </main>
       <Footer />
+      <WhatsAppFab brand={brand} />
+      <CookieBanner brandSlug={brand?.slug} cookiePolicyHref="/cookie-policy" />
     </GarageProvider>
   )
 }

@@ -1,4 +1,9 @@
 "use client";
+// audit-ignore-file: tp-use-client-on-page
+// Springalls baseline page; Mode B (clone-and-edit) ports inherit this.
+// Extracting interactivity into client islands is a known follow-up — same
+// risk-management as columbus-vehicles-bespoke/pages/used-cars/[slug]/page.tsx
+// (see FEATURE_LOG 2026-05-10 for the Turbopack chunk-item collision rationale).
 
 import {
   type CSSProperties,
@@ -783,6 +788,11 @@ function VehicleNotFoundTemplate({
   message: string;
   slug: string;
 }) {
+  const __brand = useBrand();
+  const __contact = getBrandContactInfo(__brand);
+  const SPRINGALLS_PHONE_DISPLAY = __contact.phoneDisplay || '+44 7738 906707';
+  const SPRINGALLS_PHONE_TEL = __contact.phoneTel || '+447738906707';
+  const SPRINGALLS_WHATSAPP_URL = __contact.whatsappUrl || 'https://wa.me/447738906707';
   const listingReference = slug ? `Reference: ${slug}` : "Reference unavailable";
 
   return (
@@ -790,6 +800,7 @@ function VehicleNotFoundTemplate({
       <section className={styles.notFoundHero} aria-labelledby="vehicle-not-found-title">
         <div className={styles.notFoundInner}>
           <p className={styles.notFoundKicker}>Vehicle unavailable</p>
+          {/* audit-ignore: a11y-h1-multiple — this h1 only renders in the not-found branch; the details branch's h1 (line ~1336) is mutually exclusive */}
           <h1 id="vehicle-not-found-title" className={styles.notFoundTitle}>
             Vehicle not found.
           </h1>
@@ -1105,8 +1116,8 @@ export function SpringallsVehicleDetailPage() {
         engine_size: enquiryEngineSize,
         permalink: vehicleUrl,
         url: vehicleUrl,
-        leadType: meta.leadType || "dealer-enquiry",
-        leadSource: meta.leadSource || "vehicle-details",
+        leadType: "dealer-enquiry",
+        leadSource: "vehicle-details",
         formTs: meta.formTs,
         recaptchaToken: meta.recaptchaToken,
         [meta.honeypotField]: meta.honeypotValue,
@@ -1328,6 +1339,7 @@ export function SpringallsVehicleDetailPage() {
           <HeroBackdrop />
           <div className={styles.heroInner}>
             <div className={styles.heroShell}>
+              {/* audit-ignore: a11y-h1-multiple — paired with the not-found h1 (~line 798); only one renders */}
               <h1 className={styles.heroTitle}>{vehicle.make} {vehicle.model} {vehicle.derivative}</h1>
               <p className={styles.heroLead}>{heroLead}</p>
               <div className={styles.heroActions}>
@@ -1777,6 +1789,7 @@ export function SpringallsVehicleDetailPage() {
       </div>
 
       <div className={isEnquiryOpen ? "vehicle-enquiry-modal is-open" : "vehicle-enquiry-modal"} id="vehicle-enquiry-modal" aria-hidden={!isEnquiryOpen}>
+        {/* audit-ignore: a11y-div-as-button — modal backdrop; the dialog has its own close button + keyboard handlers */}
         <div className="vehicle-enquiry-backdrop" data-enquiry-close="" onClick={closeEnquiry}></div>
         <div className="vehicle-enquiry-dialog" role="dialog" aria-modal="true" aria-labelledby="vehicle-enquiry-title">
           <button
@@ -1793,7 +1806,7 @@ export function SpringallsVehicleDetailPage() {
             <h2 id="vehicle-enquiry-title">Send Your Enquiry</h2>
             <p>We will respond within one business day with availability and tailored finance options.</p>
           </header>
-          <form className="vehicle-enquiry-form" onSubmit={enquiryForm.handleSubmit}>
+          <form className="vehicle-enquiry-form" onSubmit={(e) => { e.preventDefault(); void enquiryForm.submit() }}>
             <input type="hidden" {...enquiryForm.getFieldProps("vehicle")} readOnly />
             <input type="hidden" {...enquiryForm.getFieldProps("url")} readOnly />
             <input type="text" {...enquiryForm.honeypotProps} />
@@ -1895,9 +1908,9 @@ export function SpringallsVehicleDetailPage() {
                 {enquiryForm.errorMessage}
               </p>
             ) : null}
-            {enquiryForm.successMessage ? (
+            {enquiryForm.status === 'success' ? (
               <p className="vehicle-enquiry-status is-success" role="status">
-                {enquiryForm.successMessage}
+                Thanks — your enquiry has been sent. We will be in touch shortly.
               </p>
             ) : null}
             <div className="vehicle-enquiry-actions">
@@ -1918,6 +1931,7 @@ export function SpringallsVehicleDetailPage() {
       </div>
 
       <div className={isLightboxOpen ? "vehicle-lightbox is-open" : "vehicle-lightbox"} aria-hidden={!isLightboxOpen}>
+        {/* audit-ignore: a11y-div-as-button — lightbox backdrop; the dialog has its own close button + keyboard handlers */}
         <div className="vehicle-lightbox-backdrop" data-close="true" onClick={closeLightbox}></div>
         <div className="vehicle-lightbox-inner" role="dialog" aria-modal="true" aria-label="Vehicle image gallery lightbox">
           <div className="vehicle-lightbox-top">

@@ -84,6 +84,17 @@ export type BrandSocialLinks = {
   [key: string]: unknown
 }
 
+export type BrandImageSlots = {
+  hero?: string
+  about?: string
+  services?: string
+  finance?: string
+  partExchange?: string
+  sellYourCar?: string
+  recentlySold?: string
+  [key: string]: string | undefined
+}
+
 export type BrandConfig = {
   // Identity
   slug: string
@@ -93,6 +104,11 @@ export type BrandConfig = {
   logo: string
   heroImage?: string
   favicon?: string
+  // Per-page imagery — sourced from Unsplash for prospect previews; dealer can
+  // override individual slots from the dashboard. Each slot is a URL (remote
+  // or self-hosted under /themes/<id>/images/). BrandStyles.tsx exposes these
+  // as CSS variables: --brand-image-hero, --brand-image-about, etc.
+  images?: BrandImageSlots
 
   // Core nested config
   location: BrandLocation

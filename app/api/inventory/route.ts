@@ -32,6 +32,13 @@ export async function GET(request: Request) {
     const fuel = (url.searchParams.get('fuel') || '').toLowerCase().trim()
     const trans = (url.searchParams.get('trans') || '').toLowerCase().trim()
 
+    // Brand resolution priority:
+    //  1) explicit ?brand= query param (server-side fetches from theme components
+    //     pass this — server-to-server calls have no x-brand or useful host)
+    //  2) x-brand header (set by proxy on every brand-domain request)
+    //  3) host lookup via previews.db (supports custom domains)
+    //  4) host slug heuristic (fallback for legacy / unknown hosts)
+    const explicitBrand = (url.searchParams.get('brand') || '').toLowerCase().trim()
     const xBrandHeader = request.headers.get('x-brand')
     const host =
       request.headers.get('x-forwarded-host') ||
@@ -39,13 +46,20 @@ export async function GET(request: Request) {
       request.headers.get('host') ||
       'localhost'
 
-    // Resolve brand robustly:
-    // 1) Trust x-brand only if it exists in previews.
-    // 2) Otherwise resolve by host against previews.db (supports custom domains).
-    // 3) Fallback to slug-from-host heuristic.
     let resolvedBrandId: string | null = null
 
-    if (xBrandHeader) {
+    if (explicitBrand) {
+      const fromParam = await fetchBrandBySlug(explicitBrand)
+      if (fromParam?.slug) {
+        resolvedBrandId = fromParam.slug.toLowerCase()
+      } else {
+        // Brand param given but not in previews.db — trust it anyway so a
+        // theme can serve from disk inventory before brand registration lands.
+        resolvedBrandId = explicitBrand
+      }
+    }
+
+    if (!resolvedBrandId && xBrandHeader) {
       const fromHeader = await fetchBrandBySlug(xBrandHeader.toLowerCase())
       if (fromHeader?.slug) resolvedBrandId = fromHeader.slug.toLowerCase()
     }

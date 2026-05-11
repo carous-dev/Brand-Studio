@@ -8,11 +8,12 @@ import { useBrand } from '../context/BrandClientWrapper'
 const QUICK_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Used Cars', href: '/used-cars' },
+  { label: 'Recently Sold', href: '/recently-sold' },
   { label: 'Finance', href: '/finance' },
   { label: 'Services', href: '/services' },
   { label: 'Sell My Car', href: '/sell-my-car' },
   { label: 'About Us', href: '/about-us' },
-  { label: 'Contact Us', href: '/contact-us' }
+  { label: 'Contact Us', href: '/contact-us' },
 ]
 
 const SOCIAL_DEFS = [
@@ -56,9 +57,10 @@ export default function Footer() {
   const brandName = brand?.name || 'Springalls Car Sales Ltd'
   const city = brand?.location?.address?.city || 'Reading'
   const county = brand?.location?.address?.county || 'Berkshire'
+  const asString = (v: unknown): string | null => (typeof v === 'string' && v ? v : null)
   const summary =
-    brand?.aboutUs?.description ||
-    brand?.description ||
+    asString(brand?.aboutUs?.description) ||
+    asString((brand as any)?.description) ||
     `Privately sourced used vehicles, trusted service, and a transparent buying experience in ${city}${county ? `, ${county}` : ''}.`
   const contactLines = buildContactLines(brand)
   const socialLinks: Record<string, string> | undefined = (brand as any)?.socialLinks

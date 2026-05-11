@@ -11,6 +11,12 @@
   align-items: flex-end;
 }
 
+.backdrop {
+  /* SVG decorative fallback — sits behind .bg. When the brand-image slot
+     resolves to a real URL, .bg covers this; otherwise the SVG shows. */
+  z-index: -3 !important;
+}
+
 .bg {
   position: absolute;
   inset: 0;

@@ -26,6 +26,23 @@ export function BrandStyles({ brand }: BrandStylesProps) {
 
   const heroImage = brand.heroImage || brand.logo || '/images/hero-placeholder.jpg';
 
+  // Per-page imagery (7 slots) — sourced by tools/fetch-theme-images.mjs and
+  // saved per-brand under /themes/<id>/images/<slot>.jpg. brand.images is the
+  // dashboard-editable structured field; falls back to the hero for any slot
+  // the dashboard hasn't filled in.
+  const brandImages: Record<string, unknown> = (brand as any)?.images || {};
+  const imageOr = (slotKey: string, fallback: string): string => {
+    const v = brandImages[slotKey];
+    return typeof v === 'string' && v.trim() ? v : fallback;
+  };
+  const heroImageSlot = imageOr('hero', heroImage);
+  const aboutImage = imageOr('about', heroImageSlot);
+  const servicesImage = imageOr('services', heroImageSlot);
+  const financeImage = imageOr('finance', heroImageSlot);
+  const partExchangeImage = imageOr('partExchange', heroImageSlot);
+  const sellYourCarImage = imageOr('sellYourCar', heroImageSlot);
+  const recentlySoldImage = imageOr('recentlySold', heroImageSlot);
+
   const cssVariables: Record<string, string> = {
     // Spring core palette mapped to brand tokens
     '--color-primary': theme.colors.primaryColor || '#067a74',
@@ -57,6 +74,16 @@ export function BrandStyles({ brand }: BrandStylesProps) {
 
     // Hero background image (resolves to brand.heroImage if set in dashboard)
     '--springalls-hero-image': `url("${escapeCssUrl(heroImage)}")`,
+
+    // Per-page image slots — every theme references these via var(--brand-image-*)
+    // so dashboard edits to brand.images.* propagate without code changes.
+    '--brand-image-hero': `url("${escapeCssUrl(heroImageSlot)}")`,
+    '--brand-image-about': `url("${escapeCssUrl(aboutImage)}")`,
+    '--brand-image-services': `url("${escapeCssUrl(servicesImage)}")`,
+    '--brand-image-finance': `url("${escapeCssUrl(financeImage)}")`,
+    '--brand-image-part-exchange': `url("${escapeCssUrl(partExchangeImage)}")`,
+    '--brand-image-sell-your-car': `url("${escapeCssUrl(sellYourCarImage)}")`,
+    '--brand-image-recently-sold': `url("${escapeCssUrl(recentlySoldImage)}")`,
 
     // Font family overrides
     '--font-ui-family-override': fontUi,

@@ -242,6 +242,9 @@ def create_brand_config(data, slug, keywords):
     accent_color = data.get('accentColor') or theme_colors.get('accentColor') or '#c41e3a'
     background_color = data.get('backgroundColor') or theme_colors.get('backgroundColor') or '#ffffff'
     text_color = data.get('textColor') or theme_colors.get('textColor') or '#1f2933'
+    border_color = data.get('borderColor') or theme_colors.get('borderColor') or '#e5e7eb'
+    muted_color = data.get('mutedColor') or theme_colors.get('mutedColor') or '#6b7280'
+    surface_color = data.get('surfaceColor') or theme_colors.get('surfaceColor') or background_color
 
     # Fonts (allow override from form fields or existing theme.fonts)
     theme_fonts = theme.get('fonts') if isinstance(theme.get('fonts'), dict) else {}
@@ -249,9 +252,17 @@ def create_brand_config(data, slug, keywords):
     brand_font = data.get('fontBrand') or theme_fonts.get('brand') or 'Lora, serif'
     mono_font = data.get('fontMono') or theme_fonts.get('mono') or 'JetBrains Mono, Consolas, monospace'
 
-    address_line1 = data.get('address1') or data.get('address') or address.get('line1') or ''
+    address_line1 = data.get('address1') or address.get('line1') or ''
+    address_line2 = data.get('address2') or address.get('line2') or ''
     city_value = data.get('city') or address.get('city') or location.get('city') or ''
+    county_value = data.get('county') or address.get('county') or ''
     postcode_value = data.get('postcode') or address.get('postcode') or location.get('postcode') or ''
+    full_address_value = (
+        data.get('fullAddress')
+        or data.get('address')
+        or location.get('fullAddress')
+        or ', '.join(p for p in (address_line1, address_line2, city_value, county_value, postcode_value) if p)
+    )
 
     logo_path = data.get('logo') or data.get('logoPath') or f'/images/{slug}-logo.png'
     favicon_path = data.get('favicon') or data.get('faviconPath') or f'/images/{slug}-favicon.png'
@@ -273,14 +284,14 @@ def create_brand_config(data, slug, keywords):
         'location': {
             'address': {
                 'line1': address_line1,
-                'line2': '',
+                'line2': address_line2,
                 'city': city_value,
-                'county': data.get('county', ''),
+                'county': county_value,
                 'postcode': postcode_value
             },
             'phone': data.get('phone'),
             'email': data.get('email'),
-            'fullAddress': data.get('address') or data.get('fullAddress') or f"{address_line1}, {city_value}, {postcode_value}"
+            'fullAddress': full_address_value
         },
         
         # ====== Social Links ======
@@ -349,12 +360,15 @@ def create_brand_config(data, slug, keywords):
             'id': theme_id,
             'themeId': theme_id,
             'colors': {
-                # Core 5 Colors (from Dashboard) - NEW SYSTEM
+                # Core 8 Colors (from Dashboard) - NEW SYSTEM
                 'primaryColor': primary_color,
                 'secondaryColor': secondary_color,
                 'accentColor': accent_color,
                 'backgroundColor': background_color,
                 'textColor': text_color,
+                'borderColor': border_color,
+                'mutedColor': muted_color,
+                'surfaceColor': surface_color,
 
                 # Background System - LEGACY (derived from 5-color system)
                 'bgPrimary': '#ffffff',

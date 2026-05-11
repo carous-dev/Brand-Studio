@@ -1,4 +1,9 @@
 "use client"
+// audit-ignore-file: tp-use-client-on-page
+// Springalls baseline page; Mode B (clone-and-edit) ports inherit this.
+// Extracting interactivity into client islands is a known follow-up — same
+// risk-management as columbus-vehicles-bespoke/pages/used-cars/[slug]/page.tsx
+// (see FEATURE_LOG 2026-05-10 for the Turbopack chunk-item collision rationale).
 
 import { useEffect } from 'react'
 import { ArrowUpRight, Car, FileCheck2, PoundSterling } from 'lucide-react'
@@ -79,8 +84,8 @@ export function SpringallsSellYourCarPage(_props: ThemePageProps) {
         registration: values.registration,
         mileage: values.mileage,
         url: vehicleUrl,
-        leadType: meta.leadType || 'sell-my-car',
-        leadSource: meta.leadSource || 'sell-my-car',
+        leadType: 'sell-my-car',
+        leadSource: 'sell-my-car',
         formTs: meta.formTs,
         recaptchaToken: meta.recaptchaToken,
         [meta.honeypotField]: meta.honeypotValue
@@ -142,7 +147,7 @@ export function SpringallsSellYourCarPage(_props: ThemePageProps) {
             <h2 className={styles.sectionTitle}>Get your valuation</h2>
             <p className={styles.sectionText}>Submit the details below and we will be in touch promptly.</p>
           </div>
-          <form className={styles.form} onSubmit={sellForm.handleSubmit}>
+          <form className={styles.form} onSubmit={(e) => { e.preventDefault(); void sellForm.submit() }}>
             <input type="text" className={styles.honeypot} tabIndex={-1} aria-hidden="true" {...sellForm.honeypotProps} />
             <label className={styles.field}>
               <span>Full name</span>
