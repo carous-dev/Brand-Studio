@@ -61,6 +61,14 @@ dev-vhosts/*.log
 # is each theme's own folder under app/themes/<id>/.
 app/themes/generated/
 
+# /new-theme skill caches — per-run artefacts written by the various
+# Phase 2 / 5 / 7.5 / 7.5c helpers. Not source-of-truth, no need to track.
+tools/.logo-colors/
+tools/.logo-fixtures/
+tools/.theme-dna/
+tools/.theme-images/
+tools/.theme-work/
+
 brandstudi*
 
 __pycache__/

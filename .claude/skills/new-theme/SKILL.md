@@ -538,6 +538,14 @@ wildly unusual layout that doesn't translate cleanly to the section
 contract), document the gap in the final report. Don't ship silently.
 
 **Motion & light language — REQUIRED, not optional (must-have, learned 2026-05-11):**
+
+> **Canonical home for motion policy.** This section is the source of
+> truth for what motion a theme must include and how much. Required
+> Widgets §AnimateOnScroll / MotionFX / ScrollProgress (later in this
+> SKILL) document the *widget API* (variant names, props, helpers);
+> Pitfall row 31 documents the *failure mode*. If those mentions
+> conflict with this section, this section wins.
+
 - Static themes feel dead. Every bespoke theme MUST include motion and
   light primitives drawn from `app/widgets/MotionFX` (shared keyframes) and
   `app/widgets/AnimateOnScroll` (entry animations). Specifically:
@@ -551,10 +559,14 @@ contract), document the gap in the final report. Don't ship silently.
     "Available" chip uses the `.mfx-pulse-dot` class (not a static dot).
     The pulse signals freshness — the page is live data, not a static
     listing.
-  - **Entry animations** — every page (home AND inner pages) must have
-    at least 4 `data-aos="…"` decorated elements with staggered
-    `data-aos-delay` values across the major sections. AOS variants:
-    `fade-up` / `fade-down` / `fade-left` / `fade-right` /
+  - **Entry animations** — every page must have **2–3 staggered
+    `data-aos="…"` entry animations** on its marquee moments (hero,
+    primary CTA reveal, one section transition). NOT 4+ — that's
+    busyness, not liveliness. **The restraint rule earlier wins on
+    counts** (§"AOS restraint"). The audit's `motion-aos-min-count`
+    rule still requires ≥4 on the homepage and ≥2 on inner pages as a
+    floor, NOT a target — pick the marquee moments and stop. AOS
+    variants: `fade-up` / `fade-down` / `fade-left` / `fade-right` /
     `fade-up-right` / `fade-up-left` / `zoom-in` / `zoom-in-up` /
     `flip-up` / `slide-up` / `blur-in`. Vary across sections — the same
     variant on every section is a tell of mechanical use.
@@ -582,6 +594,15 @@ contract), document the gap in the final report. Don't ship silently.
   motion plumbing required.
 
 **Inventory pages MUST be redesigned per archetype, not inherited verbatim (must-have, learned 2026-05-11; reinforced by the autonomous-design clause below):**
+
+> **Canonical home for inventory contract.** This section is the source
+> of truth for "what Phase 8 must redesign vs keep" on the inventory
+> pages. The §"Autonomous independent designs" block below extends it
+> with the design-language requirements (mix-and-match composition
+> categories). Pitfalls rows 30 / 32 / 33 are concrete failure cases.
+> `docs/inventory-design-library.md` is the reference pattern catalogue
+> Phase 8 reads for inspiration — NOT a copy source.
+
 - The skeleton scaffolder keeps the inventory list page's data layer
   (`pages/used-cars/page.tsx` server-fetch + `UsedCarsClient.tsx` state /
   filter / URL / normalization) because that logic is non-trivial and
@@ -771,7 +792,14 @@ but include all six requirements.
 ## Required widgets — use the brandstudio globals, don't re-roll
 
 Every theme's Shell **must** mount these brandstudio-global widgets
-(skeleton scaffolder wires them by default; preserve through Phase 8):
+(skeleton scaffolder wires them by default; preserve through Phase 8).
+
+> The entries below document the *widget API* (what the widget exposes,
+> variant names, props). For *policy* — how much motion to use, what
+> belongs in which slot, what restraint applies — see Quality Bar
+> §"Motion & light language" and §"Restraint and visual hierarchy"
+> earlier in this SKILL. If counts here and counts there disagree, the
+> Quality Bar wins.
 
 - **`<AnimateOnScroll />`** from `@/app/widgets/AnimateOnScroll` —
   one-shot IntersectionObserver-based scroll-reveal driver. Mount once in
@@ -991,10 +1019,38 @@ theme on `<slug>.lvh.me:3000` before pushing — but that's opt-in via
 AskUserQuestion, NOT a ship gate. The canonical production path is
 git-only (Phase 13).
 
+Note: a NEW `Phase 10d` was added (cross-theme similarity check via
+`check-theme-similarity.mjs`) — unrelated to the removed preview-smoke
+phase. See the Phase 10d section later in this SKILL.
+
 If anything fails between Phase 7 and 12, run
 `node tools/rollback-theme.mjs --theme-id <id>` to clean up the partial
 artifacts (theme folder, public images, DNA JSON, registries) before
 re-attempting. Idempotent — safe to run multiple times.
+
+### Phases safe to run in parallel
+
+Several phase pairs are independent. Issue their tool calls in a single
+message (single Bash/Read/Edit message with multiple tool blocks) to
+shave 15–30 seconds of wall clock. Order of independent operations does
+not matter; only the listed dependencies do.
+
+| Parallel group | Phases | Why safe |
+|---|---|---|
+| Logo + site context | Phase 2 (extract-logo-colors + vision) and Phase 3 (WebFetch dealer site) | Inputs are the logo path and the dealer URL respectively — both available from Phase 1, neither depends on the other |
+| Image + favicon | Phase 7.5a (`fetch-theme-images.mjs`) and Phase 7.5b (`generate-theme-favicon.mjs`) | Both write into `public/themes/<id>/`; neither reads the other's output |
+| Image + work package | Phase 7.5a, 7.5b, and 7.5c (`generate-theme-workpackage.mjs`) | 7.5c reads DNA only — independent of imagery |
+| Verification triad | Phase 10a (`tsc --noEmit`), 10b (contrast re-check), 10c (`audit-theme.mjs`) | Independent static analyses on the same file set |
+| Verification + similarity | Phase 10c (audit) and 10d (similarity) | Both read the new theme's files; neither writes |
+
+Sequential dependencies you cannot collapse:
+- Phase 2 → 2c (contrast check needs the extracted primary)
+- Phase 2 → 4 (font choice depends on logo character)
+- Phase 5 (DNA) → 7 (scaffolder reads DNA)
+- Phase 7 → 7.5 (image/favicon/work-package need the scaffolded theme dir)
+- Phase 7.5c → 8 (work-package is the Phase 8 entry checklist)
+- Phase 8 → 9 (theme:sync needs designed files)
+- Phase 9 → 10 (verifications run against the synced theme)
 
 ## Phase 0.5 — Pre-flight environment check
 
@@ -1092,6 +1148,17 @@ script is more reproducible than vision-based estimation. If the script
 emits warnings (`primary color is weak`, `no usable pixels`), surface
 them in the final report.
 
+**Persist the A2b character (see next step) into the same artifact:** after
+A2b runs and you've categorized the typography character, re-run the
+extractor with `--character "<category>"` (or call once with the flag if
+you do A2b before A2a). The flag writes a `logoCharacter` field into the
+JSON so downstream phases can read it without you having to remember
+across tool calls.
+
+```bash
+node tools/extract-logo-colors.mjs --logo <...> --character "condensed-bold" --out tools/.logo-colors/<slug>.json
+```
+
 **Step A2b — Use vision (Read tool on the logo) for character analysis,
 not color:**
 
@@ -1158,9 +1225,21 @@ node tools/check-theme-contrast.mjs \
 
 Exit code 1 = critical fail (white-on-primary, body text, link contrast).
 Read the suggestions block — the tool offers a darken/lighten amount that
-would pass. Apply the suggestion to `suggested.primary` and re-run before
-scaffolding. **Do not ship a theme that fails the critical contrast
-check** — dealers will see unreadable button labels.
+would pass. **Apply the correction in-place** so the on-disk logo-colors
+artifact matches the DNA's final primary:
+
+```bash
+node tools/check-theme-contrast.mjs \
+  --dna tools/.theme-dna/<slug>.json \
+  --write-corrected tools/.logo-colors/<slug>.json
+```
+
+`--write-corrected` patches `suggested.primary` (and `suggested.accent` if
+that critically failed) to the suggested hex, recomputes `primaryDark`,
+and appends a `warnings[]` entry recording the change. Re-update the DNA
+JSON's `colors.primary` to match before scaffolding. **Do not ship a
+theme that fails the critical contrast check** — dealers will see
+unreadable button labels.
 
 ### A3 — Scrape the dealer site
 
@@ -1272,12 +1351,27 @@ Compose a DNA object matching the schema the scaffolder consumes:
     "dealerUrl": "<input URL>",
     "logoPath": "<input logo path>",
     "heroImageUrl": "<same as heroImage; preserved for clarity>",
+    "logoCharacter": "<single phrase from A2b vision pass, e.g. 'condensed-bold', 'luxury-serif', 'geometric-sans', 'rounded-friendly'>",
     "vibe": "<2-3 words from A2>",
+    "archetype": "<classic | modern | rugged | luxury | prestige — set in A2d>",
     "colorsExtractor": "deterministic (extract-logo-colors.mjs)",
     "contrastCheck": "passed | critical-failed (and-fixed)"
   }
 }
 ```
+
+**`notes.logoCharacter` is required (must-have, learned 2026-05-11):**
+The vision-derived character phrase from A2b drives font choice (Phase A4)
+and archetype mapping (Phase A2d). Persist it in the DNA so downstream
+phases don't carry it in head across tool boundaries. The
+`extract-logo-colors.mjs --character "<phrase>"` flag writes it directly
+into the logo-colors artifact for traceability.
+
+**`notes.archetype` is required:** one of `classic | modern | rugged |
+luxury | prestige` — set by Phase A2d. Used by Phase 7.5a (image catalogue
+lookup), Phase 7.5b (favicon glyph selection), Phase 7.5c (work-package
+generator pulls archetype-specific required components), and Phase 8
+(designer reads `docs/theme-archetype-specs.md` for the archetype).
 
 For `overlayStart`/`overlayEnd`: don't blindly use `rgba(6, 10, 16, ...)`.
 Tint the overlay toward the primary so the hero feels brand-coherent.
@@ -1346,6 +1440,39 @@ This is the right choice for prospect previews because **two themes
 that share Hero.tsx aren't two themes — they're one theme with paint
 swapped**. The skeleton guarantees the runtime contract while leaving
 all visible design open for fresh per-archetype work.
+
+### Kept-vs-stubbed file map (read before Phase 8)
+
+Phase 8 needs to know which scaffolded files are *empty stubs awaiting
+fresh designs* vs *kept data layers whose presentation must still be
+redesigned*. The distinction matters: "kept" does NOT mean "don't
+touch" — it means **the data fetch, state, URL handling stay verbatim;
+the JSX render layer and the CSS module are rewritten** (Pitfall row 30).
+
+| File | Status | Phase 8 action |
+|------|--------|----------------|
+| `theme.json` | generated from args | none — already final |
+| `tokens.ts` | generated from DNA | none — already final |
+| `recipes/index.ts`, `sections/index.tsx`, `shell.tsx`, `pages.ts` | empty stubs | leave empty unless adding bespoke recipes |
+| `context/*` (BrandStyles, BrandClientWrapper, AuthProvider, DynamicFavicon, GarageContext) | kept verbatim | none — runtime plumbing |
+| `lib/*` (contact, api, vehicle-links, seo, uk-phone, brand-slug.server, inventory) | kept verbatim | none — runtime plumbing |
+| `components/Shell.tsx` | minimal stub | **redesign** — mount sequence (PreviewBanner above Header, per-theme CookieBanner, WhatsAppFab) |
+| `components/Header.tsx` | minimal stub | **redesign** — top contact bar, NAV_ITEMS with Home first, mobile overlay nav |
+| `components/Footer.tsx` | minimal stub | **redesign** — primary nav + Carous credit |
+| `styles/base.css` | minimal stub | **rewrite** — no blanket `:where(a)`, scope every rule, `[hidden]` override |
+| `styles/color-policy.css` | kept verbatim | none — role-token mapping |
+| `components/HeroBackdrop.tsx` | kept verbatim | none — SVG fallback dep of used-cars pages |
+| `pages/home/page.tsx` | minimal stub | **redesign** — full section composition per archetype |
+| `pages/about/page.tsx`, `pages/contact/page.tsx`, `pages/services/page.tsx`, `pages/sell-your-car/page.tsx`, `pages/finance/page.tsx`, `pages/part-exchange/page.tsx`, `pages/compare/page.tsx`, `pages/wishlist/page.tsx`, `pages/privacy-policy/page.tsx`, `pages/cookie-policy/page.tsx` | minimal stubs | **redesign** — fresh page bodies |
+| `pages/used-cars/page.tsx` + `page.module.css` + `UsedCarsClient.tsx` | **kept (data layer)** | **redesign JSX + CSS only** — keep state/URL/fetch verbatim; pick a list pattern from `docs/inventory-design-library.md` |
+| `pages/used-cars/[slug]/page.tsx` + `page.module.css` | **kept (data layer)** | **redesign JSX + CSS only** — pick a detail pattern A–H; ALSO add required sections (similar vehicles + makes-list panel + EnquiryModal + WhatsAppIcon) |
+| `pages/recently-sold/page.tsx` | kept | **redesign** — distinctive treatment vs the live inventory list |
+
+The full work-package (with per-file titles, archetype-specific
+component requirements, and quality-bar items) is emitted by
+`tools/generate-theme-workpackage.mjs` in the next sub-phase (7.5c).
+Read that JSON into TodoWrite at the start of Phase 8 for a definition
+of done.
 
 **Mode B (port from carous-platform sibling):**
 
@@ -1436,6 +1563,31 @@ the DNA isn't on disk yet.
 prefer `/themes/<theme-id>/favicon.svg` over the brand logo. Operators
 can still override per-brand by setting `brand.favicon` from the
 dashboard — that wins over the theme favicon.
+
+### 7.5c — Generate the Phase 8 work package
+
+```bash
+node tools/generate-theme-workpackage.mjs \
+  --id <theme-id> \
+  --dna tools/.theme-dna/<dealer-slug>.json
+```
+
+Writes a checklist JSON to `tools/.theme-work/<theme-id>.json` listing
+every file Phase 8 must redesign — stubs, kept render layers,
+archetype-required components (pulled from
+`docs/theme-archetype-specs.md` for the theme's archetype), and
+cross-cutting Quality Bar items (per-theme CookieBanner, brand-image
+vars, hero title cap, mobile simplification, motion budget, audit
+clean). Typical output is 30–40 items.
+
+**Phase 8 entry rule:** read this JSON into TodoWrite as the first
+action of Phase 8. Each item becomes a todo with a clear definition of
+done (`stub-implementation` / `kept-redesign` / `archetype-required` /
+`quality-bar`). Mark items complete as they land. Don't claim Phase 8
+done until every item is checked.
+
+Without this checklist, Phase 8 has no definition of done — that's the
+regression class that caused the 5 May 2026 theme purge.
 
 ## Phase 8 — Design every page fresh (Mode A)
 
@@ -1668,6 +1820,32 @@ expressions (`{/* ... */}`), and trailing prose after the rule name.
 Multiple rules can be comma-separated: `audit-ignore: rule1, rule2`.
 
 `npm run build` only when the user explicitly asks for a build.
+
+## Phase 10d — Cross-theme similarity check
+
+```bash
+node tools/check-theme-similarity.mjs --id <theme-id>
+```
+
+Compares the new theme's key render files (`Hero.tsx`,
+`pages/home/page.tsx`, `pages/used-cars/page.tsx`,
+`pages/used-cars/[slug]/page.tsx`, `pages/recently-sold/page.tsx`)
+against the `springalls-classic` skeleton baseline. Uses normalized-
+shingle Jaccard similarity (identifiers lowercased, whitespace squashed,
+comments stripped) so theme renames don't lower the score.
+
+Threshold: 0.85 (override with `--threshold`). Above the threshold means
+Phase 8 likely renamed identifiers without redesigning JSX — the
+"another theme, same palette" regression class. Genuinely redesigned
+themes score well below 0.10 in practice.
+
+Exit codes:
+- `0` — all files below threshold; render layer is genuinely fresh.
+- `1` — one or more files above threshold; open each flagged file and
+  redesign its JSX before declaring Phase 8 done.
+
+Compare against a different baseline (e.g. the closest archetype-twin)
+with `--baseline <theme-id>`.
 
 ## Phase 11 — Log to FEATURE_LOG
 

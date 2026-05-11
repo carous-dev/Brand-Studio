@@ -92,19 +92,6 @@ const TEMPLATE_NAMES = {
   // 'archetype-prestige': namesFor('archetype-prestige'),
 }
 
-// Archetype → template mapping. The /new-theme skill picks an archetype based
-// on logo character (Phase A2b → `luxury-serif` ⇒ luxury, `condensed-bold` ⇒
-// rugged, etc.) and the scaffolder picks the corresponding template. Until
-// dedicated archetype templates ship, all archetypes fall back to
-// `springalls-classic` so the pipeline never blocks on missing templates.
-const ARCHETYPE_TO_TEMPLATE = {
-  classic: 'springalls-classic',
-  modern: 'springalls-classic',   // TODO: switch to archetype-modern when shipped
-  rugged: 'springalls-classic',   // TODO: switch to archetype-rugged when shipped
-  luxury: 'springalls-classic',   // TODO: switch to archetype-luxury when shipped
-  prestige: 'springalls-classic', // TODO: switch to archetype-prestige when shipped
-}
-
 // --- file traversal & replacement ------------------------------------------
 
 const TEXT_EXTENSIONS = new Set([
@@ -248,24 +235,12 @@ async function main() {
   const newId = String(args.id).toLowerCase()
   validateId(newId)
 
-  // Resolve template: explicit --template wins; otherwise --archetype maps
-  // to one; otherwise the default (`springalls-classic`).
-  let templateId
-  if (args.template && typeof args.template === 'string') {
-    templateId = args.template.toLowerCase()
-  } else if (args.archetype && typeof args.archetype === 'string') {
-    const archetype = args.archetype.toLowerCase()
-    templateId = ARCHETYPE_TO_TEMPLATE[archetype]
-    if (!templateId) {
-      console.error(`Unknown --archetype "${archetype}". Known: ${Object.keys(ARCHETYPE_TO_TEMPLATE).join(', ')}`)
-      process.exit(1)
-    }
-    if (templateId === DEFAULT_TEMPLATE && archetype !== 'classic') {
-      console.log(`note: archetype "${archetype}" not yet implemented — falling back to ${DEFAULT_TEMPLATE} template`)
-    }
-  } else {
-    templateId = DEFAULT_TEMPLATE
-  }
+  // Resolve template: explicit --template wins; otherwise default
+  // (`springalls-classic`). Mode B callers always pass --template explicitly
+  // since the source app dictates which existing theme to clone from.
+  const templateId = args.template && typeof args.template === 'string'
+    ? args.template.toLowerCase()
+    : DEFAULT_TEMPLATE
   const fromNames = TEMPLATE_NAMES[templateId]
   if (!fromNames) {
     console.error(`Unknown template "${templateId}". Known: ${Object.keys(TEMPLATE_NAMES).join(', ')}`)

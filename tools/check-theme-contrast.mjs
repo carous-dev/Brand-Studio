@@ -31,6 +31,10 @@
  *   node tools/check-theme-contrast.mjs --primary "#004080" --bg "#ffffff" --text "#0f1623"
  *   node tools/check-theme-contrast.mjs --dna <dna> --json   # machine-readable output
  *   node tools/check-theme-contrast.mjs --dna <dna> --strict # exit 1 on any AA-large fail too
+ *
+ *   # Phase A2c — auto-apply contrast suggestions back to the logo-colors JSON
+ *   # produced by extract-logo-colors.mjs, so the corrected primary persists.
+ *   node tools/check-theme-contrast.mjs --dna <dna> --write-corrected <logo-colors.json>
  */
 
 import { promises as fs } from 'node:fs'
@@ -214,6 +218,17 @@ async function main() {
   const pairs = buildPairs(dna)
   const results = pairs.map(checkPair)
 
+  // Build the map of critical failures with applicable suggestions, keyed
+  // by the role we'd patch in a logo-colors JSON (primary / accent).
+  const corrections = {}
+  for (const r of results) {
+    if (r.passesAA || r.severity !== 'critical' || !r.suggestion) continue
+    // The "white on primary" check fails when the brand primary is too light;
+    // patching `suggested.primary` to the darker variant fixes it.
+    if (r.name === 'white on primary (button)') corrections.primary = r.suggestion.suggestedHex
+    if (r.name === 'white on accent') corrections.accent = r.suggestion.suggestedHex
+  }
+
   if (args.json) {
     process.stdout.write(JSON.stringify(results, null, 2) + '\n')
   } else {
@@ -239,6 +254,44 @@ async function main() {
     const failedAdvisory = results.filter((r) => !r.passesAA && r.severity === 'advisory')
     console.log('')
     console.log(`  ${failedCritical.length === 0 ? green + 'OK' + reset : red + 'BLOCKED' + reset}: ${failedCritical.length} critical fails, ${failedAdvisory.length} advisory fails`)
+  }
+
+  if (args['write-corrected'] && typeof args['write-corrected'] === 'string') {
+    const targetPath = path.resolve(args['write-corrected'])
+    if (Object.keys(corrections).length === 0) {
+      if (!args.json) console.log(`  --write-corrected: no critical fails, ${targetPath} left unchanged`)
+    } else {
+      try {
+        const raw = await fs.readFile(targetPath, 'utf8')
+        const data = JSON.parse(raw)
+        if (!data.suggested || typeof data.suggested !== 'object') {
+          throw new Error(`${targetPath} has no .suggested object — not a logo-colors JSON`)
+        }
+        const before = { ...data.suggested }
+        for (const [role, hex] of Object.entries(corrections)) {
+          data.suggested[role] = hex
+        }
+        // If primary moved, regenerate primaryDark (~25% darker) so downstream
+        // scaffolders pick a consistent secondary too.
+        if (corrections.primary) {
+          const rgb = hexToRgb(corrections.primary)
+          const dark = rgbToHex(darken(rgb, 0.25))
+          data.suggested.primaryDark = dark
+        }
+        data.warnings = data.warnings || []
+        data.warnings.push(`contrast-corrected ${new Date().toISOString().slice(0, 10)}: ${Object.entries(corrections).map(([k, v]) => `${k} ${before[k]} → ${v}`).join(', ')}`)
+        await fs.writeFile(targetPath, JSON.stringify(data, null, 2) + '\n', 'utf8')
+        if (!args.json) {
+          console.log(`  --write-corrected: ${targetPath} patched`)
+          for (const [role, hex] of Object.entries(corrections)) {
+            console.log(`    ${role}: ${before[role]} → ${hex}`)
+          }
+        }
+      } catch (err) {
+        console.error(`  --write-corrected: failed — ${err instanceof Error ? err.message : String(err)}`)
+        process.exit(2)
+      }
+    }
   }
 
   const failedCritical = results.some((r) => !r.passesAA && r.severity === 'critical')

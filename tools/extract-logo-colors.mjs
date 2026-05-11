@@ -32,11 +32,17 @@
  *       accent: "#3d63e8",           // 2nd dominant if distinct enough
  *       text: "#0f1623",             // primary darkened ~85% (or default)
  *     },
+ *     logoCharacter: "<vision-derived character>",   // optional, set via --character
  *     warnings: [...]
  *   }
  *
  * Usage:
  *   node tools/extract-logo-colors.mjs --logo <path-or-url> [--top 5] [--out <json>]
+ *     [--character <free-form character string from Phase A2b vision pass>]
+ *
+ * `--character` lets Phase A2 persist the vision-derived typography/shape
+ * description (e.g. "condensed-bold", "luxury-serif", "geometric-sans") into
+ * the artifact so downstream phases don't have to remember it across calls.
  */
 
 import { promises as fs } from 'node:fs'
@@ -208,6 +214,9 @@ async function main() {
   const topN = args.top ? Number(args.top) : 5
 
   const result = await extractColors(args.logo, topN)
+  if (args.character && typeof args.character === 'string') {
+    result.logoCharacter = args.character.trim()
+  }
   const json = JSON.stringify(result, null, 2)
 
   if (args.out && typeof args.out === 'string') {

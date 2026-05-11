@@ -24,6 +24,9 @@
  *                                without a [data-theme-id] scope wrapper —
  *                                bleeds across themes bundled in the same
  *                                preview (see FEATURE_LOG 2026-05-08).
+ *     std-unrouted-href        — internal href="/<slug>" points to a slug
+ *                                not in the canonical-route whitelist (the
+ *                                slugs that have app/<slug>/page.tsx).
  *
  *   DATA FETCHING (blocker)
  *     data-useeffect-fetch     — useEffect that calls fetch() for initial data
@@ -46,6 +49,14 @@
  *   LIBRARY DEPENDENCIES (advisory)
  *     lib-hero-no-svg-fallback — Hero/PageHero uses var(--brand-image-*)
  *                                but doesn't render <HeroBackdrop> safety net.
+ *     lib-hero-title-too-big   — hero-title selector clamp() max > 3.6rem;
+ *                                breaks the "fit in 2 lines max" rule.
+ *     lib-image-not-brand-driven — Hero/PageHero/CtaBanner hardcodes an image
+ *                                path instead of consuming var(--brand-image-*),
+ *                                so dashboard uploads silently drop.
+ *     lib-missing-carous-credit — Footer.tsx without any "Carous" mention.
+ *     lib-missing-home-link    — Header.tsx without any href="/" link;
+ *                                older buyers don't reach for the wordmark.
  *
  *   MOBILE-FIRST RESPONSIVE (advisory)
  *     mobile-max-width-query   — CSS file uses @media (max-width:...) — prefer min-width
@@ -706,6 +717,156 @@ function checkMotionNoScrollTied(file, content) {
   )]
 }
 
+function checkLibHeroTitleTooBig(file, content) {
+  // Hero titles must fit in 2 lines max. Cap the clamp() preferred-and-max
+  // values so the largest viewport result is ≤ 3.6rem. SKILL.md Quality Bar
+  // §"Hero title sizing — fit-in-2-lines max" + Pitfall row 35.
+  // Heuristic: in any CSS file, find clamp(min, preferred, max) where max
+  // exceeds 3.6rem, attached to a selector that smells like a hero title
+  // (selector contains "hero" or "title" or matches h1/h2).
+  if (!/\.(css|module\.css)$/.test(file)) return []
+  const findings = []
+  // Walk rules: capture each "<selector> { ... }" block and check clamp().
+  const blockRe = /([^{}]+)\{([^{}]+)\}/g
+  let m
+  while ((m = blockRe.exec(content)) !== null) {
+    const selector = m[1].trim()
+    const body = m[2]
+    const selectorLooksLikeHeroTitle =
+      /hero/i.test(selector) &&
+      (/title|head|h1|h2|wordmark|tagline/i.test(selector) || /\bh[12]\b/.test(selector))
+    const selectorIsBareH1 = /(^|[\s,>+~]|:where\(|:is\()h1(\b|[^a-z])/.test(selector)
+    if (!selectorLooksLikeHeroTitle && !selectorIsBareH1) continue
+    // Find clamp() with max value in rem
+    const clampRe = /clamp\(\s*[^,]+,\s*[^,]+,\s*([\d.]+)\s*rem\s*\)/gi
+    let c
+    while ((c = clampRe.exec(body)) !== null) {
+      const maxRem = parseFloat(c[1])
+      if (maxRem > 3.6) {
+        const absIdx = m.index + m[1].length + 1 /* '{' */ + c.index
+        findings.push(newFinding(
+          'lib-hero-title-too-big',
+          'advisory',
+          file,
+          content,
+          absIdx,
+          `Hero title clamp() max is ${maxRem}rem — cap at 3.6rem so the title fits in ≤2 lines on every viewport. Pair with max-width: 14ch (or 18ch for two-clause titles) to enforce line-wrap. Selector: "${selector.slice(0, 80)}…"`,
+        ))
+      }
+    }
+  }
+  return findings
+}
+
+const CANONICAL_ROUTES = new Set([
+  '/', '/about', '/contact', '/services', '/finance',
+  '/part-exchange', '/sell-my-car', '/used-cars',
+  '/recently-sold', '/compare', '/wishlist',
+  '/privacy-policy', '/cookie-policy',
+])
+
+function checkStdUnroutedHref(file, content) {
+  // Internal href="/<path>" must point to a slug that resolves under
+  // app/<slug>/page.tsx. SKILL.md Quality Bar §"Canonical inner-page routes"
+  // + Pitfall row 19. Hot example: /sell-your-car (wrong) vs /sell-my-car
+  // (the routed slug, despite the page label "Sell your car").
+  if (!/\.tsx?$/.test(file)) return []
+  const findings = []
+  const re = /\bhref\s*=\s*["'](\/[^"'#?]*?)(?:[?#][^"']*)?["']/g
+  let m
+  while ((m = re.exec(content)) !== null) {
+    const raw = m[1]
+    // Normalize: strip dynamic segments and trailing slash. /used-cars/foo => /used-cars
+    const rootSegment = '/' + (raw.replace(/^\/+/, '').split('/')[0] || '')
+    // Top-level URLs in our whitelist:
+    if (CANONICAL_ROUTES.has(rootSegment)) continue
+    // Special static-asset prefixes that are allowed (images, favicons,
+    // theme assets are not routed pages — they're served from /public).
+    if (/^\/(images|themes|favicon|robots|sitemap|api|_next|assets|fonts|static)\b/.test(raw)) continue
+    findings.push(newFinding(
+      'std-unrouted-href',
+      'advisory',
+      file,
+      content,
+      m.index,
+      `href="${raw}" points to an unrouted slug. Canonical routes: ${Array.from(CANONICAL_ROUTES).filter(r => r !== '/').sort().join(', ')}. Most common mistake: /sell-your-car → use /sell-my-car (the page label says "Sell your car", the route is /sell-my-car).`,
+    ))
+  }
+  return findings
+}
+
+function checkLibImageNotBrandDriven(file, content) {
+  // Hero / PageHero / CtaBanner / decorative-image components must consume
+  // var(--brand-image-*) so dashboard-uploaded images flow through. Hardcoded
+  // /themes/<id>/images/<x>.jpg paths silently drop dashboard overrides.
+  // SKILL.md Quality Bar §"Brand-uploaded images must render" + Pitfall row 37.
+  // Heuristic: file is named Hero.tsx / PageHero.tsx / CtaBanner.tsx and
+  // references a hardcoded image path in JSX src= or backgroundImage style
+  // — without var(--brand-image- anywhere in the same file.
+  const norm = file.replace(/\\/g, '/')
+  if (!/\/components\/(Hero|PageHero|CtaBanner|RecentlySoldPreview|ServicesBand|Reviews)(\.module\.css|\.tsx)?\b/.test(norm)) return []
+  if (!/\.(tsx|module\.css|css)$/.test(file)) return []
+  const usesBrandImageVar = /var\(\s*--brand-image-[a-z]/i.test(content)
+  if (usesBrandImageVar) return []
+  // Look for hardcoded paths that should be brand-image-driven
+  const findings = []
+  const tsxImgRe = /\b(?:src|backgroundImage)\s*[:=]\s*\{?\s*['"`]([^'"`]*\/(?:themes|images)\/[^'"`]+\.(?:jpg|jpeg|png|webp|avif))[`'"]/gi
+  const cssBgRe = /background(?:-image)?\s*:\s*url\(\s*['"]?([^'")\s]+\.(?:jpg|jpeg|png|webp|avif))['"]?\s*\)/gi
+  for (const re of [tsxImgRe, cssBgRe]) {
+    let m
+    while ((m = re.exec(content)) !== null) {
+      findings.push(newFinding(
+        'lib-image-not-brand-driven',
+        'advisory',
+        file,
+        content,
+        m.index,
+        `Hardcoded image path "${m[1]}" in a brand-imagery component — dashboard uploads will silently drop. Consume the corresponding var(--brand-image-hero|--brand-image-about|--brand-image-services|--brand-image-finance|--brand-image-part-exchange|--brand-image-sell-your-car|--brand-image-recently-sold), set by BrandStyles.tsx. The hardcoded path can stay as the fallback inside the CSS var: var(--brand-image-hero, url('/themes/<id>/images/hero.jpg')).`,
+      ))
+    }
+  }
+  return findings
+}
+
+function checkLibMissingCarousCredit(file, content) {
+  // Footer must include a Carous credit so the operator/dealer relationship
+  // is visible. SKILL.md Quality Bar §"Footer requirements".
+  const norm = file.replace(/\\/g, '/')
+  if (!/\/components\/Footer\.tsx$/.test(norm)) return []
+  // Accept any reference to Carous (with-or-without link) — the wording is
+  // discretionary, the attribution is not.
+  if (/\bCarous\b/i.test(content)) return []
+  return [newFinding(
+    'lib-missing-carous-credit',
+    'advisory',
+    file,
+    content,
+    0,
+    `Footer has no Carous credit. Add a small line ("Powered by Carous", "Site by Carous", or "Built with Carous") with an optional href to https://carous.co.uk — keeps the operator/dealer relationship visible and gives prospects a path back to the platform.`,
+  )]
+}
+
+function checkLibMissingHomeLink(file, content) {
+  // Header nav must include a Home link as the first item — older buyers
+  // don't reach for the wordmark. SKILL.md Quality Bar §"Always include a
+  // Home link in nav" + FEATURE_LOG row 21.
+  const norm = file.replace(/\\/g, '/')
+  if (!/\/components\/Header\.tsx$/.test(norm)) return []
+  // Look for either a NAV_ITEMS / navItems array OR direct JSX with href="/"
+  // Pattern A: NAV_ITEMS = [{ label: 'Home', href: '/' }, ...]
+  // Pattern B: <Link href="/" ...>Home</Link>
+  const hasHomeHref = /href\s*[:=]\s*["']\/["']/.test(content)
+  if (hasHomeHref) return []
+  return [newFinding(
+    'lib-missing-home-link',
+    'advisory',
+    file,
+    content,
+    0,
+    `Header has no Home link (href="/"). UK car-buyer demos miss Home in nav and bounce when they want to return home — the wordmark is not the affordance they look for. Add { label: 'Home', href: '/' } as NAV_ITEMS[0]; surface it in the mobile overlay nav and the footer's primary nav too.`,
+  )]
+}
+
 const RULES = [
   checkA11yImgAlt,
   checkA11yH1Multiple,
@@ -713,6 +874,7 @@ const RULES = [
   checkA11yFormFieldFadedBorder,
   checkStdAnchorEmpty,
   checkStdLinkColorBlanket,
+  checkStdUnroutedHref,
   checkDataUseEffectFetch,
   checkMobileMaxWidthQuery,
   checkPerfRawImg,
@@ -723,6 +885,10 @@ const RULES = [
   checkStdCssUnscopedGlobalRule,
   checkDataFetchNoBrandParam,
   checkLibHeroNoSvgFallback,
+  checkLibHeroTitleTooBig,
+  checkLibImageNotBrandDriven,
+  checkLibMissingCarousCredit,
+  checkLibMissingHomeLink,
   checkLibNoAosOnHomepage,
   checkMotionAosMinCount,
   checkMotionNoAnimatedGlow,
@@ -922,37 +1088,73 @@ async function main() {
   }
 
   // `lib-missing-cookie-banner`: every dealer site needs a GDPR consent
-  // banner. Fires if the theme's Shell.tsx exists but doesn't mount one.
-  // Acceptable mounts: <CookieBanner …/> from @/app/widgets/CookieBanner
-  // (preferred — the brandstudio global widget) OR a per-theme component
-  // imported via './CookieBanner' (legacy springalls-classic pattern).
-  // Advisory rather than blocker because some preview contexts (embedded
-  // admin views, intranet) legitimately don't need consent.
+  // banner. Default contract per SKILL.md §"Cookie banners must be per-
+  // theme + archetype-coherent" is a per-theme component under
+  // `components/<Name>CookieBanner.tsx` mounted from Shell — so each
+  // archetype's banner can match the theme's surface design.
+  //
+  // Pass cases:
+  //   (a) Shell mounts a per-theme banner — a JSX element ending in
+  //       "CookieBanner" imported from a relative './...' path. This is
+  //       the canonical contract.
+  //   (b) Shell mounts the global widget AND carries an explicit
+  //       `audit-ignore-file: lib-missing-cookie-banner — using global`
+  //       annotation, documenting that the operator deliberately opted
+  //       out of the per-theme contract for this theme.
+  //   (c) Shell mounts NO CookieBanner at all — fails advisory.
+  //
+  // Mounting only the global widget WITHOUT the ignore annotation now
+  // fails advisory too, surfacing the contract drift the SKILL flagged.
   let shellPath = null
-  let shellMountsCookieBanner = false
+  let shellRaw = ''
+  let shellMountKind = 'none'  // 'per-theme' | 'global' | 'none'
   for (const filePath of auditFiles) {
     const norm = filePath.replace(/\\/g, '/')
     if (/\/components\/Shell\.tsx$/.test(norm)) {
       shellPath = filePath
-      const raw = await fs.readFile(filePath, 'utf8').catch(() => '')
-      // Any <CookieBanner ... /> JSX mount counts. Also accept a default-import
-      // alias under a different name as long as the import path mentions
-      // CookieBanner (catches `import Banner from '..../CookieBanner'`).
-      if (/<CookieBanner\b/.test(raw) || /CookieBanner\b[^'"]*['"]/.test(raw)) {
-        shellMountsCookieBanner = true
+      shellRaw = await fs.readFile(filePath, 'utf8').catch(() => '')
+      // Per-theme component: imported from a relative path that ends in
+      // "CookieBanner" (e.g. './ChesterfieldCookieBanner', './CookieBanner').
+      const importsPerTheme = /from\s+['"]\.[^'"]*CookieBanner['"]/.test(shellRaw)
+      const mountsAnyBanner = /<[A-Z][A-Za-z0-9]*CookieBanner\b/.test(shellRaw)
+      const importsGlobal = /from\s+['"]@\/app\/widgets\/CookieBanner['"]/.test(shellRaw)
+      if (mountsAnyBanner && importsPerTheme) {
+        shellMountKind = 'per-theme'
+      } else if (mountsAnyBanner && importsGlobal) {
+        shellMountKind = 'global'
+      } else if (mountsAnyBanner) {
+        // mounts a CookieBanner without a discernable import path — treat
+        // as per-theme to avoid false-positives on unusual import styles.
+        shellMountKind = 'per-theme'
+      } else {
+        shellMountKind = 'none'
       }
     }
   }
-  if (shellPath && !shellMountsCookieBanner) {
-    findings.push({
-      rule: 'lib-missing-cookie-banner',
-      severity: 'advisory',
-      file: path.relative(PROJECT_ROOT, shellPath),
-      line: 1,
-      col: 1,
-      message:
-        `Shell does not mount a CookieBanner. UK dealer sites need GDPR consent — prefer the brandstudio global widget at @/app/widgets/CookieBanner over re-rolling per theme.`,
-    })
+  if (shellPath) {
+    const fileIgnores = parseFileIgnores(shellRaw)
+    const ignored = fileIgnores.has('lib-missing-cookie-banner')
+    if (shellMountKind === 'none' && !ignored) {
+      findings.push({
+        rule: 'lib-missing-cookie-banner',
+        severity: 'advisory',
+        file: path.relative(PROJECT_ROOT, shellPath),
+        line: 1,
+        col: 1,
+        message:
+          `Shell mounts no CookieBanner. UK dealer sites need GDPR consent. Build a per-theme component at components/<Name>CookieBanner.tsx whose surface matches the archetype's design (rugged: full-width charcoal bottom dock; luxury: centered card; etc.) and mount it from Shell. If using the global widget instead, add // audit-ignore-file: lib-missing-cookie-banner — using global at the top of Shell.tsx.`,
+      })
+    } else if (shellMountKind === 'global' && !ignored) {
+      findings.push({
+        rule: 'lib-missing-cookie-banner',
+        severity: 'advisory',
+        file: path.relative(PROJECT_ROOT, shellPath),
+        line: 1,
+        col: 1,
+        message:
+          `Shell mounts the global CookieBanner widget but no per-theme component. Per SKILL.md, each theme should ship its own CookieBanner so the consent surface matches the archetype. To accept the global widget as a deliberate choice (and silence this rule), add // audit-ignore-file: lib-missing-cookie-banner — using global at the top of Shell.tsx.`,
+      })
+    }
   }
 
   const blockers = findings.filter((f) => f.severity === 'blocker')
