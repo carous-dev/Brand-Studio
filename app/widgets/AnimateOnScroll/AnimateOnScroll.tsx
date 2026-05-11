@@ -68,13 +68,31 @@ export default function AnimateOnScroll() {
         .forEach((el) => observer.observe(el))
     }
 
-    observeAll()
+    // Defer the FIRST observation until two paint frames have happened.
+    // On larger screens many [data-aos] elements are above-the-fold at
+    // first paint; the IO fires synchronously-ish on observe() and sets
+    // `data-aos-animate="true"` before the browser has rendered the
+    // initial opacity:0 / transform state — so the transition has no
+    // baseline to animate from and the elements appear instantly.
+    // The double-rAF guarantees at least one painted frame of the initial
+    // state before observation begins, so the transition plays correctly.
+    let rafId1 = 0
+    let rafId2 = 0
+    rafId1 = window.requestAnimationFrame(() => {
+      rafId2 = window.requestAnimationFrame(() => {
+        observeAll()
+      })
+    })
 
-    // Pick up nodes added later (e.g. async-rendered Latest Arrivals slides)
+    // Pick up nodes added later (e.g. async-rendered Latest Arrivals slides).
+    // These nodes mount AFTER the initial paint, so they don't need the
+    // double-rAF defer — they'll already have a painted initial state.
     const mutation = new MutationObserver(() => observeAll())
     mutation.observe(document.body, { childList: true, subtree: true })
 
     return () => {
+      if (rafId1) window.cancelAnimationFrame(rafId1)
+      if (rafId2) window.cancelAnimationFrame(rafId2)
       observer.disconnect()
       mutation.disconnect()
     }

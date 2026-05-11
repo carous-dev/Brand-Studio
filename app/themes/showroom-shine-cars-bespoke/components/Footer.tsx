@@ -5,6 +5,7 @@ import { Phone, Mail, MapPin, Clock, Facebook, Instagram, Youtube, Linkedin, Arr
 import { useBrand } from '../context/BrandClientWrapper'
 import { getBrandContactInfo } from '../lib/contact'
 import { WhatsAppIcon } from '@/app/widgets/WhatsAppFab'
+import BrandLogo from './BrandLogo'
 import styles from './Footer.module.css'
 
 const QUICK_LINKS = [
@@ -52,9 +53,8 @@ export default function Footer() {
       <div className={styles.stripeAccent} aria-hidden />
       <div className={styles.inner}>
         <div className={styles.brandCol}>
-          <Link href="/" className={styles.brandLink}>
-            <span className={styles.brandAccent}>SHOWROOM</span>
-            <span className={styles.brandSub}>SHINE CARS</span>
+          <Link href="/" className={styles.brandLink} aria-label={brandName}>
+            <BrandLogo variant="footer" />
           </Link>
           <p className={styles.brandBlurb}>
             Over 20 years of trusted service. Quality used vehicles in Coventry and the West Midlands,

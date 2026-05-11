@@ -1,0 +1,80 @@
+.logoWrap {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1;
+}
+.logoImg {
+  display: block;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Header — sized to fit the main bar height. Wordmark fallback uses
+ * the brand-primary italic accent + condensed-bold sub. */
+.logoWrap_header .logoImg {
+  height: 60px;
+  max-width: 280px;
+}
+@media (max-width: 640px) {
+  .logoWrap_header .logoImg {
+    height: 48px;
+    max-width: 210px;
+  }
+}
+@media (max-width: 380px) {
+  .logoWrap_header .logoImg {
+    height: 42px;
+    max-width: 170px;
+  }
+}
+
+/* Footer — generous size since the footer band gives more room. The
+ * wordmark fallback paints in dark-surface text colors. */
+.logoWrap_footer .logoImg {
+  height: 76px;
+  max-width: 320px;
+}
+
+/* Mobile nav overlay — matched-ish to header */
+.logoWrap_mobile .logoImg {
+  height: 48px;
+  max-width: 220px;
+}
+
+/* Wordmark fallback (when both images fail to load) */
+.wordmarkAccent {
+  color: var(--brand-primary);
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.15rem, 4.4vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-style: italic;
+  white-space: nowrap;
+}
+.wordmarkSub {
+  color: currentColor;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+}
+
+.logoWrap_footer .wordmarkAccent {
+  font-size: 1.95rem;
+}
+.logoWrap_footer .wordmarkSub {
+  font-size: 0.7rem;
+  letter-spacing: 0.46em;
+}
+
+@media (max-width: 640px) {
+  .logoWrap_header .wordmarkAccent {
+    font-size: 1.25rem;
+  }
+  .logoWrap_header .wordmarkSub {
+    font-size: 0.55rem;
+    letter-spacing: 0.32em;
+  }
+}

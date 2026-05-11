@@ -7,6 +7,7 @@ import { Menu, X, MapPin, Phone, Mail, Facebook, Instagram, Youtube, Linkedin } 
 import { useBrand } from '../context/BrandClientWrapper'
 import { useWorkingHours } from '@/app/hooks/use-working-hours'
 import type { WorkingPeriod } from '@/app/lib/working-status'
+import BrandLogo from './BrandLogo'
 import styles from './Header.module.css'
 
 function isActiveRoute(pathname: string, href: string): boolean {
@@ -124,8 +125,7 @@ export default function Header() {
       <div className={styles.mainBar}>
         <div className={styles.mainBarInner}>
           <Link href="/" className={styles.brandLink} aria-label={brandName}>
-            <span className={styles.brandWordmarkAccent}>SHOWROOM</span>
-            <span className={styles.brandWordmarkSub}>SHINE CARS</span>
+            <BrandLogo variant="header" />
           </Link>
 
           <nav aria-label="Primary" className={styles.primaryNav}>
@@ -182,8 +182,7 @@ export default function Header() {
     >
         <div className={styles.mobileNavHead}>
           <Link href="/" onClick={() => setNavOpen(false)} className={styles.mobileBrand}>
-            <span className={styles.brandWordmarkAccent}>SHOWROOM</span>
-            <span className={styles.brandWordmarkSub}>SHINE CARS</span>
+            <BrandLogo variant="mobile" />
           </Link>
           <button
             type="button"
