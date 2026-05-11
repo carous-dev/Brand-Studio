@@ -12,6 +12,7 @@ import Footer from './Footer'
 import AnimateOnScroll from '@/app/widgets/AnimateOnScroll'
 import { MotionFX } from '@/app/widgets/MotionFX'
 import ScrollProgress from '@/app/widgets/ScrollProgress'
+import PreviewBanner from '@/app/widgets/PreviewBanner'
 import WhatsAppFab from '@/app/widgets/WhatsAppFab'
 import AutowowCookieBanner from './AutowowCookieBanner'
 
@@ -70,6 +71,7 @@ export function AutoShell({ children }: { children: ReactNode }) {
       <AnimateOnScroll />
       <MotionFX />
       <ScrollProgress />
+      <PreviewBanner brand={brand} />
       <Header />
       <main id="content" role="main" className="auto-main">
         {children}

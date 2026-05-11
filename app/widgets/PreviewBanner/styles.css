@@ -1,0 +1,114 @@
+/* =============================================================================
+ * PreviewBanner — brandstudio-global notice strip
+ * =============================================================================
+ *
+ * Sticky-top strip that surfaces when NEXT_PUBLIC_PREVIEW=1. Brand-token
+ * driven (uses `--color-primary`, `--color-text`) so it retints per brand
+ * automatically.
+ *
+ * Selectors are NOT scoped to a single theme-id — this widget is shared
+ * across every theme. The `.brandstudio-preview-banner-*` class prefix is
+ * unique enough that there's no collision risk with theme-internal CSS.
+ * ============================================================================= */
+
+.brandstudio-preview-banner {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  width: 100%;
+  background: var(--color-primary, #0f1623);
+  color: #ffffff;
+  font-family: var(--font-ui-family-override, var(--font-ui-family, 'Inter', 'Segoe UI', sans-serif));
+  border-bottom: 1px solid color-mix(in srgb, #ffffff 18%, transparent);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+}
+
+.brandstudio-preview-banner-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.brandstudio-preview-banner-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.brandstudio-preview-banner-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  animation: brandstudio-preview-banner-pulse 2s ease-out infinite;
+}
+
+@keyframes brandstudio-preview-banner-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6); }
+  70%  { box-shadow: 0 0 0 9px rgba(255, 255, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+
+.brandstudio-preview-banner-text {
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+}
+
+.brandstudio-preview-banner-text strong {
+  font-weight: 700;
+}
+
+.brandstudio-preview-banner a {
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0 2px;
+  border-radius: 2px;
+  transition: background 160ms ease;
+}
+
+.brandstudio-preview-banner a:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.brandstudio-preview-banner a:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brandstudio-preview-banner-dot {
+    animation: none !important;
+  }
+}
+
+@media (min-width: 561px) {
+  .brandstudio-preview-banner-inner {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    padding: 10px clamp(16px, 3vw, 32px);
+  }
+  .brandstudio-preview-banner-text {
+    font-size: 0.88rem;
+  }
+}

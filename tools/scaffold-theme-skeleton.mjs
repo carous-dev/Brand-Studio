@@ -265,11 +265,12 @@ import { GarageProvider } from '../context/GarageContext'
 import Header from './Header'
 import Footer from './Footer'
 // Brandstudio global widgets — same implementation across every theme.
-// Don't re-roll AOS / cookie consent / motion FX per theme; mount the
-// widgets and pass brand-aware props.
+// Don't re-roll AOS / cookie consent / motion FX / preview-banner per
+// theme; mount the widgets and pass brand-aware props.
 import AnimateOnScroll from '@/app/widgets/AnimateOnScroll'
 import { MotionFX } from '@/app/widgets/MotionFX'
 import ScrollProgress from '@/app/widgets/ScrollProgress'
+import PreviewBanner from '@/app/widgets/PreviewBanner'
 import CookieBanner from '@/app/widgets/CookieBanner'
 import WhatsAppFab from '@/app/widgets/WhatsAppFab'
 
@@ -304,6 +305,12 @@ const KNOWN_ROUTES = new Set([
  *    fade-out-on-exit|blur-on-exit|zoom-on-enter" to any container — its
  *    children get the effect for free. Themes can also consume
  *    var(--mfx-progress) (0 → 1) directly in their own CSS modules.
+ *  - <PreviewBanner brand={brand} /> — sticky-top notice strip that renders
+ *    when NEXT_PUBLIC_PREVIEW=1 (set by the preview-deploy env, NOT in
+ *    production). Brand-token-driven (--color-primary), shows the dealer
+ *    name + a link to carous.co.uk. Renders nothing in production — safe
+ *    to always mount. MUST sit before <Header /> in the Shell so it
+ *    pushes content down rather than overlapping the nav.
  *  - <CookieBanner /> — UK GDPR consent. Replace with a per-theme bespoke
  *    banner under \`components/<Theme>CookieBanner.tsx\` during Phase 8
  *    (the shared widget is a fallback / starter, not the default for
@@ -341,6 +348,7 @@ export function ${toNames.pascalShort}Shell({ children }: { children: ReactNode 
       <AnimateOnScroll />
       <MotionFX />
       <ScrollProgress />
+      <PreviewBanner brand={brand} />
       <Header />
       <main id="content" role="main" className="${toNames.camelShort}-main">
         {children}
