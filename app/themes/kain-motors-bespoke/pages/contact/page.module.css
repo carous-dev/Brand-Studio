@@ -1,0 +1,175 @@
+.section { background: var(--surface-bg-light); }
+.grid {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 4vw, 48px);
+}
+@media (min-width: 880px) { .grid { grid-template-columns: 1.5fr 1fr; align-items: start; } }
+
+.formColumn { display: flex; flex-direction: column; gap: 12px; }
+.formTitle {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.8rem, 3.6vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 4px 0 4px;
+  color: var(--text-on-light-strong);
+}
+.formLead {
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  color: var(--text-on-light-muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  margin: 0 0 12px;
+}
+.form { display: flex; flex-direction: column; gap: 16px; }
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 640px) { .formGrid { grid-template-columns: 1fr 1fr; } }
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  font-size: 0.92rem;
+  color: var(--text-on-light-muted);
+  line-height: 1.5;
+}
+.consent input { margin-top: 4px; accent-color: var(--brand-primary); }
+.errorBanner {
+  background: rgba(194, 65, 12, 0.1);
+  color: #9a3412;
+  padding: 12px 14px;
+  border-radius: 4px;
+  font-size: 0.92rem;
+  margin: 0;
+}
+.success {
+  background: var(--surface-card-light);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  padding: 28px;
+  border-radius: 6px;
+  text-align: center;
+}
+.success h3 {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.4rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-on-light-strong);
+  margin: 0 0 8px;
+}
+.success p {
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  color: var(--text-on-light-muted);
+  margin: 0;
+}
+
+.aside { display: flex; flex-direction: column; gap: 16px; }
+.asideCard {
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+  border: 1px solid rgba(209, 182, 122, 0.4);
+  padding: 28px 26px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: sticky;
+  top: 100px;
+}
+.address {
+  font-style: normal;
+  margin: 0;
+  font-family: var(--font-editorial-family, 'Playfair Display', serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #ffffff;
+}
+.divider {
+  height: 1px;
+  background: rgba(209, 182, 122, 0.3);
+}
+.hours {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hours > div {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  font-size: 0.92rem;
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+.hours > div:last-child { border-bottom: 0; }
+.hours dt { color: rgba(255, 255, 255, 0.78); }
+.hours dd { margin: 0; color: #ffffff; }
+.lines {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lines li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  font-size: 0.95rem;
+}
+.lines li a {
+  color: var(--kain-accent-warm);
+  text-decoration: none;
+  font-weight: 600;
+}
+.lines li a:hover { color: #ffffff; }
+.lines li span {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.82rem;
+}
+.whatsappBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #25d366;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 12px 18px;
+  border-radius: 4px;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+.whatsappBtn:hover { background: #1faa54; }
+.note {
+  font-family: var(--font-editorial-family, 'Playfair Display', serif);
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.88rem;
+  margin: 0;
+}
+.note a { color: var(--kain-accent-warm); text-decoration: underline; }

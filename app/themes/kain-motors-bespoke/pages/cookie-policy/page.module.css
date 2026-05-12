@@ -1,0 +1,57 @@
+.section { background: var(--surface-bg-light); }
+.article {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px);
+  color: var(--text-on-light-strong);
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  line-height: 1.7;
+}
+.lastUpdated {
+  font-family: var(--font-editorial-family, 'Playfair Display', serif);
+  font-style: italic;
+  color: var(--kain-accent-warm);
+  margin: 0 0 24px;
+}
+.article h2 {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 32px 0 8px;
+  color: var(--text-on-light-strong);
+}
+.article p { color: var(--text-on-light-muted); margin: 0 0 14px; }
+.article a {
+  color: var(--brand-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.cats {
+  margin: 0 0 16px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.cats > div {
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  padding: 18px 20px;
+  border-radius: 6px;
+}
+.cats dt {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  margin-bottom: 6px;
+}
+.cats dd {
+  margin: 0;
+  color: var(--text-on-light-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}

@@ -1,6 +1,6 @@
 ---
 name: new-theme
-description: Generate a fully bespoke brandstudio theme for a real dealer from their logo and website URL — vision-extracts dominant colors and typography character from the logo, scrapes the dealer site for brand context (name, services, location, hours), picks a paired Google Font, scaffolds the entire theme contract, adapts hero/header/footer to the dealer's content, and ships a previewable theme. Also supports an advanced "port from carous-platform sibling app" mode for internal use. Designed for prospect-customer preview generation with two user inputs (logo + URL) and zero further interaction.
+description: Generate a fully bespoke brandstudio theme for a real dealer from their logo and website URL — vision-extracts dominant colors and typography character from the logo, scrapes the dealer site for brand context (name, services, location, hours), picks a paired Google Font, scaffolds the entire theme contract, adapts hero/header/footer to the dealer's content, and ships a previewable theme. Also supports an advanced "port from carous-platform sibling app" mode for internal use. Designed for prospect-customer preview generation with three required inputs (logo + URL + primary hex) plus an optional free-text context hint (e.g. "dealer sells bikes AND cars", "EV-only", "classic cars only") that biases scrape, copy, and inventory chips.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, WebFetch, AskUserQuestion
 ---
 
@@ -10,11 +10,16 @@ Creates a fully working theme under `app/themes/<theme-id>/` for any dealer.
 Two modes:
 
 - **Mode A — Bespoke from logo + URL** (default).
-  User provides a logo file and the dealer's website URL. The skill
-  vision-extracts colors and typography character from the logo, scrapes
-  the dealer site for content (brand name, services, address, hours, hero
-  imagery), picks a Google Font that pairs with the logo's character, and
-  ships a custom theme adapted to the dealer's brand.
+  User provides a logo file, the dealer's website URL, a primary brand
+  hex, and (optionally) a free-text context hint. The skill
+  vision-extracts typography character from the logo, scrapes the dealer
+  site for content (brand name, services, address, hours, hero imagery),
+  picks a Google Font that pairs with the logo's character, and ships a
+  custom theme adapted to the dealer's brand. The optional context hint
+  (e.g. "sells bikes AND cars", "EV-only specialist", "classic cars
+  only", "commercial vans") biases the site scrape, inventory category
+  chips, and hero copy so the theme reflects the dealer's actual
+  business mix instead of defaulting to generic "used cars".
 - **Mode B — Port from a carous-platform sibling** (advanced).
   Caller passes `--from <app-folder>`. DNA gets extracted from the named
   carous-platform app's `globals.css` / `layout.tsx` / `theme-style.json`.
@@ -24,16 +29,21 @@ Two modes:
 ## Invocation
 
 ```
-/new-theme                            # Mode A — skill prompts for logo + URL
-/new-theme <theme-id>                 # Mode A with caller-supplied id
-/new-theme --from <app>               # Mode B — carous-platform port
-/new-theme <id> --from <app>          # Mode B with explicit id
+/new-theme                                       # Mode A — skill prompts for logo + URL + primary hex
+/new-theme <theme-id>                            # Mode A with caller-supplied id
+/new-theme --context "<free text>"               # Mode A with inline context hint (also accepted in the freeform input message)
+/new-theme --from <app>                          # Mode B — carous-platform port
+/new-theme <id> --from <app>                     # Mode B with explicit id
 ```
 
 Examples:
 
-- `/new-theme` → skill asks for logo + URL, builds a bespoke theme for that
-  dealer.
+- `/new-theme` → skill asks for logo + URL + primary hex, builds a bespoke
+  theme for that dealer.
+- `/new-theme --context "sells motorbikes AND cars under same brand"` →
+  same flow, but the optional context hint threads into A3 scrape (also
+  pulls /bikes pages), A5 DNA notes, A8 hero copy + inventory chips
+  (chips become All / Cars / Bikes instead of body-type defaults).
 - `/new-theme huntsmotors-cobalt --from huntsmotors` → ports the
   huntsmotors carous-platform app into a new theme.
 
@@ -1378,33 +1388,41 @@ SKILL apply to **Mode A only**.
 
 ### A1 — Gather inputs
 
-**Three inputs required: logo, dealer URL, primary hex.** Color is NEVER
-extracted from the logo (see Pitfall row 38 + memory
-`feedback_no_logo_color_extraction.md`). The logo is used only for
-vision-based character analysis (font + radius decisions) and as the
-brand wordmark/favicon glyph. The palette is designed by Claude from the
-user-supplied primary hex via `tools/check-palette-policy.mjs`.
+**Three inputs required: logo, dealer URL, primary hex.** One **optional**
+fourth input: a free-text **context hint** (e.g. "sells motorbikes AND
+cars under same brand", "EV-only specialist", "classic cars only",
+"commercial vans + minibuses"). Color is NEVER extracted from the logo
+(see Pitfall row 38 + memory `feedback_no_logo_color_extraction.md`). The
+logo is used only for vision-based character analysis (font + radius
+decisions) and as the brand wordmark/favicon glyph. The palette is
+designed by Claude from the user-supplied primary hex via
+`tools/check-palette-policy.mjs`.
 
-If the user passed `--logo <path>`, `--url <url>`, and `--primary <hex>`
-inline, use those and skip prompting. Otherwise:
+If the user passed `--logo <path>`, `--url <url>`, `--primary <hex>`,
+and/or `--context "<text>"` inline, use those and skip prompting.
+Otherwise:
 
 **Step 1 — Confirm direction with AskUserQuestion**:
 
 ```
 Question: "Ready to build a bespoke theme? I'll need a logo, the dealer's
           website URL, and ONE primary brand hex (e.g. #be0e11). I'll
-          design the rest of the palette around that primary."
+          design the rest of the palette around that primary. You can
+          ALSO (optional) include a one-line context hint — e.g.
+          'sells bikes AND cars', 'EV-only', 'classic cars only',
+          'commercial vans' — and I'll bias the scrape, inventory chips,
+          and hero copy accordingly."
 Header: "Inputs"
 Options:
-  - "Yes — I'll paste logo + URL + primary hex in my next message"
+  - "Yes — I'll paste logo + URL + primary hex (+ optional context) in my next message"
   - "Yes — logo is at a public URL (not a local file)"
   - "Cancel — abort the skill"
 ```
 
 If the user picks Cancel, exit cleanly with a one-line message.
 
-**Step 2 — Read the user's next message** as natural text containing all
-three inputs. Parse defensively:
+**Step 2 — Read the user's next message** as natural text containing the
+three required inputs plus an optional fourth. Parse defensively:
 
 - A line containing `http(s)://...ext` (where `ext` is `.png`, `.jpg`,
   `.jpeg`, `.svg`, `.webp`) is the logo URL.
@@ -1413,11 +1431,17 @@ three inputs. Parse defensively:
 - A line containing `http(s)://` without an image extension is the dealer
   URL.
 - A bare `#RRGGBB` (or `#RGB`) is the primary hex.
-- If the user labels them (`logo:`, `url:`, `primary:`), respect the labels.
+- A line prefixed `context:` (case-insensitive) is the context hint. If
+  no such line is labelled, treat **any remaining free-text line** that
+  doesn't match the four patterns above as the context hint. Multiple
+  unlabelled lines join with `; `.
+- If the user labels them (`logo:`, `url:`, `primary:`, `context:`),
+  respect the labels.
 
-If any of the three is missing, send a short text message asking for
-the missing field and wait for the next message. Don't loop on
-AskUserQuestion — the user already engaged.
+If any of the three **required** fields is missing, send a short text
+message asking for the missing field and wait for the next message.
+Don't loop on AskUserQuestion — the user already engaged. The context
+hint is optional; if absent, store `null` and proceed silently.
 
 **Step 3 — Validate**:
 
@@ -1428,9 +1452,24 @@ AskUserQuestion — the user already engaged.
   a corrected URL.
 - Primary hex: must match `^#?[0-9a-fA-F]{3,6}$`. Normalize to lowercase
   `#rrggbb`. If invalid, ask once for a valid hex.
+- Context hint (if present): trim to ≤ 240 chars (cut at sentence boundary
+  if longer; warn the user once). Strip surrounding quotes. Never
+  ask the user to re-supply a context hint — it's optional, so silently
+  drop it if it parses to an empty string.
 
 If the user gave a theme id inline (`/new-theme cobalt-modern`), use it.
 Otherwise the skill derives one in A6.
+
+**Step 4 — Capture `contextHint` for downstream phases**. Persist it
+locally so later tool calls don't lose it:
+
+```
+mkdir -p tools/.context-hint
+echo '{"contextHint": "<trimmed text or empty>"}' > tools/.context-hint/<slug>.json
+```
+
+The DNA JSON written in Phase A5 carries `notes.contextHint` as the
+authoritative copy; the sidecar is for resilience across tool boundaries.
 
 ### A2 — Analyze the logo (vision character ONLY — no color extraction)
 
@@ -1564,7 +1603,9 @@ scope).
 
 ### A3 — Scrape the dealer site
 
-Use **WebFetch** on the dealer URL with this prompt:
+Use **WebFetch** on the dealer URL with this prompt (substitute the
+`contextHint` from A1 into the bracketed slot if non-null — otherwise
+omit the bracketed paragraph entirely):
 
 ```
 Extract the following from this dealer website, using only what is
@@ -1580,6 +1621,16 @@ visible on the page:
 - Hero image URL (if extractable from CSS or img tag)
 - Key facts (years established, fleet size, anything that anchors the
   brand voice)
+
+[Context hint from operator: "<contextHint>". If this hint mentions a
+vehicle category beyond cars (motorbikes, vans, commercial, classic,
+EV-only, etc.), ALSO extract: (a) any sub-section nav for that category
+(e.g. /bikes, /vans, /classics), (b) category-specific services or
+finance products, (c) any inventory counts split by category, and (d)
+imagery URLs that anchor that category. Treat the hint as authoritative
+about the dealer's business mix — do not infer it away just because the
+home page leads with cars.]
+
 Return as a structured list. If a field is not present, write "not found".
 Do not fabricate.
 ```
@@ -1588,7 +1639,9 @@ Capture the response. If WebFetch fails (timeout, anti-bot wall, 404),
 fall back gracefully:
 
 - Ask the user once for the brand name and city, then proceed with logo
-  data only. Do not abort the skill.
+  data only. Do not abort the skill. If a `contextHint` was supplied
+  but the scrape failed, KEEP the hint — it still threads into A5 DNA
+  notes and Phase 8 copy/chips even without scrape backing.
 
 ### A4 — Pick paired Google Fonts
 
@@ -1701,7 +1754,8 @@ Compose a DNA object matching the schema the scaffolder consumes:
     "vibe": "<2-3 words from A2>",
     "archetype": "<classic | modern | rugged | luxury | prestige — set in A2d>",
     "colorsExtractor": "deterministic (extract-logo-colors.mjs)",
-    "contrastCheck": "passed | critical-failed (and-fixed)"
+    "contrastCheck": "passed | critical-failed (and-fixed)",
+    "contextHint": "<verbatim trimmed context hint from A1, or null if not supplied>"
   }
 }
 ```
@@ -1718,6 +1772,19 @@ luxury | prestige` — set by Phase A2d. Used by Phase 7.5a (image catalogue
 lookup), Phase 7.5b (favicon glyph selection), Phase 7.5c (work-package
 generator pulls archetype-specific required components), and Phase 8
 (designer reads `docs/theme-archetype-specs.md` for the archetype).
+
+**`notes.contextHint` is OPTIONAL** (may be `null`). When present, it
+encodes business-mix info the home page alone won't reveal — e.g.
+"sells motorbikes AND cars under same brand", "EV-only specialist",
+"classic cars only", "commercial vans + minibuses". Phase 8 reads it to:
+(a) override default hero copy ("Used cars in Leeds" → "Bikes and cars
+in Leeds, side by side"), (b) replace inventory category chips
+(All / Hatch / SUV / Saloon → All / Cars / Bikes if the hint says bikes;
+All / EV / Hybrid / PHEV if EV-only; etc.), (c) add or rename nav items
+("Used Cars" → "Cars & Bikes"; add a /bikes route stub if archetype
+inventory supports it), and (d) reflect the mix in About/Services copy.
+The hint is authoritative — Phase 8 must NOT silently revert to
+"used cars" wording just because the inventory data layer is generic.
 
 For `overlayStart`/`overlayEnd`: don't blindly use `rgba(6, 10, 16, ...)`.
 Tint the overlay toward the primary so the hero feels brand-coherent.
@@ -1993,6 +2060,14 @@ detail page** (route handling stays the same; JSX + CSS + composition
 are fresh), and a per-theme cookie banner.
 
 **Before designing, read these:**
+0. `tools/.theme-dna/<dealer-slug>.json` → `notes.contextHint` — if
+   non-null, this OVERRIDES default copy and inventory chips throughout
+   Phase 8. Treat the hint as authoritative about the dealer's actual
+   business mix. See Phase A5 §"`notes.contextHint`" for the full list
+   of places it must apply (hero copy, inventory category chips, nav
+   labels, About/Services copy). If you find yourself writing "used
+   cars in <city>" while the hint says "bikes AND cars", you've missed
+   step 0 — go back.
 1. `app/themes/<theme-id>/CHECKLIST.md` — the **per-theme marked copy
    of `Checklist.md`** generated in Phase 7.5c. This is the canonical
    "what components must exist" list. Open it now; you will tick items
@@ -2523,9 +2598,13 @@ to broadcast. Don't post per-theme during automated batch runs.
 - **Mode B scaffolder**: `tools/scaffold-theme.mjs` — full clone-and-edit
   from `springalls-classic` (cleanest theme, type-clean baseline). Phase 8
   in Mode B is text replacement, not redesign.
-- Mode A inputs: 3 (logo file path + dealer URL + primary brand hex).
-  Optional: theme id, display name. Color is NEVER extracted from the
-  logo — see Quality Bar §"Color palette policy".
+- Mode A inputs: 3 required (logo file path + dealer URL + primary brand
+  hex) + 1 optional free-text `contextHint` (e.g. "sells bikes AND cars",
+  "EV-only", "classic cars only", "commercial vans"). Optional: theme id,
+  display name. Color is NEVER extracted from the logo — see Quality
+  Bar §"Color palette policy". The context hint threads through A3
+  scrape, A5 DNA `notes.contextHint`, and Phase 8 hero copy + inventory
+  chips + nav labels.
 - Mode B inputs: 0 if the skill auto-picks; 1 if `--from <app>` given.
 - After Phase 8, the theme has: 14 page implementations, full Shell with
   Header / Footer / per-theme cookie banner / WhatsApp widget /

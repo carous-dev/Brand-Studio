@@ -1,0 +1,158 @@
+.section {
+  position: relative;
+  isolation: isolate;
+  padding: clamp(60px, 10vw, 120px) 0;
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+  overflow: hidden;
+}
+.glow {
+  position: absolute;
+  top: -150px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(209, 182, 122, 0.18) 0%, transparent 60%);
+  z-index: -1;
+  filter: blur(20px);
+}
+.inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px);
+}
+.head { text-align: center; margin-bottom: clamp(36px, 6vw, 56px); }
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--kain-accent-warm);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+.title {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.6rem, 3.6vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0 auto 16px;
+  line-height: 1.15;
+}
+.titleItalic {
+  font-family: var(--font-editorial-family, 'Playfair Display', serif);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--kain-accent-warm);
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+.lead {
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0 auto;
+}
+
+.grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+@media (min-width: 640px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(209, 182, 122, 0.22);
+  padding: 28px 22px 24px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.22s ease, transform 0.22s ease, background-color 0.22s ease;
+}
+.card:hover {
+  border-color: rgba(209, 182, 122, 0.6);
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-3px);
+}
+.cardNum {
+  font-family: var(--font-editorial-family, 'Playfair Display', serif);
+  font-style: italic;
+  font-size: 2rem;
+  color: var(--kain-accent-warm);
+  line-height: 1;
+  margin: 0;
+}
+.cardTitle {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.18rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0;
+}
+.cardLead {
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0 0 6px;
+}
+.cardPoints {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cardPoints li {
+  position: relative;
+  padding-left: 16px;
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+.cardPoints li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 6px;
+  height: 1px;
+  background: var(--kain-accent-warm);
+}
+.cardLink {
+  margin-top: auto;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: var(--kain-accent-warm);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.cardLink:hover { color: #ffffff; }
+.cardLink:hover span { transform: translateX(4px); }
+.cardLink span { transition: transform 0.18s ease; }

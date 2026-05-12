@@ -1,0 +1,98 @@
+.section {
+  background: var(--surface-card-light);
+  color: var(--text-on-light-strong);
+  padding: clamp(60px, 10vw, 120px) 0;
+  position: relative;
+}
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: var(--kain-gold-rule);
+  opacity: 0.6;
+}
+.inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px);
+}
+.head { text-align: center; margin-bottom: clamp(36px, 6vw, 64px); }
+.title {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.5rem, 3.2vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 8px auto 0;
+  color: var(--text-on-light-strong);
+}
+.grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+@media (min-width: 880px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    align-items: start;
+  }
+}
+.card {
+  background: var(--surface-bg-light);
+  border: 1px solid var(--border-on-light);
+  padding: 28px 24px 24px;
+  border-radius: 6px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.cardLifted {
+  background: #0a0e14;
+  color: #ffffff;
+  border-color: rgba(209, 182, 122, 0.32);
+}
+@media (min-width: 880px) {
+  .cardLifted { transform: translateY(-16px); }
+}
+.stars { color: var(--kain-accent-warm); display: flex; gap: 2px; }
+.body {
+  font-family: var(--font-editorial-family, 'Playfair Display', serif);
+  font-style: italic;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  margin: 0;
+  color: inherit;
+}
+.author {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.name {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.location {
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  font-size: 0.78rem;
+  color: var(--kain-accent-warm);
+  letter-spacing: 0.04em;
+}
+.cardLifted .location { color: var(--kain-accent-warm); }
+.foot {
+  text-align: center;
+  margin: 32px 0 0;
+  font-family: var(--font-editorial-family, 'Playfair Display', serif);
+  font-style: italic;
+  color: var(--text-on-light-muted);
+  font-size: 0.92rem;
+}

@@ -1,0 +1,161 @@
+.footer {
+  background: #0a0e14;
+  color: rgba(255, 255, 255, 0.82);
+  padding: clamp(56px, 9vw, 96px) 0 0;
+  position: relative;
+}
+
+.topRule {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: var(--kain-gold-rule, linear-gradient(90deg, transparent, #d1b67a, transparent));
+  opacity: 0.7;
+}
+
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px) clamp(48px, 6vw, 72px);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(32px, 5vw, 56px);
+}
+@media (min-width: 640px) {
+  .container { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 960px) {
+  .container { grid-template-columns: 1.6fr 1fr 1fr 1fr 1.4fr; }
+}
+
+.brandColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.brandLead {
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0;
+}
+.socialRow {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.socialBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--kain-accent-warm);
+  text-decoration: none;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+.socialBtn:hover {
+  background: rgba(209, 182, 122, 0.2);
+  color: #ffffff;
+}
+.socialMuted { opacity: 0.42; pointer-events: none; }
+
+.pillar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pillarTitle {
+  color: var(--kain-accent-warm);
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  margin: 0 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(209, 182, 122, 0.24);
+}
+.pillarLink {
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  transition: color 0.18s ease;
+}
+.pillarLink:hover { color: #ffffff; }
+
+.contactColumn {
+  font-style: normal;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.addressText {
+  color: rgba(255, 255, 255, 0.78);
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  font-size: 0.92rem;
+  line-height: 1.7;
+  margin: 0;
+}
+.contactRow {
+  margin: 0;
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+}
+.contactRow a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+}
+.contactRow a:hover { color: var(--kain-accent-warm); }
+
+.appointmentNote {
+  margin: 8px 0 0;
+  font-family: var(--font-editorial-family, 'Playfair Display', serif);
+  font-style: italic;
+  font-size: 0.92rem;
+  color: var(--kain-accent-warm);
+  letter-spacing: 0.01em;
+}
+
+.bottom {
+  background: #060a0f;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.bottomInner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 20px clamp(16px, 4vw, 32px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.56);
+}
+.attribution {
+  font-style: italic;
+}
+.attribution a {
+  color: var(--kain-accent-warm);
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(209, 182, 122, 0.4);
+}
+.attribution a:hover { color: #ffffff; border-color: #ffffff; }
+.legalNav {
+  display: inline-flex;
+  gap: 16px;
+}
+.legalNav a {
+  color: rgba(255, 255, 255, 0.56);
+  text-decoration: none;
+}
+.legalNav a:hover { color: var(--kain-accent-warm); }

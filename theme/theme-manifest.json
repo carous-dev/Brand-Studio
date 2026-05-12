@@ -21,6 +21,12 @@
       "status": "experimental"
     },
     {
+      "id": "kain-motors-bespoke",
+      "name": "Kain Motors",
+      "description": "Bespoke prestige theme for Kain Motors — gold-on-black appointment-only Manchester used-car dealership with bold display wordmark and editorial dark-tier composition.",
+      "status": "experimental"
+    },
+    {
       "id": "showroom-shine-cars-bespoke",
       "name": "Showroom Shine Cars",
       "description": "Bespoke theme for Showroom Shine Cars — Coventry independent dealer with bold motoring signage, deep crimson on white, condensed-bold display type.",

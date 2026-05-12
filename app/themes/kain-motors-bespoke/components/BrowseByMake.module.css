@@ -1,0 +1,83 @@
+.section {
+  background: var(--surface-bg-light);
+  border-top: 1px solid var(--border-on-light);
+  padding: clamp(40px, 7vw, 72px) 0;
+}
+.inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px);
+}
+.head { margin-bottom: 28px; text-align: center; }
+.title {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.4rem, 2.8vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-on-light-strong);
+  margin: 8px 0 0;
+}
+.grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+@media (min-width: 640px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 960px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--text-on-light-strong);
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: border-color 0.18s ease, transform 0.18s ease, color 0.18s ease, background 0.18s ease;
+  min-height: 56px;
+}
+.chip:hover {
+  border-color: var(--kain-accent-warm);
+  color: var(--brand-primary);
+  transform: translateY(-2px);
+  background: #ffffff;
+}
+.chipInitial {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface-bg-dark);
+  color: var(--kain-accent-warm);
+  font-family: var(--font-editorial-family, 'Playfair Display', serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0;
+  flex: 0 0 28px;
+}
+.chipName {
+  font-size: 0.95rem;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chipArrow {
+  color: var(--kain-accent-warm);
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  font-size: 1rem;
+  transition: transform 0.18s ease;
+}
+.chip:hover .chipArrow { transform: translateX(3px); }

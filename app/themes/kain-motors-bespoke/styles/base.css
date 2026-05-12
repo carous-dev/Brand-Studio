@@ -1,0 +1,559 @@
+/* =============================================================================
+ * BASE STYLES — kain-motors-bespoke
+ * Prestige editorial theme. Every rule scoped under [data-theme-id='kain-motors-bespoke'].
+ * Mobile-first; min-width media queries only.
+ * ============================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,400;1,500&display=swap');
+
+[data-theme-id='kain-motors-bespoke'] {
+  color-scheme: light;
+  font-family: var(--font-ui-family-override, 'DM Sans', system-ui, sans-serif);
+  background: var(--color-bg);
+  color: var(--color-text);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[data-theme-id='kain-motors-bespoke'] *,
+[data-theme-id='kain-motors-bespoke'] *::before,
+[data-theme-id='kain-motors-bespoke'] *::after {
+  box-sizing: border-box;
+}
+
+/* Headings — typography only, NEVER set color globally (per SKILL Pitfall row 26).
+   Color cascades from body on light surfaces or is set per-component on dark. */
+[data-theme-id='kain-motors-bespoke'] :where(h1, h2, h3, h4) {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  letter-spacing: 0.01em;
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+[data-theme-id='kain-motors-bespoke'] :where(p) { margin: 0; }
+[data-theme-id='kain-motors-bespoke'] :where(button) {
+  font: inherit;
+  cursor: pointer;
+}
+
+/* `hidden` attribute must win over display:flex/grid (SKILL feedback memory) */
+[data-theme-id='kain-motors-bespoke'] [hidden] { display: none !important; }
+
+/* ----- Skip link ----- */
+[data-theme-id='kain-motors-bespoke'] .kain-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+[data-theme-id='kain-motors-bespoke'] .kain-skip-link:focus {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  width: auto;
+  height: auto;
+  padding: 12px 16px;
+  background: var(--color-bg-dark);
+  color: var(--text-on-dark-strong);
+  z-index: 9999;
+  border-radius: 4px;
+  outline: 2px solid var(--kain-accent-warm);
+  outline-offset: 2px;
+}
+
+[data-theme-id='kain-motors-bespoke'] .kain-main {
+  display: block;
+  min-height: calc(100vh - 280px);
+}
+
+/* ----- Container & section base ----- */
+[data-theme-id='kain-motors-bespoke'] .kain-container {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 32px);
+}
+
+[data-theme-id='kain-motors-bespoke'] .kain-section {
+  padding-block: clamp(36px, 8vw, 96px);
+}
+
+[data-theme-id='kain-motors-bespoke'] .kain-section--tight {
+  padding-block: clamp(28px, 5vw, 56px);
+}
+
+[data-theme-id='kain-motors-bespoke'] .kain-section--dark {
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+}
+
+[data-theme-id='kain-motors-bespoke'] .kain-section--soft {
+  background: var(--surface-card-light);
+}
+
+/* ----- Editorial flourishes ----- */
+[data-theme-id='kain-motors-bespoke'] .kain-gold-rule {
+  display: block;
+  width: 64px;
+  height: 1px;
+  background: var(--kain-accent-warm);
+  margin: 0 0 16px;
+}
+[data-theme-id='kain-motors-bespoke'] .kain-gold-rule--center {
+  margin-inline: auto;
+}
+
+[data-theme-id='kain-motors-bespoke'] .kain-eyebrow {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--kain-accent-warm);
+  font-weight: 600;
+  margin: 0;
+}
+
+[data-theme-id='kain-motors-bespoke'] .kain-editorial-num {
+  font-family: var(--font-editorial-family, 'Playfair Display', serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* ----- Section title pattern ----- */
+[data-theme-id='kain-motors-bespoke'] .kain-section-title {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+
+[data-theme-id='kain-motors-bespoke'] .kain-section-lead {
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+  line-height: 1.65;
+  color: var(--text-on-light-muted);
+  margin: 0;
+}
+
+[data-theme-id='kain-motors-bespoke'] .kain-section--dark .kain-section-lead {
+  color: var(--text-on-dark-muted);
+}
+
+/* ----- Buttons ----- */
+[data-theme-id='kain-motors-bespoke'] .kain-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 22px;
+  border-radius: 4px;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.18s ease, background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+[data-theme-id='kain-motors-bespoke'] .kain-btn--primary {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  box-shadow: 0 8px 22px rgba(134, 116, 78, 0.32);
+}
+[data-theme-id='kain-motors-bespoke'] .kain-btn--primary:hover {
+  background: var(--brand-primary-strong);
+  transform: translateY(-1px);
+}
+
+[data-theme-id='kain-motors-bespoke'] .kain-btn--gold {
+  background: var(--kain-accent-warm);
+  color: var(--surface-bg-dark);
+  box-shadow: 0 8px 22px rgba(209, 182, 122, 0.36);
+}
+[data-theme-id='kain-motors-bespoke'] .kain-btn--gold:hover {
+  background: #c9a965;
+  transform: translateY(-1px);
+}
+
+[data-theme-id='kain-motors-bespoke'] .kain-btn--ghost-light {
+  background: transparent;
+  color: var(--text-on-light-strong);
+  border-color: var(--text-on-light-strong);
+}
+[data-theme-id='kain-motors-bespoke'] .kain-btn--ghost-light:hover {
+  background: var(--text-on-light-strong);
+  color: var(--surface-bg-light);
+}
+
+[data-theme-id='kain-motors-bespoke'] .kain-btn--ghost-dark {
+  background: transparent;
+  color: var(--text-on-dark-strong);
+  border-color: rgba(255,255,255,0.4);
+}
+[data-theme-id='kain-motors-bespoke'] .kain-btn--ghost-dark:hover {
+  border-color: var(--kain-accent-warm);
+  color: var(--kain-accent-warm);
+}
+
+[data-theme-id='kain-motors-bespoke'] .kain-btn--small { min-height: 40px; padding: 10px 16px; font-size: 0.82rem; }
+
+/* Focus rings */
+[data-theme-id='kain-motors-bespoke'] :focus-visible {
+  outline: 2px solid var(--kain-accent-warm);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ----- PageHero pattern with layered fallback ----- */
+[data-theme-id='kain-motors-bespoke'] .kain-page-hero {
+  position: relative;
+  isolation: isolate;
+  padding: clamp(72px, 14vw, 160px) clamp(16px, 4vw, 32px) clamp(56px, 10vw, 120px);
+  color: var(--text-on-dark-strong);
+  background-color: var(--surface-bg-dark);
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+}
+[data-theme-id='kain-motors-bespoke'] .kain-page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8,11,17,0.88) 0%, rgba(8,11,17,0.62) 100%);
+  z-index: -1;
+}
+[data-theme-id='kain-motors-bespoke'] .kain-page-hero--about {
+  background-image: var(--brand-image-about, none), url('/themes/kain-motors-bespoke/images/about.jpg');
+}
+[data-theme-id='kain-motors-bespoke'] .kain-page-hero--services {
+  background-image: var(--brand-image-services, none), url('/themes/kain-motors-bespoke/images/services.jpg');
+}
+[data-theme-id='kain-motors-bespoke'] .kain-page-hero--finance {
+  background-image: var(--brand-image-finance, none), url('/themes/kain-motors-bespoke/images/finance.jpg');
+}
+[data-theme-id='kain-motors-bespoke'] .kain-page-hero--part-exchange {
+  background-image: var(--brand-image-part-exchange, none), url('/themes/kain-motors-bespoke/images/partExchange.jpg');
+}
+[data-theme-id='kain-motors-bespoke'] .kain-page-hero--sell-your-car {
+  background-image: var(--brand-image-sell-your-car, none), url('/themes/kain-motors-bespoke/images/sellYourCar.jpg');
+}
+[data-theme-id='kain-motors-bespoke'] .kain-page-hero--recently-sold {
+  background-image: var(--brand-image-recently-sold, none), url('/themes/kain-motors-bespoke/images/recentlySold.jpg');
+}
+[data-theme-id='kain-motors-bespoke'] .kain-page-hero--contact {
+  background-image: var(--brand-image-hero, none), url('/themes/kain-motors-bespoke/images/hero.jpg');
+}
+
+[data-theme-id='kain-motors-bespoke'] .kain-page-hero-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+[data-theme-id='kain-motors-bespoke'] .kain-page-hero-eyebrow {
+  color: var(--kain-accent-warm);
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.82rem;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  margin: 0 0 16px;
+  font-weight: 600;
+}
+[data-theme-id='kain-motors-bespoke'] .kain-page-hero-title {
+  color: #ffffff;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.6rem, 3.6vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0 0 16px;
+  text-shadow: 0 2px 24px rgba(0,0,0,0.4);
+}
+[data-theme-id='kain-motors-bespoke'] .kain-page-hero-lead {
+  color: #ffffff;
+  opacity: 0.92;
+  font-size: clamp(0.95rem, 1.4vw, 1.08rem);
+  line-height: 1.6;
+  margin: 0;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.32);
+}
+
+/* ----- Breadcrumb ----- */
+[data-theme-id='kain-motors-bespoke'] .kain-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-on-light-muted);
+  padding: 16px 0;
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+}
+[data-theme-id='kain-motors-bespoke'] .kain-breadcrumb a {
+  color: var(--text-on-light-muted);
+  text-decoration: none;
+}
+[data-theme-id='kain-motors-bespoke'] .kain-breadcrumb a:hover {
+  color: var(--brand-primary);
+}
+[data-theme-id='kain-motors-bespoke'] .kain-breadcrumb-sep {
+  color: var(--text-on-light-muted);
+  opacity: 0.5;
+}
+
+/* ----- Form fields shared across all pages ----- */
+[data-theme-id='kain-motors-bespoke'] .kain-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+[data-theme-id='kain-motors-bespoke'] .kain-field-label {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-on-light-muted);
+  font-weight: 600;
+}
+[data-theme-id='kain-motors-bespoke'] .kain-input,
+[data-theme-id='kain-motors-bespoke'] .kain-textarea,
+[data-theme-id='kain-motors-bespoke'] .kain-select {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 1rem;
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+  border: 1px solid var(--border-on-light);
+  border-radius: 4px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+[data-theme-id='kain-motors-bespoke'] .kain-textarea {
+  min-height: 132px;
+  padding: 14px;
+  resize: vertical;
+}
+[data-theme-id='kain-motors-bespoke'] .kain-input:focus,
+[data-theme-id='kain-motors-bespoke'] .kain-textarea:focus,
+[data-theme-id='kain-motors-bespoke'] .kain-select:focus {
+  outline: none;
+  border-color: var(--kain-accent-warm);
+  box-shadow: 0 0 0 4px rgba(209, 182, 122, 0.18);
+}
+[data-theme-id='kain-motors-bespoke'] .kain-input[aria-invalid='true'],
+[data-theme-id='kain-motors-bespoke'] .kain-textarea[aria-invalid='true'],
+[data-theme-id='kain-motors-bespoke'] .kain-select[aria-invalid='true'] {
+  border-color: #c2410c;
+}
+[data-theme-id='kain-motors-bespoke'] .kain-field-error {
+  color: #c2410c;
+  font-size: 0.85rem;
+}
+
+/* ----- Body link styling (per-component, NOT a blanket :where(a) — SKILL row 8) ----- */
+[data-theme-id='kain-motors-bespoke'] .kain-prose a {
+  color: var(--brand-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+[data-theme-id='kain-motors-bespoke'] .kain-prose a:hover {
+  color: var(--brand-primary-strong);
+}
+
+/* ----- Recently-sold prestige treatment (replaces sps-* legacy classes) ----- */
+[data-theme-id='kain-motors-bespoke'] .sps-section-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(40px, 8vw, 96px) clamp(16px, 4vw, 32px);
+}
+[data-theme-id='kain-motors-bespoke'] .sps-section-header {
+  text-align: center;
+  margin-bottom: clamp(32px, 6vw, 56px);
+}
+[data-theme-id='kain-motors-bespoke'] .sps-section-title {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.5rem, 3.2vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-on-light-strong);
+  margin: 0 0 12px;
+}
+[data-theme-id='kain-motors-bespoke'] .sps-section-subtitle {
+  color: var(--text-on-light-muted);
+  margin: 0 auto;
+  line-height: 1.6;
+}
+[data-theme-id='kain-motors-bespoke'] .sps-section-empty {
+  text-align: center;
+  color: var(--text-on-light-muted);
+  padding: 48px 24px;
+  background: var(--surface-card-light);
+  border-radius: 6px;
+}
+[data-theme-id='kain-motors-bespoke'] .sps-vehicle-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 640px) {
+  [data-theme-id='kain-motors-bespoke'] .sps-vehicle-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  [data-theme-id='kain-motors-bespoke'] .sps-vehicle-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+[data-theme-id='kain-motors-bespoke'] .sps-vehicle-card {
+  background: var(--surface-card-light);
+  color: var(--text-on-light-strong);
+  border: 1px solid var(--border-on-light);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+[data-theme-id='kain-motors-bespoke'] .sps-vehicle-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+[data-theme-id='kain-motors-bespoke'] .sps-vehicle-card-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--surface-bg-light);
+}
+[data-theme-id='kain-motors-bespoke'] .sps-vehicle-card-media::after {
+  content: 'SOLD';
+  position: absolute;
+  inset: auto auto 14px 14px;
+  background: var(--surface-bg-dark);
+  color: var(--kain-accent-warm);
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.8rem;
+  letter-spacing: 0.24em;
+  padding: 6px 14px;
+  border: 1px solid var(--kain-accent-warm);
+}
+[data-theme-id='kain-motors-bespoke'] .sps-vehicle-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(0.6) brightness(0.85);
+}
+[data-theme-id='kain-motors-bespoke'] .sps-vehicle-card-placeholder {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(209,182,122,0.18) 0%, transparent 100%);
+}
+[data-theme-id='kain-motors-bespoke'] .sps-vehicle-card-body {
+  padding: 18px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+[data-theme-id='kain-motors-bespoke'] .sps-vehicle-card-title {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0;
+}
+[data-theme-id='kain-motors-bespoke'] .sps-vehicle-card-price {
+  font-family: var(--font-editorial-family, 'Playfair Display', serif);
+  font-style: italic;
+  color: var(--text-on-light-muted);
+  margin: 0;
+  text-decoration: line-through;
+}
+[data-theme-id='kain-motors-bespoke'] .sps-vehicle-card-meta {
+  margin: 0;
+}
+
+/* CTA link used on recently-sold and inventory empty states */
+[data-theme-id='kain-motors-bespoke'] .kain-cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--brand-primary);
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--kain-accent-warm);
+}
+[data-theme-id='kain-motors-bespoke'] .kain-cta-link::after {
+  content: '\2192';
+  transition: transform 0.18s ease;
+}
+[data-theme-id='kain-motors-bespoke'] .kain-cta-link:hover::after {
+  transform: translateX(4px);
+}
+
+/* Stub page fallback styling */
+[data-theme-id='kain-motors-bespoke'] .kain-page-stub {
+  padding: clamp(60px, 12vw, 120px) 24px;
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Accessibility toolbar */
+[data-theme-id='kain-motors-bespoke'] .kain-a11y-toolbar {
+  position: fixed;
+  left: 16px;
+  bottom: 88px;
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+  border: 1px solid var(--kain-accent-warm);
+  border-radius: 999px;
+  padding: 6px;
+  display: flex;
+  gap: 4px;
+  z-index: 60;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.32);
+}
+[data-theme-id='kain-motors-bespoke'] .kain-a11y-toolbar button {
+  appearance: none;
+  background: transparent;
+  color: inherit;
+  border: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+[data-theme-id='kain-motors-bespoke'] .kain-a11y-toolbar button:hover {
+  background: rgba(255,255,255,0.08);
+}
+[data-theme-id='kain-motors-bespoke'] .kain-a11y-toolbar button.is-active {
+  background: var(--kain-accent-warm);
+  color: var(--surface-bg-dark);
+}
+@media (max-width: 640px) {
+  [data-theme-id='kain-motors-bespoke'] .kain-a11y-toolbar {
+    display: none;
+  }
+}

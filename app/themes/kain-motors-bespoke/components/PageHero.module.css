@@ -1,0 +1,26 @@
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+.crumb a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+}
+.crumb a:hover { color: var(--kain-accent-warm); }
+.sep {
+  color: var(--kain-accent-warm);
+  opacity: 0.6;
+  margin: 0 4px;
+}
+.actionRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}

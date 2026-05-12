@@ -2,6 +2,7 @@
 
 import React from 'react';
 import type { BrandConfig } from '@/brands/types';
+import { buildGoogleFontsImport } from '@/app/lib/googleFonts';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -119,11 +120,14 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--font-brand-family-override': fontBrand,
   };
 
+  // Dynamic Google Fonts import — lets a brand record's chosen font pack
+  // override the theme defaults at runtime instead of being ignored.
+  const fontImport = buildGoogleFontsImport(fontUi, fontBrand);
+
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: `
-          :root {
+        __html: `${fontImport}:root {
             ${Object.entries(cssVariables)
               .map(([key, value]) => `${key}: ${value};`)
               .join('\n            ')}

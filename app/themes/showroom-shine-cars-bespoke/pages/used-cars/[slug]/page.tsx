@@ -4,7 +4,7 @@
 // Uses full-bleed mosaic gallery + EnquiryModal + similar vehicles + makes-SEO
 // per SKILL.md §"Vehicle detail page composition (must-have)".
 
-import { useEffect, useMemo, useState, useCallback } from 'react'
+import { useEffect, useMemo, useState, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import {
@@ -84,6 +84,31 @@ export function ShowroomVehicleDetailPage() {
   const [activeImage, setActiveImage] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const enquiry = useEnquiryModal()
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null)
+
+  const nextImage = useCallback(() => {
+    setActiveImage((i) => (images.length ? (i + 1) % images.length : 0))
+  }, [images.length])
+  const prevImage = useCallback(() => {
+    setActiveImage((i) => (images.length ? (i - 1 + images.length) % images.length : 0))
+  }, [images.length])
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }
+  }
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const start = touchStartRef.current
+    if (!start) return
+    const endX = e.changedTouches[0].clientX
+    const endY = e.changedTouches[0].clientY
+    const dx = endX - start.x
+    const dy = endY - start.y
+    touchStartRef.current = null
+    // Horizontal swipe only — require dx > 50px AND dx dominant over dy
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return
+    if (dx < 0) nextImage()
+    else prevImage()
+  }
 
   useEffect(() => {
     if (!rawSlug) {
@@ -195,12 +220,12 @@ export function ShowroomVehicleDetailPage() {
     if (!lightboxOpen) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') closeLightbox()
-      if (e.key === 'ArrowLeft') setActiveImage((i) => (i - 1 + images.length) % Math.max(images.length, 1))
-      if (e.key === 'ArrowRight') setActiveImage((i) => (i + 1) % Math.max(images.length, 1))
+      if (e.key === 'ArrowLeft') prevImage()
+      if (e.key === 'ArrowRight') nextImage()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [lightboxOpen, images.length, closeLightbox])
+  }, [lightboxOpen, closeLightbox, prevImage, nextImage])
 
   if (loading) {
     return (
@@ -253,11 +278,20 @@ export function ShowroomVehicleDetailPage() {
                 between gallery and description on mobile. */}
             <div className={styles.gallery}>
               <div className={styles.galleryMosaic}>
-                <button
-                  type="button"
+                <div
                   className={styles.mosaicMain}
                   onClick={() => setLightboxOpen(true)}
-                  aria-label="Open gallery"
+                  onTouchStart={handleTouchStart}
+                  onTouchEnd={handleTouchEnd}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setLightboxOpen(true)
+                    }
+                  }}
+                  aria-label="Open gallery — swipe left/right to navigate"
                 >
                   {heroImage ? (
                     <div className={styles.mosaicImg} style={{ backgroundImage: `url(${heroImage})` }} role="img" aria-label={vehicle.title} />
@@ -268,7 +302,12 @@ export function ShowroomVehicleDetailPage() {
                     <Expand size={16} strokeWidth={2.4} />
                     View gallery
                   </span>
-                </button>
+                  {images.length > 1 ? (
+                    <span className={styles.heroImageCounter}>
+                      {activeImage + 1} / {images.length}
+                    </span>
+                  ) : null}
+                </div>
                 <div className={styles.mosaicGrid}>
                   {[1, 2, 3, 4].map((idx) => {
                     const url = images[idx]
@@ -453,7 +492,7 @@ export function ShowroomVehicleDetailPage() {
         hiddenFields={{ vehicle: vehicle.title, url: currentUrl, reg: vehicle.reg || vehicle.registration || '' }}
       />
 
-      {/* Lightbox */}
+      {/* Lightbox — full-viewport gallery with swipe support */}
       {lightboxOpen ? (
         <div className={styles.lightbox} role="dialog" aria-modal="true" aria-label="Gallery">
           <button type="button" className={styles.lightboxClose} onClick={closeLightbox} aria-label="Close gallery">
@@ -462,16 +501,23 @@ export function ShowroomVehicleDetailPage() {
           <button
             type="button"
             className={`${styles.lightboxNav} ${styles.lightboxPrev}`}
-            onClick={() => setActiveImage((i) => (i - 1 + images.length) % Math.max(images.length, 1))}
+            onClick={prevImage}
             aria-label="Previous photo"
           >
             <ChevronLeft size={28} strokeWidth={2.4} />
           </button>
-          <div className={styles.lightboxImage} style={{ backgroundImage: `url(${images[activeImage] || ''})` }} />
+          <div
+            className={styles.lightboxImage}
+            style={{ backgroundImage: `url(${images[activeImage] || ''})` }}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            role="img"
+            aria-label={`Photo ${activeImage + 1} of ${images.length}`}
+          />
           <button
             type="button"
             className={`${styles.lightboxNav} ${styles.lightboxNext}`}
-            onClick={() => setActiveImage((i) => (i + 1) % Math.max(images.length, 1))}
+            onClick={nextImage}
             aria-label="Next photo"
           >
             <ChevronRight size={28} strokeWidth={2.4} />

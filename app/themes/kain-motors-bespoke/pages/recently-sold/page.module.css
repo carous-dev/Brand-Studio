@@ -1,0 +1,142 @@
+.archiveSection { background: var(--surface-bg-light); }
+.archiveInner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px);
+}
+.head { text-align: center; margin-bottom: clamp(32px, 5vw, 56px); max-width: 720px; margin-inline: auto; }
+.title {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(1.5rem, 3.2vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 8px 0 12px;
+  color: var(--text-on-light-strong);
+}
+.lead {
+  font-family: var(--font-editorial-family, 'Playfair Display', serif);
+  font-style: italic;
+  font-size: clamp(0.95rem, 1.4vw, 1.08rem);
+  line-height: 1.6;
+  color: var(--text-on-light-muted);
+  margin: 0;
+}
+.archiveGrid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 640px) { .archiveGrid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .archiveGrid { grid-template-columns: repeat(3, 1fr); } }
+
+.archiveCard {
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.archiveMedia {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--surface-bg-light);
+  overflow: hidden;
+}
+.archiveMedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(0.6) brightness(0.85);
+}
+.archivePlaceholder {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(209,182,122,0.12) 0%, transparent 100%);
+}
+.soldStamp {
+  position: absolute;
+  inset: auto auto 14px 14px;
+  background: var(--surface-bg-dark);
+  color: var(--kain-accent-warm);
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.32em;
+  padding: 6px 14px;
+  border: 1px solid var(--kain-accent-warm);
+  text-transform: uppercase;
+}
+
+.archiveBody {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.archiveNumber {
+  font-family: var(--font-editorial-family, 'Playfair Display', serif);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--kain-accent-warm);
+}
+.archiveTitle {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-on-light-strong);
+  margin: 0;
+}
+.archivePrice {
+  display: flex;
+  flex-direction: column;
+  margin: 4px 0 0;
+}
+.archivePriceWas {
+  font-family: var(--font-editorial-family, 'Playfair Display', serif);
+  font-style: italic;
+  color: var(--text-on-light-muted);
+  text-decoration: line-through;
+  font-size: 1rem;
+}
+.archivePriceLabel {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  margin-top: 2px;
+}
+
+.empty {
+  background: var(--surface-card-light);
+  border: 1px dashed var(--border-on-light);
+  padding: clamp(40px, 7vw, 80px) clamp(16px, 4vw, 32px);
+  text-align: center;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+.empty h3 {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 1.4rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-on-light-strong);
+  margin: 0;
+}
+.empty p {
+  font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
+  color: var(--text-on-light-muted);
+  margin: 0;
+  max-width: 44ch;
+}

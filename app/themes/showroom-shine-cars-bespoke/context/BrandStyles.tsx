@@ -2,6 +2,7 @@
 
 import React from 'react';
 import type { BrandConfig } from '@/brands/types';
+import { buildGoogleFontsImport } from '@/app/lib/googleFonts';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -127,11 +128,16 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--font-brand-family-override': fontBrand,
   };
 
+  // Pull whichever Google Fonts the brand record asks for. Without this,
+  // a brand picking e.g. Roboto in /update sets --font-ui-family-override
+  // to "Roboto, ..." but the browser has no @font-face for it, so the
+  // page silently falls back to system-ui.
+  const fontImport = buildGoogleFontsImport(fontUi, fontBrand);
+
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: `
-          :root {
+        __html: `${fontImport}:root {
             ${Object.entries(cssVariables)
               .map(([key, value]) => `${key}: ${value};`)
               .join('\n            ')}

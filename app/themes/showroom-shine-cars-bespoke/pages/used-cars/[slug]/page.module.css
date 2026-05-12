@@ -119,6 +119,18 @@
   gap: 12px;
 }
 
+/* Mobile (≤719px): break the gallery out of the container's side padding
+ * so the main image goes full-bleed edge-to-edge. The container has
+ * `clamp(16px, 4vw, 32px)` of side padding; negative margins of the same
+ * value cancel it out for the gallery only. Tablets+ keep the framed
+ * look inside the container. */
+@media (max-width: 719px) {
+  .gallery {
+    margin-left: calc(-1 * clamp(16px, 4vw, 32px));
+    margin-right: calc(-1 * clamp(16px, 4vw, 32px));
+  }
+}
+
 .galleryMosaic {
   display: grid;
   grid-template-columns: 1fr;
@@ -140,6 +152,20 @@
   overflow: hidden;
   cursor: pointer;
   padding: 0;
+  /* Disable text selection and iOS gray callout while swiping; the image
+   * is an interactive surface, not text. touch-action: pan-y lets the
+   * browser handle vertical scroll while we capture horizontal swipes. */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: pan-y;
+}
+@media (max-width: 719px) {
+  .mosaicMain {
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
 }
 @media (min-width: 720px) {
   .mosaicMain {
@@ -149,6 +175,22 @@
 }
 .mosaicMain:hover .mosaicImg {
   transform: scale(1.03);
+}
+
+.heroImageCounter {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: rgba(8, 11, 17, 0.78);
+  color: var(--text-on-dark-strong);
+  border-radius: 999px;
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
 }
 .mosaicImg {
   position: absolute;
@@ -708,22 +750,41 @@
   margin: 0 auto 20px;
 }
 
-/* Lightbox */
+/* Lightbox — true full-viewport gallery with swipe support */
 .lightbox {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0, 0, 0, 0.92);
+  background: rgba(0, 0, 0, 0.95);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .lightboxImage {
-  width: min(90vw, 1280px);
-  height: 80vh;
+  width: 100vw;
+  height: 100vh;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
+  /* Swipe target — disable text selection and iOS callouts; touch-action
+   * pan-y lets vertical scroll fall through to the page while we capture
+   * horizontal swipes for next/prev navigation. */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: pan-y;
+  cursor: grab;
+}
+.lightboxImage:active {
+  cursor: grabbing;
+}
+@media (min-width: 720px) {
+  .lightboxImage {
+    /* Tablet+: leave some space around the photo so the nav buttons
+     * don't overlap the image content. */
+    width: min(94vw, 1440px);
+    height: 88vh;
+  }
 }
 .lightboxClose {
   position: absolute;

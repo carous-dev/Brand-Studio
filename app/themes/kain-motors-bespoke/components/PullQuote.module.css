@@ -1,0 +1,33 @@
+.section {
+  background: var(--surface-bg-light);
+  padding: clamp(60px, 10vw, 120px) 0;
+}
+.inner {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+.quote {
+  font-family: var(--font-editorial-family, 'Playfair Display', serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  line-height: 1.4;
+  color: var(--text-on-light-strong);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.attribution {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: 0.86rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--kain-accent-warm);
+  margin: 0;
+}

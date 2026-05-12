@@ -2944,12 +2944,694 @@
         padding: 0.75rem 1rem;
         font-size: 0.8rem;
     }
-    
+
     .form-section h3 {
         font-size: 1rem;
     }
-    
+
     .section-title {
         font-size: 1.5rem;
+    }
+}
+
+/* =============================================================================
+ * Font Pack picker — card grid that replaces the legacy <select>.
+ * Each card renders the pack's actual brand + UI fonts so the operator
+ * can see the typography before applying it. The underlying <select>
+ * stays in the DOM as the canonical data store (hidden via .visually-hidden)
+ * so existing form handlers and the initializeFontPacks JS keep working.
+ * ============================================================================= */
+.font-pack-picker {
+    margin-top: 0.25rem;
+}
+
+.font-pack-picker .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.font-pack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.font-pack-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: left;
+    padding: 16px 16px 14px;
+    border: 1.5px solid var(--border-color, #e5e7eb);
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ffffff 0%, #fafbfd 100%);
+    cursor: pointer;
+    transition: transform 160ms ease, box-shadow 160ms ease,
+        border-color 160ms ease, background 160ms ease;
+    font: inherit;
+    color: inherit;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.font-pack-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at 100% 0%,
+        rgba(99, 102, 241, 0.07) 0%,
+        transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 200ms ease;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.font-pack-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px -12px rgba(15, 23, 42, 0.18);
+    border-color: #c7cbd6;
+}
+
+.font-pack-card:hover::before {
+    opacity: 1;
+}
+
+.font-pack-card:focus-visible {
+    outline: none;
+    border-color: var(--primary-color, #4f46e5);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.18);
+}
+
+.font-pack-card[aria-checked='true'] {
+    border-color: var(--primary-color, #4f46e5);
+    background: linear-gradient(180deg, #f5f6ff 0%, #ffffff 100%);
+    box-shadow: 0 12px 28px -14px rgba(79, 70, 229, 0.35);
+}
+
+.font-pack-card[aria-checked='true']::before {
+    opacity: 1;
+    background: radial-gradient(
+        circle at 100% 0%,
+        rgba(99, 102, 241, 0.14) 0%,
+        transparent 60%
+    );
+}
+
+.font-pack-card__preview {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 6px 0 14px;
+    border-bottom: 1px dashed rgba(15, 23, 42, 0.08);
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+    min-height: 64px;
+}
+
+.font-pack-card__brand {
+    font-size: 2.8rem;
+    line-height: 1;
+    font-weight: 600;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+}
+
+.font-pack-card__ui {
+    font-size: 1.5rem;
+    line-height: 1;
+    font-weight: 500;
+    color: #475569;
+}
+
+.font-pack-card__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+    z-index: 1;
+}
+
+.font-pack-card__label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0f172a;
+    letter-spacing: -0.005em;
+}
+
+.font-pack-card__fonts {
+    font-size: 0.78rem;
+    color: #6b7280;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+}
+
+.font-pack-card__check {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--primary-color, #4f46e5);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 160ms ease, transform 160ms ease;
+    z-index: 2;
+    pointer-events: none;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.35);
+}
+
+.font-pack-card[aria-checked='true'] .font-pack-card__check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.font-pack-card--custom {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: repeating-linear-gradient(
+        135deg,
+        #fafbfd 0px,
+        #fafbfd 10px,
+        #f3f4f6 10px,
+        #f3f4f6 20px
+    );
+}
+
+.font-pack-card--custom .font-pack-card__preview {
+    border-bottom: none;
+    justify-content: center;
+    padding-bottom: 6px;
+}
+
+.font-pack-card--custom .font-pack-card__brand {
+    font-size: 2.4rem;
+    color: #475569;
+}
+
+.font-pack-card--custom .font-pack-card__ui {
+    font-size: 1.2rem;
+    color: #94a3b8;
+}
+
+.font-pack-card--custom .font-pack-card__meta {
+    align-items: center;
+}
+
+.font-pack-picker__active {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: rgba(15, 23, 42, 0.04);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    font-size: 0.82rem;
+    color: #475569;
+}
+
+.font-pack-picker__active strong {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.font-pack-picker__active code {
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 0.78rem;
+    color: #1f2937;
+    background: rgba(15, 23, 42, 0.06);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+    .font-pack-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 10px;
+    }
+
+    .font-pack-card__brand {
+        font-size: 2.2rem;
+    }
+
+    .font-pack-card__ui {
+        font-size: 1.2rem;
+    }
+
+    .font-pack-card__preview {
+        min-height: 54px;
+    }
+}
+
+/* =============================================================================
+ * Per-page image picker — card-per-slot grid.
+ * Each card wraps the existing `.file-upload-area` + URL field with:
+ *   - a 16:9 visual preview tile (drag/drop, click-to-pick),
+ *   - an Upload | URL mode toggle, and
+ *   - a clear "where this image shows" chip so the operator knows which
+ *     bespoke-theme page band their upload lands on.
+ * The .file-upload-area + #{slot}ImagePreview contract is preserved so
+ * app.js's initializeFileUpload and clearFile keep working unchanged.
+ * ============================================================================= */
+.page-image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 14px;
+}
+
+.page-image-card {
+    --pic-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: var(--pic-radius);
+    overflow: hidden;
+    transition: border-color 160ms ease, box-shadow 200ms ease,
+        transform 200ms ease;
+    isolation: isolate;
+}
+
+.page-image-card:hover {
+    border-color: #cbd1de;
+    box-shadow: 0 14px 30px -18px rgba(15, 23, 42, 0.25);
+}
+
+.page-image-card[data-has-image='true'] {
+    border-color: rgba(79, 70, 229, 0.35);
+}
+
+.page-image-card__head {
+    padding: 12px 16px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+    background: linear-gradient(180deg, #fafbfd 0%, #ffffff 100%);
+}
+
+.page-image-card__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--primary-color, #4f46e5) 0%,
+        var(--primary-light, #6366f1) 100%);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+}
+
+.page-image-card__icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.page-image-card__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+    flex: 1;
+}
+
+.page-image-card__title {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #0f172a;
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.page-image-card__where {
+    font-size: 0.72rem;
+    color: #64748b;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+
+.page-image-card__where strong {
+    color: #4f46e5;
+    font-weight: 600;
+}
+
+.page-image-card__status {
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: rgba(15, 23, 42, 0.07);
+    color: #475569;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.page-image-card[data-has-image='true'] .page-image-card__status {
+    background: rgba(34, 197, 94, 0.15);
+    color: #15803d;
+}
+
+/* Big 16:9 preview tile. The existing .file-upload-area sits inside this. */
+.page-image-card__preview {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background:
+        linear-gradient(135deg, #f3f4f6 0%, #fafbfd 100%),
+        repeating-linear-gradient(
+            45deg,
+            transparent 0 8px,
+            rgba(15, 23, 42, 0.025) 8px 16px
+        );
+    overflow: hidden;
+}
+
+.page-image-card__preview .file-upload-area {
+    /* Override the default file-upload-area shell so it fills the tile
+       without its own border / radius / hover treatment — the card owns
+       those. Keeps the drag/drop + click-to-pick wiring intact. */
+    position: absolute !important;
+    inset: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    margin: 0 !important;
+    min-height: 0 !important;
+    cursor: pointer;
+    display: block !important;
+}
+
+.page-image-card__preview .file-upload-area .file-upload-content {
+    position: absolute;
+    inset: 0;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #94a3b8;
+    text-align: center;
+    padding: 16px;
+    transition: color 160ms ease, background 160ms ease;
+    pointer-events: none;
+}
+
+.page-image-card__preview .file-upload-area .file-upload-content svg {
+    width: 36px;
+    height: 36px;
+    stroke-width: 1.5;
+    color: #94a3b8;
+    transition: transform 200ms ease, color 200ms ease;
+}
+
+.page-image-card__preview .file-upload-area:hover .file-upload-content svg {
+    transform: translateY(-2px);
+    color: var(--primary-color, #4f46e5);
+}
+
+.page-image-card__preview .file-upload-area .file-upload-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+    margin: 0;
+}
+
+.page-image-card__preview .file-upload-area .file-upload-subtitle {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    margin: 0;
+}
+
+.page-image-card__preview .file-upload-area.dragover {
+    background: rgba(79, 70, 229, 0.08) !important;
+}
+
+.page-image-card__preview .file-upload-area.dragover::after {
+    content: 'Drop to upload';
+    position: absolute;
+    inset: 14px;
+    border: 2px dashed var(--primary-color, #4f46e5);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color, #4f46e5);
+    font-weight: 700;
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.6);
+    pointer-events: none;
+}
+
+.page-image-card__preview .file-upload-area .file-upload-preview {
+    position: absolute !important;
+    inset: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #0f172a !important;
+    border-radius: 0 !important;
+    overflow: hidden;
+}
+
+.page-image-card__preview .file-upload-area .file-upload-preview .preview-image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block;
+}
+
+.page-image-card__preview .file-upload-area .file-upload-preview .remove-file {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(15, 23, 42, 0.85);
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(6px);
+    transition: background 160ms ease, transform 160ms ease;
+    z-index: 5;
+}
+
+.page-image-card__preview .file-upload-area .file-upload-preview .remove-file:hover {
+    background: #ef4444;
+    transform: scale(1.05);
+}
+
+/* Mode toggle (Upload | URL) lives below the preview tile */
+.page-image-card__body {
+    padding: 12px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #ffffff;
+}
+
+.page-image-card__tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: rgba(15, 23, 42, 0.05);
+    border-radius: 10px;
+    position: relative;
+}
+
+.page-image-card__tab {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 7px;
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease,
+        box-shadow 160ms ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.page-image-card__tab svg {
+    width: 13px;
+    height: 13px;
+}
+
+.page-image-card__tab[aria-selected='true'] {
+    background: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+
+.page-image-card__tab:hover:not([aria-selected='true']) {
+    color: #1f2937;
+}
+
+.page-image-card__panel[hidden] {
+    display: none !important;
+}
+
+.page-image-card__url-row {
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+}
+
+.page-image-card__url-row input[type='url'] {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 12px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #0f172a;
+    background: #ffffff;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+    font-family: 'JetBrains Mono', Consolas, monospace;
+}
+
+.page-image-card__url-row input[type='url']:focus {
+    outline: none;
+    border-color: var(--primary-color, #4f46e5);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.page-image-card__url-row .page-image-card__url-clear {
+    padding: 0 10px;
+    border-radius: 8px;
+    background: rgba(15, 23, 42, 0.05);
+    border: 1.5px solid transparent;
+    color: #475569;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+    white-space: nowrap;
+}
+
+.page-image-card__url-row .page-image-card__url-clear:hover {
+    background: rgba(239, 68, 68, 0.12);
+    color: #b91c1c;
+}
+
+.page-image-card__upload-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+.page-image-card__upload-panel .page-image-card__file-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: rgba(15, 23, 42, 0.04);
+    border-radius: 8px;
+    color: #0f172a;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 0.74rem;
+    word-break: break-all;
+}
+
+.page-image-card__upload-panel .page-image-card__file-meta svg {
+    width: 14px;
+    height: 14px;
+    color: #15803d;
+    flex-shrink: 0;
+}
+
+.page-image-card__upload-panel .page-image-card__hint {
+    color: #94a3b8;
+    font-size: 0.72rem;
+}
+
+.page-image-card__footer {
+    margin-top: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-image-card__reset {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 0.74rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 0;
+    letter-spacing: 0.02em;
+    transition: color 160ms ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.page-image-card__reset:hover {
+    color: #ef4444;
+}
+
+.page-image-card__reset svg {
+    width: 12px;
+    height: 12px;
+}
+
+.page-image-card__source-tag {
+    font-size: 0.7rem;
+    color: #64748b;
+    font-weight: 500;
+    font-family: 'JetBrains Mono', Consolas, monospace;
+}
+
+@media (max-width: 640px) {
+    .page-image-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .page-image-card__preview .file-upload-area .file-upload-text {
+        font-size: 0.78rem;
     }
 }
