@@ -3,16 +3,23 @@ import type { ThemePageProps } from '../../../types'
 import PageHero from '../../components/PageHero'
 import PullQuote from '../../components/PullQuote'
 import TrustBand from '../../components/TrustBand'
+import { getBrandText } from '../../lib/brand-text'
+import { getBrandContactInfo } from '../../lib/contact'
 import styles from './page.module.css'
 
 export function KainAboutPage({ brand }: ThemePageProps) {
-  const brandName = brand?.name || 'Kain Motors'
+  const text = getBrandText(brand)
+  const contact = getBrandContactInfo(brand)
+  const brandName = text.name
+  const cityish = contact.city || contact.county
+  const independentLine = cityish ? `A ${cityish} independent built on referrals.` : 'An independent dealer built on referrals.'
+  const streetClause = contact.streetLine ? `the ${contact.streetLine} showroom` : 'our showroom'
   return (
     <>
       <PageHero
         variant="about"
         eyebrow="About the showroom"
-        title="A Manchester independent built on referrals."
+        title={independentLine}
         lead="We don’t do volume targets, pushy upsells or hidden admin fees. We buy carefully, photograph honestly, and sell to people who appreciate the difference."
         breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'About' }]}
         actions={
@@ -26,11 +33,11 @@ export function KainAboutPage({ brand }: ThemePageProps) {
       <section className={`kain-section ${styles.intro}`}>
         <div className={styles.introInner}>
           <div className={styles.col} data-aos="fade-up">
-            <p className="kain-eyebrow">Founded · 2021</p>
-            <h2 className={styles.title}>Started by Kain.<br />Run by people, not algorithms.</h2>
+            <p className="kain-eyebrow">The story so far</p>
+            <h2 className={styles.title}>Run by people,<br />not algorithms.</h2>
             <p className={styles.body}>
               {brandName} began on the back of a simple observation: too many used-car buyers feel like they’re
-              being managed rather than helped. We set up the Midlands Street showroom as an
+              being managed rather than helped. We set up {streetClause} as an
               <em> appointment-only </em> space so every customer gets a proper hour with us — and not a queue.
             </p>
             <p className={styles.body}>
@@ -58,7 +65,6 @@ export function KainAboutPage({ brand }: ThemePageProps) {
 
       <PullQuote
         quote="“We treat every car like it’s about to leave with someone we know. That’s what keeps people coming back.”"
-        attribution="— Kain, founder"
       />
 
       <TrustBand />

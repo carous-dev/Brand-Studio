@@ -1,28 +1,10 @@
+'use client'
+
+import { useBrand } from '../context/BrandClientWrapper'
+import { getBrandText } from '../lib/brand-text'
 import styles from './Reviews.module.css'
 
-const REVIEWS = [
-  {
-    body:
-      'Bought my Audi A6 from Kain after months of looking around Manchester. The car was prepped properly, the warranty came as promised, and they actually picked up the phone when I rang back about a small trim issue. Will buy from again.',
-    name: 'Hassan A.',
-    location: 'Manchester · Trustpilot',
-    rating: 5,
-  },
-  {
-    body:
-      'Got a great trade-in price for my Audi and drove home in a tidy BMW. No pressure on finance, paperwork sorted while we had coffee. Felt like buying from a friend, not a salesman.',
-    name: 'Sophie L.',
-    location: 'Stockport · Google Reviews',
-    rating: 5,
-  },
-  {
-    body:
-      'Delivery arranged to Glasgow and the driver did a full walk-around before handing the keys over. Genuinely impressed — the Range Rover was even cleaner than the photos.',
-    name: 'Iain M.',
-    location: 'Glasgow · AutoTrader',
-    rating: 5,
-  },
-]
+type Review = { body: string; name: string; location: string; rating: number }
 
 const Star = ({ active }: { active: boolean }) => (
   <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round">
@@ -31,6 +13,30 @@ const Star = ({ active }: { active: boolean }) => (
 )
 
 export default function Reviews() {
+  const brand = useBrand()
+  const text = getBrandText(brand)
+  const city = (brand?.location?.address as any)?.city as string | undefined
+  const nearby = city || 'the showroom'
+  const reviews: Review[] = [
+    {
+      body: `Bought my Audi A6 from ${text.name} after months of looking around ${nearby}. The car was prepped properly, the warranty came as promised, and they actually picked up the phone when I rang back about a small trim issue. Will buy from again.`,
+      name: 'Hassan A.',
+      location: city ? `${city} · Trustpilot` : 'Trustpilot',
+      rating: 5,
+    },
+    {
+      body: 'Got a great trade-in price for my Audi and drove home in a tidy BMW. No pressure on finance, paperwork sorted while we had coffee. Felt like buying from a friend, not a salesman.',
+      name: 'Sophie L.',
+      location: 'Google Reviews',
+      rating: 5,
+    },
+    {
+      body: 'Delivery arranged the length of the country and the driver did a full walk-around before handing the keys over. Genuinely impressed — the Range Rover was even cleaner than the photos.',
+      name: 'Iain M.',
+      location: 'AutoTrader',
+      rating: 5,
+    },
+  ]
   return (
     <section className={styles.section} aria-labelledby="reviews-heading">
       <div className={styles.inner}>
@@ -40,7 +46,7 @@ export default function Reviews() {
         </header>
 
         <ol className={styles.grid}>
-          {REVIEWS.map((r, idx) => (
+          {reviews.map((r, idx) => (
             <li
               key={idx}
               className={`${styles.card} ${idx === 1 ? styles.cardLifted : ''}`}

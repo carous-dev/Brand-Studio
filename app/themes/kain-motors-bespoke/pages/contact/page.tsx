@@ -9,6 +9,10 @@ import styles from './page.module.css'
 export function KainContactPage({ brand }: ThemePageProps) {
   const contact = getBrandContactInfo(brand)
   const addr = (brand?.location?.address || {}) as Record<string, string | undefined>
+  const addrLine = [contact.streetLine, contact.city].filter(Boolean).join(', ')
+  const lead = addrLine
+    ? `${addrLine}. Book a slot and we’ll have the car prepped, fueled and ready for you.`
+    : 'Book a slot and we’ll have the car prepped, fueled and ready for you.'
 
   return (
     <>
@@ -16,7 +20,7 @@ export function KainContactPage({ brand }: ThemePageProps) {
         variant="contact"
         eyebrow="Get in touch"
         title="Visit the showroom — by appointment only."
-        lead="Midlands Street, Manchester. Book a slot and we’ll have the car prepped, fueled and ready for you."
+        lead={lead}
         breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Contact' }]}
       />
 
@@ -40,12 +44,8 @@ export function KainContactPage({ brand }: ThemePageProps) {
                 {addr.line2 && <span>{addr.line2}<br /></span>}
                 {(addr.city || addr.county) && <span>{[addr.city, addr.county].filter(Boolean).join(', ')}<br /></span>}
                 {addr.postcode && <span>{addr.postcode}</span>}
-                {!addr.line1 && (
-                  <>
-                    Midlands Street<br />
-                    Manchester<br />
-                    M12 6LB
-                  </>
+                {!addr.line1 && !addr.city && !addr.postcode && (
+                  <span>Address available on request — book an appointment to confirm location.</span>
                 )}
               </address>
               <div className={styles.divider} aria-hidden="true" />

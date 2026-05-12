@@ -5,8 +5,9 @@ import { getBrandContactInfo } from '../../lib/contact'
 import styles from './page.module.css'
 
 export function KainPrivacyPolicyPage({ brand }: ThemePageProps) {
-  const brandName = brand?.name || 'Kain Motors'
+  const brandName = brand?.name || 'The showroom'
   const contact = getBrandContactInfo(brand)
+  const registeredAddress = contact.showroomAddress || '(address available on request)'
   return (
     <>
       <PageHero
@@ -24,7 +25,7 @@ export function KainPrivacyPolicyPage({ brand }: ThemePageProps) {
           <h2>1. Who we are</h2>
           <p>
             {brandName} is the data controller for the personal information we hold about you. Our registered
-            address is Midlands Street, Manchester, M12 6LB. You can reach the team via{' '}
+            address is {registeredAddress}. You can reach the team via{' '}
             {contact.email ? <a href={`mailto:${contact.email}`}>{contact.email}</a> : 'our contact page'}
             {contact.phoneTel ? <> or on <a href={`tel:${contact.phoneTel}`}>{contact.phoneDisplay || contact.phoneTel}</a></> : null}.
           </p>

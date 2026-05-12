@@ -3635,3 +3635,192 @@
         font-size: 0.78rem;
     }
 }
+
+/* =============================================================================
+ * Brand-asset variant of .page-image-card — compact horizontal pill.
+ * Three asset cards (Logo + Favicon + Hero) fit two-up at desktop width
+ * without each swallowing 400+px of vertical space. Layout = `[ thumb |
+ * head ; body ]` instead of the stacked Per-page Image card.
+ *   - Logo + Favicon thumbs paint a transparency-checkerboard so PNGs
+ *     with alpha read correctly.
+ *   - .preview-image uses `object-fit: contain` (wordmarks must not crop).
+ *   - Bulky head icon hidden, captions shrunk, subtitle removed — these
+ *     cards trade decoration for density.
+ * ============================================================================= */
+.brand-asset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.page-image-card--asset {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        'preview head'
+        'preview body';
+    align-items: stretch;
+}
+
+.page-image-card--asset .page-image-card__head {
+    grid-area: head;
+    padding: 10px 12px 4px;
+    background: transparent;
+    border-bottom: none;
+    gap: 8px;
+}
+
+.page-image-card--asset .page-image-card__icon {
+    display: none;
+}
+
+.page-image-card--asset .page-image-card__title {
+    font-size: 0.88rem;
+}
+
+.page-image-card--asset .page-image-card__where {
+    font-size: 0.68rem;
+    color: #94a3b8;
+}
+
+.page-image-card--asset .page-image-card__where strong {
+    color: #475569;
+    font-weight: 600;
+}
+
+.page-image-card--asset .page-image-card__status {
+    font-size: 0.62rem;
+    padding: 2px 6px;
+}
+
+.page-image-card--asset .page-image-card__preview {
+    grid-area: preview;
+    aspect-ratio: auto;
+    border-right: 1px solid rgba(15, 23, 42, 0.06);
+    min-height: 110px;
+}
+
+.page-image-card--logo .page-image-card__preview,
+.page-image-card--favicon .page-image-card__preview {
+    background:
+        linear-gradient(45deg, #eef0f5 25%, transparent 25%),
+        linear-gradient(-45deg, #eef0f5 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #eef0f5 75%),
+        linear-gradient(-45deg, transparent 75%, #eef0f5 75%);
+    background-size: 14px 14px;
+    background-position: 0 0, 0 7px, 7px -7px, -7px 0;
+    background-color: #ffffff;
+}
+
+.page-image-card--asset .page-image-card__preview .file-upload-area .file-upload-content {
+    padding: 8px;
+    gap: 4px;
+}
+
+.page-image-card--asset .page-image-card__preview .file-upload-area .file-upload-content svg {
+    width: 22px;
+    height: 22px;
+}
+
+.page-image-card--asset .page-image-card__preview .file-upload-area .file-upload-text {
+    font-size: 0.7rem;
+    line-height: 1.15;
+}
+
+.page-image-card--asset .page-image-card__preview .file-upload-area .file-upload-subtitle {
+    display: none;
+}
+
+.page-image-card--asset .page-image-card__preview .file-upload-area .file-upload-preview {
+    background: transparent !important;
+}
+
+.page-image-card--logo .page-image-card__preview .file-upload-area .file-upload-preview .preview-image,
+.page-image-card--favicon .page-image-card__preview .file-upload-area .file-upload-preview .preview-image {
+    object-fit: contain !important;
+    padding: 8px;
+}
+
+.page-image-card--asset .page-image-card__preview .file-upload-area .file-upload-preview .remove-file {
+    top: 4px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+}
+
+.page-image-card--asset .page-image-card__body {
+    grid-area: body;
+    padding: 4px 12px 10px;
+    gap: 6px;
+}
+
+.page-image-card--asset .page-image-card__tabs {
+    padding: 2px;
+    gap: 2px;
+}
+
+.page-image-card--asset .page-image-card__tab {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    gap: 4px;
+}
+
+.page-image-card--asset .page-image-card__tab svg {
+    width: 11px;
+    height: 11px;
+}
+
+.page-image-card--asset .page-image-card__upload-panel {
+    font-size: 0.7rem;
+}
+
+.page-image-card--asset .page-image-card__file-meta {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+}
+
+.page-image-card--asset .page-image-card__hint {
+    font-size: 0.65rem;
+    line-height: 1.35;
+}
+
+.page-image-card--asset .page-image-card__url-row input[type='url'] {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+}
+
+.page-image-card--asset .page-image-card__url-row .page-image-card__url-clear {
+    padding: 0 8px;
+    font-size: 0.72rem;
+}
+
+.page-image-card--asset .page-image-card__footer {
+    margin-top: 0;
+    gap: 6px;
+}
+
+.page-image-card--asset .page-image-card__source-tag {
+    font-size: 0.62rem;
+}
+
+.page-image-card--asset .page-image-card__reset {
+    font-size: 0.68rem;
+    padding: 2px 0;
+}
+
+@media (max-width: 540px) {
+    .brand-asset-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page-image-card--asset {
+        grid-template-columns: 90px 1fr;
+    }
+
+    .page-image-card--asset .page-image-card__preview {
+        min-height: 96px;
+    }
+}

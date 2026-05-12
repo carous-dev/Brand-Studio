@@ -4,7 +4,7 @@ import PageHero from '../../components/PageHero'
 import styles from './page.module.css'
 
 export function KainCookiePolicyPage({ brand }: ThemePageProps) {
-  const brandName = brand?.name || 'Kain Motors'
+  const brandName = brand?.name || 'The showroom'
   return (
     <>
       <PageHero

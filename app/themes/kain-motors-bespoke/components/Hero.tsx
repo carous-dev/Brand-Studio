@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useBrand } from '../context/BrandClientWrapper'
 import { getBrandContactInfo } from '../lib/contact'
+import { getBrandText, resolveText } from '../lib/brand-text'
 import { apiUrl } from '../lib/api'
 import styles from './Hero.module.css'
 
@@ -20,9 +21,9 @@ const BODY_OPTIONS = ['Hatchback', 'Saloon', 'SUV', 'Estate', 'Coupe', 'Converti
 export default function Hero() {
   const brand = useBrand()
   const slug = brand?.slug
-  const brandName = brand?.name || 'Kain Motors'
-  const tagline = (brand as any)?.tagline || 'Where Quality Service Meets Affordable Prices'
   const contact = getBrandContactInfo(brand)
+  const text = getBrandText(brand)
+  const tagline = text.tagline
 
   const [makes, setMakes] = useState<string[]>([])
   const [total, setTotal] = useState<number | null>(null)
@@ -70,15 +71,12 @@ export default function Hero() {
 
       <div className={styles.inner}>
         <div className={styles.editorial} data-aos="fade-up">
-          <p className={styles.eyebrow}>The Manchester Edition · 2026</p>
+          <p className={styles.eyebrow}>{resolveText(brand, 'heroEyebrow')}</p>
           <h1 className={styles.title}>
-            Hand-picked stock,<br />
-            <em className={styles.titleAccent}>honestly sold.</em>
+            {resolveText(brand, 'heroTitleLine1')}<br />
+            <em className={styles.titleAccent}>{resolveText(brand, 'heroTitleAccent')}</em>
           </h1>
-          <p className={styles.lead}>
-            {tagline}. Appointment-only showroom on Midlands Street with finance, warranty, part-exchange and
-            nationwide delivery — no pressure, just the right cars.
-          </p>
+          <p className={styles.lead}>{resolveText(brand, 'heroLead')}</p>
 
           <form
             className={styles.searchForm}
@@ -111,7 +109,7 @@ export default function Hero() {
               </select>
             </label>
             <button type="submit" className={`${styles.searchBtn} mfx-shimmer`}>
-              Browse stock
+              {resolveText(brand, 'heroSearchCtaLabel')}
             </button>
           </form>
 

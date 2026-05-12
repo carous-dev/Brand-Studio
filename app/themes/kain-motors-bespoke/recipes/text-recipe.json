@@ -1,0 +1,283 @@
+{
+  "themeId": "kain-motors-bespoke",
+  "version": 1,
+  "description": "Per-component text fields for the prestige theme. The dashboard /create + /update pages render form inputs per field. The AI brand generator reads this recipe to know what copy to emit. The theme runtime reads brand.text[<key>] first, falls back to defaults below.",
+  "tokens": {
+    "{brandName}": "Resolved brand name (or 'the showroom')",
+    "{city}": "Brand city (e.g. 'Manchester') — empty if absent",
+    "{county}": "Brand county",
+    "{cityish}": "city || county || 'the showroom'",
+    "{streetLine}": "line1 + line2 of address",
+    "{postcode}": "Brand postcode",
+    "{year}": "Current year"
+  },
+  "sections": [
+    {
+      "id": "topbar",
+      "label": "Header — announcement & top bar",
+      "description": "Slim chrome above the main header. Use to advertise key benefits.",
+      "fields": [
+        {
+          "key": "announcementBar",
+          "label": "Announcement bar text",
+          "type": "short",
+          "default": "Appointment-only {cityish} showroom · Finance from competitive rates · Nationwide delivery available",
+          "maxLength": 140,
+          "aiHint": "Short 3-part scrolling line emphasising the dealership's USPs. Use the tokens {cityish}, {city} where relevant. Pipe-separated with middot · for visual rhythm."
+        }
+      ]
+    },
+    {
+      "id": "hero",
+      "label": "Home page hero",
+      "description": "Largest above-the-fold copy block — title, lead, search CTA.",
+      "fields": [
+        {
+          "key": "heroEyebrow",
+          "label": "Hero eyebrow line",
+          "type": "short",
+          "default": "The {cityish} Edition · {year}",
+          "maxLength": 60,
+          "aiHint": "Editorial eyebrow with city + year. Magazine-style framing."
+        },
+        {
+          "key": "heroTitleLine1",
+          "label": "Hero title — main line",
+          "type": "short",
+          "default": "Hand-picked stock,",
+          "maxLength": 60,
+          "aiHint": "Bold uppercase declarative statement about the dealer's value proposition. ALL-CAPS display."
+        },
+        {
+          "key": "heroTitleAccent",
+          "label": "Hero title — italic accent",
+          "type": "short",
+          "default": "honestly sold.",
+          "maxLength": 40,
+          "aiHint": "Short italic finisher in serif font. The clincher that completes the title."
+        },
+        {
+          "key": "heroLead",
+          "label": "Hero lead paragraph",
+          "type": "long",
+          "default": "{tagline}. {streetLine ? 'Appointment-only showroom on ' + streetLine : 'Appointment-only showroom'} with finance, warranty, part-exchange and nationwide delivery — no pressure, just the right cars.",
+          "maxLength": 280,
+          "aiHint": "Editorial body paragraph for the hero. Mention the brand's care + transparency + the showroom location if available. Avoid fluff."
+        },
+        {
+          "key": "heroSearchCtaLabel",
+          "label": "Hero search button label",
+          "type": "short",
+          "default": "Browse stock",
+          "maxLength": 24,
+          "aiHint": "Primary CTA button label inside the hero search form."
+        }
+      ]
+    },
+    {
+      "id": "editionStrip",
+      "label": "Edition strip (under hero)",
+      "description": "Decorative magazine-edition strip with three short labels.",
+      "fields": [
+        {
+          "key": "editionLeft",
+          "label": "Left label",
+          "type": "short",
+          "default": "Volume 03 · {cityish} Edition",
+          "maxLength": 40
+        },
+        {
+          "key": "editionMid",
+          "label": "Centre label",
+          "type": "short",
+          "default": "The {brandName} Curation",
+          "maxLength": 40
+        },
+        {
+          "key": "editionRight",
+          "label": "Right label",
+          "type": "short",
+          "default": "{year} · {postcode}",
+          "maxLength": 40
+        }
+      ]
+    },
+    {
+      "id": "trustBand",
+      "label": "Trust band — 4 reasons to buy",
+      "description": "The 4-card band on the homepage explaining what makes the dealer different.",
+      "fields": [
+        { "key": "trust1Label", "label": "Reason 1 — title", "type": "short", "default": "Hand-picked stock", "maxLength": 60 },
+        { "key": "trust1Detail", "label": "Reason 1 — detail", "type": "long", "default": "Every car driven, photographed and HPI-checked before listing.", "maxLength": 200 },
+        { "key": "trust2Label", "label": "Reason 2 — title", "type": "short", "default": "Finance from competitive rates", "maxLength": 60 },
+        { "key": "trust2Detail", "label": "Reason 2 — detail", "type": "long", "default": "PCP / HP via FCA-regulated lenders. Soft-search, no impact.", "maxLength": 200 },
+        { "key": "trust3Label", "label": "Reason 3 — title", "type": "short", "default": "Independent warranty", "maxLength": 60 },
+        { "key": "trust3Detail", "label": "Reason 3 — detail", "type": "long", "default": "3 / 6 / 12-month options. Service plans available.", "maxLength": 200 },
+        { "key": "trust4Label", "label": "Reason 4 — title", "type": "short", "default": "Nationwide delivery", "maxLength": 60 },
+        { "key": "trust4Detail", "label": "Reason 4 — detail", "type": "long", "default": "Doorstep handover anywhere in the UK. Test-drive included.", "maxLength": 200 }
+      ]
+    },
+    {
+      "id": "pullQuote",
+      "label": "Pull quote (homepage + about)",
+      "description": "Big italic quote with founder attribution.",
+      "fields": [
+        {
+          "key": "pullQuoteText",
+          "label": "Quote text",
+          "type": "long",
+          "default": "“We don’t sell from a script. The car is either right for you, or it isn’t — and we tell you which.”",
+          "maxLength": 240,
+          "aiHint": "Founder / dealer principal voice in first person. Should sound like a real person, not marketing copy. Include curly quotes."
+        },
+        {
+          "key": "pullQuoteAttribution",
+          "label": "Attribution",
+          "type": "short",
+          "default": "— {brandName} team · {cityish}",
+          "maxLength": 60,
+          "aiHint": "Em-dash + name + role + location. Format: '— Name, role · City'."
+        }
+      ]
+    },
+    {
+      "id": "footer",
+      "label": "Footer",
+      "description": "Brand description in the footer column + appointment note.",
+      "fields": [
+        {
+          "key": "footerBrandLead",
+          "label": "Footer brand description",
+          "type": "long",
+          "default": "Appointment-only used car and van showroom in {cityish}. Hand-picked stock, transparent valuations, finance from competitive rates, and nationwide delivery.",
+          "maxLength": 280
+        },
+        {
+          "key": "footerAppointmentNote",
+          "label": "Appointment note",
+          "type": "short",
+          "default": "By appointment only · Mon–Sat 09:30 – 17:30",
+          "maxLength": 100
+        }
+      ]
+    },
+    {
+      "id": "about",
+      "label": "About page",
+      "description": "Hero + story paragraphs + key promises.",
+      "fields": [
+        {
+          "key": "aboutHeroTitle",
+          "label": "About hero title",
+          "type": "short",
+          "default": "A {cityish} independent built on referrals.",
+          "maxLength": 80,
+          "aiHint": "Editorial title. Lead with the city + 'independent' framing or substitute a stronger value proposition."
+        },
+        {
+          "key": "aboutHeroLead",
+          "label": "About hero lead",
+          "type": "long",
+          "default": "We don’t do volume targets, pushy upsells or hidden admin fees. We buy carefully, photograph honestly, and sell to people who appreciate the difference.",
+          "maxLength": 280
+        },
+        {
+          "key": "aboutStoryEyebrow",
+          "label": "Story section eyebrow",
+          "type": "short",
+          "default": "The story so far",
+          "maxLength": 40
+        },
+        {
+          "key": "aboutStoryTitle",
+          "label": "Story title",
+          "type": "short",
+          "default": "Run by people, not algorithms.",
+          "maxLength": 80
+        },
+        {
+          "key": "aboutStoryParagraph1",
+          "label": "Story paragraph 1",
+          "type": "long",
+          "default": "{brandName} began on the back of a simple observation: too many used-car buyers feel like they’re being managed rather than helped. We set up the {streetLine ? streetLine + ' showroom' : 'showroom'} as an appointment-only space so every customer gets a proper hour with us — and not a queue.",
+          "maxLength": 480
+        },
+        {
+          "key": "aboutStoryParagraph2",
+          "label": "Story paragraph 2",
+          "type": "long",
+          "default": "Every car on the forecourt is bought by us, inspected by our prep team, photographed in natural light, and listed with the warts described. If a car has a chip or a service-history gap, you’ll read about it in the listing — not discover it on a test drive.",
+          "maxLength": 480
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "label": "Contact page",
+      "fields": [
+        {
+          "key": "contactHeroTitle",
+          "label": "Contact hero title",
+          "type": "short",
+          "default": "Visit the showroom — by appointment only.",
+          "maxLength": 80
+        },
+        {
+          "key": "contactHeroLead",
+          "label": "Contact hero lead",
+          "type": "long",
+          "default": "{streetLine}, {city}. Book a slot and we’ll have the car prepped, fueled and ready for you.",
+          "maxLength": 240
+        }
+      ]
+    },
+    {
+      "id": "finance",
+      "label": "Finance page",
+      "fields": [
+        {
+          "key": "financeHeroTitle",
+          "label": "Finance hero title",
+          "type": "short",
+          "default": "Finance from regulated lenders, not pressured salespeople.",
+          "maxLength": 80
+        },
+        {
+          "key": "financeHeroLead",
+          "label": "Finance hero lead",
+          "type": "long",
+          "default": "PCP, HP and Lease through a panel of FCA-regulated UK lenders. We share the rates upfront and never inflate APRs to chase commission.",
+          "maxLength": 240
+        },
+        {
+          "key": "financeDisclaimer",
+          "label": "FCA disclaimer paragraph",
+          "type": "long",
+          "default": "{brandName} is an Appointed Representative of an FCA-authorised credit broker, not a lender. Finance subject to status and affordability. Representative APRs vary by lender, vehicle and credit profile. 18+ UK residents only. Written quotations available on request.",
+          "maxLength": 480,
+          "aiHint": "Legal-style FCA disclaimer. Must include the brand name as the Appointed Representative and the standard 'subject to status' phrasing."
+        }
+      ]
+    },
+    {
+      "id": "sellYourCar",
+      "label": "Sell-your-car page",
+      "fields": [
+        {
+          "key": "sellHeroTitle",
+          "label": "Sell-your-car hero title",
+          "type": "short",
+          "default": "The {cityish} showroom buys cars — paid in cleared funds.",
+          "maxLength": 80
+        },
+        {
+          "key": "sellHeroLead",
+          "label": "Sell-your-car hero lead",
+          "type": "long",
+          "default": "Three quick steps, an honest inspection and BACS payment on collection. We don’t auction, we don’t commission-creep.",
+          "maxLength": 240
+        }
+      ]
+    }
+  ]
+}

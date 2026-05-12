@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useBrand } from '../context/BrandClientWrapper'
 import { getBrandContactInfo } from '../lib/contact'
+import { getBrandText } from '../lib/brand-text'
 import BrandLogo from './BrandLogo'
 import styles from './Footer.module.css'
 
@@ -45,7 +46,8 @@ const TwitterIcon = () => (<svg viewBox="0 0 24 24" width="18" height="18" aria-
 export default function Footer() {
   const brand = useBrand()
   const contact = getBrandContactInfo(brand)
-  const brandName = brand?.name || 'Kain Motors'
+  const text = getBrandText(brand)
+  const brandName = text.name
   const year = new Date().getFullYear()
   const socials = (brand as any)?.socialLinks || {}
   const addr = brand?.location?.address || {}
@@ -62,10 +64,7 @@ export default function Footer() {
       <div className={styles.container}>
         <div className={styles.brandColumn}>
           <BrandLogo tone="dark" height={56} showTagline />
-          <p className={styles.brandLead}>
-            Appointment-only used car and van showroom in Manchester. Hand-picked stock, transparent
-            valuations, finance from competitive rates, and nationwide delivery.
-          </p>
+          <p className={styles.brandLead}>{text.showroomTagline}</p>
           <div className={styles.socialRow} aria-label="Social media">
             {([
               { key: 'facebook', Icon: FacebookIcon, fallback: 'https://facebook.com' },
@@ -101,12 +100,9 @@ export default function Footer() {
         <address className={styles.contactColumn}>
           <h2 className={styles.pillarTitle}>Visit the showroom</h2>
           <p className={styles.addressText}>
-            {addressLines.length > 0 ? addressLines.map((line, i) => <span key={i}>{line}<br /></span>) : (
-              <>
-                <span>Midlands Street<br /></span>
-                <span>Manchester, M12 6LB<br /></span>
-              </>
-            )}
+            {addressLines.length > 0
+              ? addressLines.map((line, i) => <span key={i}>{line}<br /></span>)
+              : <span>Address available on request<br /></span>}
           </p>
           {contact.phoneTel && (
             <p className={styles.contactRow}>

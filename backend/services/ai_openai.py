@@ -103,10 +103,63 @@ def _response_structure(scopes: List[str]) -> str:
     "whyChooseUs": { "title": "", "features": [ { "title": "", "description": "" }, { "title": "", "description": "" }, { "title": "", "description": "" } ] },
     "services": { "title": "", "items": [ { "title": "", "description": "" }, { "title": "", "description": "" } ] },
     "testimonials": [ { "name": "", "rating": 5, "review": "" }, { "name": "", "rating": 5, "review": "" } ],
-    "faq": [ { "question": "", "answer": "" }, { "question": "", "answer": "" } ]
+    "faq": [ { "question": "", "answer": "" }, { "question": "", "answer": "" } ],
+    "text": {}
   }
 }
 """.strip()
+
+
+def _text_recipe_prompt_block(text_recipe: Optional[Dict[str, Any]]) -> str:
+    """
+    Build the prompt fragment that tells the AI what per-component copy fields
+    to populate for the selected theme. Returns empty string if no recipe.
+
+    The recipe is the canonical contract: every key listed must appear in
+    `brand.text` in the response, with the AI choosing dealer-specific copy
+    that fits the field's `aiHint` and stays under `maxLength` characters. The
+    AI must NOT include token placeholders (`{brandName}`, `{city}`, etc.) in
+    its output — the runtime interpolates those AFTER the AI writes the copy.
+    """
+    if not text_recipe or not isinstance(text_recipe, dict):
+        return ""
+    sections = text_recipe.get("sections") or []
+    if not sections:
+        return ""
+
+    lines: List[str] = []
+    lines.append("\n\nTHEME TEXT RECIPE")
+    lines.append(
+        "The selected theme defines a recipe of per-component copy strings the dealer's "
+        "preview will render. Every key below MUST appear in `brand.text` in your response "
+        "with a fully-written string (no TBD, no placeholders, no JSX). The runtime later "
+        "substitutes tokens like {brandName}, {city}, {streetLine}, {year} — DO NOT write "
+        "{tokens} into your output unless you want them rendered literally; instead use the "
+        "real dealer-specific values you've decided on. Keep each value within the stated "
+        "maxLength character limit. Match the section's tone (editorial / disclaimer / "
+        "magazine) from the field's aiHint."
+    )
+    for section in sections:
+        if not isinstance(section, dict):
+            continue
+        section_label = section.get("label") or section.get("id") or "(section)"
+        lines.append(f"\n[{section_label}]")
+        for field in section.get("fields") or []:
+            if not isinstance(field, dict):
+                continue
+            key = field.get("key")
+            if not key:
+                continue
+            label = field.get("label") or key
+            max_len = field.get("maxLength")
+            field_type = field.get("type") or "short"
+            hint = field.get("aiHint") or ""
+            default = field.get("default") or ""
+            limit_str = f" · max {max_len} chars" if isinstance(max_len, int) else ""
+            hint_str = f" · {hint}" if hint else ""
+            example_str = f" · default: {default}" if default else ""
+            lines.append(f"  - {key} ({field_type}{limit_str}) — {label}{hint_str}{example_str}")
+    return "\n".join(lines)
 
 
 def generate_brand(
@@ -114,6 +167,7 @@ def generate_brand(
     website: str = "",
     scopes: Optional[List[str]] = None,
     preferred_theme_id: str = "",
+    text_recipe: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """
     Generate structured brand data via OpenAI Chat Completions (JSON mode).
@@ -123,6 +177,11 @@ def generate_brand(
         website: Optional website URL to hint the model.
         scopes: Optional list of scopes (basic/contact/seo/theme/pages/why/services/testimonials/faq).
                 Currently used only to mention focus in prompt; the full structure is always returned.
+        preferred_theme_id: Theme id that determines which text recipe to load.
+        text_recipe: Per-component text recipe loaded from `app/themes/<id>/recipes/text-recipe.json`.
+            When provided, the AI must populate `brand.text` with values for every recipe key
+            (component copy is the most-customised surface per preview and the recipe is the
+            single source of truth for what each theme needs).
 
     Returns:
         dict containing the full brand payload.
@@ -134,10 +193,14 @@ def generate_brand(
     if scopes:
         scope_hint = "\nFocus especially on: " + ", ".join(scopes)
 
+    recipe_block = _text_recipe_prompt_block(text_recipe)
+    recipe_rule = "\n- `brand.text` MUST be an object whose keys exactly match the recipe field keys listed above; values are short strings under each field's maxLength. Omit no required key." if recipe_block else ""
+
     user_content = (
         prompt
         + "\n\nJSON STRUCTURE (do not rename keys):\n"
         + _response_structure(scopes or [])
+        + recipe_block
         + "\n\nRules:\n"
         "- Respond with JSON only.\n"
         "- Fill every field with realistic values; no placeholders like TBD.\n"
@@ -145,6 +208,7 @@ def generate_brand(
         "- Keep brand.themeId and brand.theme.id aligned.\n"
         "- keywords must be a JSON array of strings.\n"
         "- Hex colors must be valid 6-digit hex codes.\n"
+        + recipe_rule
         + scope_hint
     )
 

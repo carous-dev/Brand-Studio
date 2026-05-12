@@ -24,6 +24,8 @@ import styles from './page.module.css'
 import { useGarage, type SavedVehicle } from '../../context/GarageContext'
 import { useBrand } from '../../context/BrandClientWrapper'
 import { apiUrl } from '../../lib/api'
+import { getBrandContactInfo } from '../../lib/contact'
+import { getBrandText } from '../../lib/brand-text'
 import { normalizeInventoryItem, type InventoryMeta, type InventoryVehicle } from '../../lib/inventory'
 import { buildVehiclePermalink } from '../../lib/vehicle-links'
 import { HeroBackdrop } from '../../components/HeroBackdrop'
@@ -121,6 +123,8 @@ export default function UsedCarsClient({
   const { toggleWishlist, toggleCompare, isWishlisted, isCompared } = useGarage()
   const brand = useBrand()
   const brandSlug = (brand?.slug || '').trim()
+  const brandText = getBrandText(brand)
+  const brandContact = getBrandContactInfo(brand)
   const skipInitialFetchRef = useRef(Boolean(initialMeta || initialVehicles.length))
   const skipPageResetRef = useRef({ skip: true, suppressNext: false, initialUrlParams: new Set<string>() })
   const lastQueryRef = useRef<string | null>(null)
@@ -707,9 +711,12 @@ export default function UsedCarsClient({
         <div className={styles.heroInner}>
           <div>
             <p className={styles.eyebrow}>Used Cars</p>
-            <h1 className={styles.heroTitle}>Used Cars in Reading, Berkshire</h1>
+            <h1 className={styles.heroTitle}>
+              {brandContact.city ? `Used Cars in ${brandContact.city}` : 'Used Cars'}
+              {brandContact.county ? `, ${brandContact.county}` : ''}
+            </h1>
             <p className={styles.heroLead}>
-              Browse fully inspected used cars from Kain Car Sales Ltd, with finance options, part exchange, and
+              Browse fully inspected used cars from {brandText.name}, with finance options, part exchange, and
               transparent pricing across every listing.
             </p>
           </div>
@@ -718,10 +725,12 @@ export default function UsedCarsClient({
               <BadgeCheck size={18} strokeWidth={2} />
               Privately sourced stock
             </div>
-            <div className={styles.heroHighlight}>
-              <MapPin size={18} strokeWidth={2} />
-              Reading, Berkshire
-            </div>
+            {(brandContact.city || brandContact.county) && (
+              <div className={styles.heroHighlight}>
+                <MapPin size={18} strokeWidth={2} />
+                {[brandContact.city, brandContact.county].filter(Boolean).join(', ')}
+              </div>
+            )}
             <div className={styles.heroHighlight}>
               <Gauge size={18} strokeWidth={2} />
               Fully inspected & prepared

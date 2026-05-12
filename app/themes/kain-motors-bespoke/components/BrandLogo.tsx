@@ -18,7 +18,7 @@ const FALLBACK_TAGLINE = 'Where Quality Service Meets Affordable Prices'
 
 export default function BrandLogo({ tone = 'dark', height = 44, className, showTagline = false }: BrandLogoProps) {
   const brand = useBrand()
-  const brandName = brand?.name || 'Kain Motors'
+  const brandName = brand?.name || 'Showroom'
   const brandLogo = (brand as any)?.logo as string | undefined
   const tagline = (brand as any)?.tagline || FALLBACK_TAGLINE
 

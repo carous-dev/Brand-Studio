@@ -6,6 +6,24 @@ export type BrandContactInfo = {
   email: string
   whatsappUrl: string
   showroomAddress: string
+  /** Best single-word city for "Manchester showroom" style copy. Empty string if absent. */
+  city: string
+  /** County, e.g. "Greater Manchester". Empty string if absent. */
+  county: string
+  /** Postcode, e.g. "M12 6LB". Empty string if absent. */
+  postcode: string
+  /** Street + line2, e.g. "Midlands Street". Empty string if absent. */
+  streetLine: string
+  /**
+   * Short location label for chrome — "Manchester · M12 6LB" if both exist, else city alone,
+   * else county, else empty. Use this anywhere the dealer's "where" needs to render in a single line.
+   */
+  locationLabel: string
+  /**
+   * Same as city but with a generic fallback "the showroom" so copy never breaks when the brand
+   * record is missing a city.
+   */
+  cityOrShowroom: string
 }
 
 const FALLBACK_PHONE_DISPLAY = ''
@@ -13,6 +31,11 @@ const FALLBACK_EMAIL = ''
 
 function digitsOnly(value: string): string {
   return String(value || '').replace(/\D/g, '')
+}
+
+function pickStringField(value: unknown): string {
+  if (typeof value === 'string') return value.trim()
+  return ''
 }
 
 function buildAddressLine(brand: BrandConfig | null | undefined): string {
@@ -37,11 +60,30 @@ export function getBrandContactInfo(brand: BrandConfig | null | undefined): Bran
   const email = String(brand?.location?.email || FALLBACK_EMAIL).trim()
   const whatsappUrl = phoneTel ? `https://wa.me/${phoneTel.replace(/^\+/, '')}` : ''
 
+  const addr = (brand?.location?.address || {}) as Record<string, unknown>
+  const city = pickStringField(addr.city) || pickStringField(addr.town)
+  const county = pickStringField(addr.county) || pickStringField(addr.region)
+  const postcode = pickStringField(addr.postcode) || pickStringField(addr.zip)
+  const line1 = pickStringField(addr.line1) || pickStringField(addr.street)
+  const line2 = pickStringField(addr.line2)
+  const streetLine = [line1, line2].filter(Boolean).join(', ')
+
+  const locationLabelParts = [city || county, postcode].filter(Boolean)
+  const locationLabel = locationLabelParts.join(' · ')
+
+  const cityOrShowroom = city || county || 'the showroom'
+
   return {
     phoneDisplay: phoneRaw,
     phoneTel,
     email,
     whatsappUrl,
     showroomAddress: buildAddressLine(brand),
+    city,
+    county,
+    postcode,
+    streetLine,
+    locationLabel,
+    cityOrShowroom,
   }
 }

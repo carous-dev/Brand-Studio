@@ -4,11 +4,20 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useBrand } from '../context/BrandClientWrapper'
 import { apiUrl } from '../lib/api'
+import { getBrandText } from '../lib/brand-text'
 import VehicleCard from './VehicleCard'
 import styles from './FeaturedAcquisitions.module.css'
 
+const SEASONS = ['Winter', 'Spring', 'Summer', 'Autumn']
+function currentEditionLabel(): string {
+  const d = new Date()
+  const season = SEASONS[Math.floor(((d.getMonth() + 1) % 12) / 3)]
+  return `${season} Edition ${d.getFullYear()}`
+}
+
 export default function FeaturedAcquisitions() {
   const brand = useBrand()
+  const text = getBrandText(brand)
   const slug = brand?.slug
   const [items, setItems] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -60,7 +69,7 @@ export default function FeaturedAcquisitions() {
             <VehicleCard vehicle={v} variant={idx === 0 ? 'standard' : 'compact'} />
             {idx === 0 && (
               <span className={styles.coverByline}>
-                Curated by Kain Motors · 2026 Spring Edition
+                Curated by {text.name} · {currentEditionLabel()}
               </span>
             )}
           </div>

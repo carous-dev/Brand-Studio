@@ -181,7 +181,7 @@ export function KainVehicleDetailPage() {
 
   const brand = useBrand()
   const brandSlug = brand?.slug
-  const brandName = brand?.name || 'Kain Motors'
+  const brandName = brand?.name || 'The showroom'
   const contact = getBrandContactInfo(brand)
   const { isWishlisted, toggleWishlist, isCompared, toggleCompare } = useGarage()
   const enquiry = useEnquiryModal()
@@ -612,7 +612,9 @@ export function KainVehicleDetailPage() {
 
             <ul className={styles.sidebarFacts}>
               <li><span>Stock #</span><strong>{stockNumber}</strong></li>
-              <li><span>Location</span><strong>Manchester</strong></li>
+              {(contact.city || contact.county) && (
+                <li><span>Location</span><strong>{contact.city || contact.county}</strong></li>
+              )}
               <li><span>Warranty</span><strong>Included</strong></li>
               <li><span>Delivery</span><strong>UK-wide</strong></li>
             </ul>

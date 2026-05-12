@@ -1,23 +1,29 @@
+'use client'
+
+import { useBrand } from '../context/BrandClientWrapper'
+import { getBrandText, resolveText } from '../lib/brand-text'
 import styles from './TrustBand.module.css'
 
-const ITEMS = [
-  { label: 'Hand-picked stock', detail: 'Every car driven, photographed and HPI-checked before listing.' },
-  { label: 'Finance from 9.9% APR', detail: 'PCP / HP via FCA-regulated lenders. Soft-search, no impact.' },
-  { label: 'Independent warranty', detail: '3 / 6 / 12-month options. Service plans available.' },
-  { label: 'Nationwide delivery', detail: 'Doorstep handover anywhere in the UK. Test-drive included.' },
-]
+const SLOTS = [1, 2, 3, 4] as const
 
 export default function TrustBand() {
+  const brand = useBrand()
+  const text = getBrandText(brand)
   return (
-    <section className={styles.band} aria-label="Why buy from Kain Motors">
+    <section className={styles.band} aria-label={`Why buy from ${text.name}`}>
       <div className={styles.inner}>
-        {ITEMS.map((item, idx) => (
-          <div key={item.label} className={styles.cell} data-aos="fade-up" data-aos-delay={String(idx * 80)}>
-            <span className={styles.num}>0{idx + 1}</span>
-            <h3 className={styles.label}>{item.label}</h3>
-            <p className={styles.detail}>{item.detail}</p>
-          </div>
-        ))}
+        {SLOTS.map((idx) => {
+          const label = resolveText(brand, `trust${idx}Label`)
+          const detail = resolveText(brand, `trust${idx}Detail`)
+          if (!label && !detail) return null
+          return (
+            <div key={idx} className={styles.cell} data-aos="fade-up" data-aos-delay={String((idx - 1) * 80)}>
+              <span className={styles.num}>0{idx}</span>
+              <h3 className={styles.label}>{label}</h3>
+              <p className={styles.detail}>{detail}</p>
+            </div>
+          )
+        })}
       </div>
     </section>
   )

@@ -3,6 +3,7 @@ import type { ThemePageProps } from '../../../types'
 import PageHero from '../../components/PageHero'
 import FinanceCalculator from './FinanceCalculator'
 import FinanceForm from './FinanceForm'
+import { resolveText } from '../../lib/brand-text'
 import styles from './page.module.css'
 
 const STEPS = [
@@ -11,7 +12,7 @@ const STEPS = [
   { num: '03', title: 'Sign + drive', body: 'Documents are signed at the showroom or sent by secure DocuSign. Most decisions are made within a day.' },
 ]
 
-export function KainFinancePage(_props: ThemePageProps) {
+export function KainFinancePage({ brand }: ThemePageProps) {
   return (
     <>
       <PageHero
@@ -75,9 +76,7 @@ export function KainFinancePage(_props: ThemePageProps) {
       </section>
 
       <section className={`kain-section ${styles.disclaimer}`}>
-        <p>
-          {`Kain Motors is an Appointed Representative of an FCA-authorised credit broker, not a lender. Finance subject to status and affordability. Representative APRs vary by lender, vehicle and credit profile. 18+ UK residents only. Written quotations available on request.`}
-        </p>
+        <p>{resolveText(brand, 'financeDisclaimer')}</p>
       </section>
     </>
   )

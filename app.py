@@ -2367,12 +2367,28 @@ def generate_brand_via_ai():
     if not context and not website:
         return jsonify({'error': 'Provide brand context or website'}), 400
 
+    # Load the text recipe for the chosen theme so the AI knows what
+    # per-component copy to populate. Missing recipe = themes ship without one;
+    # AI generation falls back to populating only the legacy schema.
+    text_recipe = None
+    try:
+        recipe_folder = _theme_folder_path(preferred_theme_id) if preferred_theme_id else None
+        if recipe_folder:
+            recipe_path = os.path.join(recipe_folder, 'recipes', 'text-recipe.json')
+            if os.path.exists(recipe_path):
+                with open(recipe_path, 'r', encoding='utf-8') as fh:
+                    text_recipe = json.load(fh)
+    except Exception:
+        app.logger.exception("Failed to load text recipe for theme=%s", preferred_theme_id)
+        text_recipe = None
+
     try:
         result = generate_brand_via_openai(
             context=context,
             website=website,
             scopes=scopes,
             preferred_theme_id=preferred_theme_id,
+            text_recipe=text_recipe,
         )
         brand = result.get('brand', {}) if isinstance(result, dict) else {}
 
@@ -2805,6 +2821,42 @@ def get_themes_admin():
     }), 200
 
 
+@app.route('/api/themes/<theme_id>/text-recipe', methods=['GET'])
+@auth_manager.login_required
+def get_theme_text_recipe(theme_id):
+    """
+    Return the per-component text recipe for a theme — the dashboard /create
+    and /update pages read this to render the Component Text tab, and the AI
+    brand generator reads it to know what copy to populate. The recipe is a
+    static JSON file at `app/themes/<theme>/recipes/text-recipe.json`.
+
+    Empty `{ "sections": [] }` is returned for themes that haven't shipped a
+    recipe yet — the form gracefully renders a "no customizable text fields
+    for this theme yet" empty state rather than erroring.
+    """
+    safe = _validate_theme_id(theme_id)
+    if not safe:
+        return jsonify({'error': 'Invalid theme id'}), 400
+    theme_folder = _theme_folder_path(safe)
+    if not os.path.exists(theme_folder):
+        return jsonify({'error': f'Theme {safe} not found'}), 404
+    recipe_path = os.path.join(theme_folder, 'recipes', 'text-recipe.json')
+    if not os.path.exists(recipe_path):
+        return jsonify({
+            'themeId': safe,
+            'version': 0,
+            'sections': [],
+            'note': 'This theme has no text-recipe.json yet — components ship with hardcoded defaults.',
+        }), 200
+    try:
+        with open(recipe_path, 'r', encoding='utf-8') as fh:
+            recipe = json.load(fh)
+    except Exception as exc:
+        app.logger.exception("Failed to read text-recipe for theme=%s", safe)
+        return jsonify({'error': 'Failed to load recipe', 'details': str(exc)}), 500
+    return jsonify(recipe), 200
+
+
 @app.route('/api/themes/<theme_id>/usage', methods=['GET'])
 @auth_manager.login_required
 def get_theme_usage(theme_id):
@@ -3195,6 +3247,33 @@ def create_brand():
                 if slot in uploaded_page_image_paths:
                     images_dict[slot] = uploaded_page_image_paths[slot]
             brand['images'] = images_dict
+
+            # Per-component text overrides — form fields named `text_<recipeKey>`
+            # land in brand.text[<recipeKey>]. The theme runtime reads these via
+            # `resolveText(brand, key)` and falls back to the recipe default if
+            # the operator left a field blank. Preserves any existing values from
+            # a prior save when fields aren't in the current submission.
+            prior_text = {}
+            if isinstance(prior_brand.get('text'), dict):
+                prior_text = dict(prior_brand['text'])
+            text_dict = dict(prior_text)
+            for form_key in list(data.keys()):
+                if not isinstance(form_key, str) or not form_key.startswith('text_'):
+                    continue
+                recipe_key = form_key[len('text_'):]
+                if not recipe_key:
+                    continue
+                form_val = data.get(form_key)
+                if isinstance(form_val, str):
+                    stripped = form_val.strip()
+                    # Empty string = operator cleared the override — drop the key
+                    # so the recipe default re-applies. Non-empty = explicit override.
+                    if stripped:
+                        text_dict[recipe_key] = stripped
+                    else:
+                        text_dict.pop(recipe_key, None)
+            if text_dict:
+                brand['text'] = text_dict
 
         except ImportError as e:
             app.logger.exception("Could not import FormHandler; falling back to manual construction (slug=%s)", slug)

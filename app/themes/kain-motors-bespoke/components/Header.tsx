@@ -87,9 +87,8 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false)
 
   const socials = (brand as any)?.socialLinks || {}
-  const addr = brand?.location?.address || {}
-  const city = (addr as any).city || (addr as any).town || 'Manchester'
-  const postcode = (addr as any).postcode || ''
+  const city = contact.city
+  const postcode = contact.postcode
 
   useEffect(() => {
     function onScroll() {
@@ -125,7 +124,7 @@ export default function Header() {
         <div className={styles.announcementInner}>
           <span className="mfx-pulse-dot" aria-hidden="true" />
           <span className={styles.announcementText}>
-            Appointment-only Manchester showroom · Finance from 9.9% APR · Nationwide delivery available
+            {city ? `Appointment-only ${city} showroom` : 'Appointment-only showroom'} · Finance from competitive rates · Nationwide delivery available
           </span>
         </div>
       </div>
@@ -170,7 +169,7 @@ export default function Header() {
 
       <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ''}`}>
         <div className={styles.headerInner}>
-          <Link href="/" className={styles.brandLink} aria-label={brand?.name || 'Kain Motors'}>
+          <Link href="/" className={styles.brandLink} aria-label={brand?.name || 'Home'}>
             <BrandLogo tone="dark" height={scrolled ? 40 : 52} />
           </Link>
 
@@ -229,7 +228,7 @@ export default function Header() {
         hidden={!drawerOpen}
       >
         <div className={styles.drawerHead}>
-          <Link href="/" onClick={() => setDrawerOpen(false)} aria-label={brand?.name || 'Kain Motors'}>
+          <Link href="/" onClick={() => setDrawerOpen(false)} aria-label={brand?.name || 'Home'}>
             <BrandLogo tone="dark" height={40} />
           </Link>
           <button type="button" className={styles.drawerClose} aria-label="Close menu" onClick={() => setDrawerOpen(false)}>
