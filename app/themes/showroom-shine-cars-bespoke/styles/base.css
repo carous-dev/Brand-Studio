@@ -411,15 +411,28 @@ html:has([data-theme-id='showroom-shine-cars-bespoke']),
  * extra-narrow viewports. Inner pages stay scannable instead of forcing
  * the buyer past a marketing intro before the actual content. */
 @media (max-width: 640px) {
+  [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero {
+    padding: clamp(38px, 12vw, 58px) 16px clamp(30px, 10vw, 46px);
+    background-position: center, center 35%, center 35%;
+  }
+  [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__inner {
+    gap: 8px;
+  }
   [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__eyebrow {
-    font-size: 0.72rem;
-    letter-spacing: 0.22em;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
   }
   [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__eyebrow::before {
-    width: 24px;
+    width: 20px;
+  }
+  [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__title {
+    font-size: clamp(1.55rem, 8.5vw, 2.2rem);
+    line-height: 1.06;
   }
   [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__lead {
-    font-size: 0.92rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    max-width: 38ch;
   }
 }
 @media (max-width: 480px) {

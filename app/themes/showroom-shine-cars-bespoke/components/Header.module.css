@@ -1,6 +1,7 @@
 .header {
   position: sticky;
-  top: 0;
+  /* Sticks below PreviewBanner when present (var falls back to 0px). */
+  top: var(--brandstudio-preview-banner-height, 0px);
   z-index: 60;
   background: color-mix(in srgb, var(--surface-bg-light) 92%, transparent);
   backdrop-filter: saturate(160%) blur(14px);

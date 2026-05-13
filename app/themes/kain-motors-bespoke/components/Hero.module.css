@@ -337,7 +337,56 @@
 .figureCta:hover { background: var(--kain-accent-warm); color: #0a0e14; }
 
 @media (max-width: 640px) {
-  .title { font-size: clamp(2rem, 8vw, 2.6rem); }
+  .hero {
+    min-height: 0;
+    padding-block: clamp(72px, 18vw, 92px) clamp(32px, 10vw, 48px);
+    align-items: flex-end;
+  }
+  .media {
+    inset: 0;
+    background-position: center top, center top;
+  }
+  .overlay {
+    background: linear-gradient(180deg, rgba(8, 11, 17, 0.92) 0%, rgba(8, 11, 17, 0.76) 52%, rgba(8, 11, 17, 0.94) 100%);
+  }
+  .inner {
+    gap: 18px;
+  }
+  .editorial {
+    gap: 12px;
+  }
+  .eyebrow {
+    padding-left: 34px;
+    font-size: 0.82rem;
+  }
+  .eyebrow::before {
+    width: 28px;
+  }
+  .title { font-size: clamp(1.85rem, 9vw, 2.45rem); line-height: 1.05; }
+  .lead { font-size: 0.92rem; line-height: 1.48; }
+  .searchForm {
+    gap: 8px;
+    padding: 10px;
+  }
+  .searchBtn {
+    width: 100%;
+    min-height: 44px;
+    padding: 12px 16px;
+  }
+  .ctaRow {
+    gap: 10px;
+  }
+  .ctaGhost {
+    flex: 1 1 100%;
+    text-align: center;
+  }
   .trustRail li:not(:last-child)::after { display: none; }
-  .trustRail { gap: 6px 14px; }
+  .trustRail { display: none; }
+}
+
+@media (max-width: 420px) {
+  .lead,
+  .ctaRow {
+    display: none;
+  }
 }

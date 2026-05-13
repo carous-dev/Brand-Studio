@@ -412,6 +412,34 @@
 @media (min-width: 1280px) { .cardGrid { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 1600px) { .cardGrid { grid-template-columns: repeat(4, 1fr); } }
 
+@media (max-width: 640px) {
+  .hero {
+    padding: 30px 16px 24px;
+    background-position: center, center top, center top;
+  }
+  .hero::before {
+    display: none;
+  }
+  .heroInner {
+    gap: 10px;
+  }
+  .eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+  }
+  .heroTitle {
+    font-size: clamp(1.45rem, 8vw, 2rem);
+    line-height: 1.08;
+  }
+  .heroLead,
+  .heroHighlights {
+    display: none;
+  }
+  .section {
+    padding: 24px 16px 56px;
+  }
+}
+
 /* ----- Card (prestige variant of springalls baseline) ----- */
 .card {
   display: flex;

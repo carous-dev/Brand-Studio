@@ -201,10 +201,7 @@ export function EnquiryModal({
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className={styles.dialog}>
-        <div className={styles.bracket} data-pos="tl" aria-hidden="true" />
-        <div className={styles.bracket} data-pos="br" aria-hidden="true" />
-
+      <div className={styles.dialog} data-has-side={sidePanel ? 'true' : 'false'}>
         <button
           type="button"
           className={styles.closeBtn}
@@ -320,17 +317,6 @@ export function EnquiryModal({
                       </>
                     )}
                   </button>
-                  {contact?.whatsappUrl ? (
-                    <a
-                      className={styles.whatsappBtn}
-                      href={contact.whatsappUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <WhatsAppIcon size={16} />
-                      WhatsApp instead
-                    </a>
-                  ) : null}
                 </div>
 
                 <p className={styles.note}>
@@ -342,47 +328,46 @@ export function EnquiryModal({
                 </p>
               </form>
             )}
-          </div>
 
-          {sidePanel || contact ? (
-            <aside className={styles.sideCol} aria-label="Contact options">
-              {sidePanel || (
-                <div className={styles.contactPanel}>
-                  <p className={styles.contactPanelTitle}>Or reach us directly</p>
-                  {contact?.phoneTel ? (
-                    <a className={styles.contactItem} href={`tel:${contact.phoneTel}`}>
-                      <span className={styles.contactItemIcon} aria-hidden="true"><Phone size={16} strokeWidth={2.4} /></span>
-                      <span>
-                        <span className={styles.contactItemLabel}>Call us</span>
-                        <span className={styles.contactItemValue}>{contact.phoneDisplay || contact.phoneTel}</span>
-                      </span>
+            {/* Inline contact rail — only renders when no custom sidePanel is
+                provided AND we have at least one direct-contact channel. Keeps
+                the modal single-column without losing the alternative-contact
+                affordance the dual-panel layout used to surface. */}
+            {!sidePanel && !submitted && contact && (contact.phoneTel || contact.email || contact.whatsappUrl) ? (
+              <div className={styles.contactRail} aria-label="Other ways to reach us">
+                <span className={styles.contactRailLabel}>Or reach us directly</span>
+                <div className={styles.contactRailChips}>
+                  {contact.phoneTel ? (
+                    <a className={styles.contactChip} href={`tel:${contact.phoneTel}`}>
+                      <Phone size={14} strokeWidth={2.4} aria-hidden="true" />
+                      <span>{contact.phoneDisplay || contact.phoneTel}</span>
                     </a>
                   ) : null}
-                  {contact?.email ? (
-                    <a className={styles.contactItem} href={`mailto:${contact.email}`}>
-                      <span className={styles.contactItemIcon} aria-hidden="true"><Mail size={16} strokeWidth={2.4} /></span>
-                      <span>
-                        <span className={styles.contactItemLabel}>Email</span>
-                        <span className={styles.contactItemValue}>{contact.email}</span>
-                      </span>
-                    </a>
-                  ) : null}
-                  {contact?.whatsappUrl ? (
+                  {contact.whatsappUrl ? (
                     <a
-                      className={`${styles.contactItem} ${styles.contactItemWhatsApp}`}
+                      className={`${styles.contactChip} ${styles.contactChipWa}`}
                       href={contact.whatsappUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <span className={styles.contactItemIcon} aria-hidden="true"><WhatsAppIcon size={16} /></span>
-                      <span>
-                        <span className={styles.contactItemLabel}>WhatsApp</span>
-                        <span className={styles.contactItemValue}>Typically replies in minutes</span>
-                      </span>
+                      <WhatsAppIcon size={14} />
+                      <span>WhatsApp</span>
+                    </a>
+                  ) : null}
+                  {contact.email ? (
+                    <a className={styles.contactChip} href={`mailto:${contact.email}`}>
+                      <Mail size={14} strokeWidth={2.4} aria-hidden="true" />
+                      <span>Email</span>
                     </a>
                   ) : null}
                 </div>
-              )}
+              </div>
+            ) : null}
+          </div>
+
+          {sidePanel ? (
+            <aside className={styles.sideCol} aria-label="Contact options">
+              {sidePanel}
             </aside>
           ) : null}
         </div>

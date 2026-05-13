@@ -3487,6 +3487,230 @@ def create_preview():
     return create_brand()
 
 
+# ============================================================================
+# Remote preview creation pipeline (API-key authenticated)
+# ----------------------------------------------------------------------------
+# Designed to be called from the operator's local machine after `/new-theme`
+# finishes. The skill bundles the brand record + (optional) AI context, POSTs
+# to /api/v1/preview/create on production, and gets back a live preview URL.
+#
+# Order of operations on the production side:
+#   1. Validate Authorization: Bearer <BRANDSTUDIO_API_KEY> header
+#   2. Validate themeId is deployed (folder exists in app/themes/)
+#   3. (Optional) Run OpenAI generation with the theme's text-recipe to fill
+#      brand.text fields — same path the dashboard /api/ai/brand uses
+#   4. Normalize + persist the preview via upsert_preview (same store as /create)
+#   5. Return the resolved preview URL
+#
+# Failure modes:
+#   * 401 — missing/invalid API key
+#   * 400 — missing themeId or brand payload, or unsafe themeId
+#   * 404 — themeId not deployed on production yet (caller retries after deploy)
+#   * 409 — slug already exists; caller may retry with `?force=true` to overwrite
+#   * 502 — OpenAI failure during optional auto-fill
+#   * 500 — unexpected server error
+# ============================================================================
+
+
+def _read_brandstudio_api_key() -> str:
+    """Read the configured API key. Reads `BRANDSTUDIO_API_KEY` from env; empty
+    string means remote preview creation is disabled (endpoint returns 503)."""
+    return (os.environ.get('BRANDSTUDIO_API_KEY') or '').strip()
+
+
+def _require_brandstudio_api_key():
+    """Validate Bearer token in Authorization header. Returns None on success,
+    or a Flask (response, status) tuple to short-circuit the caller."""
+    configured = _read_brandstudio_api_key()
+    if not configured:
+        return jsonify({
+            'ok': False,
+            'error': 'Remote preview creation is disabled — BRANDSTUDIO_API_KEY is not set on the server.',
+        }), 503
+
+    auth_header = request.headers.get('Authorization', '').strip()
+    if not auth_header.lower().startswith('bearer '):
+        return jsonify({
+            'ok': False,
+            'error': 'Missing Authorization: Bearer <api-key> header.',
+        }), 401
+
+    provided = auth_header[len('bearer '):].strip()
+    # Constant-time compare to avoid timing leaks.
+    import hmac as _hmac
+    if not provided or not _hmac.compare_digest(provided, configured):
+        return jsonify({
+            'ok': False,
+            'error': 'Invalid API key.',
+        }), 401
+    return None
+
+
+def _resolve_preview_url_for_slug(slug: str, brand: Dict[str, Any]) -> str:
+    """Best-effort resolution of the live preview URL for a brand. Order:
+    explicit preview_url on the record → managed domain (production) →
+    local-dev fallback. Always returns a string (may be empty if nothing
+    resolves)."""
+    if not isinstance(brand, dict):
+        return ''
+    direct = str(brand.get('preview_url') or '').strip()
+    if direct:
+        return direct
+    domain = str(brand.get('domain') or '').strip()
+    if domain:
+        # Most production domains are already full URLs; otherwise wrap with https.
+        if domain.startswith('http://') or domain.startswith('https://'):
+            return domain
+        return f'https://{domain}'
+    # Local-dev fallback — host is `<slug>.localhost` or similar.
+    base = (os.environ.get('PREVIEW_BASE_DOMAIN') or 'carouspreviews.co.uk').strip()
+    return f'https://{slug}.{base}'
+
+
+@app.route('/api/v1/preview/create', methods=['POST'])
+def remote_create_preview():
+    """
+    Create a preview brand record from a remote client (e.g. the `/new-theme`
+    skill running on the operator's local machine). Authenticates via
+    `Authorization: Bearer <BRANDSTUDIO_API_KEY>`.
+
+    Request body (JSON):
+        {
+          "themeId": "kain-motors-bespoke",
+          "brand": { ...full BrandConfig shape... },
+          "ai": {
+            "enabled": true,        # optional — auto-fill brand.text via OpenAI
+            "context": "...",       # context for the AI (dealer description)
+            "website": "..."        # optional dealer website URL
+          }
+        }
+
+    Query params:
+        force=true — overwrite an existing preview with the same slug
+                     (default: 409 if slug exists)
+    """
+    auth_err = _require_brandstudio_api_key()
+    if auth_err is not None:
+        return auth_err
+
+    payload = request.get_json(silent=True) or {}
+    if not isinstance(payload, dict):
+        return jsonify({'ok': False, 'error': 'Request body must be a JSON object.'}), 400
+
+    theme_id_raw = payload.get('themeId') or (payload.get('brand') or {}).get('themeId')
+    safe_theme_id = _validate_theme_id(theme_id_raw or '')
+    if not safe_theme_id:
+        return jsonify({'ok': False, 'error': 'themeId is required and must be a valid slug.'}), 400
+
+    if not os.path.isdir(_theme_folder_path(safe_theme_id)):
+        return jsonify({
+            'ok': False,
+            'error': f'Theme "{safe_theme_id}" is not deployed on this server yet. Push the theme code and wait for the next deploy, then retry.',
+            'code': 'theme_not_deployed',
+        }), 404
+
+    brand = payload.get('brand') if isinstance(payload.get('brand'), dict) else None
+    if not brand:
+        return jsonify({'ok': False, 'error': 'brand payload is required.'}), 400
+
+    # Slug resolution: explicit > derived from name. Always lowercase + safe.
+    slug = str(brand.get('slug') or '').strip().lower()
+    if not slug:
+        slug = _slugify_name(brand.get('name') or '')
+    if not slug:
+        return jsonify({'ok': False, 'error': 'brand.name or brand.slug is required.'}), 400
+    if not re.match(r'^[a-z0-9][a-z0-9-]{0,62}$', slug):
+        return jsonify({'ok': False, 'error': 'brand.slug must match ^[a-z0-9][a-z0-9-]{0,62}$.'}), 400
+
+    force = str(request.args.get('force') or '').strip().lower() in ('1', 'true', 'yes')
+    already_exists = preview_exists(slug)
+    if already_exists and not force:
+        return jsonify({
+            'ok': False,
+            'error': f'Preview "{slug}" already exists. Retry with ?force=true to overwrite.',
+            'code': 'slug_conflict',
+        }), 409
+
+    brand = dict(brand)
+    brand['slug'] = slug
+    brand['themeId'] = safe_theme_id
+    theme_obj = dict(brand.get('theme') or {})
+    theme_obj['id'] = safe_theme_id
+    theme_obj['themeId'] = safe_theme_id
+    brand['theme'] = theme_obj
+
+    # ---- Optional: run OpenAI with the theme's text recipe to fill brand.text
+    ai_meta = payload.get('ai') if isinstance(payload.get('ai'), dict) else {}
+    ai_enabled = bool(ai_meta.get('enabled'))
+    ai_populated = False
+    ai_error = None
+    if ai_enabled:
+        try:
+            ai_context = str(ai_meta.get('context') or '').strip()
+            ai_website = str(ai_meta.get('website') or '').strip()
+            # Load the recipe (same path the dashboard endpoint uses).
+            recipe = None
+            recipe_path = os.path.join(_theme_folder_path(safe_theme_id), 'recipes', 'text-recipe.json')
+            if os.path.exists(recipe_path):
+                try:
+                    with open(recipe_path, 'r', encoding='utf-8') as fh:
+                        recipe = json.load(fh)
+                except Exception:
+                    app.logger.exception("Failed to load text recipe for theme=%s during remote preview create", safe_theme_id)
+                    recipe = None
+
+            if ai_context or ai_website:
+                ai_result = generate_brand_via_openai(
+                    context=ai_context,
+                    website=ai_website,
+                    scopes=['text'],
+                    preferred_theme_id=safe_theme_id,
+                    text_recipe=recipe,
+                )
+                ai_brand = ai_result.get('brand') if isinstance(ai_result, dict) else None
+                if isinstance(ai_brand, dict):
+                    # Only merge the `text` map — the operator's payload is the
+                    # source of truth for everything else (logo, contact, etc.).
+                    ai_text = ai_brand.get('text') if isinstance(ai_brand.get('text'), dict) else None
+                    if ai_text:
+                        existing_text = dict(brand.get('text') or {})
+                        # Operator-provided values win over AI-suggested ones —
+                        # only fill keys the operator left empty.
+                        for k, v in ai_text.items():
+                            if isinstance(v, str) and v.strip() and not existing_text.get(k):
+                                existing_text[k] = v.strip()
+                        brand['text'] = existing_text
+                        ai_populated = True
+        except Exception as exc:
+            ai_error = str(exc)
+            app.logger.exception("Remote preview AI auto-fill failed (slug=%s)", slug)
+
+    # ---- Persist + return URL
+    try:
+        upsert_preview(slug, brand)
+    except Exception as exc:
+        app.logger.exception("Remote preview save failed (slug=%s)", slug)
+        return jsonify({
+            'ok': False,
+            'error': 'Failed to persist preview record.',
+            'details': str(exc),
+        }), 500
+
+    saved = load_preview(slug) or brand
+    preview_url = _resolve_preview_url_for_slug(slug, saved)
+
+    return jsonify({
+        'ok': True,
+        'slug': slug,
+        'themeId': safe_theme_id,
+        'url': preview_url,
+        'created': not already_exists,
+        'overwritten': already_exists and force,
+        'aiPopulated': ai_populated,
+        'aiError': ai_error,
+    }), (201 if not already_exists else 200)
+
+
 @app.route('/api/previews/<slug>', methods=['GET'])
 def get_preview(slug):
     """Return the stored preview configuration."""

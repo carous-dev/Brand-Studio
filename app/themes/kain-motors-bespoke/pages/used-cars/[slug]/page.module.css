@@ -73,6 +73,44 @@
   min-width: 0;
 }
 
+@media (max-width: 640px) {
+  .breadcrumbInner {
+    padding-block: 10px;
+  }
+  .heroBand {
+    padding-top: 14px;
+    padding-bottom: 18px;
+  }
+  .heroInner {
+    gap: 14px;
+    padding-inline: 12px;
+  }
+  .titleStrip {
+    gap: 10px;
+  }
+  .eyebrow {
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+  }
+  .title {
+    font-size: clamp(1.35rem, 8vw, 1.9rem);
+    line-height: 1.08;
+  }
+  .stockPill,
+  .statusBadge {
+    display: none;
+  }
+  .titleStripActions {
+    gap: 6px;
+  }
+  .iconAction {
+    min-height: 36px;
+    padding: 8px 10px;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+  }
+}
+
 /* Title strip */
 .titleStrip {
   display: flex;

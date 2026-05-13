@@ -1,0 +1,71 @@
+.tabs {
+  display: inline-flex;
+  gap: 4px;
+  margin-top: 18px;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  align-self: flex-start;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.tab {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+  min-height: 44px;
+}
+.tab:hover { color: #ffffff; }
+.tabActive {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+.skel {
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(90deg, var(--color-surface), color-mix(in srgb, var(--color-surface) 80%, var(--color-border)), var(--color-surface));
+  background-size: 200% 100%;
+  animation: dual-skel-sold 1.4s ease-in-out infinite;
+  border-radius: 12px;
+}
+@keyframes dual-skel-sold {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+.empty {
+  padding: clamp(28px, 5vw, 64px);
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-muted);
+}
+.empty h2 {
+  font-family: 'Roboto Condensed', sans-serif;
+  margin: 0;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+@media (min-width: 640px) { .grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1440px) { .grid { grid-template-columns: repeat(4, 1fr); } }

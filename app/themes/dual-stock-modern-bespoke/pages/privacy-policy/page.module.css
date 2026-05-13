@@ -1,0 +1,30 @@
+.legal {
+  max-width: 760px;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--color-text);
+}
+.legal h2 {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  margin: 28px 0 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+.legal h2:first-child {
+  padding-top: 0;
+  border-top: 0;
+  margin-top: 0;
+}
+.legal p {
+  margin: 0 0 14px;
+}
+.legal a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.legal a:hover { text-decoration: none; }

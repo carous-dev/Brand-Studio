@@ -840,6 +840,19 @@
   .detailPage {
     padding-bottom: 110px;
   }
+  .breadcrumb {
+    padding: 8px 0;
+  }
+  .heroBand {
+    padding-top: 12px;
+    padding-bottom: 18px;
+  }
+  .layout {
+    gap: 14px;
+  }
+  .gallery {
+    gap: 8px;
+  }
   .mosaicGrid {
     grid-template-rows: repeat(2, 64px);
   }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { BrandConfig } from '@/brands/types'
 import './styles.css'
 
@@ -41,6 +41,7 @@ type PreviewBannerProps = {
  */
 export default function PreviewBanner({ brand, href = 'https://carous.co.uk', force }: PreviewBannerProps) {
   const [show, setShow] = useState(false)
+  const ref = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
     if (force === true) { setShow(true); return }
@@ -48,12 +49,41 @@ export default function PreviewBanner({ brand, href = 'https://carous.co.uk', fo
     setShow(process.env.NEXT_PUBLIC_PREVIEW === '1')
   }, [force])
 
+  // Publishes the banner's rendered height as a CSS variable on <html> so
+  // theme headers can stick BELOW the banner via
+  // `top: var(--brandstudio-preview-banner-height, 0px)` instead of pinning
+  // to `top: 0` and being visually submerged by the banner.
+  useEffect(() => {
+    if (!show) {
+      document.documentElement.style.removeProperty('--brandstudio-preview-banner-height')
+      return
+    }
+    const el = ref.current
+    if (!el) return
+    const apply = () => {
+      document.documentElement.style.setProperty(
+        '--brandstudio-preview-banner-height',
+        `${Math.ceil(el.getBoundingClientRect().height)}px`,
+      )
+    }
+    apply()
+    const ro = new ResizeObserver(apply)
+    ro.observe(el)
+    window.addEventListener('resize', apply)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('resize', apply)
+      document.documentElement.style.removeProperty('--brandstudio-preview-banner-height')
+    }
+  }, [show])
+
   if (!show) return null
 
   const brandName = brand?.name || 'this dealership'
 
   return (
     <aside
+      ref={ref}
       className="brandstudio-preview-banner"
       role="region"
       aria-label="Preview site notice"

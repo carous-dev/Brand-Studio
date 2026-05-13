@@ -1,0 +1,82 @@
+.head {
+  text-align: center;
+  margin-bottom: clamp(28px, 4vw, 48px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.h2 {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--color-text);
+}
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-primary);
+  border-radius: 10px;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
+}
+.badge {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+.badgeCar { background: #52688c; }
+.badgeBike { background: var(--color-primary); }
+.card h3 {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  margin: 4px 0 0;
+}
+.card p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--color-muted);
+  flex: 1;
+}
+.arrow {
+  margin-top: 8px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+@media (min-width: 640px) {
+  .grid { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1024px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
+}

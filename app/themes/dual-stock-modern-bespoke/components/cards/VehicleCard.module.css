@@ -1,0 +1,254 @@
+/* Vehicle card — INTENTIONAL LIGHT SURFACE (theme-locked, brand-record-immune).
+ * The card body uses fixed white + paired deep-navy text so contrast is
+ * guaranteed regardless of how the brand record overrides --color-surface. */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  color: #0b1c3a;
+  border: 1px solid #e3e7f0;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  isolation: isolate;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 50px rgba(11, 28, 58, 0.14);
+  border-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
+}
+.cardLink {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.cardSold .mediaImage {
+  filter: grayscale(0.6) brightness(0.85);
+}
+
+.media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #eef1f8;
+}
+.mediaImage {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 0.4s ease;
+}
+.card:hover .mediaImage {
+  transform: scale(1.04);
+}
+
+.soldStamp {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 3;
+  padding: 6px 14px;
+  background: var(--color-primary);
+  color: #ffffff;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  box-shadow: 0 6px 18px rgba(11, 28, 58, 0.25);
+}
+
+.mediaTopLeft {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 3;
+  display: flex;
+  gap: 4px;
+}
+.iconAction {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(11, 28, 58, 0.08);
+  border-radius: 999px;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  pointer-events: auto;
+  backdrop-filter: blur(4px);
+}
+.iconAction:hover { background: var(--color-primary); color: #ffffff; transform: scale(1.05); }
+.iconAction:disabled { opacity: 0.4; cursor: not-allowed; }
+.iconActionOn { background: var(--color-primary); color: #ffffff; border-color: var(--color-primary); }
+.iconActionOn:hover { background: color-mix(in srgb, var(--color-primary) 88%, #000); }
+
+.mediaBadges {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  z-index: 3;
+  display: flex;
+  gap: 6px;
+}
+.featuredBadge {
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: rgba(40, 162, 230, 0.92);
+  color: #ffffff;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+  background: #ffffff;
+}
+.title {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1.08rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #0b1c3a;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.meta {
+  font-size: 0.82rem;
+  color: #52688c;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.specs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 10px;
+}
+.specs li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: #52688c;
+}
+.specs li svg { color: var(--color-primary); flex: 0 0 auto; }
+.specs li span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.specsCompact {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  font-size: 0.74rem;
+  color: #52688c;
+}
+.specsCompact li:not(:last-child)::after {
+  content: '·';
+  margin-left: 8px;
+  color: rgba(82, 104, 140, 0.5);
+}
+.specsCompact li:nth-child(n+4) { display: none; }
+
+.priceRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid #e3e7f0;
+  padding-top: 12px;
+  margin-top: 4px;
+}
+.priceBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.priceLabel {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #52688c;
+}
+.priceValue {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+.priceValueSold {
+  color: #52688c;
+  text-decoration: line-through;
+}
+.priceMonthly {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #0b1c3a;
+  line-height: 1;
+}
+
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+}
+.cardCtaPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+.locationChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: #52688c;
+}
+
+.cardCompact .body { padding: 14px; gap: 8px; }
+.cardCompact .title { font-size: 0.98rem; }
+.cardCompact .priceRow { padding-top: 10px; }
+.cardCompact .priceValue { font-size: 1.2rem; }
+.cardCompact .priceMonthly { font-size: 0.88rem; }
+.cardSold .cta { display: none; }

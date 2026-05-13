@@ -105,7 +105,8 @@
 /* ----- Primary header ----- */
 .header {
   position: sticky;
-  top: 0;
+  /* Sticks below PreviewBanner when present (var falls back to 0px). */
+  top: var(--brandstudio-preview-banner-height, 0px);
   z-index: 40;
   background: color-mix(in srgb, #0a0e14 94%, transparent);
   backdrop-filter: blur(14px);

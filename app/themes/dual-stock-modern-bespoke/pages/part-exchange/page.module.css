@@ -1,0 +1,95 @@
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 4vw, 56px);
+  align-items: flex-start;
+}
+.copy { display: flex; flex-direction: column; gap: 14px; }
+.h2 {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  text-transform: uppercase;
+  margin: 6px 0 8px;
+  color: var(--color-text);
+}
+.h3 {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 14px;
+  color: #0b1c3a;
+}
+.benefits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.95rem;
+}
+.benefits li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.benefits svg { color: var(--color-primary); flex: 0 0 auto; margin-top: 2px; }
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.stepsCard {
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5fc 100%);
+  color: #0b1c3a;
+  border: 1px solid #e3e7f0;
+  border-top: 3px solid var(--color-primary);
+  padding: clamp(24px, 4vw, 36px);
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.stepsCard::before {
+  content: '';
+  position: absolute;
+  top: -20%; right: -10%;
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 18%, transparent), transparent 65%);
+  filter: blur(40px);
+}
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+}
+.steps li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.95rem;
+}
+.steps span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  background: var(--color-primary);
+  color: #ffffff;
+  border-radius: 999px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 0.92rem;
+  flex: 0 0 auto;
+}
+
+@media (min-width: 880px) {
+  .layout { grid-template-columns: 1.4fr 1fr; }
+}

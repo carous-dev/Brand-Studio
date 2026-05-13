@@ -4,7 +4,8 @@
 
 .topbar {
   position: sticky;
-  top: 0;
+  /* Sticks below PreviewBanner when present (var falls back to 0px). */
+  top: var(--brandstudio-preview-banner-height, 0px);
   z-index: 50;
   background: #050810;
   color: rgba(255, 255, 255, 0.92);

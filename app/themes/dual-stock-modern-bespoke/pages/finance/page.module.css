@@ -1,0 +1,212 @@
+.intro {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.h2 {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  text-transform: uppercase;
+  margin: 0;
+  color: #0b1c3a;
+}
+
+/* "Three steps. One quote." — modern numbered cards (theme-locked light per
+ * feedback_color_palette_policy so brand-record token overrides can't break
+ * contrast on the step titles). Desktop: 3-column horizontal layout with a
+ * dashed connecting rail between cards. Mobile: vertical stack. */
+.steps {
+  list-style: none;
+  margin: clamp(20px, 4vw, 36px) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  text-align: left;
+  width: 100%;
+  position: relative;
+}
+.step {
+  position: relative;
+  padding: 28px 26px 24px;
+  background: #ffffff;
+  border: 1px solid #e3e7f0;
+  border-radius: 14px;
+  box-shadow: 0 18px 40px rgba(11, 28, 58, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.step::before {
+  /* Top edge accent — same pattern as Testimonials / BrandTrust cards */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 60%, #8fd2f3));
+}
+.step:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 24px 50px rgba(11, 28, 58, 0.10);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, #e3e7f0);
+}
+.stepNumber {
+  position: absolute;
+  top: 4px;
+  right: 14px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 700;
+  font-size: clamp(4.5rem, 7vw, 6rem);
+  line-height: 1;
+  color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  letter-spacing: -0.02em;
+  pointer-events: none;
+  user-select: none;
+}
+.stepTag {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+}
+.stepTitle {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  margin: 6px 0 0;
+  text-transform: uppercase;
+  color: #0b1c3a;
+  letter-spacing: 0.02em;
+  position: relative;
+  z-index: 1;
+}
+.stepBody {
+  margin: 0;
+  color: #52688c;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  position: relative;
+  z-index: 1;
+}
+
+.ctaRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.productsHead {
+  text-align: center;
+  margin-bottom: clamp(28px, 4vw, 48px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.productsGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.product {
+  padding: 22px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-primary);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.product h3 {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  margin: 4px 0 0;
+}
+.product p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--color-muted);
+}
+.badge {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  color: var(--color-primary);
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.bullets {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.88rem;
+  color: var(--color-text);
+}
+
+.disclaimer {
+  margin: 24px auto 0;
+  max-width: 720px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--color-muted);
+}
+
+@media (min-width: 768px) {
+  .productsGrid { grid-template-columns: 1fr 1fr; }
+  .steps {
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(16px, 2.4vw, 28px);
+  }
+  /* Dashed connecting rail behind the 3 cards on desktop */
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 6%;
+    right: 6%;
+    height: 2px;
+    background-image: linear-gradient(90deg,
+      color-mix(in srgb, var(--color-primary) 28%, transparent) 50%,
+      transparent 50%);
+    background-size: 12px 2px;
+    background-repeat: repeat-x;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .step { z-index: 1; }
+}
+@media (min-width: 1024px) {
+  .productsGrid { grid-template-columns: repeat(4, 1fr); }
+}

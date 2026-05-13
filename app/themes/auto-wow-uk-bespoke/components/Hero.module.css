@@ -192,22 +192,63 @@
 
 @media (max-width: 640px) {
   .hero {
-    min-height: clamp(520px, 60vh, 600px);
+    min-height: 0;
+    align-items: flex-end;
+  }
+  .heroInner {
+    padding: clamp(72px, 18vw, 92px) 16px clamp(30px, 10vw, 44px);
+  }
+  .heroContent {
+    max-width: 100%;
+  }
+  .heroImage {
+    background-position: center top, center top;
+  }
+  .heroOverlay {
+    background: linear-gradient(180deg, rgba(8, 11, 17, 0.9) 0%, rgba(8, 11, 17, 0.78) 52%, rgba(8, 11, 17, 0.94) 100%);
   }
   .heroGrid {
     display: none;
   }
   .heroGlow {
-    opacity: 0.55;
+    display: none;
+  }
+  .eyebrow {
+    margin-bottom: 14px;
+    padding: 5px 10px;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+  }
+  .title {
+    font-size: clamp(1.9rem, 10vw, 2.55rem);
+    max-width: 12ch;
+    margin-bottom: 12px;
+  }
+  .lead {
+    font-size: 0.94rem;
+    line-height: 1.48;
+    margin-bottom: 20px;
+    max-width: 36ch;
+  }
+  .ctas {
+    gap: 10px;
+    margin-bottom: 18px;
   }
   .ctaPrimary,
   .ctaGhost {
     flex: 1 1 100%;
+    min-width: 0;
   }
   .ctaGhost {
     background: transparent !important;
   }
   .trustRow {
-    gap: 12px 18px;
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .lead {
+    display: none;
   }
 }

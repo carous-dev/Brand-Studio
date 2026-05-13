@@ -2365,12 +2365,14 @@ Header: "Build preview"
 Options:
   - "Yes — register a local preview now (lvh.me)" (Recommended)
   - "Yes — register + run automation (Linux/production DNS + vhost + cert)"
+  - "Yes — push theme + register a production preview via remote API"
   - "No — just commit the theme, I'll create the preview later via /create"
 ```
 
-Pick the helper invocation accordingly (see Phase 13a below). The
-question is OPTIONAL — if the operator picks "No" or cancels, jump
-straight to Phase 13 (ship).
+Pick the helper invocation accordingly:
+- Local-dev → `tools/build-preview-from-theme.py` (Phase 13a, existing)
+- Production via remote API → `tools/create-preview.mjs` (Phase 13c, see below)
+- No → skip to Phase 13 ship
 
 ## Phase 13a — Optional: register a preview brand now
 
@@ -2426,6 +2428,92 @@ Exit codes:
   theme tokens, but doesn't fill rich content. The AI brand generator at
   `/api/ai/brand` (dashboard `/create` page) is the recommended path for
   pitch-ready previews; the helper is a fast-path for local development.
+
+## Phase 13c — Optional: register a PRODUCTION preview via remote API
+
+When the operator picks **"push theme + register a production preview via
+remote API"** in the Phase 12b question, the pipeline is:
+
+1. Commit + push the theme code (Phase 13 ship path). Wait for the production
+   build to deploy the new `app/themes/<theme-id>/` folder. The script
+   already retries when the theme isn't deployed yet, so this step can run
+   concurrently with the push.
+2. Run `tools/create-preview.mjs` from the operator's local machine. It POSTs
+   to `https://<production>/api/v1/preview/create` with an API-key Bearer
+   token, the theme id, and the brand record (logo/colour/contact/address
+   collected during Phase A). If `--ai` is passed, the server runs OpenAI
+   with the theme's `recipes/text-recipe.json` and auto-fills `brand.text`
+   per recipe field — the AI generator is the same one the dashboard
+   `/create` page uses, so output quality matches.
+3. The endpoint persists the preview via `upsert_preview` (same store the
+   dashboard `/create` uses) and returns the live preview URL.
+
+**Required env vars (on the operator's local machine):**
+
+```
+BRANDSTUDIO_API_URL  https://brandstudio.carous.co.uk   # production host
+BRANDSTUDIO_API_KEY  sk_<long-random-string>            # must match server config
+```
+
+The matching `BRANDSTUDIO_API_KEY` must be set on the production server.
+When unset on the server, `/api/v1/preview/create` returns `503` with the
+message "Remote preview creation is disabled — BRANDSTUDIO_API_KEY is not
+set on the server." (the endpoint is opt-in for security).
+
+**Invocation:**
+
+```bash
+node tools/create-preview.mjs \
+  --theme <theme-id> \
+  --slug <preview-slug> \
+  --name "<Display Name>" \
+  --domain <domain.co.uk> \
+  --hex "<#hex>" \
+  --logo <https://...logo.png> \
+  --hero <https://...hero.jpg> \
+  --phone "<+44 ...>" \
+  --email "<info@...>" \
+  --address-line1 "<Street>" \
+  --city "<City>" \
+  --postcode "<POSTCODE>" \
+  --ai \
+  --context "<short business description for AI>" \
+  --website "<https://dealer.co.uk>"
+```
+
+**What the helper does:**
+
+1. Builds a `BrandConfig` payload from the flags (or loads one from
+   `--brand-json <path>` if the operator wants to round-trip a manually
+   edited record).
+2. POSTs to `/api/v1/preview/create` with `Authorization: Bearer <API_KEY>`.
+3. If the response is `404 + code:"theme_not_deployed"`, retries every 30s
+   up to 10 times (configurable with `--retries` / `--retry-delay`). This
+   handles the natural race condition where the git push hasn't deployed yet.
+4. On success, prints the live preview URL. Quote it in the Phase 12 report.
+5. On `409 slug_conflict`, advises `--force` to overwrite.
+6. On `401 / 503`, advises checking `BRANDSTUDIO_API_KEY` matches between
+   client + server.
+
+**Exit codes:**
+- `0` — success, preview live at the printed URL.
+- `2` — env var or required flag missing.
+- `3` — slug conflict; re-run with `--force` to overwrite.
+- `4` — auth failure; check API key.
+- `5` — unexpected server error; payload in stderr for diagnosis.
+- `99` — uncaught script failure (network blip, JSON parse error, etc).
+
+**Important constraints:**
+- The theme MUST be deployed on production before the API call resolves.
+  The default 10×30s retry window (5 minutes) covers a typical deploy. For
+  slower deploys, raise `--retries`.
+- AI auto-fill is optional but strongly recommended — without it, all of
+  `brand.text` stays empty and the theme renders its recipe defaults
+  (generic copy). Pass `--ai --context "..." --website "..."` for
+  pitch-ready output.
+- The operator can still open `/update/<slug>` in the dashboard afterwards
+  to fine-tune copy, swap images, or adjust hours. The remote API path is
+  for the "create and go" case; the dashboard owns iteration.
 
 ## Phase 13 — Ship to production (git-based, automatic)
 

@@ -1,0 +1,150 @@
+/* Cookie banner — slim full-width bottom strip in brand primary.
+ * Single-row layout: message left, buttons right. Settings view expands
+ * to show preference checkboxes but stays compact. */
+
+.dock {
+  position: fixed;
+  left: 0; right: 0;
+  bottom: 0;
+  z-index: 80;
+  background: var(--color-primary);
+  color: #ffffff;
+  border-top: 1px solid color-mix(in srgb, #ffffff 28%, transparent);
+}
+.dockInner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 10px clamp(14px, 3vw, 24px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1 1 280px;
+}
+.copyText {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.95);
+  flex: 1 1 280px;
+  min-width: 0;
+}
+.copyText a {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+}
+.copyText a:hover { text-decoration: none; }
+
+.prefList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.prefList label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.94);
+}
+.prefList input[type='checkbox'] {
+  margin: 3px 0 0;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  accent-color: #ffffff;
+}
+.prefList strong { color: #ffffff; font-weight: 700; }
+
+.actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+}
+.primaryBtn,
+.outlineBtn,
+.secondaryBtn {
+  padding: 7px 14px;
+  min-height: 34px;
+  border-radius: 6px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  border: 1px solid transparent;
+}
+.primaryBtn {
+  background: #ffffff;
+  color: var(--color-primary);
+  border-color: #ffffff;
+}
+.primaryBtn:hover {
+  background: rgba(255, 255, 255, 0.92);
+  color: color-mix(in srgb, var(--color-primary) 90%, #000);
+}
+.outlineBtn {
+  background: transparent;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+.outlineBtn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: #ffffff;
+}
+.secondaryBtn {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  border-color: transparent;
+}
+.secondaryBtn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 640px) {
+  .dockInner {
+    padding: 8px 12px;
+    gap: 6px 10px;
+  }
+  .copyText {
+    font-size: 0.78rem;
+    line-height: 1.35;
+    flex-basis: 100%;
+  }
+  .actions {
+    flex-basis: 100%;
+    justify-content: stretch;
+    gap: 6px;
+  }
+  .primaryBtn,
+  .outlineBtn,
+  .secondaryBtn {
+    flex: 1 1 0;
+    padding: 7px 10px;
+    font-size: 0.72rem;
+    min-height: 32px;
+    letter-spacing: 0.02em;
+  }
+  /* Drop the "Settings" tertiary action on small screens — keep Reject + Accept;
+   * users can dive into preferences from the cookie policy page footer link. */
+  .secondaryBtn { display: none; }
+}

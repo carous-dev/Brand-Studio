@@ -77,8 +77,15 @@
  * title, no lead, just the location chip (HPI / Inspected chips hide).
  * Buyers on mobile want to get to the listings, not read marketing copy. */
 @media (max-width: 640px) {
+  .inventoryHero {
+    padding: 28px 16px 22px;
+  }
   .inventoryHeroInner {
     gap: 8px;
+  }
+  .inventoryHeroTitle {
+    font-size: clamp(1.45rem, 8.5vw, 2rem);
+    line-height: 1.06;
   }
   .inventoryHeroLead {
     display: none;

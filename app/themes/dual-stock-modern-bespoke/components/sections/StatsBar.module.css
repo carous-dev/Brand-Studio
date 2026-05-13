@@ -1,0 +1,57 @@
+.bar {
+  background: linear-gradient(180deg, var(--color-bg) 0%, color-mix(in srgb, var(--color-bg) 96%, var(--color-primary)) 100%);
+  border-bottom: 1px solid var(--color-border);
+}
+.barInner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 24px;
+}
+.stat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-left: 3px solid var(--color-primary);
+}
+.statEyebrow {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+.statValue {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-text);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+}
+.statSuffix {
+  color: var(--color-primary);
+}
+.statLabel {
+  font-size: 0.82rem;
+  color: var(--color-muted);
+}
+
+@media (min-width: 768px) {
+  .gridFour { grid-template-columns: repeat(4, 1fr); }
+  .gridThree { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 640px) {
+  /* Tighter 2×2 grid on mobile — smaller value font, hide eyebrow to reduce
+   * vertical clutter; the label already says what each stat is. */
+  .barInner { gap: 12px 14px; }
+  .stat { padding: 10px 12px; border-left-width: 2px; }
+  .statEyebrow { display: none; }
+  .statValue { font-size: 1.6rem; }
+  .statLabel { font-size: 0.75rem; line-height: 1.3; }
+}

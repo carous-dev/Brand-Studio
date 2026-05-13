@@ -1,0 +1,132 @@
+.head {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto clamp(32px, 5vw, 56px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.head .dual-eyebrow { align-self: center; }
+.title {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  line-height: 1.1;
+  margin: 0;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+.titleAccent {
+  display: inline-block;
+  background: linear-gradient(95deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 60%, #8fd2f3));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.lead {
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  line-height: 1.6;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+/* Mobile: 1-up at <480px, 2-up at 480-639px to reduce vertical stack */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 480px) {
+  .grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+}
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: clamp(16px, 3vw, 22px);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  overflow: hidden;
+}
+.card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+}
+.card:hover::after { opacity: 1; }
+.cardIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
+}
+.cardEyebrow {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-top: 6px;
+}
+.cardTitle {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1.25rem;
+  margin: 0;
+  text-transform: uppercase;
+}
+.cardBody {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--color-muted);
+  flex: 1 1 auto;
+}
+.cardCta {
+  margin-top: 4px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+@media (min-width: 640px) {
+  .grid { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1024px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 640px) {
+  /* Compact cards on mobile — drop the eyebrow (icon + title already say it),
+   * shrink the icon block, trim copy line-height, kill the hover lift. */
+  .head { margin-bottom: 24px; gap: 8px; }
+  .head .lead { font-size: 0.9rem; line-height: 1.5; }
+  .card { padding: 14px; gap: 6px; }
+  .card:hover { transform: none; box-shadow: none; }
+  .cardIcon { width: 38px; height: 38px; }
+  .cardEyebrow { display: none; }
+  .cardTitle { font-size: 1.05rem; }
+  .cardBody { font-size: 0.86rem; line-height: 1.45; }
+  .cardCta { font-size: 0.78rem; }
+}
