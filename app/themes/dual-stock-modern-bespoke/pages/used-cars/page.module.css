@@ -222,6 +222,27 @@
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
+@media (max-width: 640px) {
+  .toolbar {
+    gap: 10px;
+  }
+  .toolbarRight {
+    width: 100%;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  .filterToggle,
+  .sortChip,
+  .compareCount,
+  .wishlistCount {
+    min-height: 34px;
+    padding: 6px 10px;
+    font-size: 0.72rem;
+  }
+  .filterToggle {
+    order: -1;
+  }
+}
 
 .layout {
   display: block;

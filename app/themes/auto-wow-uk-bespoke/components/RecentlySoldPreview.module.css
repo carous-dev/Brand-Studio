@@ -1,5 +1,27 @@
 .section {
-  background: var(--color-surface);
+  background: #101827;
+  color: #ffffff;
+}
+
+.section :global(.auto-section-title) {
+  color: #ffffff;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.28);
+}
+
+.section :global(.auto-eyebrow) {
+  color: #22c7d4;
+}
+
+.section :global(.auto-eyebrow)::before {
+  background: #22c7d4;
+}
+
+.section :global(.auto-cta-link) {
+  color: #22c7d4;
+}
+
+.section :global(.auto-cta-link:hover) {
+  color: #ffffff;
 }
 
 .header {
@@ -20,8 +42,8 @@
 
 .card {
   position: relative;
-  background: var(--color-bg);
-  border: 2px solid var(--color-border);
+  background: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.72);
   border-radius: var(--radius-card, 8px);
   overflow: hidden;
   transition: border-color 200ms ease, transform 200ms ease;
@@ -73,7 +95,7 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--color-text);
+  color: #0f1623;
   margin: 0 0 8px;
 }
 
@@ -87,7 +109,7 @@
 .priceWas {
   font-family: 'Oswald', sans-serif;
   font-size: 0.94rem;
-  color: var(--color-muted);
+  color: #5f6b7a;
   text-decoration: line-through;
   letter-spacing: 0.02em;
 }

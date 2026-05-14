@@ -68,7 +68,7 @@ export default function LatestArrivalsSectionClient({ vehicles }: { vehicles: In
         vehicle.fuel || "Petrol"
       ],
       image: vehicle.image,
-      href: buildVehiclePermalink({ slug: toSlug(vehicle.title), reg: vehicle.reg }, "/used-cars")
+      href: buildVehiclePermalink({ slug: vehicle.slug || toSlug(vehicle.title), reg: vehicle.reg }, "/used-cars")
     }))
   }, [vehicles])
 

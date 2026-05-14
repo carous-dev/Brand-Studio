@@ -413,6 +413,17 @@
 @media (min-width: 1600px) { .cardGrid { grid-template-columns: repeat(4, 1fr); } }
 
 @media (max-width: 640px) {
+  .toolbarTopRow {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .filterToggle {
+    min-height: 36px;
+    padding: 8px 12px;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+  }
   .hero {
     padding: 30px 16px 24px;
     background-position: center, center top, center top;
@@ -436,7 +447,7 @@
     display: none;
   }
   .section {
-    padding: 24px 16px 56px;
+    padding: 24px 16px 32px;
   }
 }
 
@@ -510,31 +521,65 @@
 }
 .cardQuickActions {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 8px;
+  left: 8px;
   display: flex;
-  gap: 6px;
+  gap: 5px;
   z-index: 3;
-  background: rgba(10, 14, 20, 0.55);
-  padding: 4px 6px;
-  border-radius: 999px;
-  backdrop-filter: blur(2px);
+  background: transparent;
+  padding: 0;
 }
 .iconButton {
   appearance: none;
-  border: 0;
-  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(10, 14, 20, 0.58);
   color: var(--kain-accent-warm);
-  width: 22px;
-  height: 22px;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  max-width: 30px;
+  min-height: 30px;
+  padding: 0;
+  border-radius: 999px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 30px;
+  line-height: 1;
+  box-sizing: border-box;
   filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+  backdrop-filter: blur(3px);
 }
-.iconButton[data-active='true'] { color: #ffffff; }
+.iconButton[data-active='true'] {
+  background: rgba(209, 182, 122, 0.92);
+  border-color: transparent;
+  color: #0a0e14;
+}
 .iconButton:hover { color: #ffffff; }
+.iconButton svg {
+  width: 15px;
+  height: 15px;
+}
+@media (max-width: 640px) {
+  .cardQuickActions {
+    top: 7px;
+    left: 7px;
+    gap: 4px;
+  }
+  .iconButton {
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    max-width: 26px;
+    min-height: 26px;
+    flex-basis: 26px;
+  }
+  .iconButton svg {
+    width: 13px;
+    height: 13px;
+  }
+}
 .overlayButton {
   position: absolute;
   inset: auto 12px 12px 12px;

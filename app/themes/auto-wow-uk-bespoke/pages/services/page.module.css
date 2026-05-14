@@ -1,5 +1,5 @@
 .servicesSection {
-  background: var(--color-bg);
+  background: #ffffff;
 }
 
 .grid {
@@ -8,31 +8,35 @@
   padding: 0;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 20px;
+  gap: 18px;
 }
 
 .card {
-  background: var(--color-surface);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-card, 8px);
-  padding: clamp(24px, 3vw, 32px);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: clamp(22px, 3vw, 30px);
   display: flex;
   flex-direction: column;
   gap: 14px;
-  transition: border-color 220ms ease, transform 220ms ease;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
 }
 
 .card:hover {
-  border-color: var(--color-primary);
-  transform: translateY(-3px);
+  background: #f8fafc;
+  border-color: color-mix(in srgb, var(--color-primary) 42%, #dbe4ee);
+  transform: translateY(-2px);
 }
 
 .iconWrap {
-  width: 52px;
-  height: 52px;
-  border-radius: 6px;
-  background: rgba(190, 14, 17, 0.1);
-  border: 1px solid rgba(190, 14, 17, 0.32);
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-primary) 10%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 26%, #dbe4ee);
   color: var(--color-primary);
   display: inline-flex;
   align-items: center;
@@ -41,18 +45,18 @@
 
 .cardTitle {
   font-family: 'Oswald', sans-serif;
-  font-size: 1.3rem;
+  font-size: clamp(1.08rem, 1.8vw, 1.28rem);
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--color-text);
+  color: #111827;
   margin: 0;
 }
 
 .cardBlurb {
-  color: var(--color-muted);
+  color: #526175;
   font-size: 0.94rem;
-  line-height: 1.55;
+  line-height: 1.58;
   margin: 0;
 }
 
@@ -62,22 +66,23 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .bullets li {
   position: relative;
   padding-left: 22px;
-  color: var(--color-text);
+  color: #1f2937;
   font-size: 0.9rem;
+  line-height: 1.45;
 }
 
 .bullets li::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 9px;
-  width: 14px;
+  top: 0.72em;
+  width: 12px;
   height: 2px;
   background: var(--color-primary);
 }
@@ -102,12 +107,12 @@
 
 @media (min-width: 720px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1024px) {
   .grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

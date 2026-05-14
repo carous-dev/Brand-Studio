@@ -554,10 +554,10 @@
 }
 @media (max-width: 640px) {
   [data-theme-id='kain-motors-bespoke'] .kain-section {
-    padding-block: clamp(32px, 10vw, 52px);
+    padding-block: 32px;
   }
   [data-theme-id='kain-motors-bespoke'] .kain-page-hero {
-    padding: clamp(42px, 13vw, 62px) 16px clamp(32px, 10vw, 48px);
+    padding: clamp(36px, 11vw, 52px) 16px 28px;
     background-position: center 35%, center 35%;
   }
   [data-theme-id='kain-motors-bespoke'] .kain-page-hero-eyebrow {
@@ -576,7 +576,6 @@
     max-width: 38ch;
   }
   [data-theme-id='kain-motors-bespoke'] .kain-btn {
-    width: 100%;
     min-height: 46px;
     padding-inline: 16px;
     font-size: 0.84rem;

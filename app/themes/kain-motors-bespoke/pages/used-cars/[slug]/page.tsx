@@ -71,15 +71,32 @@ function buildSpecs(raw: Record<string, any>, normalized: InventoryVehicle) {
 function collectGallery(raw: Record<string, any>, fallbackImage: string): string[] {
   const v = raw?.vehicle || raw
   const arr: string[] = []
+  const pickUrl = (item: any) => {
+    if (!item) return ''
+    if (typeof item === 'string') return item.trim()
+    if (typeof item !== 'object') return ''
+    return pickString(
+      item.url,
+      item.href,
+      item.src,
+      item.image,
+      item.large_url,
+      item.full_url,
+      item.original,
+      item.large,
+      item.thumbnail
+    )
+  }
   const push = (source: unknown) => {
-    if (!Array.isArray(source)) return
+    if (!source) return
+    if (!Array.isArray(source)) {
+      const single = pickUrl(source)
+      if (single) arr.push(single)
+      return
+    }
     for (const item of source) {
-      if (!item) continue
-      if (typeof item === 'string') { if (item.trim()) arr.push(item.trim()); continue }
-      if (typeof item === 'object') {
-        const url = (item as any).url || (item as any).href || (item as any).src || (item as any).image
-        if (typeof url === 'string' && url.trim()) arr.push(url.trim())
-      }
+      const url = pickUrl(item)
+      if (url) arr.push(url)
     }
   }
   push(raw?.gallery)
@@ -87,6 +104,12 @@ function collectGallery(raw: Record<string, any>, fallbackImage: string): string
   push(raw?.media)
   push(v?.media)
   push(raw?.images)
+  push(v?.images)
+  push(raw?.photos)
+  push(v?.photos)
+  push(raw?.vehicle?.images)
+  push(raw?.vehicle?.gallery)
+  push(raw?.vehicle?.media)
   if (typeof v?.image === 'string' && v.image.trim()) arr.push(v.image.trim())
   if (typeof raw?.image === 'string' && raw.image.trim()) arr.push(raw.image.trim())
   const unique = Array.from(new Set(arr))
@@ -206,11 +229,11 @@ export function KainVehicleDetailPage() {
 
       for (const c of candidates) {
         if (cancelled) return
-        const qs = new URLSearchParams({ brand: brandSlug as string, light: '0' })
+        const qs = new URLSearchParams({ brand: brandSlug as string })
         if (c.slug) qs.set('slug', c.slug)
         if (c.reg) qs.set('reg', c.reg)
         try {
-          const res = await fetch(apiUrl(`/vehicles/lookup?${qs.toString()}`), { cache: 'no-store' })
+          const res = await fetch(apiUrl(`/vehicle?${qs.toString()}`), { cache: 'no-store' })
           if (res.ok) {
             const data = await res.json()
             const raw = data?.vehicle ? data : (data?.data || data)
@@ -222,7 +245,7 @@ export function KainVehicleDetailPage() {
 
       if (!found) {
         try {
-          const qs = new URLSearchParams({ brand: brandSlug as string, per_page: '60', light: '0' })
+          const qs = new URLSearchParams({ brand: brandSlug as string, per_page: '500', light: '0' })
           const res = await fetch(apiUrl(`/inventory?${qs.toString()}`), { cache: 'no-store' })
           if (res.ok) {
             const data = await res.json()
@@ -230,7 +253,7 @@ export function KainVehicleDetailPage() {
             for (const c of candidates) {
               const match = items.find((it) => {
                 const v = it.vehicle || it
-                const slugVal = pickString(v.derivative_slug, v.slug, it.slug)
+                const slugVal = pickString(it.slug, v.slug, v.derivative_slug, it.derivative_slug)
                 const regVal = pickString(v.registration, v.reg, it.reg).replace(/\s+/g, '').toUpperCase()
                 return (
                   (c.slug && slugVal && slugVal.toLowerCase() === c.slug.toLowerCase()) ||
@@ -415,10 +438,17 @@ export function KainVehicleDetailPage() {
 
           {/* Gallery: large hero image + 4-up mosaic right (desktop) / scroll rail (mobile) */}
           <section className={styles.gallery} aria-label="Vehicle photos">
-            <button
-              type="button"
+            <div
+              role="button"
+              tabIndex={0}
               className={styles.galleryMain}
               onClick={() => setLightboxOpen(true)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  setLightboxOpen(true)
+                }
+              }}
               aria-label="Open photo in full screen"
             >
               {galleryActive ? (
@@ -433,30 +463,48 @@ export function KainVehicleDetailPage() {
                 <Icon.Expand />
                 <span>View all</span>
               </span>
-            </button>
+              {totalPhotos > 1 && (
+                <>
+                  <button
+                    type="button"
+                    className={`${styles.galleryMobileNav} ${styles.galleryMobilePrev}`}
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      setGalleryIndex((i) => (i - 1 + gallery.length) % gallery.length)
+                    }}
+                    aria-label="Previous photo"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.galleryMobileNav} ${styles.galleryMobileNext}`}
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      setGalleryIndex((i) => (i + 1) % gallery.length)
+                    }}
+                    aria-label="Next photo"
+                  >
+                    ›
+                  </button>
+                </>
+              )}
+            </div>
             <div className={styles.galleryThumbs}>
               {visibleThumbs.map((src, i) => (
                 <button
                   key={`${src}-${i}`}
                   type="button"
                   className={`${styles.thumb} ${galleryIndex === i ? styles.thumbActive : ''}`}
-                  onClick={() => setGalleryIndex(i)}
-                  aria-label={`Show photo ${i + 1}`}
+                  onClick={() => (extraCount > 0 && i === visibleThumbs.length - 1 ? setLightboxOpen(true) : setGalleryIndex(i))}
+                  aria-label={extraCount > 0 && i === visibleThumbs.length - 1 ? `View all ${totalPhotos} photos` : `Show photo ${i + 1}`}
                 >
                   <img src={src} alt="" />
+                  {extraCount > 0 && i === visibleThumbs.length - 1 && (
+                    <span className={styles.thumbCountBadge}>+{extraCount}</span>
+                  )}
                 </button>
               ))}
-              {extraCount > 0 && (
-                <button
-                  type="button"
-                  className={styles.thumbMore}
-                  onClick={() => setLightboxOpen(true)}
-                  aria-label={`View all ${totalPhotos} photos`}
-                >
-                  <span className={styles.thumbMoreCount}>+{extraCount}</span>
-                  <span className={styles.thumbMoreLabel}>more photos</span>
-                </button>
-              )}
             </div>
           </section>
         </div>
@@ -577,7 +625,7 @@ export function KainVehicleDetailPage() {
               className={`kain-btn kain-btn--primary ${styles.primaryCta} mfx-shimmer`}
               onClick={enquiry.open}
             >
-              Enquire about this car
+              Enquire Now
             </button>
 
             <div className={styles.contactGrid}>
@@ -626,17 +674,6 @@ export function KainVehicleDetailPage() {
         </aside>
       </div>
 
-      {/* Mobile sticky bar */}
-      <div className={styles.stickyBar} role="region" aria-label="Vehicle actions">
-        <div className={styles.stickyBarPrice}>
-          <span className={styles.stickyBarLabel}>Price</span>
-          <strong>{fmtPrice(vehicle.price)}</strong>
-        </div>
-        <button type="button" className={`${styles.stickyBarCta} mfx-shimmer`} onClick={enquiry.open}>
-          Enquire
-        </button>
-      </div>
-
       {similar.length > 0 && (
         <section className={styles.similarSection} aria-labelledby="similar-vehicles-heading">
           <div className={styles.similarInner}>
@@ -652,7 +689,7 @@ export function KainVehicleDetailPage() {
             <div className={styles.similarGrid}>
               {similar.map((v) => (
                 <div key={v.id} className={styles.similarCell}>
-                  <VehicleCard vehicle={v} />
+                  <VehicleCard vehicle={v} hideActions />
                 </div>
               ))}
             </div>

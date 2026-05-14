@@ -151,6 +151,10 @@
   max-width: 28ch;
 }
 
+[data-theme-id='auto-wow-uk-bespoke'] .auto-section--dark .auto-section-title {
+  color: #ffffff;
+}
+
 [data-theme-id='auto-wow-uk-bespoke'] .auto-section-lead {
   font-size: 1.05rem;
   line-height: 1.6;
@@ -537,7 +541,7 @@
 @media (max-width: 640px) {
   [data-theme-id='auto-wow-uk-bespoke'] .auto-section,
   [data-theme-id='auto-wow-uk-bespoke'] .sps-section-container {
-    padding: clamp(32px, 10vw, 48px) 16px;
+    padding: 32px 16px;
   }
   [data-theme-id='auto-wow-uk-bespoke'] .auto-section-title,
   [data-theme-id='auto-wow-uk-bespoke'] .sps-section-title {
@@ -551,7 +555,7 @@
   }
   [data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero {
     min-height: 0;
-    padding: clamp(42px, 13vw, 64px) 16px clamp(32px, 10vw, 48px);
+    padding: clamp(36px, 11vw, 52px) 16px 28px;
     background-position: center, center 36%, center 36%;
   }
   [data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero h1 {

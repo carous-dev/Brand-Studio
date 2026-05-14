@@ -21,6 +21,7 @@ export type ThemePageProps = {
   brand: BrandConfig
   initialInventory?: any[]
   vehicle?: any
+  vehicleSlug?: string
   images?: string[]
   similarList?: any[]
 }

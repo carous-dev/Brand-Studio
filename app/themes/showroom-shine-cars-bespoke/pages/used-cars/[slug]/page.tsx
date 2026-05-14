@@ -131,18 +131,15 @@ export function ShowroomVehicleDetailPage() {
           if (c.slug) params.set('slug', c.slug)
           if (c.reg) params.set('reg', c.reg)
           if (brandSlug) params.set('brand', brandSlug)
-          params.set('per_page', '1')
-          const res = await fetch(apiUrl(`/inventory?${params.toString()}`), {
+          const res = await fetch(apiUrl(`/vehicle?${params.toString()}`), {
             signal: controller.signal,
             cache: 'no-store',
           })
           if (!res.ok) continue
           const payload = await res.json()
-          const items = Array.isArray(payload?.items) ? payload.items
-            : Array.isArray(payload?.vehicles) ? payload.vehicles
-            : Array.isArray(payload) ? payload : []
-          if (items.length) {
-            found = items[0]
+          const item = payload?.vehicle ?? payload?.data ?? payload
+          if (item) {
+            found = item
             break
           }
         }
@@ -464,7 +461,7 @@ export function ShowroomVehicleDetailPage() {
           {similar.length > 0 ? (
             <div className={styles.similarGrid}>
               {similar.map((v) => (
-                <VehicleCard key={v.id} vehicle={v} />
+                <VehicleCard key={v.id} vehicle={v} hideActions />
               ))}
             </div>
           ) : (

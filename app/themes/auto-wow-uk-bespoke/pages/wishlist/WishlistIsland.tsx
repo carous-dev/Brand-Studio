@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Heart, ChevronRight, Trash2 } from 'lucide-react'
 import { useGarage } from '../../context/GarageContext'
+import { buildVehiclePermalink } from '../../lib/vehicle-links'
 import styles from './page.module.css'
 
 const formatPrice = (n: number) =>
@@ -50,7 +51,7 @@ export default function WishlistIsland() {
               >
                 <Trash2 size={14} aria-hidden="true" />
               </button>
-              <Link href={`/used-cars/${v.slug || v.id}`} className={styles.cardLink}>
+              <Link href={buildVehiclePermalink({ slug: v.slug || v.id, reg: v.reg }, '/used-cars')} className={styles.cardLink}>
                 <div className={styles.media}>
                   {v.image ? <img src={v.image} alt={v.title} loading="lazy" /> : <div className={styles.placeholder} />}
                 </div>

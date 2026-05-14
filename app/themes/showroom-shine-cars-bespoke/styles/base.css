@@ -412,7 +412,7 @@ html:has([data-theme-id='showroom-shine-cars-bespoke']),
  * the buyer past a marketing intro before the actual content. */
 @media (max-width: 640px) {
   [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero {
-    padding: clamp(38px, 12vw, 58px) 16px clamp(30px, 10vw, 46px);
+    padding: clamp(36px, 11vw, 52px) 16px 28px;
     background-position: center, center 35%, center 35%;
   }
   [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__inner {

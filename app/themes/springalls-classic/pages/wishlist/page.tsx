@@ -87,7 +87,7 @@ export function SpringallsWishlistPage(_props: ThemePageProps) {
                       <span>{vehicle.mileage.toLocaleString()} mi</span>
                       <span>{vehicle.fuel}</span>
                     </div>
-                    <Link className={styles.cardAction} href={buildVehiclePermalink({ slug: toSlug(vehicle.title), reg: vehicle.reg }, '/used-cars')}>
+                    <Link className={styles.cardAction} href={buildVehiclePermalink({ slug: vehicle.slug || toSlug(vehicle.title), reg: vehicle.reg }, '/used-cars')}>
                       View details
                       <ArrowRight size={16} strokeWidth={2} />
                     </Link>

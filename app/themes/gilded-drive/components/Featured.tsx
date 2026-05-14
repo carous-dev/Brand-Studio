@@ -109,7 +109,9 @@ export default function Featured() {
             const mileage = vehicle.mileage ?? vehicle.odometer_reading_miles ?? 0
             const engine = vehicle.engine_capacity_cc ? `${(vehicle.engine_capacity_cc / 1000).toFixed(1)}L` : null
             const transmission = vehicle.trans || null
-            const vehicleUrl = vehicle.derivative_slug ? `/cars/${vehicle.derivative_slug}` : '#'
+            const vehicleUrl = vehicle.slug || vehicle.derivative_slug || vehicle.reg
+              ? `/used-cars/${encodeURIComponent(String(vehicle.slug || vehicle.derivative_slug || vehicle.reg))}`
+              : '#'
             
             return (
               <motion.div

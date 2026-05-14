@@ -137,7 +137,8 @@ async function fetchMakesTally(brandSlug: string | null): Promise<DetailMakeTall
   }
 }
 
-export async function AutoVehicleDetailPage({ params }: DetailRuntimeProps) {
+export async function AutoVehicleDetailPage(props: DetailRuntimeProps) {
+  const { params, brand, vehicle: runtimeVehicle, images: runtimeImagesProp } = props
   let slug = ''
   try {
     const resolved = (params && typeof (params as any).then === 'function') ? await (params as Promise<any>) : (params as any)
@@ -145,14 +146,18 @@ export async function AutoVehicleDetailPage({ params }: DetailRuntimeProps) {
   } catch {
     slug = ''
   }
+  if (!slug) slug = String(props.vehicleSlug ?? runtimeVehicle?.slug ?? runtimeVehicle?.reg ?? '').trim()
   if (!slug) return notFound()
 
-  const brandSlug = await getBrandSlugFromRequest()
+  const brandSlug = (brand?.slug || '').trim() || await getBrandSlugFromRequest()
   const found = await fetchVehicleBySlug(slug, brandSlug)
-  if (!found) return notFound()
+  const fallbackNorm = found ? null : normalizeInventoryItem(runtimeVehicle)
+  if (!found && !fallbackNorm) return notFound()
 
-  const { raw, norm } = found
-  const gallery = pickGallery(raw, norm)
+  const raw = found?.raw ?? runtimeVehicle ?? {}
+  const norm = found?.norm ?? fallbackNorm!
+  const runtimeImages = Array.isArray(runtimeImagesProp) ? runtimeImagesProp : []
+  const gallery = runtimeImages.length ? runtimeImages : pickGallery(raw, norm)
   const specs = pickSpecs(raw, norm)
   const description = String(raw?.vehicle?.description ?? raw?.description ?? '').trim()
   const advertiserPhone = String(raw?.vehicle?.advertiser_phone ?? raw?.advertiser?.phone ?? '').trim()

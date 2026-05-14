@@ -300,6 +300,29 @@
   flex-wrap: wrap;
 }
 
+@media (max-width: 640px) {
+  .cookieBanner {
+    gap: 10px;
+    padding: 12px;
+  }
+  .buttonRow,
+  .panelActions {
+    gap: 6px;
+    justify-content: flex-end;
+  }
+  .buttonPrimary,
+  .buttonSecondary,
+  .buttonGhost {
+    width: auto !important;
+    max-width: none !important;
+    min-height: 30px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.76rem;
+    gap: 5px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cookieBanner,
   .cookieOverlay,

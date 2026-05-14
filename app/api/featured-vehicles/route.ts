@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { loadInventoryByBrand, sortInventory, normalizeVehicle } from '@/app/lib/loadInventory'
+import { generateVehicleSlug, loadInventoryByBrand, normalizeVehicle } from '@/app/lib/loadInventory'
 
 export async function GET(request: Request) {
   try {
@@ -45,6 +45,7 @@ export async function GET(request: Request) {
         vin: normalized.vin || null,
         registration: normalized.registration || null,
         reg: normalized.registration || normalized.vin || null,
+        slug: generateVehicleSlug(item as any),
         make: normalized.make || null,
         model: normalized.model || null,
         derivative: normalized.derivative || null,

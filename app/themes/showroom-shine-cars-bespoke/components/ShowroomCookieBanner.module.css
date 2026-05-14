@@ -191,7 +191,7 @@
 .btnPrimary {
   background: var(--brand-primary);
   color: var(--brand-on-primary);
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 120px;
 }
 .btnPrimary:hover {
@@ -218,6 +218,52 @@
   font-size: 0.78rem;
   color: var(--text-on-dark-muted);
   margin: 0;
+}
+@media (max-width: 640px) {
+  .cookieDock {
+    left: 12px;
+    bottom: 12px;
+    width: calc(100vw - 24px);
+    padding: 14px;
+    gap: 10px;
+  }
+  .dockHead {
+    gap: 8px;
+    padding-right: 26px;
+  }
+  .dockIcon {
+    width: 30px;
+    height: 30px;
+  }
+  .dockTitle {
+    font-size: 0.9rem;
+  }
+  .dockLead,
+  .toggleHelp,
+  .dockFootnote {
+    font-size: 0.76rem;
+  }
+  .toggles {
+    padding: 10px;
+    gap: 8px;
+  }
+  .dockActions {
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .btnPrimary,
+  .btnSecondary,
+  .btnLink {
+    width: auto !important;
+    max-width: none !important;
+    min-height: 28px;
+    padding: 0 8px;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+  }
+  .btnPrimary {
+    min-width: auto;
+  }
 }
 .dockFootnote a {
   color: var(--brand-primary);
@@ -254,15 +300,18 @@
   }
   .dockActions {
     gap: 6px;
+    justify-content: flex-end;
   }
   .btnPrimary,
   .btnSecondary,
   .btnLink {
-    flex: 1 1 auto;
+    width: auto !important;
+    max-width: none !important;
+    flex: 0 1 auto;
     min-width: 0;
-    min-height: 38px;
-    padding: 0 12px;
-    font-size: 0.72rem;
+    min-height: 28px;
+    padding: 0 8px;
+    font-size: 0.62rem;
   }
   .btnLink {
     flex: 0 0 auto;

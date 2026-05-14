@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useBrand } from '../context/BrandClientWrapper'
 import { getBrandContactInfo } from '../lib/contact'
 import styles from './Footer.module.css'
@@ -34,6 +35,7 @@ const SOCIAL_LINKS = ['facebook', 'x', 'youtube', 'instagram'] as const
 export default function Footer() {
   const brand = useBrand()
   const brandName = brand?.name || 'Dual Stock Dealer'
+  const logoSrc = (brand as any)?.logo as string | undefined
   const contact = getBrandContactInfo(brand)
   const year = new Date().getFullYear()
   const socials = ((brand as any)?.socialLinks || {}) as Record<string, string>
@@ -64,10 +66,20 @@ export default function Footer() {
         <div className={styles.megaInner}>
           <section className={styles.col}>
             <h3 className={styles.colTitle}>
-              <span className={styles.brandMark}>
-                {(brandName?.[0] || 'D').toUpperCase()}
-              </span>
-              {brandName}
+              {logoSrc ? (
+                <Image
+                  src={logoSrc}
+                  alt={brandName}
+                  width={120}
+                  height={56}
+                  className={styles.footerLogo}
+                />
+              ) : (
+                <span className={styles.brandMark}>
+                  {(brandName?.[0] || 'D').toUpperCase()}
+                </span>
+              )}
+              {!logoSrc && brandName}
             </h3>
             <p className={styles.colBody}>
               UK independent dealer for cars and motorcycles. FCA-regulated finance, full warranty, AA-inspected stock.

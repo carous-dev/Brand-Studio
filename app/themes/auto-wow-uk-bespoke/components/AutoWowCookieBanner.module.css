@@ -111,7 +111,7 @@
 }
 
 .actions button {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
 }
 
 .choicesBtn,
@@ -144,10 +144,26 @@
 }
 
 @media (max-width: 640px) {
+  .inner {
+    padding: 12px 14px;
+    gap: 10px;
+  }
   .lead {
     font-size: 0.82rem;
   }
   .eyebrow {
     display: none;
+  }
+  .actions {
+    gap: 6px;
+    justify-content: flex-end;
+  }
+  .actions button {
+    width: auto !important;
+    max-width: none !important;
+    min-height: 28px;
+    padding: 5px 8px;
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
   }
 }

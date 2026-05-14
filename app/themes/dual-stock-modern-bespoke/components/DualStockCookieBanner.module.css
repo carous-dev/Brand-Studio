@@ -132,16 +132,18 @@
   }
   .actions {
     flex-basis: 100%;
-    justify-content: stretch;
+    justify-content: flex-end;
     gap: 6px;
   }
   .primaryBtn,
   .outlineBtn,
   .secondaryBtn {
-    flex: 1 1 0;
-    padding: 7px 10px;
-    font-size: 0.72rem;
-    min-height: 32px;
+    width: auto !important;
+    max-width: none !important;
+    flex: 0 1 auto;
+    padding: 5px 8px;
+    font-size: 0.66rem;
+    min-height: 28px;
     letter-spacing: 0.02em;
   }
   /* Drop the "Settings" tertiary action on small screens — keep Reject + Accept;

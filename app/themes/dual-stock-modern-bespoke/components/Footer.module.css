@@ -10,34 +10,25 @@
  */
 
 .footer {
-  background: #0a0e14;
-  color: #f0f3f8;
+  background: #ffffff;
+  color: #0b1c3a;
   margin-top: clamp(48px, 8vw, 96px);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid #e3e7f0;
 }
 
 .upperBand {
   position: relative;
-  background:
-    radial-gradient(circle at 80% 0%,
-      color-mix(in srgb, var(--color-primary) 22%, transparent),
-      transparent 60%),
-    linear-gradient(180deg, #0e131b 0%, #0a0e14 100%);
+  background: linear-gradient(120deg, #ffffff 0%, #f5f8ff 100%);
   padding: clamp(2.5rem, 6vw, 4rem) clamp(1rem, 3vw, 2rem);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid #e3e7f0;
   overflow: hidden;
 }
 .upperBand::before {
   content: '';
   position: absolute;
-  top: -40%;
-  right: -10%;
-  width: 380px;
-  height: 380px;
-  background: radial-gradient(circle,
-    color-mix(in srgb, var(--color-primary) 38%, transparent),
-    transparent 70%);
-  filter: blur(40px);
+  inset: auto 0 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--color-primary) 50%, transparent 100%);
   pointer-events: none;
 }
 .upperInner {
@@ -68,7 +59,7 @@
   background: var(--color-primary);
 }
 .upperTitle {
-  color: #ffffff;
+  color: #0b1c3a;
   font-size: clamp(1.6rem, 3.4vw, 2.6rem);
   line-height: 1.1;
   text-transform: uppercase;
@@ -76,7 +67,7 @@
 .upperLead {
   margin: 0;
   font-size: clamp(0.98rem, 1.2vw, 1.1rem);
-  color: #9aa6b8;
+  color: #52688c;
   max-width: 50ch;
 }
 .upperCtas {
@@ -85,11 +76,21 @@
   gap: 12px;
   justify-content: center;
 }
+.upperCtas :global(.dual-btn--ghost) {
+  background: #ffffff;
+  color: #0b1c3a;
+  border-color: color-mix(in srgb, var(--color-primary) 28%, #e3e7f0);
+}
+.upperCtas :global(.dual-btn--ghost:hover) {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
 
 .mega {
-  background: #0a0e14;
+  background: #ffffff;
   padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2rem);
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid #e3e7f0;
 }
 .megaInner {
   max-width: 1240px;
@@ -113,7 +114,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #ffffff;
+  color: #0b1c3a;
   margin: 0;
 }
 .brandMark {
@@ -129,17 +130,24 @@
   font-weight: 700;
   font-size: 1rem;
 }
+.footerLogo {
+  display: block;
+  width: auto;
+  max-width: 120px;
+  max-height: 56px;
+  object-fit: contain;
+}
 .colBody {
   font-size: 0.92rem;
   line-height: 1.55;
   margin: 0;
-  color: #b6c1d1;
+  color: #52688c;
 }
 .address {
   font-style: normal;
   font-size: 0.88rem;
   line-height: 1.5;
-  color: #9aa6b8;
+  color: #64748b;
 }
 
 .linkList,
@@ -156,7 +164,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #b6c1d1;
+  color: #52688c;
   text-decoration: none;
   font-size: 0.92rem;
   min-height: 28px;
@@ -172,6 +180,7 @@
   margin-top: 8px;
   color: var(--color-primary);
   border-color: var(--color-primary);
+  background: #ffffff;
 }
 
 .socials {
@@ -190,9 +199,9 @@
   width: 36px;
   height: 36px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #f0f3f8;
+  background: #f5f8ff;
+  border: 1px solid #e3e7f0;
+  color: #0b1c3a;
   transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
 }
 .socials a:hover {
@@ -207,11 +216,11 @@
 }
 
 .legal {
-  background: #06090e;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: #f5f8ff;
+  border-top: 1px solid #e3e7f0;
   padding: 18px clamp(1rem, 3vw, 2rem);
   font-size: 0.82rem;
-  color: #9aa6b8;
+  color: #52688c;
 }
 .legalInner {
   max-width: 1240px;
@@ -229,7 +238,7 @@
   justify-content: center;
 }
 .legalNav a {
-  color: #9aa6b8;
+  color: #52688c;
   text-decoration: none;
   transition: color 0.15s ease;
 }
@@ -237,7 +246,7 @@
   color: var(--color-primary);
 }
 .carousCredit {
-  color: #9aa6b8;
+  color: #52688c;
 }
 .carousCredit a {
   color: var(--color-primary);

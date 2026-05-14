@@ -13,6 +13,16 @@
   box-shadow: 0 22px 48px rgba(15, 23, 42, 0.16);
   border-color: var(--brand-primary);
 }
+.cardFullLink {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  text-decoration: none;
+}
+.cardFullLink:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: -2px;
+}
 
 .mediaWrap {
   position: relative;
@@ -70,6 +80,19 @@
   background: var(--brand-primary);
   color: var(--brand-on-primary);
 }
+@media (max-width: 640px) {
+  .cardTopRow {
+    left: 8px;
+    right: 8px;
+    gap: 4px;
+  }
+  .badge {
+    padding: 2px 7px;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    border-radius: 3px;
+  }
+}
 
 .iconButton {
   display: inline-flex;
@@ -77,12 +100,18 @@
   justify-content: center;
   width: 22px;
   height: 22px;
+  min-width: 22px;
+  max-width: 22px;
+  min-height: 22px;
   padding: 0;
   background: transparent;
   border: 0;
   border-radius: 0;
   color: var(--brand-primary);
   cursor: pointer;
+  flex: 0 0 22px;
+  line-height: 1;
+  box-sizing: border-box;
   transition: color 0.15s ease, transform 0.15s ease;
 }
 .iconButton:hover {
@@ -91,6 +120,24 @@
 }
 .iconButtonActive {
   color: var(--brand-primary-strong);
+}
+.iconButton svg {
+  width: 15px;
+  height: 15px;
+}
+@media (max-width: 640px) {
+  .iconButton {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    max-width: 20px;
+    min-height: 20px;
+    flex-basis: 20px;
+  }
+  .iconButton svg {
+    width: 13px;
+    height: 13px;
+  }
 }
 
 .body {

@@ -75,9 +75,16 @@
 .iconAction {
   width: 30px;
   height: 30px;
+  min-width: 30px;
+  max-width: 30px;
+  min-height: 30px;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 30px;
+  line-height: 1;
+  box-sizing: border-box;
   background: rgba(255, 255, 255, 0.94);
   border: 1px solid rgba(11, 28, 58, 0.08);
   border-radius: 999px;
@@ -91,6 +98,10 @@
 .iconAction:disabled { opacity: 0.4; cursor: not-allowed; }
 .iconActionOn { background: var(--color-primary); color: #ffffff; border-color: var(--color-primary); }
 .iconActionOn:hover { background: color-mix(in srgb, var(--color-primary) 88%, #000); }
+.iconAction svg {
+  width: 15px;
+  height: 15px;
+}
 
 .mediaBadges {
   position: absolute;
@@ -110,6 +121,36 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+@media (max-width: 640px) {
+  .mediaTopLeft {
+    top: 8px;
+    left: 8px;
+    gap: 4px;
+  }
+  .iconAction {
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    max-width: 26px;
+    min-height: 26px;
+    flex-basis: 26px;
+  }
+  .iconAction svg {
+    width: 13px;
+    height: 13px;
+  }
+  .mediaBadges {
+    bottom: 8px;
+    left: 8px;
+    gap: 4px;
+  }
+  .featuredBadge {
+    padding: 2px 7px;
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    border-radius: 3px;
+  }
 }
 
 .body {

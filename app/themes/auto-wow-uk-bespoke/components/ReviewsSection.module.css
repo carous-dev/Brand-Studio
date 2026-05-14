@@ -18,8 +18,9 @@
 
 .card {
   position: relative;
-  background: var(--color-surface);
-  border: 2px solid var(--color-border);
+  background: #101827;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  color: #ffffff;
   border-radius: var(--radius-card, 8px);
   padding: 28px 24px 24px;
   display: flex;
@@ -29,13 +30,13 @@
 }
 
 .card:hover {
-  border-color: var(--color-primary);
+  border-color: #22c7d4;
   transform: translateY(-3px);
 }
 
 .quoteMark {
-  color: var(--color-primary);
-  opacity: 0.32;
+  color: #22c7d4;
+  opacity: 0.42;
   position: absolute;
   top: 18px;
   right: 18px;
@@ -50,13 +51,13 @@
 .review {
   font-size: 0.96rem;
   line-height: 1.6;
-  color: var(--color-text);
+  color: rgba(255, 255, 255, 0.82);
   margin: 0;
 }
 
 .meta {
   margin-top: auto;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid rgba(255, 255, 255, 0.72);
   padding-top: 14px;
 }
 
@@ -66,13 +67,13 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-text);
+  color: #ffffff;
   margin: 0;
 }
 
 .platform {
   font-size: 0.78rem;
-  color: var(--color-muted);
+  color: rgba(255, 255, 255, 0.62);
   margin: 2px 0 0;
   letter-spacing: 0.04em;
 }

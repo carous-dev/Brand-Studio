@@ -46,7 +46,7 @@ export default function SimilarVehicles(props: any) {
                                 >
                                     {group.map((v: any, idx: number) => (
                                         <article key={v.reg || v.meta?.originalId || v.id || idx} className="car-card">
-                                            <Link href={`/cars/${encodeURIComponent(String(v.slug || v.reg || ''))}`} className="card-link" aria-label={`View ${(v.year ? v.year + ' ' : '') + (v.make || '') + ' ' + (v.model || '')}`}>
+                                            <Link href={`/used-cars/${encodeURIComponent(String(v.slug || v.reg || ''))}`} className="card-link" aria-label={`View ${(v.year ? v.year + ' ' : '') + (v.make || '') + ' ' + (v.model || '')}`}>
                                                 <div className="media">
                                                     <LazyImage src={normalizeImageUrl((Array.isArray(v.images) && v.images.length) ? v.images[0] : v.image || '/images/placeholder.png')} alt={`${v.make || ''} ${v.model || ''}`} loading="lazy" decoding="async" fetchPriority="low" />
                                                     <div className="media-overlay">

@@ -25,6 +25,7 @@ interface FeaturedVehicle {
   trans?: string
   images?: string[]
   image?: string
+  slug?: string
   derivative_slug?: string
   date_on_forecourt?: string | null
   last_updated?: string | null
@@ -135,6 +136,9 @@ function getRecentArrivalTimestamp(vehicle: FeaturedVehicle): number {
 
 function generateSlug(vehicle: FeaturedVehicle): string {
   try {
+    if (vehicle.slug) {
+      return vehicle.slug
+    }
     if (vehicle.derivative_slug) {
       return vehicle.derivative_slug
     }

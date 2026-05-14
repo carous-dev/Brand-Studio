@@ -207,16 +207,17 @@ export async function GET(req: Request) {
     const found = inventory.find((item: any) => {
       const generatedSlug = generateVehicleSlug(item as any)
       const explicitSlug = (item.slug || item.derivative_slug || '').toString().toLowerCase()
-      const itemSlug = explicitSlug || generatedSlug
-      const normalizedItemSlug = itemSlug.replace(/[^a-z0-9]/g, '')
       const reg = (item.reg || item.registration || '').toString().toLowerCase()
       const normalizedReg = reg.replace(/[^a-z0-9]/g, '')
-      return (
-        itemSlug === slugLower ||
-        Boolean(normalizedLookup && normalizedItemSlug && normalizedItemSlug === normalizedLookup) ||
-        reg === slugLower ||
-        Boolean(normalizedLookup && normalizedReg && normalizedReg === normalizedLookup)
-      )
+      const keys = [explicitSlug, generatedSlug, reg]
+      if (explicitSlug && reg) keys.push(`${explicitSlug}-${reg}`)
+      if (generatedSlug && reg) keys.push(`${generatedSlug}-${reg}`)
+      const exactSlugMatch = keys.some((key) => {
+        const normalizedKey = String(key || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+        return Boolean(normalizedKey && (String(key).toLowerCase() === slugLower || normalizedKey === normalizedLookup))
+      })
+      const regSuffixMatch = Boolean(normalizedLookup && normalizedReg && (normalizedReg === normalizedLookup || normalizedLookup.endsWith(normalizedReg)))
+      return exactSlugMatch || regSuffixMatch
     })
 
     if (!found) {

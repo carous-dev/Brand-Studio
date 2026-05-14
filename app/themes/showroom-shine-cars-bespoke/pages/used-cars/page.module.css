@@ -448,6 +448,30 @@
 .actionLabel {
   display: inline;
 }
+@media (max-width: 640px) {
+  .toolbarSection {
+    padding-bottom: 8px !important;
+  }
+  .actionRail {
+    gap: 6px;
+  }
+  .action {
+    height: 34px;
+    padding: 0 10px;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+  }
+  .actionFilters {
+    order: -1;
+  }
+  .actionBadge,
+  .actionCount {
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 0.62rem;
+  }
+}
 
 /* Active filters strip */
 .activeChips {

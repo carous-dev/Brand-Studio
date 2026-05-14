@@ -64,9 +64,10 @@ type Props = {
   vehicle: Vehicle
   variant?: 'standard' | 'compact'
   sold?: boolean
+  hideActions?: boolean
 }
 
-export default function VehicleCard({ vehicle, variant = 'standard', sold = false }: Props) {
+export default function VehicleCard({ vehicle, variant = 'standard', sold = false, hideActions = false }: Props) {
   const { isWishlisted, isCompared, toggleWishlist, toggleCompare } = useGarage()
   const slug = vehicle.slug || vehicle.reg || vehicle.registration || ''
   const href = buildVehiclePermalink(vehicle)
@@ -97,6 +98,7 @@ export default function VehicleCard({ vehicle, variant = 'standard', sold = fals
 
   return (
     <article className={`${styles.card} ${variant === 'compact' ? styles.compact : ''} ${sold ? styles.soldCard : ''}`}>
+      {hideActions && <Link href={href} className={styles.cardFullLink} aria-label={`View details for ${title}`} />}
       <div className={styles.media}>
         <Link href={href} className={styles.mediaLink} aria-label={title}>
           {img ? (
@@ -110,7 +112,7 @@ export default function VehicleCard({ vehicle, variant = 'standard', sold = fals
             <span className={styles.soldStampInner}>Sold</span>
           </span>
         )}
-        {!sold && (
+        {!sold && !hideActions && (
           <div className={styles.actionRail}>
             <button
               type="button"
@@ -172,7 +174,7 @@ export default function VehicleCard({ vehicle, variant = 'standard', sold = fals
           )}
         </div>
 
-        {!sold && (
+        {!sold && !hideActions && (
           <div className={styles.ctaRow}>
             <Link href={href} className={styles.ctaPrimary}>View details</Link>
             <Link href={`${href}?reserve=1`} className={styles.ctaGhost}>Reserve</Link>

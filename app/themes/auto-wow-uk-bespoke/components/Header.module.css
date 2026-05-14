@@ -162,7 +162,8 @@
 }
 
 .headerInner {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 18px;
   max-width: 1400px;
@@ -173,6 +174,8 @@
 .brand {
   display: inline-flex;
   align-items: center;
+  grid-column: 1;
+  justify-self: start;
   text-decoration: none;
   color: #ffffff;
 }
@@ -194,9 +197,10 @@
 
 .nav {
   display: none;
+  grid-column: 2;
   align-items: center;
   gap: clamp(10px, 1.6vw, 22px);
-  margin-left: auto;
+  justify-self: center;
 }
 
 .navLink {
@@ -232,9 +236,10 @@
 
 .headerActions {
   display: inline-flex;
+  grid-column: 3;
   align-items: center;
   gap: 8px;
-  margin-left: auto;
+  justify-self: end;
 }
 
 .callCta {
@@ -261,9 +266,6 @@
 @media (min-width: 980px) {
   .nav {
     display: inline-flex;
-  }
-  .headerActions {
-    margin-left: 0;
   }
   .callCta {
     display: inline-flex !important;

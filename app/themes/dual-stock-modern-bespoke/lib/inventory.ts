@@ -75,7 +75,17 @@ const collectImages = (input: unknown) => {
       if (!item) return ''
       if (typeof item === 'string') return item
       if (typeof item === 'object') {
-        return toText((item as any).url || (item as any).href || (item as any).src || (item as any).image)
+        return toText(
+          (item as any).url ||
+          (item as any).href ||
+          (item as any).src ||
+          (item as any).image ||
+          (item as any).large_url ||
+          (item as any).full_url ||
+          (item as any).original ||
+          (item as any).large ||
+          (item as any).thumbnail
+        )
       }
       return ''
     })
@@ -104,6 +114,11 @@ export function normalizeInventoryItem(item: any): InventoryVehicle | null {
     ...collectImages(item.gallery),
     ...collectImages(vehicle.gallery),
     ...collectImages(item.media),
+    ...collectImages(vehicle.media),
+    ...collectImages(item.images),
+    ...collectImages(vehicle.images),
+    ...collectImages(item.photos),
+    ...collectImages(vehicle.photos),
   ]
   const image = toText(galleryImages[0] ?? vehicle.image ?? item.image)
   const fallbackImage = '/images/image.png'
@@ -114,7 +129,7 @@ export function normalizeInventoryItem(item: any): InventoryVehicle | null {
   const id =
     toText(vehicle.original_id ?? vehicle.vin ?? vehicle.registration ?? item.id ?? advert.advert_id ?? advert.stock_id) ||
     toText(title)
-  const slug = toText(vehicle.derivative_slug ?? vehicle.slug ?? item.slug ?? item.derivative_slug)
+  const slug = toText(item.slug ?? vehicle.slug ?? vehicle.derivative_slug ?? item.derivative_slug)
 
   if (!id || !title) return null
 

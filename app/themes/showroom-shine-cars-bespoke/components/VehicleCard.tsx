@@ -37,7 +37,7 @@ const formatPrice = (value?: number) => {
 const toSlug = (value: string) =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 
-export default function VehicleCard({ vehicle }: { vehicle: VehicleLike }) {
+export default function VehicleCard({ vehicle, hideActions = false }: { vehicle: VehicleLike; hideActions?: boolean }) {
   const { toggleWishlist, toggleCompare, isWishlisted, isCompared } = useGarage()
   const wishlisted = isWishlisted(String(vehicle.id))
   const compared = isCompared(String(vehicle.id))
@@ -67,6 +67,7 @@ export default function VehicleCard({ vehicle }: { vehicle: VehicleLike }) {
 
   return (
     <article className={styles.card}>
+      {hideActions ? <Link href={href} className={styles.cardFullLink} aria-label={`View details for ${vehicle.title || 'vehicle'}`} /> : null}
       <div className={styles.mediaWrap}>
         <Link href={href} className={styles.mediaLink} aria-label={vehicle.title}>
           <div
@@ -76,6 +77,7 @@ export default function VehicleCard({ vehicle }: { vehicle: VehicleLike }) {
             aria-label={vehicle.title}
           />
         </Link>
+        {!hideActions ? (
         <div className={styles.cardTopRow}>
           {vehicle.featured ? <span className={`${styles.badge} ${styles.badgeFeatured}`}>Featured</span> : null}
           <button
@@ -97,6 +99,7 @@ export default function VehicleCard({ vehicle }: { vehicle: VehicleLike }) {
             <Heart size={16} strokeWidth={2.2} fill={wishlisted ? 'currentColor' : 'none'} />
           </button>
         </div>
+        ) : null}
       </div>
 
       <div className={styles.body}>
@@ -131,10 +134,12 @@ export default function VehicleCard({ vehicle }: { vehicle: VehicleLike }) {
           ) : null}
         </div>
 
+        {!hideActions ? (
         <Link href={href} className={styles.viewCta}>
           View details
           <ArrowUpRight size={16} strokeWidth={2.4} />
         </Link>
+        ) : null}
       </div>
     </article>
   )

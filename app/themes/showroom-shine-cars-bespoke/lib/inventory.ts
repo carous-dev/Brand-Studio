@@ -89,7 +89,7 @@ export function normalizeInventoryItem(item: any): InventoryVehicle | null {
   const id =
     toText(vehicle.original_id ?? vehicle.vin ?? vehicle.registration ?? item.id ?? advert.advert_id ?? advert.stock_id) ||
     toText(title)
-  const slug = toText(vehicle.derivative_slug ?? vehicle.slug ?? item.slug ?? item.derivative_slug)
+  const slug = toText(item.slug ?? vehicle.slug ?? vehicle.derivative_slug ?? item.derivative_slug)
 
   if (!id || !title) return null
 

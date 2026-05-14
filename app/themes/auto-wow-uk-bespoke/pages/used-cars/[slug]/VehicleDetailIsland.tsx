@@ -9,6 +9,7 @@ import {
 import { useBrand } from '../../../context/BrandClientWrapper'
 import { useGarage } from '../../../context/GarageContext'
 import { getBrandContactInfo } from '../../../lib/contact'
+import { buildVehiclePermalink } from '../../../lib/vehicle-links'
 import { EnquiryModal, useEnquiryModal } from '@/app/widgets/EnquiryModal'
 import { WhatsAppIcon } from '@/app/widgets/WhatsAppFab'
 import styles from './page.module.css'
@@ -125,7 +126,6 @@ export default function VehicleDetailIsland({
           <h1 className={styles.title}>{vehicle.title}</h1>
           <p className={styles.titleMeta}>
             <span><MapPin size={14} aria-hidden="true" /> {vehicle.location}</span>
-            {vehicle.reg && <span className={styles.regPill}>{vehicle.reg}</span>}
           </p>
         </div>
         <div className={styles.titleActions} aria-label="Save and compare">
@@ -253,7 +253,7 @@ export default function VehicleDetailIsland({
                 className={`auto-btn auto-btn--primary mfx-shimmer ${styles.primaryAction}`}
                 onClick={open}
               >
-                Enquire about this car
+                Enquire Now
               </button>
               {contact.phoneTel && (
                 <a
@@ -286,36 +286,6 @@ export default function VehicleDetailIsland({
         </aside>
       </div>
 
-      {/* Sticky mobile bar */}
-      <div className={styles.mobileBar} aria-hidden="false">
-        <div className={styles.mobileBarPrice}>{formatPrice(vehicle.price)}</div>
-        <div className={styles.mobileBarActions}>
-          {contact.phoneTel && (
-            <a href={`tel:${contact.phoneTel}`} aria-label="Call dealer" className={styles.mobileBarIcon}>
-              <Phone size={16} aria-hidden="true" />
-            </a>
-          )}
-          {contact.whatsappUrl && (
-            <a
-              href={contact.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Chat on WhatsApp"
-              className={styles.mobileBarIcon}
-            >
-              <WhatsAppIcon size={16} />
-            </a>
-          )}
-          <button
-            type="button"
-            onClick={open}
-            className={`auto-btn auto-btn--primary ${styles.mobileBarCta}`}
-          >
-            Enquire
-          </button>
-        </div>
-      </div>
-
       {/* Similar vehicles strip */}
       {similar.length > 0 && (
         <section className={styles.similarSection} aria-labelledby="similar-heading">
@@ -329,7 +299,7 @@ export default function VehicleDetailIsland({
           <ul className={styles.similarGrid}>
             {similar.map((s) => (
               <li key={s.id} className={styles.similarCard}>
-                <Link href={`/used-cars/${s.slug || s.id}`}>
+                <Link href={buildVehiclePermalink({ slug: s.slug || s.id }, '/used-cars')}>
                   <div className={styles.similarMedia}>
                     {s.image ? <img src={s.image} alt={s.title} loading="lazy" /> : <div className={styles.imagePlaceholder} />}
                   </div>

@@ -11,6 +11,7 @@ interface VehicleCardProps {
   vehicle: InventoryVehicle
   compact?: boolean
   sold?: boolean
+  hideActions?: boolean
 }
 
 const formatPrice = (price: number) => {
@@ -30,7 +31,7 @@ const formatMileage = (mileage: number) => {
   return `${mileage.toLocaleString('en-GB')} mi`
 }
 
-export default function VehicleCard({ vehicle, compact = false, sold = false }: VehicleCardProps) {
+export default function VehicleCard({ vehicle, compact = false, sold = false, hideActions = false }: VehicleCardProps) {
   const { isWishlisted, isCompared, toggleWishlist, toggleCompare, compareCount } = useGarage()
   const href = buildVehicleHref(vehicle.slug || vehicle.id, vehicle as any)
   const isBike = vehicle.vehicleClass === 'bike'
@@ -89,6 +90,7 @@ export default function VehicleCard({ vehicle, compact = false, sold = false }: 
           aria-label={vehicle.title}
         />
         {sold && <span className={styles.soldStamp}>Sold</span>}
+        {!hideActions && (
         <div className={styles.mediaTopLeft}>
           <button
             type="button"
@@ -121,6 +123,7 @@ export default function VehicleCard({ vehicle, compact = false, sold = false }: 
             </svg>
           </button>
         </div>
+        )}
         {vehicle.featured && (
           <div className={styles.mediaBadges}>
             <span className={styles.featuredBadge}>Featured</span>
@@ -167,7 +170,7 @@ export default function VehicleCard({ vehicle, compact = false, sold = false }: 
           </div>
         </div>
 
-        {!compact && !sold && (
+        {!compact && !sold && !hideActions && (
           <div className={styles.cta}>
             <span className={styles.cardCtaPrimary}>
               View {isBike ? 'bike' : 'car'} <span aria-hidden="true">→</span>

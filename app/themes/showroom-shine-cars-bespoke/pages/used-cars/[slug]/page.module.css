@@ -232,26 +232,11 @@
   grid-template-rows: 1fr 1fr;
   gap: 8px;
 }
-/* Mobile: convert the 2×2 thumb grid into a horizontal swipe rail so the
- * gallery doesn't take the whole viewport with grid cells. Hides the
- * empty placeholder cells too.
- *
- * The rail breaks out of the container to the right by adding extra
- * scroll-padding-right (matching the container's mobile padding) so the
- * last visible thumb shows breathing room rather than touching the
- * viewport edge. */
+/* Mobile: keep the gallery as a full-width swipe surface and hide the
+ * supporting thumb grid so the first viewport stays focused on the car. */
 @media (max-width: 719px) {
   .mosaicGrid {
-    display: flex;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    gap: 6px;
-    grid-template-rows: none;
-    grid-template-columns: none;
-    padding-right: 4px;
-    scroll-padding-right: 16px;
+    display: none;
   }
   .mosaicGrid::-webkit-scrollbar { display: none; }
 }
@@ -428,7 +413,6 @@
   border: 1px solid var(--border-on-light);
   border-top: 3px solid var(--brand-primary);
   border-radius: 6px;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
 }
 @media (min-width: 1024px) {
   .infoCardSticky {
@@ -534,60 +518,6 @@
 }
 .contactMini svg {
   color: var(--brand-primary);
-}
-
-/* Mobile sticky bar — price (left) + Enquire button (right). The right
- * edge stops at calc(72px + padding) so the floating WhatsApp FAB has
- * room to sit at right-bottom without overlap. WhatsApp comes from the
- * FAB; the redundant icons that used to live here are gone. */
-.mobileStickyBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 50;
-  padding: 10px 80px 10px 14px;
-  background: var(--surface-bg-light);
-  border-top: 1px solid var(--border-on-light);
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
-}
-@media (min-width: 1024px) {
-  .mobileStickyBar {
-    display: none;
-  }
-}
-.mobileStickyPrice {
-  display: grid;
-  gap: 0;
-  min-width: 0;
-}
-.mobileStickyLabel {
-  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-on-light-muted);
-  line-height: 1.2;
-}
-.mobileStickyPriceValue {
-  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
-  font-size: 1.15rem;
-  font-weight: 700;
-  font-style: italic;
-  color: var(--brand-primary);
-  line-height: 1.1;
-}
-.mobileStickyEnquire {
-  min-height: 42px;
-  font-size: 0.85rem;
-  padding: 0 16px;
-  flex: 1 1 auto;
-  justify-content: center;
 }
 
 /* Section heads */

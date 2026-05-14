@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { X, ChevronRight, CarFront } from 'lucide-react'
 import { useGarage } from '../../context/GarageContext'
+import { buildVehiclePermalink } from '../../lib/vehicle-links'
 import styles from './page.module.css'
 
 const formatPrice = (n: number) =>
@@ -95,7 +96,7 @@ export default function CompareIsland() {
                 <th scope="row"><span className="sr-only">View</span></th>
                 {list.map((v) => (
                   <td key={v.id}>
-                    <Link href={`/used-cars/${v.slug || v.id}`} className="auto-cta-link">
+                    <Link href={buildVehiclePermalink({ slug: v.slug || v.id, reg: v.reg }, '/used-cars')} className="auto-cta-link">
                       View details
                       <ChevronRight size={14} aria-hidden="true" />
                     </Link>

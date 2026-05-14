@@ -34,20 +34,38 @@ export interface VehicleItem {
  * Load inventory for a specific brand
  * Falls back to main inventory if brand-specific inventory doesn't exist
  */
+function resolveBrandInventoryPath(brand?: string): string | null {
+  const normalizedBrand = String(brand || '').trim().toLowerCase()
+  if (!normalizedBrand) return null
+
+  const inventoriesDir = path.join(process.cwd(), 'app/data/inventories')
+  const base = normalizedBrand.replace(/-preview$/, '')
+  const candidates = Array.from(new Set([
+    `${normalizedBrand}-inventory.json`,
+    `${normalizedBrand}-preview-inventory.json`,
+    `${base}-inventory.json`,
+    `${base}-preview-inventory.json`,
+  ]))
+
+  for (const file of candidates) {
+    const candidatePath = path.join(inventoriesDir, file)
+    if (fs.existsSync(candidatePath)) return candidatePath
+  }
+
+  return null
+}
+
 export function loadInventoryByBrand(brand?: string): VehicleItem[] {
   try {
     let inventoryPath: string
 
     if (brand && brand.length > 0) {
       // Try to load brand-specific inventory
-      inventoryPath = path.join(
-        process.cwd(),
-        `app/data/inventories/${brand.toLowerCase()}-inventory.json`
-      )
+      inventoryPath = resolveBrandInventoryPath(brand) || ''
 
-      if (!fs.existsSync(inventoryPath)) {
+      if (!inventoryPath) {
         console.warn(
-          `Brand inventory not found: ${inventoryPath}, falling back to main inventory`
+          `Brand inventory not found for "${brand}", falling back to main inventory`
         )
         // Fall back to main inventory
         inventoryPath = path.join(process.cwd(), 'app/data/inventory.json')
@@ -75,12 +93,9 @@ export function loadBrandInventoryStrict(brand?: string): VehicleItem[] {
     let inventoryPath: string
 
     if (brand && brand.length > 0) {
-      inventoryPath = path.join(
-        process.cwd(),
-        `app/data/inventories/${brand.toLowerCase()}-inventory.json`
-      )
+      inventoryPath = resolveBrandInventoryPath(brand) || ''
 
-      if (!fs.existsSync(inventoryPath)) {
+      if (!inventoryPath) {
         // Do NOT fall back to main inventory for strict load
         return []
       }

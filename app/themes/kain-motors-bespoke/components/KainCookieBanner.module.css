@@ -170,6 +170,21 @@
   .inner { padding: 10px 14px; gap: 8px; }
   .text { gap: 8px; }
   .lead { font-size: 0.82rem; }
-  .actions { width: 100%; justify-content: flex-end; }
+  .actions { width: 100%; justify-content: flex-end; gap: 5px; }
   .eyebrow { display: none; }
+  .linkBtn {
+    width: auto !important;
+    max-width: none !important;
+    padding: 3px 4px;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+  }
+  .btn {
+    width: auto !important;
+    max-width: none !important;
+    min-height: 28px;
+    padding: 5px 8px;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+  }
 }
