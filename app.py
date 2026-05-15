@@ -2691,7 +2691,7 @@ def _preview_gate_policy(preview: Dict[str, Any], host: str = '') -> Dict[str, A
     if not isinstance(gate, dict):
         gate = {}
 
-    enabled_default = _is_preview_gate_host(host) if host else True
+    enabled_default = False
     enabled = gate.get('enabled')
     if enabled is None:
         enabled = enabled_default
@@ -2769,7 +2769,7 @@ def _parse_preview_gate_from_payload(payload: Dict[str, Any]) -> Optional[Dict[s
                 seconds = 24 * 60 * 60
 
         gate = {
-            'enabled': parse_bool_flag(payload.get('previewGateEnabled', True)),
+            'enabled': parse_bool_flag(payload.get('previewGateEnabled', False)),
             'maxViewSeconds': 0 if unlimited else seconds,
             'maxVisits': 0 if unlimited else as_int(payload.get('previewGateMaxVisits'), 0),
             'expiresAt': str(payload.get('previewGateExpiresAt') or '').strip() or None,

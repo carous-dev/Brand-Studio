@@ -178,7 +178,7 @@
                             </div>
                         </div>
                         {% set preview_gate = brand_data.previewGate if brand_data.previewGate is defined and brand_data.previewGate else {} %}
-                        {% set gate_enabled_raw = preview_gate.enabled if preview_gate.enabled is defined else true %}
+                        {% set gate_enabled_raw = preview_gate.enabled if preview_gate.enabled is defined else false %}
                         {% set gate_seconds = (preview_gate.maxViewSeconds if preview_gate.maxViewSeconds is defined else 86400)|int %}
                         {% set gate_unlimited = gate_seconds == 0 %}
                         {% set gate_hours = gate_seconds / 3600 %}

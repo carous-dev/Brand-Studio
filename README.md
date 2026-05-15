@@ -136,9 +136,9 @@ do **not** rely on “editing the bundled `previews.db`” at runtime. Instead, 
 
 ## Dealer preview gate
 
-Dealer subdomains under `*.carouspreviews.co.uk` automatically use the preview
-gate. The default policy is 24 hours total view time and unlimited visits. Control it
-per preview by storing this on the brand config:
+The preview gate is disabled by default. Enable it per preview from the update
+screen or by storing this on the brand config. When enabled without custom
+limits, the default policy is 24 hours total view time and unlimited visits:
 
 ```json
 "previewGate": {
