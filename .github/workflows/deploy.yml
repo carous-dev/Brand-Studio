@@ -126,8 +126,10 @@ jobs:
             # deploy of a name), `pm2 restart` errors — fall through to start.
             # The Flask process MUST point its interpreter at the external venv
             # since we no longer keep one inside the project tree.
+            NEXT_PORT="${NEXT_INTERNAL_PORT:-${PORT:-4013}}"
             pm2 delete app-brandstudio || true
-            pm2 start npm --name app-brandstudio --cwd "${DEPLOY_DIR}" -- start
+            PORT="${NEXT_PORT}" NEXT_INTERNAL_PORT="${NEXT_PORT}" \
+              pm2 start npm --name app-brandstudio --cwd "${DEPLOY_DIR}" -- start
             pm2 restart brandstudio \
               || pm2 start ecosystem.config.cjs --only brandstudio \
               || pm2 start app.py --name brandstudio --interpreter "${VENV_DIR}/bin/python" --cwd "${DEPLOY_DIR}" \
