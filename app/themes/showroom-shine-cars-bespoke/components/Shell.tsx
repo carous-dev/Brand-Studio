@@ -13,7 +13,7 @@ import '@/app/widgets/AnimateOnScroll/aos.css'
 import { MotionFX } from '@/app/widgets/MotionFX'
 import ScrollProgress from '@/app/widgets/ScrollProgress'
 import PreviewBanner from '@/app/widgets/PreviewBanner'
-import WhatsAppFab from '@/app/widgets/WhatsAppFab'
+import CarousWhatsAppWidget from '@/app/widgets/CarousWhatsAppWidget'
 
 import '../styles/base.css'
 import '../styles/color-policy.css'
@@ -56,7 +56,7 @@ export function ShowroomShell({ children }: { children: ReactNode }) {
       </main>
       <BrowseByMake />
       <Footer />
-      <WhatsAppFab brand={brand} />
+      <CarousWhatsAppWidget brand={brand} />
       <ShowroomCookieBanner />
     </GarageProvider>
   )

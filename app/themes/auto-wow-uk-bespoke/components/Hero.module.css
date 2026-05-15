@@ -4,7 +4,7 @@
 
 .hero {
   position: relative;
-  min-height: clamp(620px, 84vh, 820px);
+  min-height: auto;
   background: #0a0e14;
   color: #ffffff;
   overflow: hidden;
@@ -12,6 +12,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.hero[data-density='compact'] {
+  --hero-pad-top: clamp(86px, 9vw, 132px);
+  --hero-pad-bottom: clamp(48px, 6vw, 84px);
+  --hero-content-gap: 16px;
+}
+
+.hero[data-density='balanced'] {
+  --hero-pad-top: clamp(104px, 11vw, 160px);
+  --hero-pad-bottom: clamp(64px, 8vw, 112px);
+  --hero-content-gap: 18px;
+}
+
+.hero[data-density='full'] {
+  --hero-pad-top: clamp(120px, 13vw, 184px);
+  --hero-pad-bottom: clamp(78px, 10vw, 136px);
+  --hero-content-gap: 20px;
 }
 
 .heroBackdrop {
@@ -81,7 +99,7 @@
   position: relative;
   z-index: 4;
   width: 100%;
-  padding: clamp(56px, 8vw, 104px) clamp(20px, 5vw, 80px);
+  padding: var(--hero-pad-top, clamp(96px, 11vw, 160px)) clamp(20px, 5vw, 80px) var(--hero-pad-bottom, clamp(56px, 8vw, 104px));
 }
 
 .heroContent {
@@ -89,6 +107,7 @@
   display: grid;
   justify-items: center;
   text-align: center;
+  gap: var(--hero-content-gap, 18px);
 }
 
 .eyebrow {
@@ -105,7 +124,7 @@
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
   padding: 6px 14px;
-  margin: 0 0 26px;
+  margin: 0;
   justify-self: center;
   backdrop-filter: blur(8px);
 }
@@ -122,8 +141,9 @@
   letter-spacing: 0.01em;
   text-transform: uppercase;
   color: #ffffff;
-  margin: 0 0 22px;
+  margin: 0;
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
+  max-width: min(980px, 100%);
 }
 
 .titleAccent {
@@ -138,8 +158,9 @@
   font-size: clamp(0.98rem, 1.05vw, 1.08rem);
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.86);
-  margin: 0 0 34px;
+  margin: 0;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+  max-width: 62ch;
 }
 
 .ctas {
@@ -147,7 +168,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
-  margin-bottom: 34px;
+  margin: 0;
 }
 
 .ctaPrimary {
@@ -200,9 +221,12 @@
   .hero {
     min-height: 0;
     align-items: center;
+    --hero-pad-top: clamp(70px, 18vw, 92px);
+    --hero-pad-bottom: clamp(30px, 10vw, 48px);
+    --hero-content-gap: 12px;
   }
   .heroInner {
-    padding: clamp(72px, 18vw, 92px) 16px clamp(34px, 10vw, 48px);
+    padding: var(--hero-pad-top) 16px var(--hero-pad-bottom);
   }
   .heroImage {
     background-position: center top, center top;
@@ -217,23 +241,19 @@
     display: none;
   }
   .eyebrow {
-    margin-bottom: 14px;
     padding: 5px 10px;
     font-size: 0.68rem;
     letter-spacing: 0.14em;
   }
   .title {
     font-size: clamp(1.95rem, 9vw, 2.6rem);
-    margin-bottom: 12px;
   }
   .lead {
     font-size: 0.94rem;
     line-height: 1.48;
-    margin-bottom: 20px;
   }
   .ctas {
     gap: 10px;
-    margin-bottom: 18px;
   }
   .ctaPrimary,
   .ctaGhost {

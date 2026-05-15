@@ -36,16 +36,19 @@ const SOCIAL_LINKS = [
   { key: 'linkedin', icon: Linkedin, label: 'LinkedIn' },
 ] as const
 
+function openingHoursSummary(hours: unknown): string {
+  if (!hours || typeof hours !== 'object') return 'Contact us for opening hours'
+  const entries = Object.entries(hours as Record<string, unknown>)
+    .map(([day, value]) => `${day}: ${String(value || '').trim()}`)
+    .filter((line) => !line.endsWith(':'))
+  return entries.slice(0, 2).join(', ') || 'Contact us for opening hours'
+}
+
 export default function Footer() {
   const brand = useBrand()
-  const brandName = brand?.name || 'Showroom Shine Cars'
+  const brandName = brand?.name || 'this dealership'
   const contact = getBrandContactInfo(brand)
-  const address = contact.showroomAddress || 'No 1 Oak Cottage, Coventry, CV5 9DA, West Midlands'
-  const phoneDisplay = contact.phoneDisplay || '07537 164927'
-  const phoneTel = contact.phoneTel || phoneDisplay.replace(/[^\d+]/g, '')
-  const email = contact.email || 'info@showroomshinecars.co.uk'
   const socials: Record<string, string> = (brand as any)?.socialLinks || {}
-  const whatsappUrl = contact.whatsappUrl || (phoneTel ? `https://wa.me/${phoneTel.replace(/^\+?/, '')}` : '')
   const year = new Date().getFullYear()
 
   return (
@@ -57,21 +60,21 @@ export default function Footer() {
             <BrandLogo variant="footer" />
           </Link>
           <p className={styles.brandBlurb}>
-            Over 20 years of trusted service. Quality used vehicles in Coventry and the West Midlands,
-            prepared to a high retail standard with HPI checks, finance support and full after-sales backing.
+            Quality used vehicles from {brandName}, with clear vehicle information, finance
+            support, part exchange guidance and helpful after-sales contact.
           </p>
           <div className={styles.brandStats}>
             <div className={styles.stat}>
-              <span className={styles.statNum}>500+</span>
-              <span className={styles.statLabel}>Vehicles</span>
+              <span className={styles.statNum}>Live</span>
+              <span className={styles.statLabel}>Stock</span>
             </div>
             <div className={styles.stat}>
-              <span className={styles.statNum}>300+</span>
-              <span className={styles.statLabel}>Happy buyers</span>
+              <span className={styles.statNum}>Fast</span>
+              <span className={styles.statLabel}>Enquiries</span>
             </div>
             <div className={styles.stat}>
-              <span className={styles.statNum}>20+</span>
-              <span className={styles.statLabel}>Years trading</span>
+              <span className={styles.statNum}>Clear</span>
+              <span className={styles.statLabel}>Support</span>
             </div>
           </div>
         </div>
@@ -101,26 +104,32 @@ export default function Footer() {
         <div className={styles.contactCol}>
           <h3 className={styles.colTitle}>Contact</h3>
           <address className={styles.address}>
-            <div className={styles.contactRow}>
-              <MapPin size={16} strokeWidth={2} aria-hidden />
-              <span>{address}</span>
-            </div>
-            <div className={styles.contactRow}>
-              <Phone size={16} strokeWidth={2} aria-hidden />
-              <a href={`tel:${phoneTel}`}>{phoneDisplay}</a>
-            </div>
-            <div className={styles.contactRow}>
-              <Mail size={16} strokeWidth={2} aria-hidden />
-              <a href={`mailto:${email}`}>{email}</a>
-            </div>
+            {contact.showroomAddress ? (
+              <div className={styles.contactRow}>
+                <MapPin size={16} strokeWidth={2} aria-hidden />
+                <span>{contact.showroomAddress}</span>
+              </div>
+            ) : null}
+            {contact.phoneDisplay ? (
+              <div className={styles.contactRow}>
+                <Phone size={16} strokeWidth={2} aria-hidden />
+                <a href={`tel:${contact.phoneTel}`}>{contact.phoneDisplay}</a>
+              </div>
+            ) : null}
+            {contact.email ? (
+              <div className={styles.contactRow}>
+                <Mail size={16} strokeWidth={2} aria-hidden />
+                <a href={`mailto:${contact.email}`}>{contact.email}</a>
+              </div>
+            ) : null}
             <div className={styles.contactRow}>
               <Clock size={16} strokeWidth={2} aria-hidden />
-              <span>Mon–Sat 09:00–18:00, Sunday closed</span>
+              <span>{openingHoursSummary((brand as any)?.openingHours)}</span>
             </div>
-            {whatsappUrl ? (
+            {contact.whatsappUrl ? (
               <div className={styles.contactRow}>
                 <WhatsAppIcon size={16} aria-hidden />
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>
+                <a href={contact.whatsappUrl} target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>
               </div>
             ) : null}
           </address>
@@ -160,7 +169,7 @@ export default function Footer() {
 
       <div className={styles.bottom}>
         <div className={styles.bottomInner}>
-          <span className={styles.copyright}>© {year} {brandName}. All rights reserved.</span>
+          <span className={styles.copyright}>Copyright {year} {brandName}. All rights reserved.</span>
           <span className={styles.attribution}>
             Site by{' '}
             <a href="https://carous.co.uk" target="_blank" rel="noopener noreferrer">Carous Limited</a>

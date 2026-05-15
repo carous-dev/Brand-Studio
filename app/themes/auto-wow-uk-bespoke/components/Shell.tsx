@@ -12,7 +12,7 @@ import AnimateOnScroll from '@/app/widgets/AnimateOnScroll'
 import { MotionFX } from '@/app/widgets/MotionFX'
 import ScrollProgress from '@/app/widgets/ScrollProgress'
 import PreviewBanner from '@/app/widgets/PreviewBanner'
-import WhatsAppFab from '@/app/widgets/WhatsAppFab'
+import CarousWhatsAppWidget from '@/app/widgets/CarousWhatsAppWidget'
 
 import '../styles/base.css'
 import '../styles/color-policy.css'
@@ -56,7 +56,7 @@ export function AutoShell({ children }: { children: ReactNode }) {
         {children}
       </main>
       <Footer />
-      <WhatsAppFab brand={brand} />
+      <CarousWhatsAppWidget brand={brand} />
       <AutoWowCookieBanner />
     </GarageProvider>
   )

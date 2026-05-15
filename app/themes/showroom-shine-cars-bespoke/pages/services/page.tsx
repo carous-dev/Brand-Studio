@@ -3,58 +3,66 @@ import { Car, RefreshCw, Coins, ShieldCheck, Search, Truck, ArrowUpRight, CheckC
 import type { ThemePageProps } from '../../../types'
 import styles from './page.module.css'
 
-const SERVICES = [
+const DEFAULT_SERVICES = [
   {
     icon: Car,
     title: 'Car Sales',
-    body: 'Quality used vehicles sourced predominantly through main dealers and prepared to a high retail standard before they reach the forecourt.',
-    bullets: ['Main-dealer sourcing', 'Full preparation', 'Honest pricing'],
+    body: 'Quality used vehicles with clear details, images and enquiry options.',
+    bullets: ['Live stock', 'Clear pricing', 'Helpful enquiries'],
     cta: 'Browse stock',
     href: '/used-cars',
   },
   {
     icon: RefreshCw,
     title: 'Part Exchange',
-    body: 'Competitive part exchange values for your current vehicle, with the goal of keeping your upgrade simple and cost-effective.',
-    bullets: ['Fair market valuations', 'Same-day quotes', 'Settle outstanding finance'],
+    body: 'Part exchange support for your current vehicle, with clear next steps.',
+    bullets: ['Market-led valuations', 'Simple details', 'Upgrade support'],
     cta: 'Start part exchange',
     href: '/part-exchange',
   },
   {
     icon: Coins,
     title: 'Finance Options',
-    body: 'Tailored finance support with clear options explained before you commit. PCP, HP and tailored plans through trusted UK lenders.',
-    bullets: ['PCP, HP & tailored plans', 'FCA-regulated lenders', 'Quick decisions'],
+    body: 'Finance guidance with the available options explained before you commit.',
+    bullets: ['Budget-led plans', 'Clear checks', 'Simple enquiries'],
     cta: 'Explore finance',
     href: '/finance',
   },
   {
     icon: ShieldCheck,
     title: 'After-Sales Support',
-    body: 'Minimum 3-month comprehensive warranty (unless stated) plus friendly after-sales support whenever you need it.',
-    bullets: ['3-month warranty minimum', 'Extended cover available', 'Phone & email support'],
+    body: 'Warranty and after-sales information explained clearly where it applies.',
+    bullets: ['Support after handover', 'Clear paperwork', 'Friendly contact'],
     cta: 'Contact us',
     href: '/contact',
   },
   {
     icon: Search,
     title: 'Vehicle Inspection',
-    body: 'HPI and finance checks on every vehicle plus careful preparation, so you can buy with complete confidence.',
-    bullets: ['HPI clear guarantee', 'Mileage verified', 'Service history checked'],
+    body: 'Vehicle checks and preparation information so you can buy with confidence.',
+    bullets: ['Vehicle checks', 'Mileage information', 'Service history where available'],
     cta: 'Why us',
     href: '/about',
   },
   {
     icon: Truck,
     title: 'Delivery Service',
-    body: 'Collection support and practical handover options for local and distance customers — including doorstep delivery on request.',
-    bullets: ['Local handover', 'Nationwide delivery (POA)', 'Pre-handover photo report'],
+    body: 'Collection, handover and delivery options can be discussed with the dealership.',
+    bullets: ['Handover options', 'Delivery on request', 'Availability checks'],
     cta: 'Ask about delivery',
     href: '/contact',
   },
 ]
 
-export function ShowroomServicesPage(_: ThemePageProps) {
+export function ShowroomServicesPage({ brand }: ThemePageProps) {
+  const brandName = brand?.name || 'the showroom'
+  const customServices = Array.isArray((brand as any)?.services?.items) ? (brand as any).services.items : []
+  const services = DEFAULT_SERVICES.map((service, index) => ({
+    ...service,
+    title: customServices[index]?.title || service.title,
+    body: customServices[index]?.description || service.body,
+  }))
+
   return (
     <article>
       <section className="shr-page-hero shr-page-hero--services">
@@ -64,8 +72,8 @@ export function ShowroomServicesPage(_: ThemePageProps) {
             Everything you need, under one roof.
           </h1>
           <p className="shr-page-hero__lead" data-aos="fade-up" data-aos-delay="160">
-            Six dealer-grade services that take you from initial enquiry to handover —
-            and stay with you afterwards.
+            Dealer services that take you from initial enquiry to handover and stay
+            useful afterwards.
           </p>
         </div>
       </section>
@@ -73,7 +81,7 @@ export function ShowroomServicesPage(_: ThemePageProps) {
       <section className={`shr-section ${styles.services}`}>
         <div className="shr-container">
           <div className={styles.grid}>
-            {SERVICES.map((service, i) => {
+            {services.map((service, i) => {
               const Icon = service.icon
               return (
                 <article key={service.title} className={styles.card} data-aos="fade-up" data-aos-delay={`${i * 80}`}>
@@ -107,14 +115,14 @@ export function ShowroomServicesPage(_: ThemePageProps) {
         <div className="shr-container">
           <div className={styles.ctaInner} data-aos="fade-up">
             <span className="shr-eyebrow">Ready to get started?</span>
-            <h2 className={styles.ctaTitle}>Talk to a real person at the showroom.</h2>
+            <h2 className={styles.ctaTitle}>Talk to a real person at {brandName}.</h2>
             <p className={styles.ctaLead}>
-              Pop in for an appointment-only viewing or pick up the phone — we&apos;ll match you
-              to the right car and the right plan.
+              Ask about stock, finance, part exchange or viewing arrangements and the team
+              will help you find the right next step.
             </p>
             <div className={styles.ctaActions}>
               <Link href="/used-cars" className="shr-btn-primary">Browse stock</Link>
-              <Link href="/contact" className="shr-btn-ghost-dark">Visit showroom</Link>
+              <Link href="/contact" className="shr-btn-ghost-dark">Contact us</Link>
             </div>
           </div>
         </div>

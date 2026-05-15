@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle2 } from 'lucide-react'
 import { useBrand } from '../../context/BrandClientWrapper'
+import { getBrandContactInfo } from '../../lib/contact'
 import { useLeadsForm } from '@/app/hooks/useLeadsForm'
 import { WhatsAppIcon } from '@/app/widgets/WhatsAppFab'
 import styles from './page.module.css'
@@ -14,12 +15,19 @@ type ContactFormValues = {
   message: string
 }
 
+function openingHoursLines(hours: unknown): string[] {
+  if (!hours || typeof hours !== 'object') return ['Contact us for opening hours']
+  const lines = Object.entries(hours as Record<string, unknown>)
+    .map(([day, value]) => `${day}: ${String(value || '').trim()}`)
+    .filter((line) => !line.endsWith(':'))
+  return lines.length ? lines : ['Contact us for opening hours']
+}
+
 export default function ContactIsland() {
   const brand = useBrand()
-  const phoneDisplay = (brand as any)?.location?.phone || '07537 164927'
-  const phoneTel = phoneDisplay.replace(/[^\d+]/g, '')
-  const email = (brand as any)?.location?.email || 'info@showroomshinecars.co.uk'
-  const whatsappUrl = `https://wa.me/${phoneTel.replace(/^\+?/, '')}`
+  const brandName = brand?.name || 'this dealership'
+  const contact = getBrandContactInfo(brand)
+  const hours = openingHoursLines((brand as any)?.openingHours)
 
   const [submitted, setSubmitted] = useState(false)
 
@@ -54,8 +62,8 @@ export default function ContactIsland() {
             Need help? Talk to our team.
           </h1>
           <p className="shr-page-hero__lead" data-aos="fade-up" data-aos-delay="160">
-            Stock, finance, valuations or sourcing — drop us a message or call and we&apos;ll
-            come back to you the same working day.
+            Stock, finance, valuations or sourcing: drop us a message or call and we will
+            come back to you as soon as possible.
           </p>
         </div>
       </section>
@@ -64,46 +72,52 @@ export default function ContactIsland() {
         <div className="shr-container">
           <div className={styles.layout}>
             <aside className={styles.details} data-aos="fade-right">
-              <h2 className={styles.detailsTitle}>Showroom Shine Cars</h2>
+              <h2 className={styles.detailsTitle}>{brandName}</h2>
               <ul className={styles.detailList}>
-                <li>
-                  <MapPin size={18} strokeWidth={2.2} aria-hidden />
-                  <div>
-                    <span className={styles.detailLabel}>Address</span>
-                    <p>No 1 Oak Cottage, Coventry, CV5 9DA</p>
-                    <p>West Midlands, United Kingdom</p>
-                  </div>
-                </li>
-                <li>
-                  <Phone size={18} strokeWidth={2.2} aria-hidden />
-                  <div>
-                    <span className={styles.detailLabel}>Call us</span>
-                    <a href={`tel:${phoneTel}`}>{phoneDisplay}</a>
-                  </div>
-                </li>
-                <li>
-                  <Mail size={18} strokeWidth={2.2} aria-hidden />
-                  <div>
-                    <span className={styles.detailLabel}>Email</span>
-                    <a href={`mailto:${email}`}>{email}</a>
-                  </div>
-                </li>
+                {contact.showroomAddress ? (
+                  <li>
+                    <MapPin size={18} strokeWidth={2.2} aria-hidden />
+                    <div>
+                      <span className={styles.detailLabel}>Address</span>
+                      <p>{contact.showroomAddress}</p>
+                    </div>
+                  </li>
+                ) : null}
+                {contact.phoneDisplay ? (
+                  <li>
+                    <Phone size={18} strokeWidth={2.2} aria-hidden />
+                    <div>
+                      <span className={styles.detailLabel}>Call us</span>
+                      <a href={`tel:${contact.phoneTel}`}>{contact.phoneDisplay}</a>
+                    </div>
+                  </li>
+                ) : null}
+                {contact.email ? (
+                  <li>
+                    <Mail size={18} strokeWidth={2.2} aria-hidden />
+                    <div>
+                      <span className={styles.detailLabel}>Email</span>
+                      <a href={`mailto:${contact.email}`}>{contact.email}</a>
+                    </div>
+                  </li>
+                ) : null}
                 <li>
                   <Clock size={18} strokeWidth={2.2} aria-hidden />
                   <div>
                     <span className={styles.detailLabel}>Opening hours</span>
-                    <p>Mon–Sat 09:00–18:00</p>
-                    <p>Sunday closed</p>
-                    <p className={styles.detailNote}>Viewings by appointment only</p>
+                    {hours.slice(0, 4).map((line) => <p key={line}>{line}</p>)}
+                    <p className={styles.detailNote}>Please confirm availability before travelling.</p>
                   </div>
                 </li>
-                <li>
-                  <WhatsAppIcon size={18} aria-hidden />
-                  <div>
-                    <span className={styles.detailLabel}>WhatsApp</span>
-                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">Chat with us</a>
-                  </div>
-                </li>
+                {contact.whatsappUrl ? (
+                  <li>
+                    <WhatsAppIcon size={18} aria-hidden />
+                    <div>
+                      <span className={styles.detailLabel}>WhatsApp</span>
+                      <a href={contact.whatsappUrl} target="_blank" rel="noopener noreferrer">Chat with us</a>
+                    </div>
+                  </li>
+                ) : null}
               </ul>
             </aside>
 
@@ -166,7 +180,7 @@ export default function ContactIsland() {
                     disabled={lead.status === 'submitting'}
                   >
                     <Send size={16} strokeWidth={2.4} />
-                    {lead.status === 'submitting' ? 'Sending…' : 'Send message'}
+                    {lead.status === 'submitting' ? 'Sending...' : 'Send message'}
                   </button>
                   <p className={styles.formFootnote}>
                     By submitting, you agree to be contacted by our team about your enquiry.

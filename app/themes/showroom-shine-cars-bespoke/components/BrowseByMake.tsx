@@ -14,6 +14,7 @@ type MakeEntry = { name: string; count: number }
 export default function BrowseByMake() {
   const brand = useBrand()
   const brandSlug = brand?.slug || ''
+  const brandName = brand?.name || 'this dealership'
   const [makes, setMakes] = useState<MakeEntry[]>([])
 
   useEffect(() => {
@@ -58,7 +59,7 @@ export default function BrowseByMake() {
       <div className="shr-container">
         <div className={styles.head}>
           <span className="shr-eyebrow">Browse by make</span>
-          <h2 className={styles.title}>Find your next car at Showroom Shine Cars.</h2>
+          <h2 className={styles.title}>Find your next car at {brandName}.</h2>
         </div>
         <ul className={styles.grid}>
           {makes.slice(0, 16).map((m) => (

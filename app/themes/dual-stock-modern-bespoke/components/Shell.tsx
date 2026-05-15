@@ -13,7 +13,7 @@ import AnimateOnScroll from '@/app/widgets/AnimateOnScroll'
 import { MotionFX } from '@/app/widgets/MotionFX'
 import ScrollProgress from '@/app/widgets/ScrollProgress'
 import PreviewBanner from '@/app/widgets/PreviewBanner'
-import WhatsAppFab from '@/app/widgets/WhatsAppFab'
+import CarousWhatsAppWidget from '@/app/widgets/CarousWhatsAppWidget'
 import DualStockCookieBanner from './DualStockCookieBanner'
 
 import '../styles/base.css'
@@ -58,8 +58,8 @@ const KNOWN_ROUTES = new Set([
  *    (the shared widget is a fallback / starter, not the default for
  *    bespoke themes — see SKILL Quality Bar §"Cookie banners must NOT
  *    be one-size-fits-all").
- *  - <WhatsAppFab /> — floating WhatsApp CTA with online/offline status
- *    derived from `brand.openingHours`. Theme-agnostic, brand-token-driven.
+ *  - <CarousWhatsAppWidget /> — shared WhatsApp enquiry widget with
+ *    lead capture and online/offline status from `brand.openingHours`.
  *
  * Phase 8 typically does NOT add: per-theme AOS reimplementations,
  * ad-hoc preview banners, hand-rolled WhatsApp widgets. Use the global
@@ -96,7 +96,7 @@ export function DualShell({ children }: { children: ReactNode }) {
         {children}
       </main>
       <Footer />
-      <WhatsAppFab brand={brand} />
+      <CarousWhatsAppWidget brand={brand} />
       <DualStockCookieBanner brandSlug={brand?.slug} cookiePolicyHref="/cookie-policy" />
     </GarageProvider>
   )

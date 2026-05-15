@@ -2,6 +2,18 @@
   background: var(--surface-bg-light);
   color: var(--text-on-light-strong);
 }
+.section[data-density='compact'] .head,
+.section[data-density='balanced'] .head {
+  justify-items: center;
+  margin-inline: auto;
+  text-align: center;
+}
+.section[data-density='compact'] .head {
+  margin-bottom: 24px;
+}
+.section[data-density='compact'] .lead {
+  max-width: 48ch;
+}
 
 .head {
   display: grid;
@@ -25,56 +37,31 @@
   line-height: 1.55;
 }
 
-.platforms {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 36px;
-}
-.platformCard {
-  display: grid;
-  gap: 6px;
-  justify-items: center;
-  padding: 20px 16px;
-  background: var(--surface-card-light);
-  border: 1px solid var(--border-on-light);
-  border-radius: 6px;
-  text-align: center;
-}
-.platformName {
-  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-on-light-strong);
-}
-.platformStars {
-  color: #facc15;
-  display: inline-flex;
-  gap: 1px;
-}
-.platformRating {
-  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--brand-primary);
-  font-style: italic;
-}
-
 .grid {
+  --review-columns: 1;
+  --review-max: 100%;
+
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(var(--review-columns), minmax(0, 1fr));
   gap: 20px;
+  max-width: var(--review-max);
+  margin-inline: auto;
+}
+.grid[data-count='1'] {
+  --review-max: min(760px, 100%);
+}
+.grid[data-count='2'] {
+  --review-max: min(980px, 100%);
 }
 @media (min-width: 720px) {
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .grid[data-count='2'],
+  .grid[data-count='3'] {
+    --review-columns: 2;
   }
 }
 @media (min-width: 1024px) {
-  .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .grid[data-count='3'] {
+    --review-columns: 3;
   }
 }
 
@@ -97,6 +84,9 @@
   height: 3px;
   background: var(--brand-primary);
 }
+.grid[data-count='1'] .card {
+  padding: clamp(28px, 4vw, 38px);
+}
 .quoteIcon {
   color: var(--brand-primary);
   opacity: 0.6;
@@ -110,6 +100,9 @@
   color: var(--text-on-light-strong);
   font-size: 0.98rem;
   line-height: 1.55;
+}
+.grid[data-count='1'] .quote {
+  font-size: clamp(1rem, 1.6vw, 1.12rem);
 }
 .attribution {
   display: inline-flex;
@@ -141,7 +134,8 @@
 }
 
 @media (max-width: 480px) {
-  .platforms {
-    grid-template-columns: 1fr;
+  .grid {
+    --review-columns: 1;
+    --review-max: 100%;
   }
 }

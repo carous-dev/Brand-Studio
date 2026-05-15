@@ -24,7 +24,7 @@ type BrandLogoProps = {
  */
 export default function BrandLogo({ variant = 'header', className }: BrandLogoProps) {
   const brand = useBrand()
-  const brandName = brand?.name || 'Showroom Shine Cars'
+  const brandName = brand?.name || 'Dealer'
   const uploadedLogo = typeof brand?.logo === 'string' ? brand.logo.trim() : ''
 
   const [src, setSrc] = useState(uploadedLogo || THEME_DEFAULT_LOGO)
@@ -55,10 +55,11 @@ export default function BrandLogo({ variant = 'header', className }: BrandLogoPr
     .join(' ')
 
   if (stage === 'wordmark') {
+    const [firstWord, ...rest] = brandName.split(/\s+/).filter(Boolean)
     return (
       <span className={wrapperClass}>
-        <span className={styles.wordmarkAccent}>SHOWROOM</span>
-        <span className={styles.wordmarkSub}>SHINE CARS</span>
+        <span className={styles.wordmarkAccent}>{firstWord || 'DEALER'}</span>
+        <span className={styles.wordmarkSub}>{rest.join(' ') || 'MOTORS'}</span>
       </span>
     )
   }

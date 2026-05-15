@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Shield, BarChart3, Megaphone, ArrowUpRight } from 'lucide-react'
 import type { ThemePageProps } from '../../../types'
+import { getBrandContactInfo } from '../../lib/contact'
 import styles from './page.module.css'
 
 const CATEGORIES = [
@@ -24,7 +25,9 @@ const CATEGORIES = [
   },
 ]
 
-export function ShowroomCookiePolicyPage(_: ThemePageProps) {
+export function ShowroomCookiePolicyPage({ brand }: ThemePageProps) {
+  const contact = getBrandContactInfo(brand)
+
   return (
     <article>
       <section className="shr-page-hero shr-page-hero--legal">
@@ -78,7 +81,9 @@ export function ShowroomCookiePolicyPage(_: ThemePageProps) {
                 Read privacy policy
                 <ArrowUpRight size={16} strokeWidth={2.4} />
               </Link>
-              <a href="mailto:info@showroomshinecars.co.uk" className="shr-btn-ghost-light">Email us</a>
+              {contact.email ? (
+                <a href={`mailto:${contact.email}`} className="shr-btn-ghost-light">Email us</a>
+              ) : null}
             </div>
           </div>
         </div>

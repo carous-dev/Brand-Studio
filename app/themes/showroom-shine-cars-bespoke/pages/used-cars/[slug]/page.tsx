@@ -19,6 +19,7 @@ import { normalizeInventoryItem, type InventoryVehicle } from '../../../lib/inve
 import { getVehicleLookupCandidates, buildVehiclePermalink } from '../../../lib/vehicle-links'
 import { EnquiryModal, useEnquiryModal } from '@/app/widgets/EnquiryModal'
 import { WhatsAppIcon } from '@/app/widgets/WhatsAppFab'
+import { ExternalWhatsAppSubjectBridge, type ExternalWhatsAppEnquirySubject } from '@/app/widgets/CarousWhatsAppWidget'
 import VehicleCard from '../../../components/VehicleCard'
 import styles from './page.module.css'
 
@@ -74,6 +75,7 @@ export function ShowroomVehicleDetailPage() {
   const brand = useBrand()
   const contact = getBrandContactInfo(brand)
   const brandSlug = (brand?.slug || '').trim()
+  const brandName = brand?.name || 'this dealership'
 
   const [vehicle, setVehicle] = useState<DetailVehicle | null>(null)
   const [images, setImages] = useState<string[]>([])
@@ -249,9 +251,37 @@ export function ShowroomVehicleDetailPage() {
 
   const subject = `Enquiry: ${vehicle.title}`
   const currentUrl = typeof window !== 'undefined' ? window.location.href : ''
+  const vehicleParts = vehicle.title.split(/\s+/).filter(Boolean)
+  const whatsappEnquirySubject: ExternalWhatsAppEnquirySubject = {
+    dealerName: brandName,
+    phoneNumber: contact.phoneDisplay || contact.phoneTel || null,
+    whatsappNumber: contact.phoneTel ? contact.phoneTel.replace(/^\+/, '') : null,
+    pageTitle: vehicle.title,
+    pageUrl: currentUrl,
+    vehicle: {
+      label: vehicle.title,
+      year: vehicle.year,
+      make: vehicle.make,
+      model: vehicleParts.slice(2).join(' ') || null,
+      registration: vehicle.registration || vehicle.reg,
+      vin: vehicle.vin,
+      slug: rawSlug,
+      price: vehicle.price,
+      mileage: vehicle.mileage,
+      fuel: vehicle.fuel,
+      transmission: vehicle.transmission,
+      bodyType: vehicle.body,
+      colour: vehicle.color,
+    },
+    defaultIntentId: 'availability',
+    defaultMessage: `I am interested in the ${vehicle.title}.`,
+    panelTitle: 'Ask about this vehicle',
+    panelDescription: 'Send a quick WhatsApp enquiry about availability, finance, or part exchange.',
+  }
 
   return (
     <article className={styles.detailPage}>
+      <ExternalWhatsAppSubjectBridge subject={whatsappEnquirySubject} />
       <nav className={styles.breadcrumb} aria-label="Breadcrumb">
         <div className="shr-container">
           <Link href="/used-cars" className={styles.breadcrumbBack} aria-label="Back to all stock">
@@ -370,7 +400,7 @@ export function ShowroomVehicleDetailPage() {
 
                 <div className={styles.contactMini}>
                   <MapPin size={14} strokeWidth={2.2} aria-hidden />
-                  <span>{contact.showroomAddress || 'Coventry, CV5 9DA, West Midlands'}</span>
+                  <span>{contact.showroomAddress || 'Contact the showroom for location details'}</span>
                 </div>
               </div>
             </aside>
@@ -414,7 +444,7 @@ export function ShowroomVehicleDetailPage() {
                 <h2 className={styles.descTitle}>About this vehicle</h2>
                 <p className={styles.descBody}>
                   {vehicle.description ||
-                    `${vehicle.title} — fully inspected by Showroom Shine Cars and prepared to a high retail standard. HPI and finance checks completed. Comes with a minimum 3-month comprehensive warranty and our after-sales support.`}
+                    `${vehicle.title} is available from ${brandName}. Contact the team for preparation details, checks, finance options and after-sales support.`}
                 </p>
 
                 <div className={styles.fullSpecs}>

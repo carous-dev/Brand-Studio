@@ -42,14 +42,15 @@ const SOCIAL_LINKS = [
 
 export default function Header() {
   const brand = useBrand()
-  const brandName = brand?.name || 'Showroom Shine Cars'
+  const brandName = brand?.name || 'this dealership'
   const location = (brand as any)?.location || {}
   const address = (location?.address || {}) as Record<string, string | undefined>
   const city = (address.city || (typeof location.city === 'string' ? location.city : '') || '').trim()
   const county = (address.county || (typeof location.county === 'string' ? location.county : '') || '').trim()
   const locationLabel = [city, county].filter(Boolean).join(', ')
-  const phoneDisplay = (typeof location.phone === 'string' ? location.phone : '') || '07537 164927'
+  const phoneDisplay = typeof location.phone === 'string' ? location.phone : ''
   const phoneTel = phoneDisplay.replace(/[^\d+]/g, '')
+  const email = typeof location.email === 'string' ? location.email.trim() : ''
   const socials: Record<string, string> = (brand as any)?.socialLinks || {}
 
   const workingConfig = useMemo(() => {
@@ -114,10 +115,12 @@ export default function Header() {
                 )
               })}
             </div>
-            <a href={`tel:${phoneTel}`} className={styles.topPhone}>
-              <Phone size={14} strokeWidth={2.2} aria-hidden />
-              {phoneDisplay}
-            </a>
+            {phoneDisplay ? (
+              <a href={`tel:${phoneTel}`} className={styles.topPhone}>
+                <Phone size={14} strokeWidth={2.2} aria-hidden />
+                {phoneDisplay}
+              </a>
+            ) : null}
           </div>
         </div>
       </div>
@@ -145,10 +148,12 @@ export default function Header() {
           </nav>
 
           <div className={styles.mainBarActions}>
-            <a href={`tel:${phoneTel}`} className={styles.callCta}>
-              <Phone size={16} strokeWidth={2.4} aria-hidden />
-              Call now
-            </a>
+            {phoneDisplay ? (
+              <a href={`tel:${phoneTel}`} className={styles.callCta}>
+                <Phone size={16} strokeWidth={2.4} aria-hidden />
+                Call now
+              </a>
+            ) : null}
             <Link href="/used-cars" className={`shr-btn-primary mfx-shimmer ${styles.browseCta}`}>
               Browse stock
             </Link>
@@ -210,14 +215,18 @@ export default function Header() {
           })}
         </nav>
         <div className={styles.mobileNavFooter}>
-          <a href={`tel:${phoneTel}`} className={styles.mobileCallCta}>
-            <Phone size={18} strokeWidth={2.4} aria-hidden />
-            {phoneDisplay}
-          </a>
-          <a href={`mailto:${(brand as any)?.location?.email || 'info@showroomshinecars.co.uk'}`} className={styles.mobileEmailCta}>
-            <Mail size={18} strokeWidth={2.4} aria-hidden />
-            Email us
-          </a>
+          {phoneDisplay ? (
+            <a href={`tel:${phoneTel}`} className={styles.mobileCallCta}>
+              <Phone size={18} strokeWidth={2.4} aria-hidden />
+              {phoneDisplay}
+            </a>
+          ) : null}
+          {email ? (
+            <a href={`mailto:${email}`} className={styles.mobileEmailCta}>
+              <Mail size={18} strokeWidth={2.4} aria-hidden />
+              Email us
+            </a>
+          ) : null}
           <div className={styles.mobileSocials} aria-label="Social media">
             {SOCIAL_LINKS.map(({ key, icon: Icon, label }) => {
               const url = socials[key]

@@ -2,48 +2,52 @@
 
 import Link from 'next/link'
 import { Car, RefreshCw, Coins, ShieldCheck, Search, Truck, ArrowUpRight } from 'lucide-react'
+import { useBrand } from '../context/BrandClientWrapper'
 import styles from './ServiceHighlights.module.css'
 
 const SERVICES = [
   {
     title: 'Car Sales',
     icon: Car,
-    body: 'Quality used vehicles sourced predominantly through main dealers and prepared to a high retail standard.',
+    body: 'Quality used vehicles presented clearly, with the key details available before you enquire.',
     href: '/services',
   },
   {
     title: 'Part Exchange',
     icon: RefreshCw,
-    body: 'Competitive part exchange values for your current vehicle to keep your upgrade simple and cost-effective.',
+    body: 'Part exchange support for your current vehicle to keep your upgrade simple and cost-effective.',
     href: '/part-exchange',
   },
   {
     title: 'Finance Options',
     icon: Coins,
-    body: 'Finance support tailored to your budget with clear options explained before you commit.',
+    body: 'Finance guidance tailored to your budget, with clear options explained before you commit.',
     href: '/finance',
   },
   {
     title: 'After-Sales Support',
     icon: ShieldCheck,
-    body: 'Minimum 3-month comprehensive warranty (unless stated) plus friendly after-sales support.',
+    body: 'Warranty and after-sales information explained clearly on the vehicles where it applies.',
     href: '/services',
   },
   {
     title: 'Vehicle Inspection',
     icon: Search,
-    body: 'HPI and finance checks with careful preparation so you can buy with confidence.',
+    body: 'Vehicle checks and preparation details surfaced so you can buy with confidence.',
     href: '/services',
   },
   {
     title: 'Delivery Service',
     icon: Truck,
-    body: 'Collection support and practical handover options for local and distance customers.',
+    body: 'Collection, handover and delivery options can be discussed with the dealership team.',
     href: '/services',
   },
 ] as const
 
 export default function ServiceHighlights() {
+  const brand = useBrand()
+  const city = (brand as any)?.location?.address?.city || (brand as any)?.location?.city || ''
+
   return (
     <section className={`shr-section ${styles.section}`} id="services">
       <div className="shr-container">
@@ -51,8 +55,8 @@ export default function ServiceHighlights() {
           <span className="shr-eyebrow">Our Services</span>
           <h2 className="shr-section-head__title">Complete used-car support, from enquiry to handover.</h2>
           <p className="shr-section-head__lead">
-            Everything a Coventry buyer needs in one place — finance, part exchange,
-            full inspections and after-sales backing under one roof.
+            Everything a used-car buyer{city ? ` in ${city}` : ''} needs in one place:
+            finance, part exchange, vehicle checks and after-sales support.
           </p>
         </div>
 

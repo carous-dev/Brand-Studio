@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, ShieldCheck, Wrench, BadgeCheck, ArrowUpRight, Phone } from 'lucide-react'
+import { Search, ArrowUpRight, Phone } from 'lucide-react'
 import { useBrand } from '../context/BrandClientWrapper'
 import styles from './Hero.module.css'
 
@@ -11,17 +11,22 @@ const MAKES = ['Any make', 'Audi', 'BMW', 'Ford', 'Mercedes-Benz', 'Volkswagen',
 const BODIES = ['Any body', 'Hatchback', 'Saloon', 'Estate', 'SUV', 'Coupe', 'Convertible', 'MPV', 'Pickup']
 const PRICES = [
   { label: 'Any price', value: '' },
-  { label: 'Under £5,000', value: '0-4999' },
-  { label: '£5,000–£10,000', value: '5000-10000' },
-  { label: '£10,000–£15,000', value: '10000-15000' },
-  { label: '£15,000–£20,000', value: '15000-20000' },
-  { label: '£20,000–£30,000', value: '20000-30000' },
-  { label: 'Over £30,000', value: '30000-100000' },
+  { label: 'Under GBP 5,000', value: '0-4999' },
+  { label: 'GBP 5,000-GBP 10,000', value: '5000-10000' },
+  { label: 'GBP 10,000-GBP 15,000', value: '10000-15000' },
+  { label: 'GBP 15,000-GBP 20,000', value: '15000-20000' },
+  { label: 'GBP 20,000-GBP 30,000', value: '20000-30000' },
+  { label: 'Over GBP 30,000', value: '30000-100000' },
 ]
 
 export default function Hero() {
   const brand = useBrand()
-  const phoneDisplay = (brand as any)?.location?.phone || '07537 164927'
+  const dealerName = brand?.name || 'this dealership'
+  const city = (brand as any)?.location?.address?.city || (brand as any)?.location?.city || ''
+  const tagline = typeof brand?.tagline === 'string' && brand.tagline.trim()
+    ? brand.tagline.trim()
+    : 'Quality used cars, honestly sold.'
+  const phoneDisplay = String((brand as any)?.location?.phone || '').trim()
   const phoneTel = phoneDisplay.replace(/[^\d+]/g, '')
   const router = useRouter()
 
@@ -44,46 +49,31 @@ export default function Hero() {
 
   return (
     <section className={styles.hero}>
-      <div className={`${styles.heroImage} mfx-grid-drift`} aria-hidden />
+      <div className={styles.heroImage} aria-hidden />
       <div className={styles.heroOverlay} aria-hidden />
-      <div className={`shr-grid-pattern ${styles.gridPattern}`} aria-hidden />
-      <div className={`mfx-glow-pulse ${styles.glowBlob}`} aria-hidden />
 
       <div className={styles.heroInner}>
         <div className={styles.heroLead} data-aos="fade-up">
-          <span className="shr-eyebrow">Coventry · Established 20+ years</span>
+          <span className="shr-eyebrow">{city ? `${city} used-car dealer` : 'Independent used-car dealer'}</span>
           <h1 className={styles.heroTitle}>
-            <span className={`mfx-text-glow ${styles.titleEmph}`}>Quality used cars,</span>
-            <span className={styles.titleLine2}>honestly sold.</span>
+            <span className={styles.titleEmph}>{tagline}</span>
+            <span className={styles.titleLine2}>{dealerName}</span>
           </h1>
           <p className={styles.heroLeadCopy}>
-            Family-run Coventry dealership with main-dealer-sourced stock,
-            full HPI &amp; finance checks, finance support and a minimum 3-month
-            comprehensive warranty on every car.
+            Browse carefully prepared vehicles from {dealerName}. Enquire online, ask about finance,
+            and speak to the team before you visit.
           </p>
-          <div className={styles.heroChips}>
-            <span className={styles.heroChip}>
-              <ShieldCheck size={16} strokeWidth={2.2} aria-hidden />
-              HPI &amp; finance checks
-            </span>
-            <span className={styles.heroChip}>
-              <Wrench size={16} strokeWidth={2.2} aria-hidden />
-              3-month warranty
-            </span>
-            <span className={styles.heroChip}>
-              <BadgeCheck size={16} strokeWidth={2.2} aria-hidden />
-              500+ vehicles
-            </span>
-          </div>
           <div className={styles.heroCtas}>
-            <Link href="/used-cars" className={`shr-btn-primary mfx-shimmer ${styles.primaryCta}`} data-aos="zoom-in" data-aos-delay="120">
+            <Link href="/used-cars" className={`shr-btn-primary ${styles.primaryCta}`} data-aos="zoom-in" data-aos-delay="120">
               Browse stock
               <ArrowUpRight size={18} strokeWidth={2.4} />
             </Link>
-            <a href={`tel:${phoneTel}`} className={`shr-btn-ghost-dark ${styles.secondaryCta}`}>
-              <Phone size={16} strokeWidth={2.4} aria-hidden />
-              {phoneDisplay}
-            </a>
+            {phoneDisplay ? (
+              <a href={`tel:${phoneTel}`} className={`shr-btn-ghost-dark ${styles.secondaryCta}`}>
+                <Phone size={16} strokeWidth={2.4} aria-hidden />
+                {phoneDisplay}
+              </a>
+            ) : null}
           </div>
         </div>
 
@@ -95,8 +85,7 @@ export default function Hero() {
           data-aos-delay="200"
         >
           <div className={styles.searchHead}>
-            <span className={styles.searchEyebrow}>Find your next car</span>
-            <span className={styles.searchLabel}>Browse 500+ vehicles</span>
+            <span className={styles.searchEyebrow}>Quick stock search</span>
           </div>
           <div className={styles.searchGrid}>
             <label className={styles.searchField}>

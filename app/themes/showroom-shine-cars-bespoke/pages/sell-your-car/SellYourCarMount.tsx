@@ -8,7 +8,7 @@ import '@/app/widgets/SellYourCarWidget/styles.css'
 export default function SellYourCarMount() {
   const brand = useBrand()
   const contact = getBrandContactInfo(brand)
-  const brandName = brand?.name || 'Showroom Shine Cars'
+  const brandName = brand?.name || 'this dealership'
 
   return (
     <SellYourCarWidget

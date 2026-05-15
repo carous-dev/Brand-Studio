@@ -12,7 +12,7 @@ function fmtPrice(value: any) {
 
 export function ShowroomRecentlySoldPage({ initialInventory, brand }: ThemePageProps) {
   const items = Array.isArray(initialInventory) ? initialInventory : []
-  const brandName = brand?.name || 'Showroom Shine Cars'
+  const brandName = brand?.name || 'this dealership'
 
   return (
     <article>

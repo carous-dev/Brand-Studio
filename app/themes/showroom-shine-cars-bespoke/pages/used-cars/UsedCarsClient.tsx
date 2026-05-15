@@ -435,8 +435,8 @@ export default function UsedCarsClient({
             <span className="shr-eyebrow">Used Cars</span>
             <h1 className={styles.inventoryHeroTitle}>Browse our stock</h1>
             <p className={styles.inventoryHeroLead}>
-              500+ vehicles, prepared and HPI-checked. Filter, sort and shortlist
-              the right one for your driveway.
+              Browse current vehicles, compare the details, and shortlist the right
+              option for your driveway.
             </p>
             <div className={styles.heroChips}>
               <span className={`shr-chip shr-chip--dark ${styles.chipDesktop}`}>

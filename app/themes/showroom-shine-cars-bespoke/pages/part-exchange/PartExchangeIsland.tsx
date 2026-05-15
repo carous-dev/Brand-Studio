@@ -4,6 +4,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { RefreshCw, ArrowRight, CheckCircle2, Banknote, ClipboardList, Send } from 'lucide-react'
 import { useLeadsForm } from '@/app/hooks/useLeadsForm'
+import { useBrand } from '../../context/BrandClientWrapper'
+import { getBrandContactInfo } from '../../lib/contact'
 import styles from './page.module.css'
 
 type PxValues = {
@@ -23,6 +25,8 @@ const STEPS = [
 ]
 
 export default function PartExchangeIsland() {
+  const brand = useBrand()
+  const contact = getBrandContactInfo(brand)
   const [submitted, setSubmitted] = useState(false)
   const lead = useLeadsForm<PxValues>({
     initialValues: { reg: '', mileage: '', condition: 'Good', name: '', email: '', phone: '', notes: '' },
@@ -153,7 +157,11 @@ export default function PartExchangeIsland() {
           </div>
 
           <div className={styles.altCta}>
-            <p>Prefer to chat? Call us on <a href="tel:07537164927">07537 164927</a></p>
+            {contact.phoneDisplay ? (
+              <p>Prefer to chat? Call us on <a href={`tel:${contact.phoneTel}`}>{contact.phoneDisplay}</a></p>
+            ) : (
+              <p>Prefer to chat? Send the team a message.</p>
+            )}
             <Link href="/used-cars" className="shr-btn-ghost-dark">Browse what we&apos;ve got</Link>
           </div>
         </div>

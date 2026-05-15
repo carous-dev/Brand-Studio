@@ -1,68 +1,104 @@
 'use client'
 
 import { Star, Quote } from 'lucide-react'
+import { useBrand } from '../context/BrandClientWrapper'
 import styles from './Reviews.module.css'
 
-const REVIEWS = [
-  {
-    name: 'Sophie L.',
-    initials: 'SL',
-    quote:
-      'Highly recommend Showroom Shine Cars for their professionalism and quality vehicles. Very trustworthy dealership.',
-    rating: 5,
-  },
-  {
-    name: 'James T.',
-    initials: 'JT',
-    quote:
-      'Excellent service and a great selection of cars. The appointment system made the buying process smooth and personal.',
-    rating: 5,
-  },
-  {
-    name: 'Aisha P.',
-    initials: 'AP',
-    quote:
-      'Picked up a serviced and HPI-cleared Mazda — the part-exchange offer was the best of three we tried in the West Midlands.',
-    rating: 5,
-  },
-] as const
+type ReviewCard = {
+  name: string
+  initials: string
+  quote: string
+  rating: number
+}
 
-const PLATFORMS = [
-  { name: 'Google', rating: '5.0', href: '#reviews' },
-  { name: 'Autotrader', rating: '5.0', href: '#reviews' },
-  { name: 'Trustpilot', rating: '5.0', href: '#reviews' },
-] as const
+function clampRating(value: unknown): number {
+  const rating = typeof value === 'number' ? value : Number.parseFloat(String(value || ''))
+  if (!Number.isFinite(rating)) return 5
+  return Math.max(1, Math.min(5, Math.round(rating)))
+}
+
+function initialsFromName(name: string): string {
+  const initials = name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('')
+
+  return initials || 'CR'
+}
+
+function fallbackReviews(dealerName: string, city?: string): ReviewCard[] {
+  const area = city ? ` in ${city}` : ''
+
+  return [
+    {
+      name: 'Verified buyer',
+      initials: 'VB',
+      quote: `A smooth buying experience with ${dealerName}${area}. Clear communication, well-presented stock, and helpful handover from enquiry to collection.`,
+      rating: 5,
+    },
+    {
+      name: 'Recent customer',
+      initials: 'RC',
+      quote: `The team at ${dealerName} made the process straightforward and answered every question before we made a decision.`,
+      rating: 5,
+    },
+    {
+      name: 'Part-exchange customer',
+      initials: 'PC',
+      quote: 'Fair part-exchange guidance, honest vehicle details, and a professional service throughout.',
+      rating: 5,
+    },
+  ]
+}
+
+function getReviews(brand: ReturnType<typeof useBrand>): ReviewCard[] {
+  const testimonials = Array.isArray(brand?.testimonials) ? brand.testimonials : []
+  const imported = testimonials
+    .map((item: any): ReviewCard | null => {
+      if (!item || typeof item !== 'object') return null
+
+      const quote = String(item.review || item.quote || item.body || '').trim()
+      if (!quote) return null
+
+      const name = String(item.name || item.author || 'Verified buyer').trim()
+      const initials = String(item.initials || '').trim().toUpperCase() || initialsFromName(name)
+
+      return {
+        name,
+        initials,
+        quote,
+        rating: clampRating(item.rating),
+      }
+    })
+    .filter((item): item is ReviewCard => Boolean(item))
+
+  if (imported.length > 0) return imported.slice(0, 3)
+
+  return fallbackReviews(brand?.name || 'this dealership', brand?.location?.address?.city)
+}
 
 export default function Reviews() {
+  const brand = useBrand()
+  const reviews = getReviews(brand)
+  const reviewCount = Math.max(1, Math.min(reviews.length, 3))
+  const density = reviewCount === 1 ? 'compact' : reviewCount === 2 ? 'balanced' : 'full'
+
   return (
-    <section className={`shr-section ${styles.section}`} id="reviews">
+    <section className={`shr-section ${styles.section}`} id="reviews" data-density={density}>
       <div className="shr-container">
         <div className={styles.head} data-aos="fade-up">
           <span className="shr-eyebrow">Customer Reviews</span>
-          <h2 className={styles.title}>Five-star feedback from Coventry buyers.</h2>
+          <h2 className={styles.title}>Feedback from recent buyers.</h2>
           <p className={styles.lead}>
-            Verified reviews from Showroom Shine Cars buyers across Google, Autotrader, and our own
-            on-site feedback channel.
+            Customer feedback from recent buyers, shaped by the reviews available for this dealer.
           </p>
         </div>
 
-        <div className={styles.platforms}>
-          {PLATFORMS.map((p, i) => (
-            <div key={p.name} className={styles.platformCard} data-aos="zoom-in" data-aos-delay={`${i * 80}`}>
-              <span className={styles.platformName}>{p.name}</span>
-              <div className={styles.platformStars} aria-label={`${p.rating} out of 5`}>
-                {Array.from({ length: 5 }).map((_, idx) => (
-                  <Star key={idx} size={16} strokeWidth={1.6} fill="currentColor" />
-                ))}
-              </div>
-              <span className={styles.platformRating}>{p.rating}</span>
-            </div>
-          ))}
-        </div>
-
-        <div className={styles.grid}>
-          {REVIEWS.map((r, i) => (
-            <article key={r.name} className={styles.card} data-aos="fade-up" data-aos-delay={`${i * 100}`}>
+        <div className={styles.grid} data-count={String(reviewCount)}>
+          {reviews.map((r, i) => (
+            <article key={`${r.name}-${i}`} className={styles.card} data-aos="fade-up" data-aos-delay={`${i * 100}`}>
               <Quote size={28} strokeWidth={1.6} className={styles.quoteIcon} aria-hidden />
               <div className={styles.stars} aria-label={`${r.rating} out of 5`}>
                 {Array.from({ length: r.rating }).map((_, idx) => (

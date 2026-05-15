@@ -14,6 +14,7 @@ import styles from './FeaturedStock.module.css'
 export default function FeaturedStock() {
   const brand = useBrand()
   const brandSlug = brand?.slug || ''
+  const brandName = brand?.name || 'this dealership'
   const [vehicles, setVehicles] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -56,7 +57,7 @@ export default function FeaturedStock() {
         <div className={styles.head} data-aos="fade-up">
           <div>
             <span className="shr-eyebrow">Latest Arrivals</span>
-            <h2 className={styles.title}>Fresh stock at Showroom Shine Cars.</h2>
+            <h2 className={styles.title}>Fresh stock at {brandName}.</h2>
           </div>
           <Link href="/used-cars" className={styles.headCta}>
             View all stock
