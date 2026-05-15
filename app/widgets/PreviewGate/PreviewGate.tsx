@@ -23,10 +23,7 @@ type PreviewGateProps = {
   brand?: BrandConfig | null
 }
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_FLASK_API_URL ||
-  process.env.FLASK_API_URL ||
-  'http://localhost:5000/api'
+const API_BASE = '/api'
 
 function apiUrl(path: string) {
   return `${API_BASE.replace(/\/$/, '')}${path}`
