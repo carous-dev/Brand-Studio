@@ -69,7 +69,7 @@ export async function GET(request: Request) {
     })
 
     return NextResponse.json(items, {
-      headers: { 'Cache-Control': 'public, max-age=3600' }
+      headers: { 'Cache-Control': 'no-store' }
     })
   } catch (error: any) {
     console.error('[/api/featured-vehicles] Error:', error)

@@ -19,7 +19,7 @@ const featureVariant: Variants = {
 const AboutSection = () => {
     const brand = useBrand()
     const brandName = brand?.name || 'our dealership'
-    const city = brand?.location?.address?.city || brand?.location?.city || 'your area'
+    const city = String(brand?.location?.address?.city || brand?.location?.city || 'your area')
     const reduce = useReducedMotion()
     
     const features = [

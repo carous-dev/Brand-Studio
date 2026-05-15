@@ -21,7 +21,7 @@ const brandsVariant: Variants = {
 export const Hero: React.FC = () => {
     const brand = useBrand()
     const brandName = brand?.name || 'Dealership'
-    const city = brand?.location?.address?.city || brand?.location?.city || 'your area'
+    const city = String(brand?.location?.address?.city || brand?.location?.city || 'your area')
     const badgeText = city ? `Trusted Used Cars in ${city}` : 'Trusted Used Cars'
     return (
     <section className="hero-futuristic">

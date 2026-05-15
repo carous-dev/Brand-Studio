@@ -17,17 +17,22 @@ const QUICK_LINKS = [
   { href: '/contact', label: 'Contact' },
 ]
 
+function asLink(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : ''
+}
+
 const Footer: React.FC<FooterProps> = () => {
   const brand = useBrand()
   const brandName = brand?.name || 'Dealership'
   const logoSrc = brand?.logo || '/images/logo-l.png'
   const year = new Date().getFullYear()
-  const socialLinks = brand?.socialLinks ?? {
-    facebook: '',
-    instagram: '',
-    twitter: '',
-    youtube: '',
-    linkedin: '',
+  const rawSocialLinks = brand?.socialLinks ?? {}
+  const socialLinks = {
+    facebook: asLink(rawSocialLinks.facebook),
+    instagram: asLink(rawSocialLinks.instagram),
+    twitter: asLink(rawSocialLinks.twitter),
+    youtube: asLink(rawSocialLinks.youtube),
+    linkedin: asLink(rawSocialLinks.linkedin),
   }
 
   const address = useMemo(() => {

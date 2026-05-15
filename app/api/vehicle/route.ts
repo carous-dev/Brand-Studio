@@ -197,7 +197,7 @@ export async function GET(req: Request) {
     const strictInventory = loadBrandInventoryStrict(brand)
     const inventory = strictInventory.length > 0 ? strictInventory : loadInventoryByBrand(brand)
     if (!inventory || inventory.length === 0) {
-      return NextResponse.json({ error: 'brand inventory not found' }, { status: 404 })
+      return NextResponse.json({ error: 'brand inventory not found' }, { status: 404, headers: { 'Cache-Control': 'no-store' } })
     }
 
     const slugLower = slug.toLowerCase()
@@ -221,10 +221,10 @@ export async function GET(req: Request) {
     })
 
     if (!found) {
-      return NextResponse.json({ error: 'Vehicle not found in brand inventory' }, { status: 404 })
+      return NextResponse.json({ error: 'Vehicle not found in brand inventory' }, { status: 404, headers: { 'Cache-Control': 'no-store' } })
     }
 
-    return NextResponse.json({ vehicle: found }, { status: 200 })
+    return NextResponse.json({ vehicle: found }, { status: 200, headers: { 'Cache-Control': 'no-store' } })
   } catch (err) {
     console.error('[/api/vehicle] Error:', err)
     return NextResponse.json({ error: 'server error' }, { status: 500 })

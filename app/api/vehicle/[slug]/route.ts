@@ -7,7 +7,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   try {
     const { slug } = await params
     
-    if (!slug) return NextResponse.json({ error: 'missing slug parameter' }, { status: 400 })
+    if (!slug) return NextResponse.json({ error: 'missing slug parameter' }, { status: 400, headers: { 'Cache-Control': 'no-store' } })
 
     const url = new URL(req.url)
     const queryBrand = (url.searchParams.get('brand') || '').toLowerCase().trim()
@@ -40,7 +40,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     }
 
     if (!brand) {
-      return NextResponse.json({ error: 'missing brand for vehicle lookup' }, { status: 400 })
+      return NextResponse.json({ error: 'missing brand for vehicle lookup' }, { status: 400, headers: { 'Cache-Control': 'no-store' } })
     }
 
     // Keep behavior aligned with /api/inventory:
@@ -48,7 +48,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     const strictInventory = loadBrandInventoryStrict(brand)
     const inventory = strictInventory.length > 0 ? strictInventory : loadInventoryByBrand(brand)
     if (!inventory || inventory.length === 0) {
-      return NextResponse.json({ error: 'brand inventory not found' }, { status: 404 })
+      return NextResponse.json({ error: 'brand inventory not found' }, { status: 404, headers: { 'Cache-Control': 'no-store' } })
     }
 
     const slugLower = slug.toLowerCase()
@@ -72,7 +72,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     })
 
     if (!found) {
-      return NextResponse.json({ error: 'Vehicle not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Vehicle not found' }, { status: 404, headers: { 'Cache-Control': 'no-store' } })
     }
 
     const normalized = normalizeVehicle(found)
@@ -122,7 +122,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
 
     console.log(`[/api/vehicle/[slug]] Found vehicle: ${normalized.make} ${normalized.model} (${normalized.registration})`)
 
-    return NextResponse.json({ vehicle: response }, { status: 200 })
+    return NextResponse.json({ vehicle: response }, { status: 200, headers: { 'Cache-Control': 'no-store' } })
   } catch (err) {
     console.error('[/api/vehicle/[slug]] Error:', err)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })

@@ -3,7 +3,7 @@ import '../../styles/policy.css'
 
 export function GildedPrivacyPolicyPage({ brand }: ThemePageProps) {
   const brandName = brand?.name || 'Our Dealership'
-  const city = brand?.location?.address?.city || brand?.location?.city || 'your area'
+  const city = String(brand?.location?.address?.city || brand?.location?.city || 'your area')
   const email = brand?.location?.email || 'info@example.com'
   const phone = brand?.location?.phone || ''
 

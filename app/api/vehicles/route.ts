@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     // If requesting all makes
     if (makes === 'true') {
       return NextResponse.json(presets, {
-        headers: { 'Cache-Control': 'public, max-age=3600' }
+        headers: { 'Cache-Control': 'no-store' }
       })
     }
 
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     if (make) {
       const models = presets.models.get(make) || []
       return NextResponse.json({ models }, {
-        headers: { 'Cache-Control': 'public, max-age=3600' }
+        headers: { 'Cache-Control': 'no-store' }
       })
     }
 

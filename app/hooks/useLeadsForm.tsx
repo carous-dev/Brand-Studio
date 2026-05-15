@@ -39,9 +39,10 @@ export function useLeadsForm<T extends Record<string, any>>(options: LeadsFormOp
     leadSource,
     endpoint = '/api/send-lead-email',
     honeypotField = 'website',
-    fieldConfig = {},
+    fieldConfig,
     buildPayload,
   } = options
+  const resolvedFieldConfig = useMemo<Partial<Record<keyof T, FieldConfig<T>>>>(() => fieldConfig ?? {}, [fieldConfig])
 
   const [values, setValues] = useState<T>(initialValues)
   const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({})
@@ -63,7 +64,7 @@ export function useLeadsForm<T extends Record<string, any>>(options: LeadsFormOp
 
     Object.keys(nextValues).forEach((key) => {
       const typedKey = key as keyof T
-      const config = fieldConfig[typedKey]
+      const config = resolvedFieldConfig[typedKey]
       const value = nextValues[typedKey]
       if (config?.required) {
         const isEmpty = value === null || value === undefined || String(value).trim() === ''
@@ -81,16 +82,17 @@ export function useLeadsForm<T extends Record<string, any>>(options: LeadsFormOp
     })
 
     return nextErrors
-  }, [fieldConfig])
+  }, [resolvedFieldConfig])
 
   const setFieldValue = useCallback((field: keyof T, value: T[keyof T]) => {
     setValues((prev) => ({ ...prev, [field]: value }))
   }, [])
 
   const getFieldProps = useCallback((field: keyof T) => {
+    const rawValue = values[field]
     return {
       name: String(field),
-      value: values[field] ?? '',
+      value: rawValue === null || rawValue === undefined || typeof rawValue === 'boolean' ? '' : String(rawValue),
       onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const target = event.target as HTMLInputElement
         const nextValue = target.type === 'checkbox' ? target.checked : target.value

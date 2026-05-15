@@ -19,7 +19,7 @@ const serviceItemVariant: Variants = {
 
 const Services: React.FC = () => {
     const brand = useBrand()
-    const city = brand?.location?.address?.city || brand?.location?.city || 'your area'
+    const city = String(brand?.location?.address?.city || brand?.location?.city || 'your area')
     const services = [
       {
         icon: Tag,

@@ -11,7 +11,7 @@ export default function ContactUs() {
     const leadsEndpoint = process.env.NEXT_PUBLIC_LEADS_API_URL || ''
     const useExternalLeadApi = Boolean(leadsEndpoint && !leadsEndpoint.startsWith('/api/'))
     const brandName = brand?.name || 'our dealership'
-    const city = brand?.location?.address?.city || brand?.location?.city || 'your area'
+    const city = String(brand?.location?.address?.city || brand?.location?.city || 'your area')
     const emailAddress = brand?.location?.email || 'info@example.com'
     const phoneNumber = brand?.location?.phone || ''
     const addressLines = [

@@ -1123,9 +1123,13 @@ def maybe_start_linux_brand_automation(brand: dict) -> None:
                     print(f"[CLOUDFLARE] [{request_id}] Skipping DNS (CLOUDFLARE_DISABLED)")
                     _set_automation_state(slug_for_state, step='dns:skipped', dns_status='skipped')
 
-                # STEP 3: PM2 restart with health verification (also under the lock
-                # so concurrent provisions don't pile restarts on top of each other).
-                if not pm2_disabled:
+                # STEP 3: PM2 restart is optional. Preview records are runtime
+                # data loaded from Flask/DB by Next, so normal preview creation
+                # does not need a process restart. Keep the old behaviour behind
+                # an explicit env flag for operators who are intentionally
+                # rolling out new theme code outside the deploy workflow.
+                restart_after_provision = str(os.environ.get('PM2_RESTART_AFTER_PROVISION', '')).strip().lower() in ('1', 'true', 'yes')
+                if not pm2_disabled and restart_after_provision:
                     _set_automation_state(slug_for_state, step='pm2:awaiting-lock')
                     with _automation_critical_lock:
                         _set_automation_state(slug_for_state, step='pm2:restarting')
@@ -1187,6 +1191,12 @@ def maybe_restart_pm2_next_linux(*, reason: str, slug: str | None = None) -> Non
     """
     try:
         if str(os.environ.get('PM2_RESTART_DISABLED', '')).strip().lower() in ('1', 'true', 'yes'):
+            return
+
+        restart_on_brand_update = str(os.environ.get('PM2_RESTART_ON_BRAND_UPDATE', '')).strip().lower() in ('1', 'true', 'yes')
+        if reason.startswith('update_brand_') and not restart_on_brand_update:
+            detail = f" slug={slug}" if slug else ''
+            print(f"[PM2] Skipping restart for runtime brand update (reason={reason}{detail})")
             return
 
         if _is_brand_automation_dev_mode():

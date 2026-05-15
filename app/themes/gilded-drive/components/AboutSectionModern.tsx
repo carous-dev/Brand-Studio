@@ -10,7 +10,7 @@ const AboutSectionModern = () => {
     const [activeTab, setActiveTab] = useState(0);
     const brand = useBrand()
     const brandName = brand?.name || 'our dealership'
-    const city = brand?.location?.address?.city || brand?.location?.city || 'your area'
+    const city = String(brand?.location?.address?.city || brand?.location?.city || 'your area')
 
     const timeline = [
         { year: '2010', title: 'Founded', description: `${brandName} established with a vision to provide quality used cars in ${city}` },

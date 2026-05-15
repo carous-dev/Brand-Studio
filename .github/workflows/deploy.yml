@@ -99,8 +99,7 @@ jobs:
               echo "Skipping pip install; requirements.txt unchanged since ${last_deploy_ref}"
             fi
 
-            # Node deps (Next.js runtime — this app is served by `next dev`,
-            # not a production build, so we install but don't build).
+            # Node deps for the Next.js runtime.
             if [ "${node_changed}" = "1" ]; then
               npm ci
             else
@@ -117,14 +116,18 @@ jobs:
             # is automatically wired into the runtime picker without a
             # second manual step. Idempotent (writeIfChanged semantics).
             npm run theme:sync
-            # Always run after sync, before pm2 restart, so the running
-            # processes pick up the new generated files when they reload.
+            # Build a production Next.js bundle. Serving public previews from
+            # `next dev` keeps the HMR client connected and can hard-refresh
+            # open pages whenever background jobs touch files or generated
+            # runtime modules on the VPS.
+            npm run build
 
             # Restart both PM2 processes. If a process doesn't exist yet (first
             # deploy of a name), `pm2 restart` errors — fall through to start.
             # The Flask process MUST point its interpreter at the external venv
             # since we no longer keep one inside the project tree.
-            pm2 restart app-brandstudio || pm2 start ecosystem.config.cjs --only app-brandstudio || true
+            pm2 delete app-brandstudio || true
+            pm2 start npm --name app-brandstudio --cwd "${DEPLOY_DIR}" -- start
             pm2 restart brandstudio \
               || pm2 start ecosystem.config.cjs --only brandstudio \
               || pm2 start app.py --name brandstudio --interpreter "${VENV_DIR}/bin/python" --cwd "${DEPLOY_DIR}" \
