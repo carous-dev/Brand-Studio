@@ -21,6 +21,8 @@
  *     --city Manchester \
  *     --postcode "M12 6LB" \
  *     --ai \
+ *     --preview-hours 24 \
+ *     --preview-visits 0 \
  *     --context "Manchester appointment-only used-car and van dealer..." \
  *     --website "https://kainmotors.co.uk"
  *
@@ -65,6 +67,14 @@ const ARG_SPEC = {
   ai:             { type: 'boolean' },
   context:        { type: 'string' },
   website:        { type: 'string' },
+  // Preview gate
+  'preview-seconds': { type: 'string' },
+  'preview-hours':   { type: 'string' },
+  'preview-minutes': { type: 'string' },
+  'preview-visits':  { type: 'string' },
+  'preview-expires': { type: 'string' },
+  'preview-unlimited': { type: 'boolean' },
+  'preview-locked': { type: 'boolean' },
   // Behavior
   force:          { type: 'boolean' },  // overwrite existing slug
   'brand-json':   { type: 'string' },   // path to a pre-built brand JSON to send as-is
@@ -114,6 +124,15 @@ Behavior:
                          (use to round-trip a manually-edited brand record).
   --retries <n>          Max retries when theme not yet deployed (default 10).
   --retry-delay <s>      Seconds between retries (default 30).
+
+Preview gate:
+  --preview-minutes <n>  Total dealer view time in minutes.
+  --preview-hours <n>    Total dealer view time in hours. Default server policy is 24.
+  --preview-seconds <n>  Total dealer view time in seconds. Overrides minutes.
+  --preview-visits <n>   Maximum visits before lock. Use 0 for unlimited.
+  --preview-expires <dt> ISO expiry date/time, e.g. 2026-05-20T18:00:00Z.
+  --preview-unlimited    Disable time and visit limits for this preview.
+  --preview-locked       Create/update the preview in locked state.
 
 Plumbing:
   --api-url <url>        Override BRANDSTUDIO_API_URL env var.
@@ -168,7 +187,60 @@ function buildBrandPayload(flags) {
     images: {},
     text: {},
   }
+
+  const previewGate = buildPreviewGate(flags)
+  if (previewGate) brand.previewGate = previewGate
+
   return brand
+}
+
+function parsePositiveInt(value, label) {
+  if (value == null || value === '') return null
+  const n = Number.parseInt(String(value), 10)
+  if (!Number.isFinite(n) || n < 0) {
+    throw new Error(`${label} must be a positive integer or 0.`)
+  }
+  return n
+}
+
+function buildPreviewGate(flags) {
+  const hasGateFlags = Boolean(
+    flags['preview-seconds'] ||
+    flags['preview-hours'] ||
+    flags['preview-minutes'] ||
+    flags['preview-visits'] ||
+    flags['preview-expires'] ||
+    flags['preview-unlimited'] ||
+    flags['preview-locked'],
+  )
+  if (!hasGateFlags) return null
+
+  const gate = { enabled: true }
+  if (flags['preview-unlimited']) {
+    gate.maxViewSeconds = 0
+    gate.maxVisits = 0
+  } else {
+    const seconds = parsePositiveInt(flags['preview-seconds'], '--preview-seconds')
+    const hours = parsePositiveInt(flags['preview-hours'], '--preview-hours')
+    const minutes = parsePositiveInt(flags['preview-minutes'], '--preview-minutes')
+    if (seconds != null) gate.maxViewSeconds = seconds
+    else if (hours != null) gate.maxViewSeconds = hours * 60 * 60
+    else if (minutes != null) gate.maxViewSeconds = minutes * 60
+
+    const visits = parsePositiveInt(flags['preview-visits'], '--preview-visits')
+    if (visits != null) gate.maxVisits = visits
+  }
+
+  if (flags['preview-expires']) {
+    const date = new Date(flags['preview-expires'])
+    if (Number.isNaN(date.getTime())) {
+      throw new Error('--preview-expires must be an ISO date/time, e.g. 2026-05-20T18:00:00Z.')
+    }
+    gate.expiresAt = date.toISOString()
+  }
+
+  if (flags['preview-locked']) gate.status = 'locked'
+  return gate
 }
 
 function loadBrandJson(path) {
@@ -212,6 +284,8 @@ async function main() {
   if (flags['brand-json']) {
     brand = loadBrandJson(flags['brand-json'])
     if (!brand?.slug && flags.slug) brand.slug = flags.slug
+    const previewGate = buildPreviewGate(flags)
+    if (previewGate) brand.previewGate = previewGate
   } else {
     brand = buildBrandPayload(flags)
   }

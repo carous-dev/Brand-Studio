@@ -325,6 +325,7 @@ def add_cache_control(response):
         response.headers['ETag'] = f'"{int(time.time())}"'
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Headers'] = 'Cache-Control, Content-Type, If-Modified-Since, If-None-Match'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
         response.headers['Access-Control-Expose-Headers'] = 'Cache-Control, Content-Type, Last-Modified, ETag'
     return response
 
@@ -2625,27 +2626,283 @@ def resolve_preview_by_domain():
     if not request_host:
         return jsonify({'error': 'Missing host/domain query param'}), 400
 
-    req_no_www = _strip_www(request_host)
-    req_no_port, req_host_port = _split_host_port(req_no_www)
-    candidates = {req_no_www, req_no_port, req_host_port, _strip_www(req_no_port)}
-    candidates = {c for c in candidates if c}
+    preview = _find_preview_for_host(request_host)
+    if preview:
+        return jsonify({'preview': preview}), 200
+
+    return jsonify({'error': f'No preview configured for "{request_host}"'}), 404
+
+
+def _host_candidates(host_or_url: str) -> set:
+    host = normalize_host_or_url(host_or_url or '')
+    if not host:
+        return set()
+    no_www = _strip_www(host)
+    no_port, host_port = _split_host_port(no_www)
+    candidates = {no_www, no_port, host_port, _strip_www(no_port)}
+    return {c for c in candidates if c}
+
+
+def _find_preview_for_host(host_or_url: str) -> Optional[Dict[str, Any]]:
+    candidates = _host_candidates(host_or_url)
+    if not candidates:
+        return None
 
     # Small dataset: scan configs and match against stored brand.domain.
     for preview in list_previews():
         domain_value = preview.get('domain') or ''
-        domain_host = normalize_host_or_url(domain_value)
-        if not domain_host:
+        if not domain_value:
             continue
+        if candidates.intersection(_host_candidates(domain_value)):
+            return preview
 
-        dom_no_www = _strip_www(domain_host)
-        dom_no_port, dom_host_port = _split_host_port(dom_no_www)
-        dom_candidates = {dom_no_www, dom_no_port, dom_host_port, _strip_www(dom_no_port)}
-        dom_candidates = {c for c in dom_candidates if c}
+    return None
 
-        if candidates.intersection(dom_candidates):
-            return jsonify({'preview': preview}), 200
 
-    return jsonify({'error': f'No preview configured for "{request_host}"'}), 404
+def _preview_gate_base_domain() -> str:
+    return (os.environ.get('PREVIEW_BASE_DOMAIN') or 'carouspreviews.co.uk').strip().lower().lstrip('.')
+
+
+def _is_preview_gate_host(host_or_url: str) -> bool:
+    host = normalize_host_or_url(host_or_url or '')
+    if not host:
+        return False
+    host = _strip_www(_split_host_port(host)[0]).lower()
+    base = _preview_gate_base_domain()
+    return host == base or host.endswith(f'.{base}')
+
+
+def _parse_utc_timestamp(value: Any) -> Optional[datetime]:
+    if not value:
+        return None
+    if isinstance(value, datetime):
+        return value
+    raw = str(value).strip()
+    if not raw:
+        return None
+    try:
+        return datetime.fromisoformat(raw.replace('Z', '+00:00')).replace(tzinfo=None)
+    except Exception:
+        return None
+
+
+def _preview_gate_policy(preview: Dict[str, Any], host: str = '') -> Dict[str, Any]:
+    gate = preview.get('previewGate') or preview.get('preview_gate') or {}
+    if not isinstance(gate, dict):
+        gate = {}
+
+    enabled_default = _is_preview_gate_host(host) if host else True
+    enabled = gate.get('enabled')
+    if enabled is None:
+        enabled = enabled_default
+    else:
+        enabled = str(enabled).strip().lower() not in ('0', 'false', 'no', 'off')
+
+    default_seconds = int(os.environ.get('PREVIEW_GATE_DEFAULT_SECONDS') or 24 * 60 * 60)
+    default_visits = int(os.environ.get('PREVIEW_GATE_DEFAULT_MAX_VISITS') or 0)
+    raw_seconds = gate.get('maxViewSeconds') or gate.get('max_view_seconds') or gate.get('maxSeconds')
+    raw_visits = gate.get('maxVisits') or gate.get('max_visits')
+
+    try:
+        max_seconds = max(int(raw_seconds or default_seconds), 0)
+    except Exception:
+        max_seconds = default_seconds
+
+    try:
+        max_visits = max(int(raw_visits if raw_visits is not None else default_visits), 0)
+    except Exception:
+        max_visits = default_visits
+
+    expires_at = _parse_utc_timestamp(gate.get('expiresAt') or gate.get('expires_at'))
+    manually_locked = str(gate.get('status') or '').strip().lower() in ('locked', 'expired', 'revoked')
+    manually_locked = manually_locked or bool(gate.get('locked') is True)
+
+    return {
+        'enabled': bool(enabled),
+        'maxViewSeconds': max_seconds,
+        'maxVisits': max_visits,
+        'expiresAt': expires_at,
+        'contactUrl': gate.get('contactUrl') or gate.get('contact_url') or 'https://carous.co.uk',
+        'locked': manually_locked,
+    }
+
+
+def _parse_preview_gate_from_payload(payload: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """Read preview-gate fields from form/API payloads.
+
+    Supports nested JSON payloads (`previewGate`) and dashboard form fields
+    (`previewGateMaxHours`, etc.). Returns None when the payload does not
+    intentionally configure preview gating.
+    """
+    if not isinstance(payload, dict):
+        return None
+
+    nested = payload.get('previewGate') or payload.get('preview_gate')
+    if isinstance(nested, dict):
+        gate = dict(nested)
+    else:
+        field_names = {
+            'previewGateEnabled',
+            'previewGateUnlimited',
+            'previewGateMaxSeconds',
+            'previewGateMaxHours',
+            'previewGateMaxVisits',
+            'previewGateExpiresAt',
+            'previewGateStatus',
+        }
+        if not any(name in payload for name in field_names):
+            return None
+
+        def as_int(value: Any, fallback: int) -> int:
+            try:
+                return max(int(float(str(value).strip())), 0)
+            except Exception:
+                return fallback
+
+        unlimited = parse_bool_flag(payload.get('previewGateUnlimited'))
+        seconds = as_int(payload.get('previewGateMaxSeconds'), 0)
+        if seconds <= 0:
+            try:
+                hours = float(str(payload.get('previewGateMaxHours') or '24').strip())
+                seconds = max(int(hours * 3600), 0)
+            except Exception:
+                seconds = 24 * 60 * 60
+
+        gate = {
+            'enabled': parse_bool_flag(payload.get('previewGateEnabled', True)),
+            'maxViewSeconds': 0 if unlimited else seconds,
+            'maxVisits': 0 if unlimited else as_int(payload.get('previewGateMaxVisits'), 0),
+            'expiresAt': str(payload.get('previewGateExpiresAt') or '').strip() or None,
+            'status': str(payload.get('previewGateStatus') or 'active').strip().lower() or 'active',
+        }
+
+    if gate.get('expiresAt'):
+        parsed = _parse_utc_timestamp(gate.get('expiresAt'))
+        if parsed:
+            gate['expiresAt'] = parsed.isoformat() + 'Z'
+        else:
+            gate.pop('expiresAt', None)
+
+    status = str(gate.get('status') or 'active').strip().lower()
+    gate['status'] = status if status in ('active', 'locked', 'expired', 'revoked') else 'active'
+    return gate
+
+
+def _preview_gate_snapshot(preview: Dict[str, Any], host: str = '') -> Dict[str, Any]:
+    slug = str(preview.get('slug') or '').strip().lower()
+    policy = _preview_gate_policy(preview, host)
+    used_seconds = preview_store.get_preview_usage_seconds(slug) if slug else 0
+    visit_count = preview_store.count_preview_visits(slug) if slug else 0
+    now = datetime.utcnow()
+
+    expired_by_time = policy['maxViewSeconds'] > 0 and used_seconds >= policy['maxViewSeconds']
+    expired_by_visits = policy['maxVisits'] > 0 and visit_count > policy['maxVisits']
+    expired_by_date = bool(policy['expiresAt'] and now >= policy['expiresAt'])
+    locked = bool(policy['locked'] or expired_by_time or expired_by_visits or expired_by_date)
+    status = 'disabled'
+    if policy['enabled']:
+        status = 'locked' if locked else 'active'
+
+    remaining = None
+    if policy['maxViewSeconds'] > 0:
+        remaining = max(policy['maxViewSeconds'] - used_seconds, 0)
+
+    return {
+        'enabled': policy['enabled'],
+        'status': status,
+        'locked': locked,
+        'slug': slug,
+        'dealerName': preview.get('name') or slug.replace('-', ' ').title(),
+        'usedSeconds': used_seconds,
+        'remainingSeconds': remaining,
+        'maxViewSeconds': policy['maxViewSeconds'],
+        'visitCount': visit_count,
+        'maxVisits': policy['maxVisits'],
+        'expiresAt': policy['expiresAt'].isoformat() + 'Z' if policy['expiresAt'] else None,
+        'contactUrl': policy['contactUrl'],
+    }
+
+
+def _resolve_preview_for_gate(payload: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    slug = str((payload or {}).get('slug') or request.args.get('slug') or '').strip().lower()
+    if slug:
+        preview = load_preview(slug)
+        if preview:
+            return preview
+    host = str((payload or {}).get('host') or request.args.get('host') or request.host or '').strip()
+    return _find_preview_for_host(host)
+
+
+@app.route('/api/preview-gate/status', methods=['GET', 'OPTIONS'])
+def preview_gate_status():
+    if request.method == 'OPTIONS':
+        return ('', 204)
+    preview = _resolve_preview_for_gate({})
+    if not preview:
+        return jsonify({'enabled': False, 'status': 'unknown', 'locked': False}), 404
+    host = request.args.get('host') or request.host or ''
+    return jsonify(_preview_gate_snapshot(preview, host)), 200
+
+
+@app.route('/api/preview-gate/session', methods=['POST', 'OPTIONS'])
+def preview_gate_start_session():
+    if request.method == 'OPTIONS':
+        return ('', 204)
+    payload = request.get_json(silent=True) or {}
+    preview = _resolve_preview_for_gate(payload)
+    if not preview:
+        return jsonify({'enabled': False, 'status': 'unknown', 'locked': False}), 404
+
+    host = str(payload.get('host') or request.host or '')
+    snapshot = _preview_gate_snapshot(preview, host)
+    if snapshot['enabled'] and snapshot['maxVisits'] > 0 and snapshot['visitCount'] >= snapshot['maxVisits']:
+        snapshot['locked'] = True
+        snapshot['status'] = 'locked'
+    if not snapshot['enabled'] or snapshot['locked']:
+        return jsonify(snapshot), 200
+
+    session_row = preview_store.create_preview_session(
+        slug=snapshot['slug'],
+        ip_address=request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip(),
+        user_agent=request.headers.get('User-Agent', ''),
+    )
+    snapshot['sessionId'] = session_row.get('id')
+    snapshot['visitCount'] = preview_store.count_preview_visits(snapshot['slug'])
+    return jsonify(snapshot), 201
+
+
+@app.route('/api/preview-gate/heartbeat', methods=['POST', 'OPTIONS'])
+def preview_gate_heartbeat():
+    if request.method == 'OPTIONS':
+        return ('', 204)
+    payload = request.get_json(silent=True) or {}
+    session_id = str(payload.get('sessionId') or '').strip()
+    if not session_id:
+        return jsonify({'error': 'sessionId is required'}), 400
+
+    session_row = preview_store.heartbeat_preview_session(session_id=session_id)
+    if not session_row:
+        return jsonify({'status': 'unknown', 'locked': True}), 404
+
+    preview = load_preview(str(session_row.get('slug') or ''))
+    if not preview:
+        preview_store.close_preview_session(session_id=session_id, status='locked')
+        return jsonify({'status': 'unknown', 'locked': True}), 404
+
+    host = str(payload.get('host') or request.host or '')
+    snapshot = _preview_gate_snapshot(preview, host)
+    snapshot['sessionId'] = session_id
+    if snapshot['locked']:
+        preview_store.close_preview_session(session_id=session_id, status='locked')
+    return jsonify(snapshot), 200
+
+
+@app.route('/api/preview-gate/session/<session_id>/end', methods=['POST', 'OPTIONS'])
+def preview_gate_end_session(session_id):
+    if request.method == 'OPTIONS':
+        return ('', 204)
+    preview_store.close_preview_session(session_id=str(session_id), status='ended')
+    return jsonify({'ok': True}), 200
 
 
 @app.route('/api/themes', methods=['GET'])
@@ -3376,6 +3633,10 @@ def create_brand():
                 }
             }
 
+        preview_gate = _parse_preview_gate_from_payload(data)
+        if preview_gate is not None:
+            brand['previewGate'] = preview_gate
+
         # Validate preview data
 
         # Preserve existing config fields not represented in the update payload (especially pages/*).
@@ -3405,6 +3666,7 @@ def create_brand():
                 'theme',
                 'themeId',
                 'aaApprovedDealer',
+                'previewGate',
             )
             for key in overwrite_keys:
                 if key in brand:
@@ -4413,6 +4675,10 @@ def update_brand(slug):
             if prepared.get(asset_key):
                 brand_from_form[asset_key] = prepared.get(asset_key)
 
+        preview_gate = _parse_preview_gate_from_payload(prepared)
+        if preview_gate is not None:
+            brand_from_form['previewGate'] = preview_gate
+
         # Start from existing (to preserve unknown/custom fields), then overwrite the
         # sections we explicitly manage via the update form.
         merged = deep_merge(brand_from_form, existing)
@@ -4438,6 +4704,7 @@ def update_brand(slug):
             'theme',
             'themeId',
             'aaApprovedDealer',
+            'previewGate',
         )
         for key in overwrite_keys:
             if key in brand_from_form:

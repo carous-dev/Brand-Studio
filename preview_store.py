@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import os
 from typing import Any, Dict, List, Optional, Tuple
+import uuid
 
 # Import pymysql (required dependency)
 import pymysql
@@ -54,7 +55,7 @@ class PreviewStore:
 
     # --- schema ---
     def init_schema(self) -> None:
-        """Create the `previews` table if it doesn't exist."""
+        """Create the preview tables if they don't exist."""
         sql = """
         CREATE TABLE IF NOT EXISTS previews (
             slug VARCHAR(255) NOT NULL PRIMARY KEY,
@@ -77,6 +78,25 @@ class PreviewStore:
                         ALTER TABLE previews 
                         ADD COLUMN status ENUM('online', 'offline') NOT NULL DEFAULT 'offline'
                     """)
+
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS preview_sessions (
+                        id VARCHAR(36) NOT NULL PRIMARY KEY,
+                        slug VARCHAR(255) NOT NULL,
+                        started_at DATETIME NOT NULL,
+                        last_heartbeat_at DATETIME NOT NULL,
+                        ended_at DATETIME NULL,
+                        elapsed_seconds INT NOT NULL DEFAULT 0,
+                        status ENUM('active', 'locked', 'ended') NOT NULL DEFAULT 'active',
+                        ip_address VARCHAR(64) NULL,
+                        user_agent VARCHAR(512) NULL,
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                        KEY idx_preview_sessions_slug (slug),
+                        KEY idx_preview_sessions_status (status),
+                        KEY idx_preview_sessions_last_heartbeat (last_heartbeat_at)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+                """)
         finally:
             conn.close()
 
@@ -177,5 +197,97 @@ class PreviewStore:
         try:
             with conn.cursor() as cur:
                 cur.execute("DELETE FROM previews WHERE slug=%s", (slug,))
+        finally:
+            conn.close()
+
+    # --- preview gate sessions ---
+    def get_preview_usage_seconds(self, slug: str) -> int:
+        conn = self._get_mysql_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT COALESCE(SUM(elapsed_seconds), 0) AS used_seconds "
+                    "FROM preview_sessions WHERE slug=%s",
+                    (slug,),
+                )
+                row = cur.fetchone() or {}
+                return int(row.get('used_seconds') or 0)
+        finally:
+            conn.close()
+
+    def count_preview_visits(self, slug: str) -> int:
+        conn = self._get_mysql_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("SELECT COUNT(*) AS count FROM preview_sessions WHERE slug=%s", (slug,))
+                row = cur.fetchone() or {}
+                return int(row.get('count') or 0)
+        finally:
+            conn.close()
+
+    def create_preview_session(self, *, slug: str, ip_address: str = '', user_agent: str = '') -> Dict[str, Any]:
+        session_id = str(uuid.uuid4())
+        conn = self._get_mysql_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO preview_sessions (
+                        id, slug, started_at, last_heartbeat_at, elapsed_seconds,
+                        status, ip_address, user_agent
+                    )
+                    VALUES (%s, %s, UTC_TIMESTAMP(), UTC_TIMESTAMP(), 0, 'active', %s, %s)
+                    """,
+                    (session_id, slug, ip_address[:64] or None, user_agent[:512] or None),
+                )
+                cur.execute(
+                    "SELECT * FROM preview_sessions WHERE id=%s",
+                    (session_id,),
+                )
+                return dict(cur.fetchone() or {})
+        finally:
+            conn.close()
+
+    def heartbeat_preview_session(self, *, session_id: str, max_delta_seconds: int = 20) -> Optional[Dict[str, Any]]:
+        """Advance an active session by the time since the previous heartbeat.
+
+        The delta is capped so a sleeping tab, network pause, or delayed timer
+        cannot accidentally consume hours of preview time at once.
+        """
+        conn = self._get_mysql_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    UPDATE preview_sessions
+                    SET
+                        elapsed_seconds = elapsed_seconds + LEAST(
+                            GREATEST(TIMESTAMPDIFF(SECOND, last_heartbeat_at, UTC_TIMESTAMP()), 0),
+                            %s
+                        ),
+                        last_heartbeat_at = UTC_TIMESTAMP()
+                    WHERE id=%s AND status='active'
+                    """,
+                    (max_delta_seconds, session_id),
+                )
+                cur.execute("SELECT * FROM preview_sessions WHERE id=%s", (session_id,))
+                row = cur.fetchone()
+                return dict(row) if row else None
+        finally:
+            conn.close()
+
+    def close_preview_session(self, *, session_id: str, status: str = 'ended') -> None:
+        safe_status = status if status in ('active', 'locked', 'ended') else 'ended'
+        conn = self._get_mysql_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    UPDATE preview_sessions
+                    SET status=%s, ended_at=COALESCE(ended_at, UTC_TIMESTAMP())
+                    WHERE id=%s
+                    """,
+                    (safe_status, session_id),
+                )
         finally:
             conn.close()

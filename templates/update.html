@@ -177,6 +177,50 @@
                                 </label>
                             </div>
                         </div>
+                        {% set preview_gate = brand_data.previewGate if brand_data.previewGate is defined and brand_data.previewGate else {} %}
+                        {% set gate_enabled_raw = preview_gate.enabled if preview_gate.enabled is defined else true %}
+                        {% set gate_seconds = (preview_gate.maxViewSeconds if preview_gate.maxViewSeconds is defined else 86400)|int %}
+                        {% set gate_unlimited = gate_seconds == 0 %}
+                        {% set gate_hours = gate_seconds / 3600 %}
+                        <div class="form-section nested-section">
+                            <h4>Private Preview Access</h4>
+                            <p class="form-section-hint">Controls when this dealer's preview subdomain locks. Default is 24 hours of view time.</p>
+                            <div class="form-grid three-columns">
+                                <div class="form-group checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="previewGateEnabled" value="1" {% if gate_enabled_raw in [true, 1] or (gate_enabled_raw|string|lower) in ['1', 'true', 'yes', 'on'] %}checked{% endif %}>
+                                        Enable preview lock
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="previewGateMaxHours">View time hours</label>
+                                    <input type="number" id="previewGateMaxHours" name="previewGateMaxHours" min="0" step="0.25" value="{{ '%.2f'|format(gate_hours) if not gate_unlimited else 0 }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="previewGateMaxVisits">Max visits</label>
+                                    <input type="number" id="previewGateMaxVisits" name="previewGateMaxVisits" min="0" step="1" value="{{ preview_gate.maxVisits if preview_gate.maxVisits is defined else 0 }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="previewGateExpiresAt">Hard expiry</label>
+                                    <input type="datetime-local" id="previewGateExpiresAt" name="previewGateExpiresAt" value="{{ (preview_gate.expiresAt|string)[:16] if preview_gate.expiresAt is defined and preview_gate.expiresAt else '' }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="previewGateStatus">Status</label>
+                                    {% set gate_status = (preview_gate.status if preview_gate.status is defined else 'active') %}
+                                    <select id="previewGateStatus" name="previewGateStatus">
+                                        <option value="active" {% if gate_status == 'active' %}selected{% endif %}>Active</option>
+                                        <option value="locked" {% if gate_status == 'locked' %}selected{% endif %}>Locked</option>
+                                        <option value="revoked" {% if gate_status == 'revoked' %}selected{% endif %}>Revoked</option>
+                                    </select>
+                                </div>
+                                <div class="form-group checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="previewGateUnlimited" value="1" {% if gate_unlimited %}checked{% endif %}>
+                                        Unlimited access
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Brand Assets Section -->

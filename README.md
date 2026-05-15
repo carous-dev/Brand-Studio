@@ -128,9 +128,32 @@ Recommended production layout:
 - Run **Next.js** and **Flask** as separate processes/containers.
 - Ensure Next can reach Flask via `FLASK_API_URL`.
 - Ensure your reverse proxy forwards host headers (`Host`, and ideally `x-forwarded-host`).
+- The GitHub deploy workflow runs `python app.py --init-previews-db` before
+  rebuilding/restarting, so idempotent preview schema changes are applied on deploy.
 
 If you deploy to an environment with an immutable filesystem (common in serverless),
 do **not** rely on “editing the bundled `previews.db`” at runtime. Instead, run Flask with persistent storage and let Next read configs via the Flask API.
+
+## Dealer preview gate
+
+Dealer subdomains under `*.carouspreviews.co.uk` automatically use the preview
+gate. The default policy is 24 hours total view time and unlimited visits. Control it
+per preview by storing this on the brand config:
+
+```json
+"previewGate": {
+  "enabled": true,
+  "maxViewSeconds": 86400,
+  "maxVisits": 0,
+  "expiresAt": "2026-05-20T18:00:00Z",
+  "status": "active"
+}
+```
+
+Set `maxViewSeconds` or `maxVisits` to `0` for unlimited. Set `status` to
+`"locked"` to manually lock a preview. The remote creation helper also supports
+`--preview-minutes`, `--preview-seconds`, `--preview-visits`,
+`--preview-expires`, `--preview-unlimited`, and `--preview-locked`.
 
 ## Common troubleshooting
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import type { BrandConfig } from '@/brands/types'
+import { usePreviewBanner } from '@/app/hooks/usePreviewBanner'
 import './styles.css'
 
 type PreviewBannerProps = {
@@ -42,12 +43,13 @@ type PreviewBannerProps = {
 export default function PreviewBanner({ brand, href = 'https://carous.co.uk', force }: PreviewBannerProps) {
   const [show, setShow] = useState(false)
   const ref = useRef<HTMLElement | null>(null)
+  const envPreviewBanner = usePreviewBanner()
 
   useEffect(() => {
     if (force === true) { setShow(true); return }
     if (force === false) { setShow(false); return }
-    setShow(process.env.NEXT_PUBLIC_PREVIEW === '1')
-  }, [force])
+    setShow(envPreviewBanner)
+  }, [envPreviewBanner, force])
 
   // Publishes the banner's rendered height as a CSS variable on <html> so
   // theme headers can stick BELOW the banner via

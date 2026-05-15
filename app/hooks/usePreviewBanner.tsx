@@ -8,10 +8,19 @@ export function usePreviewBanner(): boolean {
   const [show, setShow] = useState(false)
 
   useEffect(() => {
-    // Read environment variable at runtime (available as window.__NEXT_PUBLIC_PREVIEW if injected)
-    // or check directly from process.env in browser context (SSR-safe)
-    const previewEnabled = process.env.NEXT_PUBLIC_PREVIEW === '1'
-    setShow(previewEnabled)
+    const apply = () => {
+      const gateEnabled = document.documentElement.hasAttribute('data-preview-gate-enabled')
+      setShow(!gateEnabled && process.env.NEXT_PUBLIC_PREVIEW === '1')
+    }
+
+    apply()
+    const observer = new MutationObserver(apply)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-preview-gate-enabled'],
+    })
+
+    return () => observer.disconnect()
   }, [])
 
   return show

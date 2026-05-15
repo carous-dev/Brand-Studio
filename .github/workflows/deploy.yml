@@ -106,6 +106,16 @@ jobs:
               echo "Skipping npm ci; package.json + lockfile unchanged since ${last_deploy_ref}"
             fi
 
+            # Apply idempotent preview DB schema changes before the app starts
+            # serving the freshly deployed code. This creates/updates the
+            # previews table and the dealer preview view-time session table.
+            if [ -f "${DEPLOY_DIR}/.env" ]; then
+              set -a
+              . "${DEPLOY_DIR}/.env"
+              set +a
+            fi
+            python app.py --init-previews-db
+
             # Regenerate the 4 theme runtime registries (theme-context-,
             # theme-contract-, theme-page-, theme-shell-registry) +
             # theme-manifest.json from the on-disk per-theme folders. These

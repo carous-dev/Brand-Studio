@@ -1,0 +1,141 @@
+.brandstudio-preview-gate {
+  position: sticky;
+  top: 0;
+  z-index: 10000;
+  width: 100%;
+  background: #101820;
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  font-family: var(--font-ui-family-override, var(--font-ui-family, 'Inter', 'Segoe UI', sans-serif));
+}
+
+.brandstudio-preview-gate-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 9px clamp(14px, 3vw, 32px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 16px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.brandstudio-preview-gate-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.13);
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.brandstudio-preview-gate-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.brandstudio-preview-gate-text {
+  font-size: 0.88rem;
+  line-height: 1.35;
+  font-weight: 520;
+}
+
+.brandstudio-preview-gate-text strong {
+  font-weight: 760;
+}
+
+.brandstudio-preview-lock-target {
+  transition: filter 220ms ease, opacity 220ms ease;
+}
+
+body[data-preview-gate-locked] .brandstudio-preview-lock-target {
+  filter: blur(9px) saturate(0.55);
+  opacity: 0.42;
+  pointer-events: none;
+  user-select: none;
+}
+
+.brandstudio-preview-lock {
+  position: fixed;
+  inset: var(--brandstudio-preview-banner-height, 0px) 0 0 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: clamp(20px, 5vw, 56px);
+  background: rgba(12, 17, 23, 0.42);
+  backdrop-filter: blur(2px);
+}
+
+.brandstudio-preview-lock-panel {
+  width: min(460px, 100%);
+  padding: clamp(22px, 4vw, 34px);
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
+  text-align: left;
+}
+
+.brandstudio-preview-lock-kicker {
+  margin: 0 0 10px;
+  color: #6b7280;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.brandstudio-preview-lock-panel h2 {
+  margin: 0 0 12px;
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.brandstudio-preview-lock-panel p:not(.brandstudio-preview-lock-kicker) {
+  margin: 0 0 20px;
+  color: #4b5563;
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.brandstudio-preview-lock-panel a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 6px;
+  background: #101820;
+  color: #ffffff;
+  font-weight: 760;
+  text-decoration: none;
+}
+
+.brandstudio-preview-lock-panel a:focus-visible {
+  outline: 3px solid rgba(16, 24, 32, 0.35);
+  outline-offset: 3px;
+}
+
+@media (max-width: 560px) {
+  .brandstudio-preview-gate-inner {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .brandstudio-preview-gate-tag {
+    font-size: 0.62rem;
+  }
+
+  .brandstudio-preview-gate-text {
+    font-size: 0.78rem;
+  }
+}
