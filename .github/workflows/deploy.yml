@@ -109,11 +109,9 @@ jobs:
             # Apply idempotent preview DB schema changes before the app starts
             # serving the freshly deployed code. This creates/updates the
             # previews table and the dealer preview view-time session table.
-            if [ -f "${DEPLOY_DIR}/.env" ]; then
-              set -a
-              . "${DEPLOY_DIR}/.env"
-              set +a
-            fi
+            # app.py loads .env via python-dotenv; do not `source` it in Bash
+            # because production env files may have CRLF line endings or values
+            # that are valid dotenv but invalid shell syntax.
             python app.py --init-previews-db
 
             # Regenerate the 4 theme runtime registries (theme-context-,
