@@ -54,14 +54,15 @@ const SEARCH_FIELDS = [
 
 export default function Hero() {
   const brand = useBrand()
-  const city = brand?.location?.address?.city || 'Reading'
-  const county = brand?.location?.address?.county || 'Berkshire'
-  const heroTitle = `Used Cars for Sale in ${city}, ${county}`
+  const city = brand?.location?.address?.city || ''
+  const county = brand?.location?.address?.county || ''
+  const area = [city, county].filter(Boolean).join(', ')
+  const heroTitle = area ? `Used Cars for Sale in ${area}` : 'Used Cars for Sale'
   const asString = (v: unknown): string | null => (typeof v === 'string' && v ? v : null)
   const heroLead =
     asString(brand?.aboutUs?.description) ||
     asString((brand as any)?.description) ||
-    `${brand?.name || "Springalls Car Sales Ltd"} is an independent ${city} dealership offering hand-picked used cars, flexible finance, and part exchange support. Visit us at ${city}, ${county}.`
+    `${brand?.name || 'This dealership'} is an independent dealership offering hand-picked used cars, flexible finance, and part exchange support.`
   const reviewImage = (brand as any)?.heroReviewImage || '/images/google-at-motorsinc.png'
 
   return (
@@ -99,7 +100,7 @@ export default function Hero() {
           </span>
           <span className={styles.heroPill} role="listitem">
             <MapPin size={14} strokeWidth={2.2} aria-hidden="true" />
-            {city}{county ? `, ${county}` : ''}
+            {area || 'Contact the showroom'}
           </span>
         </div>
       </div>

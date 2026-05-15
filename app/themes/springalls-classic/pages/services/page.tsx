@@ -43,7 +43,7 @@ const SERVICE_DETAILS = [
 ]
 
 export function SpringallsServicesPage({ brand }: ThemePageProps) {
-  const brandName = brand?.name || 'Springalls Car Sales'
+  const brandName = brand?.name || 'this dealership'
   const shortName = brandName.replace(/\s*(Ltd|Limited|Car Sales)\.?$/i, '').trim() || brandName
   const eyebrow = `${shortName} Services`
 

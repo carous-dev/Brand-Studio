@@ -73,7 +73,7 @@ export function normalizeInventoryItem(item: any): InventoryVehicle | null {
   const body = toText(vehicle.body_type ?? vehicle.bodyType ?? item.body_type ?? item.body)
   const color = toText(vehicle.colour ?? vehicle.color ?? item.colour ?? item.color)
   const doors = Number(vehicle.doors ?? item.doors ?? 0)
-  const location = toText(item.advertiser?.town ?? item.advertiser?.region ?? item.location ?? 'Reading, Berkshire')
+  const location = toText(item.advertiser?.town ?? item.advertiser?.region ?? item.location)
 
   const galleryImages = [
     ...collectImages(item.gallery),
@@ -107,7 +107,7 @@ export function normalizeInventoryItem(item: any): InventoryVehicle | null {
     make: make || 'Vehicle',
     color: color || 'Colour',
     doors: Number.isFinite(doors) && doors > 0 ? doors : 4,
-    location: location || 'Reading, Berkshire',
+    location: location || '',
     image: image || fallbackImage,
     featured: Boolean(advert.featured ?? item.featured),
   }

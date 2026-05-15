@@ -36,13 +36,13 @@ function formatHoursLine(hours?: Record<string, string>): string {
 export function SpringallsContactPage() {
   const brand = useBrand()
   const contact = getBrandContactInfo(brand)
-  const brandName = brand?.name || 'Springalls Car Sales'
+  const brandName = brand?.name || 'this dealership'
 
-  const showroomAddress = contact.showroomAddress || 'Office 108a, Regus, 200 Brook Drive, Reading, Berkshire RG2 6UB'
-  const phoneDisplay = contact.phoneDisplay || '+44 7738 906707'
-  const phoneTel = contact.phoneTel || '+447738906707'
-  const whatsappUrl = contact.whatsappUrl || 'https://wa.me/447738906707'
-  const email = contact.email || 'sales@springalls.co.uk'
+  const showroomAddress = contact.showroomAddress || 'Contact the showroom for location details'
+  const phoneDisplay = contact.phoneDisplay
+  const phoneTel = contact.phoneTel
+  const whatsappUrl = contact.whatsappUrl
+  const email = contact.email
   const hoursLine = formatHoursLine((brand as any)?.openingHours)
 
   const mapsEmbedUrl = useMemo(

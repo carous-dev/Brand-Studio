@@ -70,7 +70,7 @@ export default function ServiceMain() {
             </div>
             <h3 className="service-title">CAR SALES</h3>
             <p className="service-description">
-              Quality used vehicles sourced predominantly through main dealers and prepared to a
+              Quality used vehicles selected carefully and prepared to a
               high retail standard.
             </p>
             <Link href="/services" className="service-link">
@@ -112,7 +112,7 @@ export default function ServiceMain() {
             </div>
             <h3 className="service-title">AFTER-SALES SUPPORT</h3>
             <p className="service-description">
-              Minimum 3-month comprehensive warranty (unless stated) plus friendly after-sales
+              Warranty options plus friendly after-sales
               support.
             </p>
             <Link href="/services" className="service-link">

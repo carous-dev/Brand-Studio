@@ -3,9 +3,10 @@ import type { ThemePageProps } from '../../../types'
 import styles from './page.module.css'
 
 export function AutoAboutPage({ brand }: ThemePageProps) {
-  const brandName = brand?.name || 'AUTOWOW UK LTD'
-  const city = brand?.location?.address?.city || 'Barking'
-  const county = brand?.location?.address?.county || 'Essex'
+  const brandName = brand?.name || 'this dealership'
+  const city = brand?.location?.address?.city || ''
+  const county = brand?.location?.address?.county || ''
+  const area = [city, county].filter(Boolean).join(', ')
 
   return (
     <>
@@ -14,8 +15,8 @@ export function AutoAboutPage({ brand }: ThemePageProps) {
           <p className="auto-page-hero-crumb">Our story</p>
           <h1>About {brandName}</h1>
           <p>
-            A family-run independent dealership in {city}, {county}. Specialists in quality
-            used cars sourced through main dealers and prepared to a high retail standard.
+            {area ? `An independent dealership in ${area}. ` : ''}
+            Specialists in quality used cars with clear preparation standards and customer-focused service.
           </p>
         </div>
       </section>
@@ -27,12 +28,12 @@ export function AutoAboutPage({ brand }: ThemePageProps) {
             <h2 className="auto-section-title">Customer-focused, quality-led, no surprises.</h2>
             <p className="auto-section-lead">
               We&rsquo;ve built our reputation on transparency and service excellence in used car
-              sales and imports. Every vehicle goes through a full specialist health check, with
+              sales. Every vehicle is presented with clear details, with
               HPI and finance checks completed before it hits the forecourt.
             </p>
             <p className="auto-section-lead">
               From sourcing through finance, preparation and aftercare, we&rsquo;re the dealer you
-              can keep calling. Visit our showroom in Barking or browse the latest stock online &mdash;
+              can keep calling. Visit our showroom or browse the latest stock online &mdash;
               same-day callbacks are normal.
             </p>
             <div className={styles.ctaRow}>
@@ -44,8 +45,8 @@ export function AutoAboutPage({ brand }: ThemePageProps) {
           <aside className={styles.media} aria-hidden="true">
             <div className={styles.mediaInner} />
             <div className={styles.mediaBadge}>
-              <strong>500+</strong>
-              <span>Vehicles available</span>
+              <strong>Stock</strong>
+              <span>Updated regularly</span>
             </div>
           </aside>
         </div>
@@ -61,8 +62,7 @@ export function AutoAboutPage({ brand }: ThemePageProps) {
               <span className={styles.valueNum}>01</span>
               <h3>Quality</h3>
               <p>
-                Sourced through main dealers. Independently inspected. Retail-standard
-                preparation before the keys change hands.
+                Carefully selected stock, clear vehicle details and preparation standards before the keys change hands.
               </p>
             </li>
             <li>
@@ -77,8 +77,7 @@ export function AutoAboutPage({ brand }: ThemePageProps) {
               <span className={styles.valueNum}>03</span>
               <h3>Service</h3>
               <p>
-                Minimum 3-month warranty, collection support, nationwide delivery and friendly
-                aftercare you can rely on.
+                Warranty options, collection support, handover guidance and friendly aftercare you can rely on.
               </p>
             </li>
           </ul>

@@ -34,7 +34,7 @@ function toQuery(source: Record<string, any> | undefined): URLSearchParams {
 }
 
 async function fetchInitialInventory(filters: URLSearchParams): Promise<{ vehicles: InventoryVehicle[]; meta: InventoryMeta | null }> {
-  // Kain Motors prestige inventory loader — server-side fetch with brand scope so
+  // Prestige inventory loader — server-side fetch with brand scope so
   // operator-uploaded vehicles render reliably (SKILL Pitfall row 14).
   if (!filters.has('page')) filters.set('page', '1')
   filters.set('per_page', '12')

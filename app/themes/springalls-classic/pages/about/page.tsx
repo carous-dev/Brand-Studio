@@ -33,9 +33,9 @@ const STATS = [
 ]
 
 export function SpringallsAboutPage({ brand }: ThemePageProps) {
-  const brandName = brand?.name || 'Springalls Car Sales'
-  const city = (brand as any)?.location?.address?.city || 'Reading'
-  const county = (brand as any)?.location?.address?.county || 'Berkshire'
+  const brandName = brand?.name || 'this dealership'
+  const city = (brand as any)?.location?.address?.city || ''
+  const county = (brand as any)?.location?.address?.county || ''
   const region = county || city
   const aboutHeadline =
     (brand as any)?.aboutUs?.headline || 'A trusted team built on transparency'
@@ -90,7 +90,7 @@ export function SpringallsAboutPage({ brand }: ThemePageProps) {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>What we stand for</h2>
             <p className={styles.sectionText}>
-              Every interaction reflects the values that make {brandName} a trusted choice in {region}.
+              Every interaction reflects the values that make {brandName} a trusted choice{region ? ` in ${region}` : ''}.
             </p>
           </div>
           <div className={styles.valueGrid}>

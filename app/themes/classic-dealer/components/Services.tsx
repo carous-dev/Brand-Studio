@@ -7,7 +7,7 @@ import { useBrand } from '../context/BrandClientWrapper'
 import "../styles/services-new.css"
 
 const stats = [
-  { id: "vehicles", value: "500+", label: "Vehicles Available", icon: Car },
+  { id: "vehicles", value: "Live", label: "Stock Updates", icon: Car },
   { id: "customers", value: "300+", label: "Happy Customers", icon: Users },
   { id: "support", value: "6 Days", label: "Open Mon-Sat", icon: Headphones },
   { id: "models", value: "125+", label: "Car Model & Make", icon: Key }

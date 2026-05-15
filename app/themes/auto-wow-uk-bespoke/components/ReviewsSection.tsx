@@ -6,25 +6,25 @@ import styles from './ReviewsSection.module.css'
 
 const FALLBACK_REVIEWS = [
   {
-    name: 'Mark T.',
+    name: 'Verified buyer',
     rating: 5,
-    platform: 'Google',
+    platform: 'Customer review',
     review:
-      'AUTOWOW UK made importing my vehicle straightforward and stress-free. The team kept me in the loop and the car arrived exactly as described. Highly recommend their professionalism.',
+      'The team made the buying process straightforward, with clear communication and a well-presented vehicle at handover.',
   },
   {
-    name: 'Sarah J.',
+    name: 'Recent customer',
     rating: 5,
-    platform: 'Autotrader',
+    platform: 'Customer review',
     review:
-      'Excellent service from start to finish. The team helped me find a great car at a fair price with no hidden fees. Easy paperwork, fast delivery, friendly aftercare.',
+      'Helpful advice, easy paperwork and no pressure. Every question was answered before we made a decision.',
   },
   {
-    name: 'David R.',
+    name: 'Part-exchange customer',
     rating: 5,
-    platform: 'Google',
+    platform: 'Customer review',
     review:
-      'Bought my family car here last month. They knew their stock inside out and answered every question. I&rsquo;ll come back when it&rsquo;s time to upgrade.',
+      'A fair part-exchange discussion and a professional service from enquiry through to collection.',
   },
 ]
 
@@ -73,7 +73,7 @@ export default function ReviewsSection() {
                 <footer className={styles.meta}>
                   <p className={styles.name}>{r.name}</p>
                   <p className={styles.platform}>
-                    via {r.platform || 'Google'}
+                    via {r.platform || 'Customer review'}
                   </p>
                 </footer>
               </li>
@@ -82,10 +82,7 @@ export default function ReviewsSection() {
         </ul>
 
         <div className={styles.platforms} data-aos="fade-up" data-aos-delay="300">
-          <span>Read more on</span>
-          <strong>Google</strong>
-          <strong>Autotrader</strong>
-          <strong>AUTOWOW UK</strong>
+          <span>Reviews shown where available from the dealer profile.</span>
         </div>
       </div>
     </section>

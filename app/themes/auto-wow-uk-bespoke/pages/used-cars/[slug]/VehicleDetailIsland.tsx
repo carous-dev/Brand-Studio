@@ -279,7 +279,7 @@ export default function VehicleDetailIsland({
 
             <ul className={styles.trustList}>
               <li><ShieldCheck size={14} aria-hidden="true" /> HPI &amp; finance checked</li>
-              <li><ShieldCheck size={14} aria-hidden="true" /> Minimum 3-month warranty</li>
+              <li><ShieldCheck size={14} aria-hidden="true" /> Warranty options available</li>
               <li><ShieldCheck size={14} aria-hidden="true" /> Nationwide delivery available</li>
             </ul>
           </div>

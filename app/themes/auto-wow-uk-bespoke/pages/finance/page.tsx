@@ -55,7 +55,7 @@ export function AutoFinancePage({ brand }: ThemePageProps) {
             </ul>
 
             <p className={styles.disclaimer}>
-              <strong>FCA disclosure:</strong> {brand?.name || 'AUTOWOW UK LTD'} is a credit broker, not a lender.
+              <strong>FCA disclosure:</strong> {brand?.name || 'this dealership'} is a credit broker, not a lender.
               We are authorised and regulated by the Financial Conduct Authority. Finance subject to status; over 18s only.
               Terms and conditions apply. Written quotations available on request.
             </p>

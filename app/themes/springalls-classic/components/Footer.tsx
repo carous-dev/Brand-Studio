@@ -39,13 +39,7 @@ function buildContactLines(brand: any): string[] {
     if (sun && !/closed/i.test(sun)) out.push(`Sun: ${sun}`)
   }
   if (!out.length) {
-    return [
-      'Office 108a, Regus, 200 Brook Drive',
-      'Reading, Berkshire, RG2 6UB',
-      'Mon-Sat: 10:00-18:00',
-      'Sun: 10:00-16:00',
-      'Home delivery available'
-    ]
+    return ['Contact the showroom for location and opening details']
   }
   out.push('Home delivery available')
   return out
@@ -54,14 +48,15 @@ function buildContactLines(brand: any): string[] {
 export default function Footer() {
   const brand = useBrand()
   const logo = brand?.logo || '/images/springsallcarsalesltd-logo.png'
-  const brandName = brand?.name || 'Springalls Car Sales Ltd'
-  const city = brand?.location?.address?.city || 'Reading'
-  const county = brand?.location?.address?.county || 'Berkshire'
+  const brandName = brand?.name || 'this dealership'
+  const city = brand?.location?.address?.city || ''
+  const county = brand?.location?.address?.county || ''
+  const area = [city, county].filter(Boolean).join(', ')
   const asString = (v: unknown): string | null => (typeof v === 'string' && v ? v : null)
   const summary =
     asString(brand?.aboutUs?.description) ||
     asString((brand as any)?.description) ||
-    `Privately sourced used vehicles, trusted service, and a transparent buying experience in ${city}${county ? `, ${county}` : ''}.`
+    `Quality used vehicles, trusted service, and a transparent buying experience${area ? ` in ${area}` : ''}.`
   const contactLines = buildContactLines(brand)
   const socialLinks: Record<string, string> | undefined = (brand as any)?.socialLinks
   const socials = SOCIAL_DEFS.map((s) => ({

@@ -36,8 +36,9 @@ export default function Header() {
   const brand = useBrand()
   const pathname = usePathname() || '/'
   const contact = getBrandContactInfo(brand)
-  const city = brand?.location?.address?.city || 'Barking'
-  const county = brand?.location?.address?.county || 'Essex'
+  const city = brand?.location?.address?.city || ''
+  const county = brand?.location?.address?.county || ''
+  const locationLabel = [city, county].filter(Boolean).join(', ') || 'Contact us'
   const social = brand?.socialLinks || {}
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -77,7 +78,7 @@ export default function Header() {
         <div className={styles.topbarInner}>
           <span className={styles.topChip} title="Showroom">
             <MapPin size={14} aria-hidden="true" />
-            {city}, {county}
+            {locationLabel}
           </span>
           <span className={`${styles.topChip} ${styles.liveChip}`} aria-live="polite">
             <span className={`mfx-pulse-dot ${styles.liveDot}`} aria-hidden="true" />
@@ -117,11 +118,11 @@ export default function Header() {
 
       <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ''}`}>
         <div className={styles.headerInner}>
-          <Link href="/" className={styles.brand} aria-label={brand?.name || 'AutoWow UK'}>
+          <Link href="/" className={styles.brand} aria-label={brand?.name || 'this dealership'}>
             {brand?.logo ? (
-              <img src={brand.logo} alt={brand?.name || 'AutoWow UK'} className={styles.brandLogo} />
+              <img src={brand.logo} alt={brand?.name || 'this dealership'} className={styles.brandLogo} />
             ) : (
-              <span className={styles.brandWordmark}>{brand?.name || 'AutoWow UK'}</span>
+              <span className={styles.brandWordmark}>{brand?.name || 'Dealer'}</span>
             )}
           </Link>
 

@@ -790,9 +790,9 @@ function VehicleNotFoundTemplate({
 }) {
   const __brand = useBrand();
   const __contact = getBrandContactInfo(__brand);
-  const SPRINGALLS_PHONE_DISPLAY = __contact.phoneDisplay || '+44 7738 906707';
-  const SPRINGALLS_PHONE_TEL = __contact.phoneTel || '+447738906707';
-  const SPRINGALLS_WHATSAPP_URL = __contact.whatsappUrl || 'https://wa.me/447738906707';
+  const SPRINGALLS_PHONE_DISPLAY = __contact.phoneDisplay;
+  const SPRINGALLS_PHONE_TEL = __contact.phoneTel;
+  const SPRINGALLS_WHATSAPP_URL = __contact.whatsappUrl;
   const listingReference = slug ? `Reference: ${slug}` : "Reference unavailable";
 
   return (
@@ -814,7 +814,7 @@ function VehicleNotFoundTemplate({
               Back to used cars
             </Link>
             <Link href="/contact-us" className={styles.notFoundAction}>
-              Contact Springalls
+              Contact us
             </Link>
           </div>
 
@@ -850,9 +850,9 @@ function VehicleNotFoundTemplate({
 export function SpringallsVehicleDetailPage() {
   const __brand = useBrand();
   const __contact = getBrandContactInfo(__brand);
-  const SPRINGALLS_PHONE_DISPLAY = __contact.phoneDisplay || '+44 7738 906707';
-  const SPRINGALLS_PHONE_TEL = __contact.phoneTel || '+447738906707';
-  const SPRINGALLS_WHATSAPP_URL = __contact.whatsappUrl || 'https://wa.me/447738906707';
+  const SPRINGALLS_PHONE_DISPLAY = __contact.phoneDisplay;
+  const SPRINGALLS_PHONE_TEL = __contact.phoneTel;
+  const SPRINGALLS_WHATSAPP_URL = __contact.whatsappUrl;
   const params = useParams<{ slug?: string | string[] }>();
   const slug = useMemo(() => {
     const raw = params?.slug;
@@ -1530,24 +1530,24 @@ export function SpringallsVehicleDetailPage() {
                 </div>
 
                 <div className={styles.sideCard}>
-                  <h3>Contact Springalls</h3>
+                  <h3>Contact the showroom</h3>
                   <div className={styles.contactStack}>
-                    <a href="tel:01234567890">
-                      <span className={styles.sideStatIcon}><Phone size={16} strokeWidth={2} /></span>
-                      01234 567 890
-                    </a>
-                    <a href="mailto:sales@springallscarsales.co.uk">
-                      <span className={styles.sideStatIcon}><Mail size={16} strokeWidth={2} /></span>
-                      sales@springallscarsales.co.uk
-                    </a>
+                    {SPRINGALLS_PHONE_TEL ? (
+                      <a href={`tel:${SPRINGALLS_PHONE_TEL}`}>
+                        <span className={styles.sideStatIcon}><Phone size={16} strokeWidth={2} /></span>
+                        {SPRINGALLS_PHONE_DISPLAY || 'Call us'}
+                      </a>
+                    ) : null}
+                    {__contact.email ? (
+                      <a href={`mailto:${__contact.email}`}>
+                        <span className={styles.sideStatIcon}><Mail size={16} strokeWidth={2} /></span>
+                        {__contact.email}
+                      </a>
+                    ) : null}
                     <span>
                       <span className={styles.sideStatIcon}><MapPin size={16} strokeWidth={2} /></span>
-                      Bedfordshire, United Kingdom
+                      {__contact.showroomAddress || 'Contact us for location details'}
                     </span>
-                    <a href="https://springallscarsales.co.uk" target="_blank" rel="noreferrer">
-                      <span className={styles.sideStatIcon}><Globe size={16} strokeWidth={2} /></span>
-                      springallscarsales.co.uk
-                    </a>
                   </div>
                   <button type="button" className={styles.primaryButton} onClick={openEnquiry}>
                     Send an enquiry
@@ -2001,3 +2001,5 @@ export function SpringallsVehicleDetailPage() {
     </main>
   );
 }
+
+export default SpringallsVehicleDetailPage

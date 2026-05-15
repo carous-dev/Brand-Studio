@@ -700,6 +700,9 @@ export default function UsedCarsClient({
   const showSkeleton = loading && vehicles.length === 0
   const showFilterEmpty = !noInventory && !showSkeleton && fetchedOnce && !loading && visibleVehicles.length === 0
   const resultsCount = typeof inventoryMeta?.total === 'number' ? inventoryMeta.total : totalResults
+  const brandName = brand?.name || 'this dealership'
+  const address = (brand as any)?.location?.address || {}
+  const area = [address.city, address.county].filter(Boolean).join(', ')
 
   return (
     <main className={styles.page}>
@@ -708,9 +711,9 @@ export default function UsedCarsClient({
         <div className={styles.heroInner}>
           <div>
             <p className={styles.eyebrow}>Used Cars</p>
-            <h1 className={styles.heroTitle}>Used Cars in Reading, Berkshire</h1>
+            <h1 className={styles.heroTitle}>{area ? `Used Cars in ${area}` : 'Used Cars'}</h1>
             <p className={styles.heroLead}>
-              Browse fully inspected used cars from Springalls Car Sales Ltd, with finance options, part exchange, and
+              Browse carefully presented used cars from {brandName}, with finance options, part exchange, and
               transparent pricing across every listing.
             </p>
           </div>
@@ -721,7 +724,7 @@ export default function UsedCarsClient({
             </div>
             <div className={styles.heroHighlight}>
               <MapPin size={18} strokeWidth={2} />
-              Reading, Berkshire
+              {area || 'Contact the showroom'}
             </div>
             <div className={styles.heroHighlight}>
               <Gauge size={18} strokeWidth={2} />

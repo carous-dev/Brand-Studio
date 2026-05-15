@@ -2,10 +2,6 @@
 
 import styles from './Testimonials.module.css'
 
-// Seed testimonials paraphrased from public AutoTrader reviews of the dealer
-// this theme was built for — kept generic enough to stay credible when the
-// theme is re-used for a different operator. Owner-name and brand-name are
-// avoided so the testimonials don't outwardly contradict a re-skin.
 type Testimonial = {
   quote: string
   author: string
@@ -16,31 +12,31 @@ type Testimonial = {
 
 const TESTIMONIALS: Testimonial[] = [
   {
-    quote: 'Second car I have bought here. The owner is patient and not pushy — answered every question and never rushed me. Thoroughly recommend.',
+    quote: 'The team was patient and not pushy, answered every question and never rushed the decision.',
     author: 'Repeat buyer',
-    location: 'Leicester',
+    location: 'Customer review',
     rating: 5,
     type: 'car',
   },
   {
-    quote: 'First-time buyer and could not have asked for a better experience. Process felt relaxed and easy from start to finish — zero pressure.',
+    quote: 'First-time buyer and could not have asked for a better experience. Process felt relaxed and easy from start to finish.',
     author: 'First-time buyer',
-    location: 'Leicestershire',
+    location: 'Customer review',
     rating: 5,
     type: 'car',
   },
   {
-    quote: 'Bought a Skoda — perfect service. They followed up with the full service history after collection. Four months on, still happy.',
-    author: 'Skoda owner',
-    location: 'East Midlands',
+    quote: 'Good service, clear updates and helpful follow-up after collection.',
+    author: 'Recent customer',
+    location: 'Customer review',
     rating: 5,
-    type: 'car',
+    type: 'bike',
   },
 ]
 
 function initialOf(name: string) {
   const match = name.match(/[A-Za-z]/)
-  return match ? match[0].toUpperCase() : '★'
+  return match ? match[0].toUpperCase() : '*'
 }
 
 export default function Testimonials() {
@@ -50,10 +46,10 @@ export default function Testimonials() {
         <header className={styles.head}>
           <span className="dual-eyebrow" data-aos="fade-up">Customer reviews</span>
           <h2 className={styles.title} data-aos="fade-up" data-aos-delay="80">
-            5-star rated by drivers and riders
+            Feedback from drivers and riders
           </h2>
           <p className={styles.lead} data-aos="fade-up" data-aos-delay="160">
-            Paraphrased excerpts from independently verified AutoTrader reviews — patient, no pressure, real follow-up after the sale.
+            Customer feedback shown where available from the dealer profile.
           </p>
         </header>
 

@@ -80,8 +80,8 @@ export default function DirectorySection({
     return null
   }
 
-  const region = county || 'Berkshire'
-  const dealershipName = brandName || 'Springalls Car Sales'
+  const region = county || 'your area'
+  const dealershipName = brandName || 'this dealership'
 
   return (
     <section className={styles.section} aria-labelledby="directory-title" data-aos="fade-up">

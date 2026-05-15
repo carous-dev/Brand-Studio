@@ -9,7 +9,7 @@ import styles from './page.module.css'
 export default function SellYourCarMount() {
   const brand = useBrand()
   const contact = getBrandContactInfo(brand)
-  const brandName = brand?.name || 'AUTOWOW UK LTD'
+  const brandName = brand?.name || 'this dealership'
 
   return (
     <section className={`auto-section ${styles.section}`}>

@@ -215,7 +215,7 @@ export function ClassicAboutPage({ brand }: ThemePageProps) {
   }
 
   const defaultStoryPoints: AboutStoryPoint[] = [
-    { value: asFirstText(storyContent.experience, '20+ years'), label: 'Combined Motor Trade Experience' },
+    { value: asFirstText(storyContent.experience, 'Experienced'), label: 'Motor Trade Experience' },
     { value: establishedYear, label: `Established in ${city || 'your area'}` },
     { value: asFirstText(storyContent.rating, '5-star'), label: 'Verified Customer Feedback' },
   ]

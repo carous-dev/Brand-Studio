@@ -963,7 +963,7 @@ export default function Vehicle({ vehicle: vehicleProp, images, similarList: sim
         'Service history checked and documented.',
         'HPI and finance checks complete before listing.',
         'Multi-point workshop inspection completed.',
-        'Supplied with minimum 3-month warranty.',
+        'Warranty options available.',
       ]
 
   const summaryPrice = fmtPrice(vehicle?.price)

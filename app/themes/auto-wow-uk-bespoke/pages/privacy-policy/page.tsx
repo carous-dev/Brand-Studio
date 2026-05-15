@@ -3,8 +3,8 @@ import type { ThemePageProps } from '../../../types'
 import styles from './page.module.css'
 
 export function AutoPrivacyPolicyPage({ brand }: ThemePageProps) {
-  const brandName = brand?.name || 'AUTOWOW UK LTD'
-  const address = (brand?.location as any)?.fullAddress || '8 Benson Street, Barking, Essex, IG11 0YY'
+  const brandName = brand?.name || 'this dealership'
+  const address = (brand?.location as any)?.fullAddress || 'Contact the showroom for location details'
   const email = (brand?.location as any)?.email || ''
 
   return (

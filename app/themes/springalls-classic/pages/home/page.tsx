@@ -10,8 +10,8 @@ import type { ThemePageProps } from '../../../types'
 
 export async function SpringallsHomePage({ brand }: ThemePageProps) {
   const directoryItems = (await fetchInventoryMakes()) || []
-  const brandName = (brand as any)?.name || 'Springalls Car Sales'
-  const county = (brand as any)?.location?.address?.county || 'Berkshire'
+  const brandName = (brand as any)?.name || 'this dealership'
+  const county = (brand as any)?.location?.address?.county || ''
 
   return (
     <>

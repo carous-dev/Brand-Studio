@@ -35,8 +35,8 @@ export default function Footer() {
   const brand = useBrand()
   const contact = getBrandContactInfo(brand)
   const year = new Date().getFullYear()
-  const brandName = brand?.name || 'AUTOWOW UK LTD'
-  const address = contact.showroomAddress || '8 Benson Street, Barking, Essex, IG11 0YY'
+  const brandName = brand?.name || 'this dealership'
+  const address = contact.showroomAddress || 'Contact the showroom for location details'
   const social = brand?.socialLinks || {}
   const socialItems = [
     social.facebook && { Icon: Facebook, href: social.facebook as string, label: 'Facebook' },
@@ -59,8 +59,7 @@ export default function Footer() {
             )}
           </Link>
           <p className={styles.tagline}>
-            Quality used cars, dependable service. Family-run independent dealer in Barking, Essex —
-            importing and preparing main-dealer-quality vehicles for the long haul.
+            Quality used cars, dependable service, and clear support from enquiry to handover.
           </p>
 
           {socialItems.length > 0 && (
@@ -115,7 +114,7 @@ export default function Footer() {
             )}
             <li>
               <Clock size={14} aria-hidden="true" />
-              <span>Mon&ndash;Sat 09:00&ndash;18:00 · Sun closed</span>
+              <span>Contact us for today's opening hours</span>
             </li>
           </ul>
         </address>

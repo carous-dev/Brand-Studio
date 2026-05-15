@@ -19,21 +19,21 @@ export default function Reviews() {
   const nearby = city || 'the showroom'
   const reviews: Review[] = [
     {
-      body: `Bought my Audi A6 from ${text.name} after months of looking around ${nearby}. The car was prepped properly, the warranty came as promised, and they actually picked up the phone when I rang back about a small trim issue. Will buy from again.`,
-      name: 'Hassan A.',
-      location: city ? `${city} · Trustpilot` : 'Trustpilot',
+      body: `Bought from ${text.name} after comparing a few options around ${nearby}. The car was presented clearly and the team answered every question before handover.`,
+      name: 'Verified buyer',
+      location: city ? `${city} customer` : 'Customer review',
       rating: 5,
     },
     {
-      body: 'Got a great trade-in price for my Audi and drove home in a tidy BMW. No pressure on finance, paperwork sorted while we had coffee. Felt like buying from a friend, not a salesman.',
-      name: 'Sophie L.',
-      location: 'Google Reviews',
+      body: 'A fair part-exchange discussion, no pressure on finance, and paperwork handled without fuss.',
+      name: 'Recent customer',
+      location: 'Customer review',
       rating: 5,
     },
     {
-      body: 'Delivery arranged the length of the country and the driver did a full walk-around before handing the keys over. Genuinely impressed — the Range Rover was even cleaner than the photos.',
-      name: 'Iain M.',
-      location: 'AutoTrader',
+      body: 'Helpful handover and clear communication from enquiry to collection. The vehicle matched the listing.',
+      name: 'Collection customer',
+      location: 'Customer review',
       rating: 5,
     },
   ]
@@ -66,7 +66,7 @@ export default function Reviews() {
         </ol>
 
         <p className={styles.foot}>
-          Independent reviews aggregated from Google, AutoTrader and Trustpilot.
+          Customer feedback shown where available from the dealer profile.
         </p>
       </div>
     </section>

@@ -68,8 +68,8 @@ const financeDisclaimerText = (process.env.NEXT_PUBLIC_FINANCE_DISCLAIMER_TEXT |
 export function SpringallsFinancePage(_props: ThemePageProps) {
   const brand = useBrand()
   const contact = getBrandContactInfo(brand)
-  const phoneDisplay = contact.phoneDisplay || '+44 7738 906707'
-  const phoneTel = contact.phoneTel || '+447738906707'
+  const phoneDisplay = contact.phoneDisplay
+  const phoneTel = contact.phoneTel
   const hasValidScriptUrl = /^(https?:)?\/\//i.test(codeweaversScriptUrl)
   const hasEmbedConfig = Boolean(hasValidScriptUrl)
   const hasDisclaimer = Boolean(financeDisclaimerText)

@@ -2,8 +2,8 @@ import type { ThemePageProps } from '../../../types'
 import ContactIsland from './ContactIsland'
 
 export function AutoContactPage({ brand }: ThemePageProps) {
-  const brandName = brand?.name || 'AUTOWOW UK LTD'
-  const city = brand?.location?.address?.city || 'Barking'
+  const brandName = brand?.name || 'this dealership'
+  const city = brand?.location?.address?.city || 'your area'
 
   return (
     <>

@@ -3,7 +3,7 @@
 import styles from './SpecsBar.module.css'
 
 const STATS = [
-  { value: '500+', label: 'Vehicles available' },
+  { value: 'Live', label: 'Stock updates' },
   { value: '300+', label: 'Happy customers' },
   { value: '125+', label: 'Makes & models' },
   { value: '6/7', label: 'Days open Mon-Sat' },

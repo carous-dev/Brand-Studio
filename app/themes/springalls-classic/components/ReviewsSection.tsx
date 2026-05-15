@@ -96,7 +96,7 @@ export default function ReviewsSection() {
     [activeIndex, reviews]
   )
 
-  const brandName = brand?.name || 'Springalls Car Sales'
+  const brandName = brand?.name || 'this dealership'
 
   return (
     <section className={styles.reviews} data-aos="fade-up">

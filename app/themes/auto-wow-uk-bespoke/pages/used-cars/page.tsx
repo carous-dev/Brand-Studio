@@ -107,8 +107,8 @@ export async function AutoUsedCarsPage({ searchParams }: UsedCarsRuntimeProps) {
           <p className="auto-page-hero-crumb">Used cars</p>
           <h1>{totalCount > 0 ? `${totalCount}+ used cars on the forecourt.` : 'Used cars on the forecourt.'}</h1>
           <p>
-            Quality used vehicles in Barking &amp; available for nationwide delivery. Filter by make,
-            body, price &amp; mileage to narrow your shortlist.
+            Quality used vehicles with clear listing details. Filter by make, body, price
+            and mileage to narrow your shortlist.
           </p>
         </div>
       </section>

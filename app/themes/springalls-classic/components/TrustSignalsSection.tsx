@@ -29,16 +29,17 @@ const SIGNALS = [
 
 export default function TrustSignalsSection() {
   const brand = useBrand()
-  const name = brand?.name || 'Springalls Car Sales Ltd'
-  const city = brand?.location?.address?.city || 'Reading'
-  const county = brand?.location?.address?.county || 'Berkshire'
+  const name = brand?.name || 'this dealership'
+  const city = brand?.location?.address?.city || ''
+  const county = brand?.location?.address?.county || ''
+  const area = [city, county].filter(Boolean).join(', ')
 
   return (
     <section className={styles.section} aria-labelledby="trust-signals-title" data-aos="fade-up">
       <div className={styles.inner}>
         <p id="trust-signals-title" className={styles.lead}>
-          All our stock is privately bought, checked, and tested so you can buy with confidence from {name} in {city}
-          {county ? `, ${county}` : ''}.
+          All stock is checked and presented clearly so you can buy with confidence from {name}
+          {area ? ` in ${area}` : ''}.
         </p>
         <div className={styles.grid}>
           {SIGNALS.map((signal) => {

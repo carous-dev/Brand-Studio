@@ -18,7 +18,7 @@ type Values = {
 export default function ContactIsland() {
   const brand = useBrand()
   const contact = getBrandContactInfo(brand)
-  const address = contact.showroomAddress || '8 Benson Street, Barking, Essex, IG11 0YY'
+  const address = contact.showroomAddress || 'Contact the showroom for location details'
   const form = useLeadsForm<Values>({
     initialValues: { name: '', email: '', phone: '', message: '' },
     leadType: 'contact',
@@ -68,7 +68,7 @@ export default function ContactIsland() {
               <span className={styles.icon}><Clock size={16} aria-hidden="true" /></span>
               <div>
                 <p className={styles.label}>Hours</p>
-                <p className={styles.value}>Mon&ndash;Sat 09:00&ndash;18:00<br />Sun closed (viewings by appointment)</p>
+                <p className={styles.value}>Contact us for today&rsquo;s opening hours and appointment availability.</p>
               </div>
             </li>
           </ul>

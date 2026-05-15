@@ -373,7 +373,7 @@ export function ShowroomVehicleDetailPage() {
                 </div>
 
                 <ul className={styles.featureList}>
-                  <li><Check size={14} strokeWidth={2.4} aria-hidden /> 3-month warranty included</li>
+                  <li><Check size={14} strokeWidth={2.4} aria-hidden /> Warranty options available</li>
                   <li><Check size={14} strokeWidth={2.4} aria-hidden /> HPI &amp; finance verified</li>
                   <li><Check size={14} strokeWidth={2.4} aria-hidden /> Part-exchange welcome</li>
                   <li><Check size={14} strokeWidth={2.4} aria-hidden /> Same-day finance decisions</li>

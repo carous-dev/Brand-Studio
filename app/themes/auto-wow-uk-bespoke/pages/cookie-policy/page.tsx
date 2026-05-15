@@ -3,7 +3,7 @@ import type { ThemePageProps } from '../../../types'
 import styles from './page.module.css'
 
 export function AutoCookiePolicyPage({ brand }: ThemePageProps) {
-  const brandName = brand?.name || 'AUTOWOW UK LTD'
+  const brandName = brand?.name || 'this dealership'
 
   return (
     <>

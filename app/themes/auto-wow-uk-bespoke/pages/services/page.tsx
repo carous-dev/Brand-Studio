@@ -9,7 +9,7 @@ const SERVICES = [
   {
     Icon: CarFront,
     title: 'Car sales',
-    blurb: 'Quality used vehicles sourced through main dealers and prepared to a high retail standard. From compact runarounds to family SUVs and executive saloons.',
+    blurb: 'Quality used vehicles presented with clear details and careful preparation. From compact runarounds to family SUVs and executive saloons.',
     bullets: ['HPI checked', 'Service-history reviewed', 'Cosmetic preparation'],
     href: '/used-cars',
   },
@@ -30,8 +30,8 @@ const SERVICES = [
   {
     Icon: ShieldCheck,
     title: 'After-sales support',
-    blurb: 'Minimum 3-month comprehensive warranty (unless stated) plus friendly aftercare. We answer the phone and help you sort it.',
-    bullets: ['3-month warranty', 'Optional extended cover', 'Direct dealer aftercare'],
+    blurb: 'Warranty options and friendly aftercare explained clearly before you buy. We answer the phone and help you sort it.',
+    bullets: ['Warranty options', 'Optional extended cover', 'Direct dealer aftercare'],
     href: '/contact',
   },
   {

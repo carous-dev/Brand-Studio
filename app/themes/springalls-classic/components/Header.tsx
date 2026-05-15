@@ -62,9 +62,9 @@ export default function Header() {
   }, [mobileOpen])
 
   const logo = brand?.logo || '/images/springsallcarsalesltd-logo.png'
-  const city = brand?.location?.address?.city || 'Reading'
-  const county = brand?.location?.address?.county || 'Berkshire'
-  const locationLabel = `${city}${county ? `, ${county}` : ''}`
+  const city = brand?.location?.address?.city || ''
+  const county = brand?.location?.address?.county || ''
+  const locationLabel = [city, county].filter(Boolean).join(', ') || 'Contact us'
   const openingWindow = pickFirstOpenWindow((brand as any)?.openingHours) || 'Mon-Sat 10:00-18:00'
 
   return (

@@ -6,16 +6,16 @@ export type BrandContactInfo = {
   email: string
   whatsappUrl: string
   showroomAddress: string
-  /** Best single-word city for "Manchester showroom" style copy. Empty string if absent. */
+  /** Best single-word city for showroom style copy. Empty string if absent. */
   city: string
-  /** County, e.g. "Greater Manchester". Empty string if absent. */
+  /** County label. Empty string if absent. */
   county: string
   /** Postcode, e.g. "M12 6LB". Empty string if absent. */
   postcode: string
   /** Street + line2, e.g. "Midlands Street". Empty string if absent. */
   streetLine: string
   /**
-   * Short location label for chrome — "Manchester · M12 6LB" if both exist, else city alone,
+   * Short location label for chrome if city and postcode exist, else city alone,
    * else county, else empty. Use this anywhere the dealer's "where" needs to render in a single line.
    */
   locationLabel: string

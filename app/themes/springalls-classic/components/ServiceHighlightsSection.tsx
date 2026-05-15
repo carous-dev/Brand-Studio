@@ -28,11 +28,12 @@ const FEATURES = [
 
 export default function ServiceHighlightsSection() {
   const brand = useBrand()
-  const brandName = brand?.name || 'Springalls Car Sales Ltd'
+  const brandName = brand?.name || 'this dealership'
   const shortName = brandName.replace(/\s*(Ltd|Limited|Car Sales)\.?$/i, '').trim() || brandName
-  const city = brand?.location?.address?.city || 'Reading'
-  const county = brand?.location?.address?.county || 'Berkshire'
-  const postcode = brand?.location?.address?.postcode || 'RG2 6UB'
+  const city = brand?.location?.address?.city || ''
+  const county = brand?.location?.address?.county || ''
+  const postcode = brand?.location?.address?.postcode || ''
+  const area = [city, county].filter(Boolean).join(', ')
 
   return (
     <section className={styles.section} aria-labelledby="service-highlights-title" data-aos="fade-up">
@@ -63,7 +64,7 @@ export default function ServiceHighlightsSection() {
               Why Choose {brandName}
             </h2>
             <p className={styles.contentLead}>
-              At {brandName}, all our cars are privately bought, carefully checked, and prepared to a high standard
+              At {brandName}, vehicles are carefully checked and prepared to a clear standard
               before they reach the forecourt.
             </p>
             <div className={styles.divider} aria-hidden="true" />
