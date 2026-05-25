@@ -1,0 +1,366 @@
+/* =============================================================================
+ * BASE STYLES — auto-wow-uk-bespoke-02 (Autowow Performance)
+ *
+ * Rugged-archetype theme with grid-overlaid-photo signature move, dark-accent-
+ * strip-top header, brutalist voice. All rules scoped under
+ * [data-theme-id='auto-wow-uk-bespoke-02'] so they cannot bleed into other
+ * themes bundled in the same preview.
+ *
+ * Color policy: surface and foreground tokens are PAIRED. Components MUST
+ * consume the tier-locked neutral tokens defined here (theme cannot break
+ * AA contrast). Brand records may only override the brand triad.
+ * ============================================================================= */
+
+[data-theme-id='auto-wow-uk-bespoke-02'] {
+  /* Paired surface + foreground tokens — ALL derive from dashboard pickers
+     (--color-bg, --color-surface, --color-text, --color-muted, --color-border)
+     set by BrandStyles. Brand records change the dashboard pickers; every
+     surface in the theme repaints automatically. No literals here.
+     See feedback_dashboard_tokens_drive_all_surfaces.md. */
+
+  /* Light tier — direct from dashboard. */
+  --surface-bg-light: var(--color-bg);
+  --surface-card-light: var(--color-surface);
+  --text-on-light-strong: var(--color-text);
+  --text-on-light-muted: var(--color-muted);
+  --border-on-light: var(--color-border);
+  --border-on-light-strong: color-mix(in srgb, var(--color-text) 22%, transparent);
+
+  /* Dark tier — derived from dashboard text/bg (roles inverted: text-color
+     becomes the dark surface, bg-color becomes the foreground). */
+  --surface-bg-dark: var(--color-text);
+  --surface-card-dark: color-mix(in srgb, var(--color-text) 88%, var(--color-bg));
+  --surface-card-dark-elevated: color-mix(in srgb, var(--color-text) 82%, var(--color-bg));
+  --text-on-dark-strong: var(--color-bg);
+  --text-on-dark-muted: color-mix(in srgb, var(--color-bg) 78%, transparent);
+  --text-on-dark-faint: color-mix(in srgb, var(--color-bg) 58%, transparent);
+  --border-on-dark: color-mix(in srgb, var(--color-bg) 12%, transparent);
+  --border-on-dark-strong: color-mix(in srgb, var(--color-bg) 22%, transparent);
+
+  /* Role tokens used by inventory + recipe-driven components. */
+  --t-page: var(--color-bg);
+  --t-card: var(--color-surface);
+  --t-border: var(--color-border);
+  --t-text: var(--color-text);
+  --t-muted: var(--color-muted);
+  --t-icon-bg: color-mix(in srgb, var(--color-text) 6%, transparent);
+  --t-icon-bg-strong: color-mix(in srgb, var(--color-text) 10%, transparent);
+
+  /* Brutalist-voice utility shadows + radii. Squared corners enforce dealer-
+     signage feel; nothing exceeds 8px. */
+  --shadow-tight: 0 1px 0 rgba(var(--color-text-rgb), 0.04), 0 8px 24px rgba(var(--color-text-rgb), 0.06);
+  --shadow-press: 0 12px 32px rgba(var(--color-text-rgb), 0.12);
+  --shadow-dark-press: 0 12px 32px rgba(0, 0, 0, 0.4);
+
+  color-scheme: light;
+  font-family: var(--font-ui-family-override, 'Inter', 'Segoe UI', sans-serif);
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+  margin: 0;
+  /* The body sets a default light-tier foreground so cascading inheritance is
+     safe; dark sections explicitly override `color` on their own surface. */
+}
+
+[data-theme-id='auto-wow-uk-bespoke-02'] *,
+[data-theme-id='auto-wow-uk-bespoke-02'] *::before,
+[data-theme-id='auto-wow-uk-bespoke-02'] *::after {
+  box-sizing: border-box;
+}
+
+/* Headings: typography-only at the global level. Per-component CSS-modules
+   own the color — never set `color` on global h1-h4 (see SKILL pitfall #26). */
+[data-theme-id='auto-wow-uk-bespoke-02'] :where(h1, h2, h3, h4) {
+  font-family: var(--font-brand-family-override, 'Anton', 'Impact', sans-serif);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+[data-theme-id='auto-wow-uk-bespoke-02'] :where(p) {
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* Skip-to-content. */
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-skip-link:focus {
+  left: 12px;
+  top: 12px;
+  width: auto;
+  height: auto;
+  padding: 12px 16px;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  z-index: 1000;
+}
+
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-main {
+  display: block;
+  min-height: calc(100vh - 200px);
+}
+
+/* Section primitives — generic shells that pages compose. */
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-section {
+  padding-block: clamp(48px, 7vw, 96px);
+  position: relative;
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-section--dark {
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-section--card {
+  background: var(--surface-card-light);
+  color: var(--text-on-light-strong);
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-section-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+}
+
+/* Page-hero variants — multi-layer background-image so brand-uploaded
+   images that 404 fall through to the theme default. Per SKILL pitfall #38c. */
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-page-hero {
+  position: relative;
+  isolation: isolate;
+  padding-block: clamp(72px, 12vw, 160px);
+  color: var(--text-on-dark-strong);
+  overflow: hidden;
+  background-color: var(--surface-bg-dark);
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-position: center, center, center;
+  background-size: cover, cover, cover;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-page-hero::after {
+  /* Brand-tinted grid mask + strong dark gradient — repeats the hero
+     signature move on inner pages. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(var(--surface-bg-dark-rgb), 0.82), rgba(var(--surface-bg-dark-rgb), 0.62)),
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--brand-primary) 18%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--brand-primary) 12%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 100% 100%, 8.33% 100%, 100% 16.66%;
+  pointer-events: none;
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-page-hero--about::before {
+  background-image:
+    var(--brand-image-about, none),
+    url('/themes/auto-wow-uk-bespoke-02/images/about.jpg');
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-page-hero--services::before {
+  background-image:
+    var(--brand-image-services, none),
+    url('/themes/auto-wow-uk-bespoke-02/images/services.jpg');
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-page-hero--finance::before {
+  background-image:
+    var(--brand-image-finance, none),
+    url('/themes/auto-wow-uk-bespoke-02/images/finance.jpg');
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-page-hero--part-exchange::before {
+  background-image:
+    var(--brand-image-part-exchange, none),
+    url('/themes/auto-wow-uk-bespoke-02/images/partExchange.jpg');
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-page-hero--sell-your-car::before {
+  background-image:
+    var(--brand-image-sell-your-car, none),
+    url('/themes/auto-wow-uk-bespoke-02/images/sellYourCar.jpg');
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-page-hero--recently-sold::before {
+  background-image:
+    var(--brand-image-recently-sold, none),
+    url('/themes/auto-wow-uk-bespoke-02/images/recentlySold.jpg');
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-page-hero--hero::before {
+  background-image:
+    var(--brand-image-hero, none),
+    url('/themes/auto-wow-uk-bespoke-02/images/hero.jpg');
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-page-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+  text-align: left;
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-page-hero-eyebrow {
+  font-family: var(--font-brand-family-override);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.78rem;
+  color: var(--brand-primary);
+  margin-bottom: 12px;
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 6px 12px;
+  border-left: 2px solid var(--brand-primary);
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-page-hero h1 {
+  font-size: clamp(2.4rem, 5.2vw, 3.6rem);
+  color: var(--text-on-dark-strong);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-page-hero p {
+  margin-top: 14px;
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  color: var(--text-on-dark-strong);
+  opacity: 0.92;
+  max-width: 60ch;
+}
+
+/* CTA primitives. */
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 22px;
+  border-radius: 4px;
+  font-family: var(--font-brand-family-override);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.95rem;
+  font-weight: 400;
+  border: 2px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.12s ease, background 0.16s ease, border-color 0.16s ease;
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-btn:active { transform: translateY(1px); }
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-btn--primary {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-btn--primary:hover {
+  background: var(--brand-primary-strong);
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-btn--ghost-light {
+  background: transparent;
+  color: var(--text-on-dark-strong);
+  border-color: var(--border-on-dark-strong);
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-btn--ghost-light:hover {
+  border-color: var(--text-on-dark-strong);
+  background: rgba(255, 255, 255, 0.08);
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-btn--ghost-dark {
+  background: transparent;
+  color: var(--text-on-light-strong);
+  border-color: var(--border-on-light-strong);
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-btn--ghost-dark:hover {
+  border-color: var(--text-on-light-strong);
+  background: var(--surface-card-light);
+}
+
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--brand-primary);
+  text-decoration: none;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.92rem;
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-cta-link::after {
+  content: '\2192';
+  transition: transform 0.18s ease;
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-cta-link:hover::after {
+  transform: translateX(4px);
+}
+
+/* Hidden attribute should always hide regardless of display rules. */
+[data-theme-id='auto-wow-uk-bespoke-02'] [hidden] {
+  display: none !important;
+}
+
+/* Form-field base. */
+[data-theme-id='auto-wow-uk-bespoke-02'] :where(input, select, textarea) {
+  font-family: inherit;
+  font-size: 1rem;
+  border-radius: 4px;
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] :where(input:not([type='checkbox']):not([type='radio']), select, textarea) {
+  width: 100%;
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+  border: 1px solid var(--border-on-light-strong);
+  padding: 12px 14px;
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] :where(input:focus, select:focus, textarea:focus) {
+  outline: none;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 18%, transparent);
+}
+
+/* AOS keyframes — inline because the widget's index.ts side-effect import is
+   sometimes tree-shaken (see SKILL feedback_aos_css_inline.md). Scoped under
+   the theme id so it can never leak into another theme. */
+[data-theme-id='auto-wow-uk-bespoke-02'] [data-aos] {
+  opacity: 0;
+  transition-property: opacity, transform, filter;
+  transition-duration: 720ms;
+  transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity, transform;
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] [data-aos].aos-animate {
+  opacity: 1;
+  transform: none !important;
+  filter: none !important;
+}
+[data-theme-id='auto-wow-uk-bespoke-02'] [data-aos='fade-up'] { transform: translateY(28px); }
+[data-theme-id='auto-wow-uk-bespoke-02'] [data-aos='fade-down'] { transform: translateY(-28px); }
+[data-theme-id='auto-wow-uk-bespoke-02'] [data-aos='fade-left'] { transform: translateX(36px); }
+[data-theme-id='auto-wow-uk-bespoke-02'] [data-aos='fade-right'] { transform: translateX(-36px); }
+[data-theme-id='auto-wow-uk-bespoke-02'] [data-aos='zoom-in'] { transform: scale(0.94); }
+[data-theme-id='auto-wow-uk-bespoke-02'] [data-aos='blur-in'] { filter: blur(8px); }
+[data-theme-id='auto-wow-uk-bespoke-02'] [data-aos='slide-up'] { transform: translateY(48px); }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme-id='auto-wow-uk-bespoke-02'] [data-aos] {
+    opacity: 1;
+    transform: none !important;
+    filter: none !important;
+    transition: none;
+  }
+}
+
+/* Mobile decorative-layer suppression — hide grid drift / scan lines /
+   floating decor at narrow viewports per SKILL §"Mobile strip". */
+@media (max-width: 640px) {
+  [data-theme-id='auto-wow-uk-bespoke-02'] .auto-decor-mobile-hide {
+    display: none !important;
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "themeId": "auto-wow-uk-bespoke",
+  "archetype": "rugged",
+  "signatureConcept": "Dark-mode dealer-signage with monochrome 4-up inventory strip and uppercase condensed display",
+  "signatureMove": "dark-hero-status-pill-row",
+  "personalityVoice": "utilitarian",
+  "headerStructure": "dark-stat-pills-light-on-scroll",
+  "heroPattern": "dark-fullbleed-condensed-display",
+  "homepageSections": ["hero", "specs-bar", "latest-arrivals-4up", "services-dark-band", "recently-sold-preview", "cta-fullbleed", "reviews", "directory"],
+  "inventoryListPattern": "showroom-grid",
+  "vehicleDetailPattern": "gallery-forward",
+  "fontHeading": "Oswald",
+  "fontBody": "DM Sans",
+  "oneBigMove": "brand-color-coverage"
+}

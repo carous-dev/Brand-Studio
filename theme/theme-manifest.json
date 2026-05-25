@@ -4,8 +4,14 @@
   "themes": [
     {
       "id": "auto-wow-uk-bespoke",
-      "name": "AutoWow UK",
-      "description": "Bespoke rugged-archetype theme for AUTOWOW UK LTD — bold red dealer-signage condensed-bold wordmark, family-run independent in Barking, Essex.",
+      "name": "Rugged Auto",
+      "description": "Bespoke rugged-archetype theme for independent used-car dealers with bold red signage, condensed display type, and strong stock presentation.",
+      "status": "experimental"
+    },
+    {
+      "id": "auto-wow-uk-bespoke-02",
+      "name": "Autowow Performance",
+      "description": "Bespoke rugged-archetype theme for Autowow UK Ltd — performance/dealer-floor signature with brand-tinted grid-overlay hero, dense filtered-sidebar inventory, and full-bleed mosaic detail page in a brutalist voice.",
       "status": "experimental"
     },
     {
@@ -28,20 +34,20 @@
     },
     {
       "id": "kain-motors-bespoke",
-      "name": "Kain Motors",
-      "description": "Bespoke prestige theme for Kain Motors — gold-on-black appointment-only Manchester used-car dealership with bold display wordmark and editorial dark-tier composition.",
+      "name": "Prestige Dark",
+      "description": "Bespoke prestige theme with gold-on-black styling, appointment-led presentation, bold display wordmark and editorial dark-tier composition.",
       "status": "experimental"
     },
     {
       "id": "showroom-shine-cars-bespoke",
-      "name": "Showroom Shine Cars",
-      "description": "Bespoke theme for Showroom Shine Cars — Coventry independent dealer with bold motoring signage, deep crimson on white, condensed-bold display type.",
+      "name": "Showroom Shine",
+      "description": "Bespoke theme for independent dealers with bold motoring signage, deep crimson on white, and condensed-bold display type.",
       "status": "experimental"
     },
     {
       "id": "springalls-classic",
-      "name": "Springalls Classic",
-      "description": "Crisp teal-accented dealer theme ported from the Springalls Car Sales Ltd app. Suited to family-run independents who want a clean, trustworthy look.",
+      "name": "Classic Teal",
+      "description": "Crisp teal-accented dealer theme suited to independents who want a clean, trustworthy look.",
       "status": "stable"
     }
   ]

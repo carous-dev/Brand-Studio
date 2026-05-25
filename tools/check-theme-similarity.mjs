@@ -2,11 +2,21 @@
 /**
  * check-theme-similarity.mjs
  *
- * Phase 10d cross-theme similarity check. Catches the "another theme,
- * same palette" regression that no other audit rule can see: a new theme
- * whose Phase 8 didn't actually redesign — it just renamed identifiers
- * and re-tinted tokens, leaving the JSX structure ~identical to the
- * springalls-classic skeleton baseline.
+ * Phase 10d cross-theme similarity check. Two passes:
+ *
+ *   Baseline pass — new theme vs springalls-classic skeleton (threshold 0.85).
+ *     Catches the "another theme, same palette" regression where Phase 8
+ *     renamed identifiers without redesigning JSX.
+ *
+ *   Peer pass — new theme vs the 3 most recent same-archetype peers
+ *     (threshold 0.55). Catches the "two themes feel the same" regression
+ *     that the baseline pass misses: two new "modern" themes can each
+ *     score 0.4 against the skeleton but 0.85 against each other.
+ *
+ * The peer pass reads `tools/.theme-concepts/<theme-id>.json` (written by
+ * Phase A2e) to discover the new theme's archetype, then looks up recent
+ * same-archetype themes from `tools/.theme-fingerprints.json`. If the
+ * concept file is missing the peer pass is skipped with a warning.
  *
  * Algorithm (pragmatic, no AST):
  *   1. Read the new theme's render files (Hero, home, used-cars list,
@@ -48,6 +58,9 @@ const PROJECT_ROOT = path.resolve(TOOLS_DIR, '..')
 const THEMES_ROOT = path.join(PROJECT_ROOT, 'app', 'themes')
 const DEFAULT_BASELINE = 'springalls-classic'
 const DEFAULT_THRESHOLD = 0.85
+const PEER_THRESHOLD = 0.55
+const PEER_LIMIT = 3
+const REGISTRY_PATH = path.join(TOOLS_DIR, '.theme-fingerprints.json')
 const SHINGLE_SIZE = 32
 
 const FILES_TO_CHECK = [
@@ -159,15 +172,49 @@ async function similarityForFile(themeId, baselineId, relPath) {
   return { relPath, status: 'ok', score: Number(score.toFixed(3)) }
 }
 
+async function loadRegistry() {
+  try {
+    const raw = await fs.readFile(REGISTRY_PATH, 'utf8')
+    return JSON.parse(raw)
+  } catch { return null }
+}
+
+async function pickArchetypePeers(themeId) {
+  // Read the new theme's fingerprint (if any) and find the most recent
+  // same-archetype peers in the registry. Returns up to PEER_LIMIT peer
+  // theme ids whose folders exist on disk.
+  const conceptPath = path.join(TOOLS_DIR, '.theme-concepts', `${themeId}.json`)
+  let archetype = null
+  try {
+    const concept = JSON.parse(await fs.readFile(conceptPath, 'utf8'))
+    archetype = concept?.archetype || null
+  } catch { /* no concept file — skip peer mode */ }
+  if (!archetype) return { archetype: null, peers: [] }
+
+  const registry = await loadRegistry()
+  if (!registry?.themes) return { archetype, peers: [] }
+  const candidates = registry.themes
+    .filter((t) => t.themeId !== themeId && t.archetype === archetype)
+    .sort((a, b) => String(b.addedAt || '').localeCompare(String(a.addedAt || '')))
+    .slice(0, PEER_LIMIT)
+  const onDisk = []
+  for (const c of candidates) {
+    if (await fileExists(path.join(THEMES_ROOT, c.themeId))) onDisk.push(c.themeId)
+  }
+  return { archetype, peers: onDisk }
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2))
   if (!args.id) {
-    console.error('Usage: node tools/check-theme-similarity.mjs --id <theme-id> [--baseline <other-theme-id>] [--threshold 0.85] [--json]')
+    console.error('Usage: node tools/check-theme-similarity.mjs --id <theme-id> [--baseline <other-theme-id>] [--threshold 0.85] [--peer-threshold 0.55] [--no-peers] [--json]')
     process.exit(2)
   }
   const themeId = String(args.id).toLowerCase()
   const baselineId = String(args.baseline || DEFAULT_BASELINE).toLowerCase()
   const threshold = args.threshold ? Number(args.threshold) : DEFAULT_THRESHOLD
+  const peerThreshold = args['peer-threshold'] ? Number(args['peer-threshold']) : PEER_THRESHOLD
+  const peerMode = !args['no-peers']
   if (themeId === baselineId) {
     console.error(`Refusing to compare ${themeId} to itself`)
     process.exit(2)
@@ -181,22 +228,43 @@ async function main() {
     process.exit(2)
   }
 
-  const results = []
+  // Baseline pass (vs skeleton) — threshold 0.85, mostly a sanity check
+  const baselineResults = []
   for (const rel of FILES_TO_CHECK) {
-    results.push(await similarityForFile(themeId, baselineId, rel))
+    baselineResults.push(await similarityForFile(themeId, baselineId, rel))
+  }
+  const baselineFlagged = baselineResults.filter((r) => r.status === 'ok' && r.score >= threshold)
+
+  // Peer pass (vs recent same-archetype themes) — threshold 0.55, catches
+  // "two modern themes look like twins" which the baseline pass misses.
+  let peerInfo = { archetype: null, peers: [] }
+  const peerResults = []
+  let peerFlagged = []
+  if (peerMode) {
+    peerInfo = await pickArchetypePeers(themeId)
+    for (const peerId of peerInfo.peers) {
+      for (const rel of FILES_TO_CHECK) {
+        const r = await similarityForFile(themeId, peerId, rel)
+        peerResults.push({ ...r, peerId })
+      }
+    }
+    peerFlagged = peerResults.filter((r) => r.status === 'ok' && r.score >= peerThreshold)
   }
 
-  const flagged = results.filter((r) => r.status === 'ok' && r.score >= threshold)
-
   if (args.json) {
-    process.stdout.write(JSON.stringify({ themeId, baselineId, threshold, results, flagged }, null, 2) + '\n')
+    process.stdout.write(JSON.stringify({
+      themeId, baselineId, threshold, peerThreshold,
+      baseline: { results: baselineResults, flagged: baselineFlagged },
+      peers: { archetype: peerInfo.archetype, comparedAgainst: peerInfo.peers, results: peerResults, flagged: peerFlagged },
+    }, null, 2) + '\n')
   } else {
     const reset = '\x1b[0m'
     const green = '\x1b[32m'
     const red = '\x1b[31m'
     const yellow = '\x1b[33m'
-    console.log(`Similarity check: ${themeId} vs ${baselineId}  (threshold ${threshold})`)
-    for (const r of results) {
+    const bold = '\x1b[1m'
+    console.log(`${bold}Baseline pass${reset}: ${themeId} vs ${baselineId}  (threshold ${threshold})`)
+    for (const r of baselineResults) {
       if (r.status === 'skipped') {
         console.log(`  ${yellow}skip${reset}      —  ${r.relPath}  (${r.reason})`)
         continue
@@ -204,17 +272,49 @@ async function main() {
       const flag = r.score >= threshold ? `${red}HIGH${reset}` : `${green}ok${reset}  `
       console.log(`  ${flag}      ${r.score.toFixed(3)}  ${r.relPath}`)
     }
-    console.log('')
-    if (flagged.length === 0) {
-      console.log(`  ${green}OK${reset}: no file at/above threshold — Phase 8 appears to have redesigned the render layer.`)
+    if (baselineFlagged.length === 0) {
+      console.log(`  ${green}OK${reset}: no file at/above ${threshold} — render layer is genuinely fresh vs ${baselineId}.`)
     } else {
-      console.log(`  ${red}FLAGGED${reset}: ${flagged.length} file(s) look like clones of ${baselineId}.`)
-      console.log(`  This is the "another theme, same palette" regression — Phase 8 likely renamed identifiers without redesigning JSX.`)
-      console.log(`  Action: open each flagged file and verify the JSX structure is materially different from the baseline.`)
+      console.log(`  ${red}FLAGGED${reset}: ${baselineFlagged.length} file(s) look like clones of ${baselineId}.`)
+      console.log(`  Phase 8 likely renamed identifiers without redesigning JSX. Redesign each flagged file.`)
+    }
+
+    if (peerMode) {
+      console.log('')
+      if (!peerInfo.archetype) {
+        console.log(`${yellow}Peer pass skipped${reset} — no tools/.theme-concepts/${themeId}.json found (Phase A2e should have written it). Run /new-theme Phase A2e or pass --no-peers to silence.`)
+      } else if (peerInfo.peers.length === 0) {
+        console.log(`${bold}Peer pass${reset}: ${themeId} archetype=${peerInfo.archetype} — no same-archetype peers in registry yet, skipping.`)
+      } else {
+        console.log(`${bold}Peer pass${reset}: ${themeId} vs ${peerInfo.peers.length} recent ${peerInfo.archetype} peer(s) (threshold ${peerThreshold})`)
+        const grouped = new Map()
+        for (const r of peerResults) {
+          if (!grouped.has(r.peerId)) grouped.set(r.peerId, [])
+          grouped.get(r.peerId).push(r)
+        }
+        for (const [peerId, results] of grouped) {
+          console.log(`  vs ${peerId}:`)
+          for (const r of results) {
+            if (r.status === 'skipped') {
+              console.log(`    ${yellow}skip${reset}      —  ${r.relPath}`)
+              continue
+            }
+            const flag = r.score >= peerThreshold ? `${red}HIGH${reset}` : `${green}ok${reset}  `
+            console.log(`    ${flag}      ${r.score.toFixed(3)}  ${r.relPath}`)
+          }
+        }
+        if (peerFlagged.length === 0) {
+          console.log(`  ${green}OK${reset}: all peer scores under ${peerThreshold} — theme is materially different from its archetype siblings.`)
+        } else {
+          console.log(`  ${red}FLAGGED${reset}: ${peerFlagged.length} file(s) too similar to a same-archetype peer.`)
+          console.log(`  This is the "two themes feel the same" regression. Redesign the flagged file's JSX away from the peer's structure.`)
+        }
+      }
     }
   }
 
-  if (flagged.length > 0) process.exit(1)
+  const anyFlagged = baselineFlagged.length > 0 || peerFlagged.length > 0
+  if (anyFlagged) process.exit(1)
   process.exit(0)
 }
 

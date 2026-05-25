@@ -13,13 +13,43 @@ regression pattern (see `feedback_skill_no_regression.md`).
 
 Archetype IDs match `tools/scaffold-theme.mjs::ARCHETYPE_TO_TEMPLATE`.
 
+> **Distinctiveness layer (added 2026-05-25):** the archetype is the
+> design *neighbourhood*; the **Signature Concept** chosen in SKILL Phase
+> A2e is the *building*. Two themes can share an archetype and still be
+> visually unrelated if their signature moves, section composition, hero
+> patterns, and header structures don't collide. The archetype menu
+> below was expanded from 5 to 8 (split `classic` into `classic-trad` /
+> `classic-warm`; added `minimalist`, `industrial`, `editorial`) so the
+> default catch-all isn't dominant. The fingerprint registry
+> (`tools/.theme-fingerprints.json`) enforces no-collision per the rules
+> in SKILL §"Distinctiveness contract".
+
+## Archetype catalogue at a glance
+
+| Archetype | Logo character that maps here | Vibe one-liner |
+|---|---|---|
+| `classic-trad` | `classic-serif`, traditional sans | Trustworthy, conventional, family-run forecourt |
+| `classic-warm` | `humanist-sans`, friendly sans | Warm, approachable, neighbourhood dealer |
+| `modern` | `modern-sans`, `geometric-tech` | Tech-forward, clean lines, urban showroom |
+| `minimalist` | `geometric-tech` with tight letterspacing, single-weight wordmarks | Whitespace-first, near-monochrome, magazine-grid restraint |
+| `industrial` | `condensed-bold`, mechanical sans | Workshop / commercial / van dealer — gridded, utilitarian |
+| `editorial` | `transitional-serif`, `humanist-sans` mixed | Long-form storytelling, byline strip, lead-image journalism |
+| `rugged` | `condensed-bold`, `display-bold` | 4×4 / performance / dealer-signage, dark mode |
+| `luxury` | `luxury-serif`, `script` | Restrained premium, generous white space, hushed |
+| `prestige` | `display-bold` + serif body, magazine-mixed | Supercar editorial, asymmetric, mixed media |
+
+Ambiguous / generic logos now default to `classic-warm` (NOT the
+no-redesign-needed `classic-trad`) so the "catch-all" outcome still gets
+a real redesign cycle. See SKILL Phase A2d for the full mapping table.
+
 ---
 
-## classic (default)
+## classic-trad
 
-**Logo character that maps here:** `humanist-sans`, `classic-serif`, generic.
+**Logo character that maps here:** `classic-serif`, traditional condensed sans.
 **Vibe:** trustworthy, family-run, conventional dealer signage.
-**Reference dealer types:** independent used-car dealers, family-run lots.
+**Reference dealer types:** established independent used-car dealers,
+multi-generation family lots, town-centre showrooms.
 
 **Layout:**
 - Hero: centered headline + lead, search dropdowns below, full-bleed
@@ -31,8 +61,44 @@ Archetype IDs match `tools/scaffold-theme.mjs::ARCHETYPE_TO_TEMPLATE`.
 - Cards: rounded corners (12–14px), soft shadow, image-top + body-below.
 - Typography: ~16px body, ~clamp(2rem, 4vw, 3rem) hero headline.
 
-This is the **default, no redesign needed** in Phase 8 — springalls-classic
-already implements this archetype. Phase 8 still adapts dealer copy.
+This was the original "classic" archetype — `springalls-classic`
+implements it. **Phase 8 still designs fresh per the Distinctiveness
+contract** — pick a different signature move (the centered-headline +
+search-below combo is already taken) so this theme doesn't ship as
+"springalls-classic in a different palette".
+
+---
+
+## classic-warm
+
+**Logo character that maps here:** `humanist-sans`, friendly rounded sans, ambiguous.
+**Vibe:** warm, approachable, neighbourhood dealer.
+**Reference dealer types:** family-run dealers with a soft brand voice,
+mixed-stock independents, dealers who emphasise after-sale care.
+
+**Layout — must be materially different from classic-trad:**
+- Hero: large warm photo of the forecourt or dealer team (NOT a stock
+  car shot), headline left-aligned with a personal-tone lead ("Helping
+  Birmingham families find the right car since 1992"). One primary
+  CTA + a "Speak to our team" ghost link with a small avatar cluster.
+- Header: cream / off-white background (`#fbf8f3`-ish, theme-tinted),
+  rounded buttons (12–16px radii), nav links larger than usual (17px)
+  to feel less corporate.
+- Section composition (homepage): Hero → Founder/team note (1-column
+  centered narrative + small photo) → LatestArrivals (grid, 3-up) →
+  Services (warm icon set, hand-drawn feel optional) → "Why <city>
+  buyers choose us" (review pull-quotes, 2-up) → Recently Sold preview
+  → CTA → Directory.
+- Cards: generous radii (14–18px), pastel border-tinted from the
+  brand-primary at low opacity, lots of breathing room.
+- Typography: serif headings paired with humanist sans body; body 17px
+  for readability; hero headline `clamp(2.2rem, 4.4vw, 3.4rem)`.
+
+**Components Phase 8 must redesign:**
+- `components/Hero.tsx` — warm photo with avatar cluster + personal lead
+- `components/Header.tsx` — cream background, rounded buttons
+- `pages/home/page.tsx` — founder note section, Why-<city> pull-quotes
+- `components/FounderNote.tsx` (NEW) — single-column narrative + photo
 
 ---
 
@@ -219,6 +285,138 @@ private collection brokers.
 - `.prestige-edition-strip { font-family: 'Playfair Display', serif; font-variant: small-caps; letter-spacing: 0.18em; padding: 12px 0; border-block: 1px solid var(--color-border); }`
 - `.prestige-editorial-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 32px; }`
 - `.prestige-pull-quote { font-family: 'Playfair Display', serif; font-style: italic; font-size: clamp(1.5rem, 3vw, 2.4rem); line-height: 1.4; max-width: 880px; margin: 0 auto; padding: clamp(48px, 8vw, 96px) 24px; }`
+
+---
+
+## minimalist
+
+**Logo character that maps here:** `geometric-tech` with tight letter-
+spacing, single-weight wordmarks, monolinear sans-serif logos with no
+decoration.
+**Vibe:** whitespace-first, magazine-grid restraint, near-monochrome.
+**Reference dealer types:** EV-only specialists, premium-curated
+boutique dealers, design-led independents who want their photography
+to do the talking.
+
+**Layout — must be materially different from modern:**
+- Hero: large quiet headline left-aligned, single-line lead beneath,
+  ONE photo to the right at a fixed 4:3 aspect — no decorative SVGs,
+  no glow blobs, no gradient overlay. Brand color used ONLY on the CTA
+  and a single 4px underline mark.
+- Header: hairline 1px border-bottom, very thin (52px). Logo left,
+  text-only nav right. No top contact bar (the contact info lives in
+  the footer); status chip moves into a small footer-strip instead.
+- Section composition (homepage): Hero → Compact spec table (4
+  vehicles in a clean horizontal grid, no card chrome — just rows) →
+  Editorial intro 1-column → ServicesGrid (4-up, text-only with a
+  small icon glyph) → CTA (single sentence + button) → Footer.
+- Cards: NO shadow, NO border, image only + title + price stacked
+  beneath. Hover: subtle 4px lift, nothing flashy.
+- Typography: ONE display weight (heavy), ONE body weight. Heading
+  `clamp(2rem, 3.8vw, 3rem)`, body 16px with line-height 1.75.
+- Decorative budget: zero. Brand color coverage ≤ 8% of pixel area.
+
+**Components Phase 8 must redesign:**
+- `components/Hero.tsx` — quiet two-column composition with single photo
+- `components/Header.tsx` — hairline thin header
+- `pages/home/page.tsx` — row-grid stock table, editorial intro
+- `components/StockTable.tsx` (NEW) — row-grid layout, no card chrome
+
+**Restraint note:** this archetype EXEMPTS the "motion is required"
+clauses — minimalist themes can ship with ONLY entry fades and the
+WhatsAppFab. Animated glow blobs, mfx-shimmer, mfx-text-glow are NOT
+required (and should be avoided). Document in the fingerprint as
+`oneBigMove: "decorative-density"` flipped to *minimum* (lower is the
+big move).
+
+---
+
+## industrial
+
+**Logo character that maps here:** `condensed-bold`, mechanical sans,
+stencil-inspired wordmarks, logos with chevrons or arrows.
+**Vibe:** workshop / commercial / van dealer — gridded, utilitarian,
+no nonsense.
+**Reference dealer types:** van and commercial-vehicle dealers, fleet
+specialists, MOT/servicing-led dealers, agricultural dealers.
+
+**Layout — must be materially different from rugged:**
+- Hero: full-bleed photo BEHIND a heavy grid overlay (8×6 thin grid
+  lines, brand-tinted at low opacity). Headline UPPERCASE
+  monospace-feeling sans, large condensed numerals for any stat
+  ("OVER 200 VANS IN STOCK"). Status chip uses a square indicator
+  (NOT a pulse dot — too soft).
+- Header: dark charcoal background by default, brand-color accent
+  strip across the very top (3px), squared 0px corners on buttons,
+  uppercase nav labels.
+- Section composition (homepage): Hero → "Live stock by category"
+  band (3-tile grid: Vans, Trucks, Cars, each tile a clickable
+  category) → Compact list of 6 latest arrivals (NOT 3-up grid —
+  dense list with image-left layout) → Workshop services (MOT, repairs,
+  servicing) → Fleet enquiry CTA → Reviews → Directory.
+- Cards: SHARP corners (0px), 1px hairline brand-color border, image
+  + dense spec line + price in monospace.
+- Typography: condensed display for headings (Oswald 700), monospace
+  digits where applicable (IBM Plex Mono, Roboto Mono), body in
+  geometric sans.
+- Decorative accents: thin grid overlays on every section bg,
+  category-tag badges in solid brand color, NO gradients (a single
+  flat brand-tinted band per page).
+
+**Components Phase 8 must redesign:**
+- `components/Hero.tsx` — grid-overlaid hero with uppercase stat
+- `components/Header.tsx` — dark charcoal + top accent strip
+- `pages/home/page.tsx` — category band, compact list latest arrivals
+- `components/CategoryBand.tsx` (NEW) — 3-tile category grid
+- `components/CompactStockList.tsx` (NEW) — dense image-left rows
+
+**CSS classes to add:**
+- `.industrial-grid-overlay { background-image: linear-gradient(...), linear-gradient(...); background-size: 12.5% 16.66%; }`
+- `.industrial-card { border-radius: 0; border: 1px solid var(--color-primary); }`
+
+---
+
+## editorial
+
+**Logo character that maps here:** `transitional-serif` (Lora, Source
+Serif), `humanist-sans` mixed with serifs, logos with both a wordmark
+AND a lockup tagline.
+**Vibe:** long-form storytelling, byline strip, lead-image journalism.
+**Reference dealer types:** dealers with strong owner-story content,
+heritage dealers, dealers who run a blog / buyer's guide alongside stock.
+
+**Layout — must be materially different from prestige and luxury:**
+- Hero: large lead image with a byline-style caption beneath ("Issue
+  47 · This week at <Dealer>"), serif headline that's actually a sentence
+  ("This week we drove a 1998 Defender across the Brecon Beacons. Here's
+  what we found.") — narrative tone, NOT salesy.
+- Header: top-strip with edition number + date ("Vol. 5, Issue 47 · 25
+  May 2026"), main nav below — feels like a newspaper masthead. Logo
+  in a serif wordmark, centered.
+- Section composition (homepage): Hero → Editorial lead story (full-
+  width image + long-form opening paragraph + "Read on" link) → 3-up
+  "More stories from the showroom" cards (each card has a topic
+  tag — "Buyer's Guide", "Maintenance", "Tested") → LatestArrivals
+  (small 4-up grid, image-led, no chrome) → Reviews displayed as pull-
+  quote letters with editorial framing → Directory (small at footer).
+- Cards: NO shadow, image dominant, serif italic captions, byline-style
+  attribution beneath each card ("Inspected by James, March 2026").
+- Typography: transitional serif headings, sans body, italic for
+  captions and quotes. Body 17px with generous line-height 1.7.
+- Decorative accents: thin horizontal rules between sections, drop
+  caps on lead paragraphs, marginalia-style sidenotes optional.
+
+**Components Phase 8 must redesign:**
+- `components/Hero.tsx` — lead image + byline caption + sentence headline
+- `components/Header.tsx` — newspaper-masthead two-tier
+- `pages/home/page.tsx` — editorial lead story + topic-tagged story cards
+- `components/EditorialLeadStory.tsx` (NEW) — long-form opener
+- `components/StoryCardGrid.tsx` (NEW) — 3-up topic-tagged cards
+- `components/PullQuoteReview.tsx` (NEW) — editorial-framed review quote
+
+**CSS classes to add:**
+- `.editorial-byline { font-family: var(--font-body); font-size: 0.875rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-on-light-muted); }`
+- `.editorial-dropcap::first-letter { font-family: var(--font-heading); font-size: 4em; float: left; line-height: 0.9; margin: 0 0.1em 0 0; }`
 
 ---
 

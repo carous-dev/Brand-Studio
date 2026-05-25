@@ -1,0 +1,111 @@
+.section {
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+  position: relative;
+}
+.section::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--brand-primary);
+  display: block;
+}
+
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: clamp(28px, 5vw, 64px);
+  align-items: start;
+}
+
+.body {
+  max-width: 64ch;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-brand-family-override, 'Anton', 'Impact', sans-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: var(--text-on-light-strong);
+  letter-spacing: 0.02em;
+  margin-bottom: 18px;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: var(--text-on-light-muted);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  margin-bottom: 22px;
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.aside {
+  position: sticky;
+  top: 140px;
+}
+
+.quoteCard {
+  background: var(--surface-card-dark);
+  color: var(--text-on-dark-strong);
+  border: 1px solid var(--border-on-dark);
+  padding: 28px 26px 24px;
+  border-radius: 4px;
+  position: relative;
+  border-left: 3px solid var(--brand-primary);
+}
+.quoteMark {
+  color: var(--brand-primary);
+  margin-bottom: 12px;
+  opacity: 0.6;
+}
+.quoteText {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: var(--text-on-dark-strong);
+  margin-bottom: 18px;
+}
+.quoteAttribution {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-on-dark);
+  font-family: var(--font-brand-family-override);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+  color: var(--text-on-dark-muted);
+}
+.quoteAttribution strong {
+  font-weight: 400;
+  color: var(--text-on-dark-strong);
+}
+
+@media (max-width: 880px) {
+  .inner {
+    grid-template-columns: 1fr;
+  }
+  .aside { position: static; }
+}

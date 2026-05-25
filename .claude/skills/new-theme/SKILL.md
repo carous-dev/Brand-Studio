@@ -72,6 +72,134 @@ and a sale. These are the non-negotiables every generated theme must hit.
 The audit tool (`tools/audit-theme.mjs`) enforces the mechanical ones in
 Phase 10c; the principles below cover what the tool can't reliably check.
 
+**Distinctiveness contract — no two themes feel the same (must-have, learned 2026-05-25 from "every /new-theme output looks like a recolor of the last"):**
+
+> **Canonical home for distinctiveness policy.** This section is the
+> source of truth for the rule that supersedes every "consistent
+> chrome" rule below. If a Required Widget / Top contact bar / Required
+> Section rule conflicts with the distinctiveness contract, this rule
+> wins — those rules are MENUS to pick a variant from, not single-
+> variant mandates.
+
+The dominant complaint after `/new-theme` ships is "themes look the
+same as each other". Three structural causes, addressed structurally:
+
+1. **A "Signature Concept" is mandatory** (encoded in SKILL Phase A2e).
+   Before Phase 8 designs a single component, the skill picks ONE
+   distinctive design move from the menu below and writes a 1-sentence
+   concept that locks the visual direction. Phase 8 then builds to
+   that concept rather than to a generic archetype default.
+
+2. **A fingerprint registry blocks collisions** (`tools/.theme-fingerprints.json`).
+   Every shipped theme appends its fingerprint (archetype + signature
+   move + hero pattern + header structure + homepage section composition
+   + inventory patterns + font pair + the one-big-move axis). New themes
+   read this registry in Phase A2e and CANNOT pick a fingerprint that
+   collides with any existing entry on these axes:
+   - same archetype + same `signatureMove` → HARD block
+   - same archetype + same `heroPattern` → HARD block
+   - same archetype + same `inventoryListPattern` + same `vehicleDetailPattern` → HARD block
+   - same archetype + homepage section composition Jaccard ≥ 0.65 → HARD block
+   - same archetype + same `fontHeading`+`fontBody` pair → advisory
+
+   `tools/check-theme-uniqueness.mjs` runs in Phase 10d and exits 1 on
+   any hard collision. The theme cannot ship until Phase A2e picks a
+   different axis.
+
+3. **Cross-theme similarity check compares against same-archetype peers**,
+   not just the skeleton baseline (`tools/check-theme-similarity.mjs`
+   peer pass). Two new "modern" themes can each score 0.4 vs springalls-
+   classic but 0.85 against each other — the peer pass catches that
+   regression at threshold 0.55.
+
+### Signature Move menu (Phase A2e picks ONE)
+
+Each entry is a kebab-case identifier that locks into the fingerprint.
+Read across the menu and pick the move that fits the dealer's logo
+character + context hint + business mix. A move not yet used by any
+peer of the chosen archetype is the bar.
+
+- `centered-headline-search-below` — hero is a centered headline with the search dropdown landing directly below it (the original `springalls-classic` move)
+- `centered-headline-full-bleed` — centered hero text over a full-bleed photo, no inline search
+- `split-screen-photo-right` — 50/50 hero with headline left, single photo right
+- `split-screen-photo-left` — inverse of above
+- `dark-fullbleed-condensed-display` — uppercase condensed display in a dark-mode hero
+- `dark-hero-status-pill-row` — dark hero with a row of status pills under the headline
+- `corner-serif-display-fullbleed` — serif headline in the lower-left corner of a full-bleed photo
+- `corner-serif-display-with-thin-gold-rules` — corner serif + gold rule dividers between sections
+- `mixed-media-asymmetric` — 60/40 hero with asymmetric text block + display number ("Vol. X")
+- `typography-only-hero` — no hero photo at all; oversized type IS the hero
+- `lead-image-byline-caption` — large lead image + newspaper-style byline caption above headline
+- `grid-overlaid-photo` — hero photo behind a heavy grid overlay (8×6 lines, brand-tinted)
+- `warm-team-photo-avatar-cluster` — warm photo of the team/forecourt + clickable avatar cluster
+- `stacked-alternating-image-side` — sections alternate image-left / image-right per row
+- `vertical-side-rail-navigation` — primary nav lives in a vertical left rail, content scrolls right of it
+- `horizontal-stock-ticker` — live-stock count + scrolling vehicle ticker as a hero band
+- `stats-band-plus-recently-sold-rail` — stats bar above + dedicated recently-sold horizontal rail below
+- `edition-strip-plus-acquisitions-row` — "Volume X · Spring Edition" strip + horizontal acquisitions cards
+- `why-choose-us-trust-strip` — primary feature is a multi-pillar "why choose us" band high in the page
+
+If the dealer's brand voice genuinely demands a move not on this list,
+ADD a new kebab id and write a one-line description so the next theme
+can avoid it.
+
+### Personality voice menu (Phase A2e picks ONE)
+
+Drives copy tone, microcopy, button labels, helper text:
+
+- `formal` — restrained, third-person ("The showroom is open...")
+- `warm` — first-person plural, soft tone ("We'd love to help you...")
+- `technical` — spec-heavy, numbers-led ("0–60 in 5.2s. From £24,995 / month £348.")
+- `editorial` — narrative, byline tone ("This week's pick: a 2019 Defender...")
+- `playful` — light wit, occasional informal phrase ("Find your next set of wheels.")
+- `brutalist` — minimal-words direct ("Stock. Finance. Drive.")
+- `utilitarian` — operational, dealer-signage tone ("In stock now. Drive away today.")
+
+### Header structure menu (Phase A2e picks ONE)
+
+The "top contact bar + header + nav" assembly varies materially per theme:
+
+- `topbar-strip-plus-horizontal-centered-nav` — classic 2-row, centered logo
+- `topbar-strip-plus-horizontal-left-nav` — 2-row, left logo
+- `thin-sticky-transparent` — single thin row, transparent at top, solid on scroll
+- `dark-stat-pills-light-on-scroll` — dark header w/ status pills, flips to light past hero
+- `tall-symmetrical-centered-logo` — tall (96–120px) with 3+3 symmetrical nav around centered logo
+- `two-tier-editorial` — top action strip + secondary editorial nav (NYT-style)
+- `vertical-side-rail` — primary nav lives in a vertical left-side rail (no horizontal nav)
+- `hairline-thin-borderless` — 52px hairline border-bottom, minimalist-archetype default
+- `dark-accent-strip-top` — dark charcoal nav with 3px brand-accent strip across the very top
+- `newspaper-masthead-two-tier` — edition strip + nav below, serif wordmark centered
+
+### "One big move" — restraint exemption
+
+Every theme picks ONE axis from this list where the restraint rule
+(see §"Restraint and visual hierarchy" below) is LIFTED for this theme.
+The other three axes stay capped. Record the chosen axis in the
+fingerprint as `oneBigMove`:
+
+- `typography-scale` — allow up to 7 distinct font sizes per page (cap is 5)
+- `gradient-coverage` — allow up to 4 gradient-painted surfaces per page (cap is 2)
+- `decorative-density` — allow up to 4 decorative layers per section (cap is 2); OR set to *minimum* (zero decorative layers) for minimalist themes — record as `decorative-density-minimum`
+- `brand-color-coverage` — allow brand-primary to occupy up to 40% of pixel area (cap is 25%)
+- `none` — keep all four caps; the theme's distinctiveness comes from composition not amplitude
+
+**Why exempt one axis:** the 2026-05-11 restraint rule was correct in
+catching "amateur busyness" but over-corrected toward "calm corporate
+template". Every great brand has ONE thing it commits hard to — gilded-
+drive's editorial type scale, auto-wow-uk's dealer-signage brand
+saturation, kain-motors's decorative density. The one-big-move clause
+gives each theme permission to amplify ONE expressive lever while
+keeping the others restrained.
+
+**How to apply:**
+- Phase A2e writes `tools/.theme-concepts/<theme-id>.json` capturing
+  the full fingerprint BEFORE the palette generator runs.
+- Phase 8 reads the concept file FIRST (before the archetype spec)
+  and designs to the locked direction.
+- Phase 10d runs `check-theme-uniqueness.mjs` AND
+  `check-theme-similarity.mjs --peer-threshold 0.55` — both must pass.
+- Phase 11 appends the new fingerprint to the registry.
+
 **Color palette policy — paired surface + foreground tokens (must-have, learned 2026-05-11 from cross-brand contrast bugs):**
 
 > **Canonical home for color policy.** This section is the source of
@@ -743,7 +871,7 @@ _Test discipline:_
   is fine, position between the copyright and the legal nav, never use a
   loud badge or logo block.
 
-**Restraint and visual hierarchy — professional, not hacky (must-have, learned 2026-05-11; supersedes the maximalist clauses below):**
+**Restraint and visual hierarchy — professional, not hacky (must-have, learned 2026-05-11; supersedes the maximalist clauses below). Each theme is allowed ONE exempted axis — see §"Distinctiveness contract → One big move":**
 - The dominant failure mode for /new-theme themes is **overdesign**: too
   many font sizes, too many gradient surfaces, too many decorative
   layers stacked in every section, brand color dominating instead of
@@ -751,25 +879,33 @@ _Test discipline:_
   is the governing constraint — when a downstream rule (motion, futuristic,
   archetype spec) collides with this one, restraint wins.
 - **Typography scale cap.** A single page may use ≤ 5 distinct font
-  sizes total. One display size for hero / page-title, one heading size
-  for section H2s, one sub-heading for H3, one body size, one small/
-  caption. Anything beyond reads as inconsistent. Use `clamp()` to
-  scale per viewport; don't introduce a new size for "this one card".
+  sizes total — UNLESS `oneBigMove` is `typography-scale`, in which
+  case the cap lifts to 7. One display size for hero / page-title, one
+  heading size for section H2s, one sub-heading for H3, one body size,
+  one small/caption. Anything beyond reads as inconsistent. Use
+  `clamp()` to scale per viewport; don't introduce a new size for
+  "this one card".
 - **Gradient budget.** ≤ 2 gradient-painted surface backgrounds per
-  page (hero gradient + one section band is the typical maximum).
+  page — UNLESS `oneBigMove` is `gradient-coverage`, in which case ≤ 4.
   Other sections sit on `var(--color-bg)` / `var(--color-surface)`
   flat. Don't paint every alternating section in `--t-brand-gradient`
   / `--t-neon-gradient` — the eye has no resting place.
 - **Brand color is the accent, not the surface.** The brand primary
   occupies ≤ ~25% of pixel area per page (CTAs, eyebrows, focus rings,
-  one feature band). Most of the page surface is neutral (`var(--color-bg)`,
-  `var(--color-surface)`). The brand "feeling" comes from the few
-  high-impact moments, not from coverage. Filling every section with
-  a brand-tinted background = a 1990s billboard.
+  one feature band) — UNLESS `oneBigMove` is `brand-color-coverage`,
+  in which case ≤ ~40%. Most of the page surface is neutral
+  (`var(--color-bg)`, `var(--color-surface)`). The brand "feeling"
+  comes from the few high-impact moments, not from coverage. Filling
+  every section with a brand-tinted background = a 1990s billboard.
 - **Decorative-layer budget per section.** ≤ 2 decorative layers per
   section (e.g. hero gets photo + ONE of: grid pattern / glow / scanline
-  / corner reticles — not all four). Section bands and inner pages
-  typically get zero decorative layers — just type and content.
+  / corner reticles — not all four) — UNLESS `oneBigMove` is
+  `decorative-density`, in which case ≤ 4 per section. If `oneBigMove`
+  is `decorative-density-minimum`, the cap drops to ZERO (minimalist
+  themes ship with no decorative layers at all — animated glows,
+  shimmer, text-glow are also suppressed). Section bands and inner
+  pages typically get zero decorative layers either way — just type
+  and content.
 - **Mobile strip.** On viewports ≤ 640px, decorative layers (`mfx-glow-pulse`,
   `mfx-grid-drift`, `.scanline`, corner reticles, parallax) either
   hide via `display: none` / `opacity: 0` or scale to ≤ 50% intensity.
@@ -1290,8 +1426,9 @@ separate; Phase 13a is a fast-path for operators who want both in one go.
 2. Analyze the logo:
    a. Deterministic colors via `extract-logo-colors.mjs`.
    b. Vision-analyze typography character + shape language.
-   c. Validate WCAG AA contrast on the suggested primary; iterate if needed.
-   d. Map character to archetype (`classic` / `modern` / `rugged` / `luxury` / `prestige`).
+   d. Map character to archetype (`classic-trad` / `classic-warm` / `modern` / `minimalist` / `industrial` / `editorial` / `rugged` / `luxury` / `prestige`).
+   e. **Lock the Signature Concept** — read `tools/.theme-fingerprints.json`, pick a non-colliding fingerprint, write `tools/.theme-concepts/<theme-id>.json`, self-validate with `check-theme-uniqueness.mjs`.
+   c. Run `check-palette-policy.mjs` to validate the primary hex and generate the full token set.
 3. Scrape the dealer site (WebFetch — brand name, services, location, hero image, etc — captured in DNA notes for archetype guidance, NOT baked as brand record).
 4. Pick a paired Google Font from the character analysis.
 5. Synthesize DNA JSON (includes the hero image URL + chosen archetype).
@@ -1345,9 +1482,11 @@ not matter; only the listed dependencies do.
 | Verification + similarity | Phase 10c (audit) and 10d (similarity) | Both read the new theme's files; neither writes |
 
 Sequential dependencies you cannot collapse:
-- Phase 2 → 2c (contrast check needs the extracted primary)
+- Phase 2 → 2d (archetype mapping needs character)
+- Phase 2d → 2e (concept lock needs the chosen archetype + must read peers from fingerprint registry)
+- Phase 2e → 2c (palette generator runs AFTER the concept is locked so font/archetype/move are settled before the token set is committed)
 - Phase 2 → 4 (font choice depends on logo character)
-- Phase 5 (DNA) → 7 (scaffolder reads DNA)
+- Phase 5 (DNA) → 7 (scaffolder reads DNA + the concept file)
 - Phase 7 → 7.5 (image/favicon/work-package need the scaffolded theme dir)
 - Phase 7.5c → 8 (work-package is the Phase 8 entry checklist)
 - Phase 8 → 9 (theme:sync needs designed files)
@@ -1525,22 +1664,115 @@ authoritative copy; the sidecar is for resilience.
 
 ### A2d — Map logo character to ARCHETYPE
 
-Each new theme is one of five archetypes (see `docs/theme-archetype-specs.md`
-for the full design contract per archetype). The mapping is:
+Each new theme is one of **eight** archetypes (see
+`docs/theme-archetype-specs.md` for the full design contract per
+archetype). The mapping is:
 
-| Logo character (from A2b) | Archetype |
+| Logo character (from A2b) + context signals | Archetype |
 |---------------------------|-----------|
-| `humanist-sans`, `classic-serif`, ambiguous | `classic` |
+| `classic-serif`, traditional condensed sans | `classic-trad` |
+| `humanist-sans`, friendly rounded sans, ambiguous **(catch-all default)** | `classic-warm` |
 | `modern-sans`, `geometric-tech` | `modern` |
-| `condensed-bold`, `display-bold` (sport, dealer-signage) | `rugged` |
+| `geometric-tech` + tight letterspacing + single-weight wordmark; OR contextHint hints at EV/premium-curated/design-led | `minimalist` |
+| `condensed-bold` + mechanical/stencil feel; OR contextHint hints at vans/commercial/fleet/workshop | `industrial` |
+| `transitional-serif`; OR mixed serif-and-sans logo with lockup tagline; OR contextHint hints at heritage/storytelling/buyers-guide | `editorial` |
+| `condensed-bold`, `display-bold` (sport, dealer-signage); OR contextHint hints at 4×4 / performance | `rugged` |
 | `luxury-serif`, `script` | `luxury` |
-| Mixed (display-bold + serif body, magazine feel) | `prestige` |
+| Mixed `display-bold` + serif body, magazine feel | `prestige` |
+
+**Ambiguous logos default to `classic-warm`** (NOT `classic-trad`) so the
+catch-all path still triggers a full Phase 8 redesign cycle — the old
+"classic" archetype is now `classic-trad` and it's `springalls-classic`'s
+neighbourhood; routing every ambiguous logo there was the dominant cause
+of theme sameness.
+
+The contextHint from A1 is a tie-breaker. "EV-only" + a clean geometric
+sans → prefer `minimalist` over `modern`. "vans + commercial" + condensed
+bold → prefer `industrial` over `rugged`. Document the tie-breaker in
+DNA notes if it overrides the logo-character default.
 
 Record the chosen archetype in the DNA at `notes.archetype`. Phase 8
 reads the archetype's spec from `docs/theme-archetype-specs.md` and
 redesigns components per that spec — the scaffolder always clones the
 same `springalls-classic` baseline, so the visual difference between
 archetypes is driven by Phase 8 redesign work, not by template choice.
+
+### A2e — Lock the Signature Concept (distinctiveness gate)
+
+> This phase is the structural answer to "every /new-theme output looks
+> like a recolor of the last". See Quality Bar §"Distinctiveness
+> contract" for the full menus and rationale. A2e enforces that contract
+> at scaffold time — BEFORE Phase 7 runs, BEFORE Phase 8 designs anything.
+
+**Step A2e.1 — Read the fingerprint registry.** Open
+`tools/.theme-fingerprints.json` and list every shipped theme of the
+SAME `archetype` chosen in A2d. These are the peers you must not
+collide with.
+
+**Step A2e.2 — Pick the fingerprint axes.** From the menus in Quality
+Bar §"Distinctiveness contract", pick:
+
+- `signatureMove` — ONE kebab id from the Signature Move menu (or coin a
+  new one with a one-line description if the menu doesn't fit)
+- `signatureConcept` — ONE sentence locking the visual direction
+  (e.g. "Stock-ticker modern layout with prominent live stats band and
+  a dedicated recently-sold scroll rail")
+- `personalityVoice` — ONE from the personality voice menu
+- `headerStructure` — ONE from the header structure menu
+- `heroPattern` — derive from `signatureMove` (the canonical pairings
+  are documented in the menu; use the same id format)
+- `homepageSections` — an ordered list of 6–9 kebab-case section ids
+  (see the expanded section menu in §Phase 8 below)
+- `inventoryListPattern` — kebab id from `docs/inventory-design-library.md`
+- `vehicleDetailPattern` — kebab id from `docs/inventory-design-library.md`
+- `fontHeading` / `fontBody` — your A4 picks
+- `oneBigMove` — ONE axis where you'll lift the restraint cap (see
+  Quality Bar §"One big move")
+
+**Step A2e.3 — Write the concept artifact** for downstream phases:
+
+```bash
+mkdir -p tools/.theme-concepts
+```
+
+Write `tools/.theme-concepts/<theme-id>.json` (use the **Write** tool):
+
+```jsonc
+{
+  "themeId": "<theme-id>",
+  "archetype": "<from A2d>",
+  "signatureConcept": "<one sentence>",
+  "signatureMove": "<kebab id from menu>",
+  "personalityVoice": "<menu entry>",
+  "headerStructure": "<kebab id from menu>",
+  "heroPattern": "<kebab id>",
+  "homepageSections": ["hero", "...", "..."],
+  "inventoryListPattern": "<kebab id>",
+  "vehicleDetailPattern": "<kebab id>",
+  "fontHeading": "<Google Font family>",
+  "fontBody": "<Google Font family>",
+  "oneBigMove": "none | typography-scale | gradient-coverage | decorative-density | brand-color-coverage | decorative-density-minimum"
+}
+```
+
+**Step A2e.4 — Self-validate before Phase 7.** Run the uniqueness tool
+against the concept you just wrote:
+
+```bash
+node tools/check-theme-uniqueness.mjs --id <theme-id>
+```
+
+Exit 0 means proceed to A2c. Exit 1 means one or more of the
+fingerprint axes collides with an existing same-archetype peer — open
+the concept JSON, pick a different axis, and re-run. Don't proceed to
+Phase 7 with a known collision; the audit will re-block it in Phase 10d
+and you'll waste an entire build cycle.
+
+**Step A2e.5 — Mirror the concept into the DNA.** The DNA JSON written
+in A5 carries `notes.signatureConcept`, `notes.signatureMove`,
+`notes.personalityVoice`, `notes.oneBigMove` as the authoritative copy
+for downstream phases (Phase 8 reads them when designing). The concept
+file is for cross-tool resilience; the DNA is for in-component access.
 
 ### A2c — Run the palette policy generator
 
@@ -2060,6 +2292,22 @@ detail page** (route handling stays the same; JSX + CSS + composition
 are fresh), and a per-theme cookie banner.
 
 **Before designing, read these:**
+0a. `tools/.theme-concepts/<theme-id>.json` — the **Signature Concept**
+   locked in Phase A2e. This is the single most important input to
+   Phase 8: it names the signatureMove, heroPattern, headerStructure,
+   homepage section composition, inventory patterns, and the
+   one-big-move axis where restraint is exempted. **Phase 8 builds to
+   the concept**, not to a generic archetype default. If you find
+   yourself reaching for a section or move that isn't in the concept,
+   stop — either it belongs in the concept (go back to A2e and update
+   it, then re-run the uniqueness check) or it doesn't belong in this
+   theme.
+0b. `tools/.theme-fingerprints.json` — the registry of every existing
+   theme's fingerprint. Open it. For each same-archetype peer, note
+   what sections / patterns / moves they shipped. Your theme must
+   differ on at least two homepage sections from the most recent
+   same-archetype peer (Jaccard < 0.65 on the section set — enforced by
+   `check-theme-uniqueness.mjs`).
 0. `tools/.theme-dna/<dealer-slug>.json` → `notes.contextHint` — if
    non-null, this OVERRIDES default copy and inventory chips throughout
    Phase 8. Treat the hint as authoritative about the dealer's actual
@@ -2103,6 +2351,76 @@ dominant calculator / inline band / footer drawer), enquiry surface
 (inline form / drawer / WhatsApp-first / call-to-action panel).
 Mix-and-match — no two themes ship the same combination, even within
 the same archetype.
+
+### Homepage section composition — must differ ≥2 sections from the most recent same-archetype peer
+
+The Phase A2e concept locked an ordered `homepageSections` list. Phase 8
+builds to that list. The list MUST be drawn from the expanded section
+menu below (add a new id if you genuinely need one — document it
+inline) AND must differ from the most recent same-archetype peer's list
+on at least TWO entries. The `check-theme-uniqueness.mjs` gate runs the
+Jaccard math; aim for Jaccard ≤ 0.55 on the section set.
+
+**Section menu (the catalogue Phase A2e + Phase 8 pick from):**
+
+Core (most themes use one variant of these):
+- `hero` — your locked hero pattern
+- `latest-arrivals` / `latest-arrivals-carousel` / `latest-arrivals-4up` — recent stock grid or rail
+- `service-highlights` — services as icon-led grid
+- `services` — long-form services band
+- `cta` / `cta-banner` / `cta-band` / `cta-fullbleed` — a primary call-to-action band
+- `reviews` — testimonials in card or pull-quote form
+- `directory` — SEO browse-by-make + browse-by-bodytype panel
+- `trust` / `trust-band` / `brand-trust` — trust badges / accreditations
+
+Distinctive (use these to differentiate from peers — Phase 8 should
+pick at least 2 of these that the nearest peer doesn't have):
+- `founder-note` — single-column narrative + photo (warm/family voice)
+- `editorial-intro` — long-form opener paragraph
+- `featured-collection` — 2-up alternating image-side cards (luxury)
+- `concierge-services` — 3-column services with serif headings
+- `pull-quote` — full-width editorial pull-quote testimonial
+- `edition-strip` — "Vol. X · Spring Edition" magazine strip
+- `acquisitions-row` / `featured-acquisitions` — horizontal recent-acquisitions row
+- `stats-bar` / `stats-band` — 4-tile stat counters (years, stock, postcodes, rating)
+- `specs-bar` — rugged-archetype quick-spec band
+- `recently-sold-preview` / `recently-sold-rail` — recently-sold vehicles
+- `category-band` — 3-tile category grid (Vans / Cars / Trucks etc.)
+- `compact-stock-list` — dense image-left rows (industrial)
+- `editorial-lead-story` — long-form lead story above the fold
+- `story-card-grid` — 3-up topic-tagged story cards
+- `pull-quote-review` — review framed as a letter
+- `location-feature` — "Find us in <city>" with map preview
+- `why-choose-us` — multi-pillar trust strip
+- `why-city-pull-quotes` — buyer quotes about the dealer
+- `team` / `meet-the-team` — staff cards
+- `horizontal-stock-ticker` — live-stock scrolling rail
+- `stock-table` — minimalist no-chrome row layout
+- `services-grid-text-only` — minimalist services as text-only cells
+- `industrial-grid-overlay-feature` — feature band with grid-overlay treatment
+
+If you need a section not on this menu, ADD a kebab id + 1-line
+description inline in the concept JSON and Phase 11 will roll it into
+the registry for future themes to peer-compare against.
+
+### Required-widget placement varies per theme
+
+The Required Widgets are operational primitives that must mount — but
+their POSITION varies per theme, drawn from these menus. The concept
+file's `headerStructure` choice constrains some of these:
+
+- **WhatsAppFab** — default bottom-right. Variants: `bottom-right` (default), `top-right-floating` (below header on the right), `header-chip` (integrated into the header as a green chip rather than a floating bubble). Industrial / minimalist themes typically use `header-chip` for less visual noise.
+- **PreviewBanner** — default slim top strip. Variant: `slim-side-strip` (right-edge vertical strip) for editorial / magazine themes where the top strip would compete with an edition-strip.
+- **Top contact bar** — three composition modes:
+  - `strip` (default, classic-trad / warm) — full-width strip above Header with the 4 elements in canonical order
+  - `integrated-into-header` (modern / minimalist) — location chip and phone CTA live as items inside the Header itself; socials move to the footer top
+  - `omitted-with-footer-only` (minimalist / editorial) — top contact bar absent; the Header carries location chip only; socials + phone + status live in a footer-top band
+- **Header structure** — pick from the menu in Quality Bar §"Distinctiveness contract"
+- **Cookie banner** — already per-theme (see §"Cookie banners must NOT be one-size-fits-all"); the visual treatment must match the archetype
+
+The four required elements of the top contact bar (location chip,
+status chip, social icons, phone CTA) still must all be present
+somewhere on the page chrome — the variants above only change WHERE.
 
 ### Data-fetching rules (apply across every page Phase 8 writes)
 
@@ -2284,44 +2602,101 @@ Multiple rules can be comma-separated: `audit-ignore: rule1, rule2`.
 
 `npm run build` only when the user explicitly asks for a build.
 
-## Phase 10d — Cross-theme similarity check
+## Phase 10d — Distinctiveness gates (uniqueness + similarity)
+
+Two checks. **Both must exit 0.** Run them in parallel.
+
+### 10d-i — Fingerprint uniqueness
+
+```bash
+node tools/check-theme-uniqueness.mjs --id <theme-id>
+```
+
+Reads `tools/.theme-concepts/<theme-id>.json` (written by Phase A2e)
+and asserts the fingerprint doesn't collide with any existing
+same-archetype peer on:
+
+- archetype + signatureMove → HARD block
+- archetype + heroPattern → HARD block
+- archetype + inventoryListPattern + vehicleDetailPattern → HARD block
+- archetype + homepageSections Jaccard ≥ 0.65 → HARD block
+- archetype + identical fontHeading + fontBody pair → advisory
+
+If A2e was diligent this passes cleanly. If it fires, the operator
+short-circuited Phase A2e somehow — go back and re-run the concept
+selection, then return here.
+
+### 10d-ii — Render-layer similarity (baseline + peer pass)
 
 ```bash
 node tools/check-theme-similarity.mjs --id <theme-id>
 ```
 
-Compares the new theme's key render files (`Hero.tsx`,
-`pages/home/page.tsx`, `pages/used-cars/page.tsx`,
-`pages/used-cars/[slug]/page.tsx`, `pages/recently-sold/page.tsx`)
-against the `springalls-classic` skeleton baseline. Uses normalized-
-shingle Jaccard similarity (identifiers lowercased, whitespace squashed,
-comments stripped) so theme renames don't lower the score.
+Two passes:
 
-Threshold: 0.85 (override with `--threshold`). Above the threshold means
-Phase 8 likely renamed identifiers without redesigning JSX — the
-"another theme, same palette" regression class. Genuinely redesigned
-themes score well below 0.10 in practice.
+- **Baseline pass** vs `springalls-classic` skeleton at threshold 0.85.
+  Catches "Phase 8 renamed identifiers without redesigning JSX".
+- **Peer pass** vs the 3 most recent same-archetype peers from the
+  fingerprint registry at threshold 0.55. Catches "two modern themes
+  feel like twins". Auto-discovered via
+  `tools/.theme-concepts/<theme-id>.json`. Pass `--no-peers` to skip
+  this pass (not recommended).
 
-Exit codes:
-- `0` — all files below threshold; render layer is genuinely fresh.
-- `1` — one or more files above threshold; open each flagged file and
-  redesign its JSX before declaring Phase 8 done.
+Compares `Hero.tsx`, `pages/home/page.tsx`, `pages/used-cars/page.tsx`,
+`pages/used-cars/[slug]/page.tsx`, `pages/recently-sold/page.tsx`.
+Uses normalized-shingle Jaccard (identifiers lowercased, whitespace
+squashed, comments stripped) so theme renames don't lower the score.
 
-Compare against a different baseline (e.g. the closest archetype-twin)
-with `--baseline <theme-id>`.
+Exit codes (both passes):
+- `0` — all files under their respective thresholds.
+- `1` — one or more files at/above threshold; open each flagged file
+  and redesign its JSX before declaring Phase 8 done.
 
-## Phase 11 — Log to FEATURE_LOG
+Compare against a specific theme (instead of the skeleton or auto-
+picked peers) with `--baseline <theme-id>`.
 
-Append a new entry at the **top** of `docs/FEATURE_LOG.md`:
+## Phase 11 — Log to FEATURE_LOG + append fingerprint
+
+**11a — FEATURE_LOG.** Append a new entry at the **top** of
+`docs/FEATURE_LOG.md`:
 
 ```
 - YYYY-MM-DD: Added <theme-id> theme — <Mode A: bespoke for <Brand Name> | Mode B: ported from carous-platform/<source>> (owner: Difatha)
   - Scope: app/themes/<theme-id>/* (full theme contract)
   - Reason: <prospect preview for <Brand>> | <internal sibling port>
-  - Notes: Generated via /new-theme. Logo: <path>. URL: <dealer URL>. Fonts: <heading> + <body>. Primary: <hex>.
+  - Notes: Generated via /new-theme. Logo: <path>. URL: <dealer URL>. Fonts: <heading> + <body>. Primary: <hex>. Archetype: <archetype>. Signature: <signatureMove>.
 ```
 
 Use today's absolute date from system context.
+
+**11b — Fingerprint registry.** Append the new theme's fingerprint to
+`tools/.theme-fingerprints.json` so future themes peer-compare against
+it. Open the file, append to the `themes` array, and add `addedAt: "<today>"`.
+
+```jsonc
+{
+  "themeId": "<theme-id>",
+  "archetype": "<from A2d>",
+  "signatureConcept": "<one-sentence locked in A2e>",
+  "signatureMove": "<kebab id>",
+  "personalityVoice": "<menu entry>",
+  "headerStructure": "<kebab id>",
+  "heroPattern": "<kebab id>",
+  "homepageSections": ["hero", "...", "..."],
+  "inventoryListPattern": "<kebab id>",
+  "vehicleDetailPattern": "<kebab id>",
+  "fontHeading": "<heading family>",
+  "fontBody": "<body family>",
+  "oneBigMove": "<axis>",
+  "addedAt": "YYYY-MM-DD"
+}
+```
+
+**Critical:** the registry is the source of truth for the next
+`/new-theme` invocation's Phase A2e — if you forget to append, the next
+theme can collide with this one without the uniqueness check seeing it.
+This step is the only piece of Phase 11 that's load-bearing for future
+runs; the FEATURE_LOG is for humans, the registry is for the skill.
 
 ## Phase 12 — Report + offer Phase 13a
 
@@ -2793,6 +3168,8 @@ fire and block you, but recognising the pattern earlier saves a round trip.
 | 38c | Difatha came back AGAIN the same day with a screenshot showing the dashboard had an uploaded hero (forecourt photo with "AUTOWOW" signage clearly visible in the Brand Assets section of `/update/columbus-vehicles-preview`) but the rendered preview hero was the curated theme default Unsplash photo, NOT the dashboard upload. Rule 38b's 3-tier chain was already shipped (`brand.images.hero` first, then `brand.heroImage`, then theme default). | Direct inspection of the brand record via `GET /api/previews/columbus-vehicles-preview` showed: `heroImage: "/images/columbus-vehicles-preview-hero.png"` (the real upload, file present on disk) but `images.hero: "/images/hero-bg.png"` (a stale placeholder from initial brand creation that pre-dated the operator's hero upload). The dashboard's update_brand handler tries to sync `images.hero` from `heroImage` on each save, but this brand record's `images.hero` was set during initial brand creation and never re-synced (the operator updated the hero AFTER creation through a save path that didn't fire the sync, OR through a different version of the handler that didn't have the sync code). My 3-tier chain checked `brand.images.hero` FIRST → returned the stale placeholder → CSS layered fallback served the THEME default underneath (because the placeholder URL 404'd) → user saw theme default, not the dashboard upload they'd just shipped. The chain was structurally correct but had the wrong PRIORITY for the hero slot. | (a) **Reorder the hero slot specifically**: read `brand.heroImage` FIRST (the authoritative top-level field — the dashboard always refreshes it on every save), then `brand.images.hero` as backup, then theme default. Other slots stay the same (they don't have an authoritative top-level alias). (b) **Add layered-background CSS as a defensive belt-and-braces** for the rare case the brand URL 404s anyway: every component that consumes `var(--brand-image-<slot>)` does multi-layer `background-image: var(--brand-image-X, none), url('/themes/<id>/images/<slotFile>.jpg')` so the theme default always renders if the brand URL fails to load. The CSS-level `var(name, fallback)` idiom is NOT used here — it doesn't trigger when the var is set to a broken URL. Use `var(name, none)` so the layer is `none` (renders nothing) when undeclared, rather than making the entire declaration invalid. (c) **Prefer per-page hero variant CSS classes over inline styles**: `.auto-page-hero--finance` etc. live in base.css with the multi-layer pattern, and pages use `<section className="auto-page-hero auto-page-hero--finance">` instead of inline `style={{ backgroundImage: ... }}` — keeps the multi-layer intent in one place and easier to keep consistent. (d) Memory `feedback_brand_image_plumbing.md` updated with the special-cased hero ordering + the layered-CSS pattern. (e) Future audit rule `data-images-hero-stale` (deferred) could fetch the brand record, compare `brand.heroImage` vs `brand.images.hero`, and warn if they disagree. |
 | 38 | Three contrast bugs in the same auto-wow-uk-bespoke preview screenshot (rendered through the Columbus Vehicles brand record): (a) `LatestArrivalsSection` vehicle card titles invisible — dark `--color-text` painted on a card whose `--color-surface` had been overridden to dark by Columbus's brand record; (b) hero ghost-CTA content invisible — `auto-btn--ghost` rule painted `color: var(--color-text)` (dark) on the hero's fixed dark background because the ghost-button-on-dark variant was only scoped under `.auto-section--dark` and the hero wasn't wrapped in it; (c) topbar social icons hid entirely when `brand.socialLinks` was empty — the previous rule "hide individual icons whose URL is empty; hide group entirely if `socialLinks` absent" made the bar look incomplete on real-world brand records. Compounded: the original logo-extracted primary `#fd1317` also failed AA white-on-primary out of the gate and required iterative manual darkening. | The brandstudio token system treats `--color-surface` and `--color-text` as INDEPENDENT brand-overridable tokens. When a brand record overrides one but not the other (or the theme assumes light tier and the brand assumes dark), components painted from `color: var(--color-text)` against `background: var(--color-surface)` lose contrast. Generic foreground inheritance is structurally fragile; brand-record cross-rendering exposes it. The logo-extraction path was also unreliable as a color SOURCE: it would happily return an AA-failing primary and force iterative darkening before the theme could ship. | Three-pronged: (a) New tool `tools/check-palette-policy.mjs --primary <hex>` validates the user-supplied primary, auto-darkens if needed, and emits the full 11-pair contrast-checked token set (light tier × 2 surfaces × 2 fg-strengths + dark tier × same + brand triad). Exits 1 if any pair fails AA. Phase A2c now runs this instead of the old extract+contrast flow. (b) New SKILL Quality Bar §"Color palette policy — paired surface + foreground tokens" mandates: ONE brand color input from user (not extracted from logo); two FIXED neutral tiers (light + dark) that brand records may NEVER override; brand records may ONLY override the brand triad; every CSS rule that sets `background:` from a surface token MUST set `color:` from the paired foreground token in the same rule or enclosing scope. (c) Updated `feedback_topbar_essentials.md` memory to require ALWAYS rendering all 4 social icons in canonical order; render unconfigured icons as muted non-clickable spans (never hide the group). Memories `feedback_no_logo_color_extraction.md` + `feedback_color_palette_policy.md` capture the new invariants. Future audit rule `lib-unpaired-foreground` (deferred) will flag any CSS rule that sets `color: var(--color-text*)` without a same-scope `background:` from the paired tier. |
 
+| 39 | Difatha reported 2026-05-25: "themes created with /new-theme look similar to one another in feel and look" despite the existing 5-archetype catalogue + the cross-theme similarity check. Side-by-side comparison of `auto-wow-uk-bespoke` / `dual-stock-modern-bespoke` / `showroom-shine-cars-bespoke` / `kain-motors-bespoke` showed the same chrome (top contact bar, WhatsApp FAB position, AOS animations, glow blobs in hero, restraint-capped typography) and overlapping section composition (Hero → Trust → FeaturedStock → Services → CTA → Reviews → Directory) — the perceived sameness was structural, not just a recolor problem. | Five compounding causes: (a) only 5 archetypes with `classic` as the catch-all default ("no redesign needed" routed every ambiguous logo into a springalls-classic clone); (b) the same required-widget chrome on every theme (4-item top contact bar in canonical order, WhatsAppFab bottom-right, MotionFX glow blobs mandatory in every hero, EnquiryModal/PreviewBanner positioned identically); (c) the 2026-05-11 restraint rule (5 fonts / 2 gradients / 25% brand color / 2 decorative layers) pushed every theme toward "safe corporate calm"; (d) the cross-theme similarity check only compared vs `springalls-classic` — two new "modern" themes could each score 0.4 vs skeleton but 0.85 against each other and never get caught; (e) no fingerprint memory between runs — a new theme had no signal about what the most recent shipped theme already did. | Six-pronged fix (2026-05-25): (a) New SKILL Quality Bar §"Distinctiveness contract" with explicit menus for `signatureMove` (~19 kebab ids), `personalityVoice` (7 entries), `headerStructure` (10 variants), and the `oneBigMove` restraint-exemption axis. (b) New Phase **A2e — Lock Signature Concept** runs between A2d and A2c, writes `tools/.theme-concepts/<theme-id>.json` capturing the full fingerprint, self-validates via `check-theme-uniqueness.mjs` before Phase 7 scaffolds. (c) New `tools/check-theme-uniqueness.mjs` blocks (exit 1) on archetype+signatureMove / archetype+heroPattern / archetype+inventory-pair / homepageSections-Jaccard ≥ 0.65. (d) New `tools/.theme-fingerprints.json` registry backfilled with the 7 existing themes; Phase 11 appends the new theme so the next run sees it. (e) `tools/check-theme-similarity.mjs` extended with a **peer pass** at threshold 0.55 against the 3 most recent same-archetype peers (auto-discovered via the concept file). (f) Archetype catalogue expanded from 5 to 8: `classic` split into `classic-trad` (the original springalls neighbourhood) + `classic-warm` (new catch-all default with a fresh redesign cycle); added `minimalist`, `industrial`, `editorial`. Phase 8's "Required-widget placement varies per theme" rule gives WhatsAppFab / PreviewBanner / top contact bar / Header three placement variants each, and the restraint rule lifts ONE cap per theme via `oneBigMove`. |
+
 When you add a new audit rule for a future bug, append a row here. The
 catalogue should grow as a record of "what we've already learned not to
 do" — a future Claude reading this list won't re-debug what's already
@@ -2807,6 +3184,8 @@ the row stays as institutional memory.
 | `tools/check-palette-policy.mjs` | Phase A2c color-policy generator + validator. Takes user-supplied primary hex, auto-darkens to AA if needed, derives the full token set (two fixed neutral tiers + brand triad), walks the 11-pair surface×foreground contrast matrix, emits `tools/.palette/<slug>.json`. Exits 1 if any pair fails AA. Flags: `--primary <hex>`, `--slug <slug>`, `--out <path>`, `--json`, `--max-darken 0.6`. | Both modes (required) |
 | `tools/extract-logo-colors.mjs` | DEPRECATED for color decisions as of the color-policy update — kept for retrospective inspection of dominant logo colors but NOT part of the canonical Mode A flow. Phase A2 now uses vision for character analysis only. | (deprecated) |
 | `tools/check-theme-contrast.mjs` | Legacy WCAG AA validator for individual color combos. Superseded by `check-palette-policy.mjs` which walks the full matrix and emits paired tokens. Retained for one-off contrast checks against arbitrary fg/bg pairs. | Both modes (legacy) |
+| `tools/check-theme-uniqueness.mjs` | Phase 10d distinctiveness gate. Reads `tools/.theme-concepts/<theme-id>.json` + `tools/.theme-fingerprints.json`; blocks (exit 1) when the new theme collides with any same-archetype peer on (signatureMove / heroPattern / inventoryListPattern+vehicleDetailPattern / homepageSections Jaccard ≥ 0.65). Soft advisories for matching font pairs. Flags: `--id`, `--concept <path>`, `--json`. | Mode A (required) |
+| `tools/check-theme-similarity.mjs` | Phase 10d render-layer Jaccard check. Two passes: vs skeleton at 0.85 (baseline) and vs ≤3 recent same-archetype peers at 0.55 (peer pass — auto-discovered via concepts file). Exit 1 on any flagged file. Flags: `--id`, `--baseline`, `--threshold`, `--peer-threshold`, `--no-peers`, `--json`. | Mode A (required); Mode B only baseline pass is useful |
 | `tools/audit-theme.mjs` | Static-analysis quality gate. Rule prefixes: `a11y-` (accessibility), `std-` (standards), `data-` (data-fetching), `mobile-` (responsive), `perf-` (performance), `brand-` (token discipline), `tp-` (Turbopack collision avoidance), `lib-` (foundation/dependency), `motion-` (motion & light language), `inv-` (inventory page contracts — list and detail). Blockers exit 1. Supports inline `audit-ignore: <rule>` and file-level `audit-ignore-file: <rule>` directives. See **Pitfalls catalogue** above for the historical bugs each rule prevents. | Both modes |
 | `tools/rollback-theme.mjs` | Partial-theme cleanup when a run fails between Phase 7 and 12. Removes theme folder, public images, DNA JSON, images manifest, logo-colors JSON, then re-runs theme:sync. Idempotent. Flag: `--dry-run`. (No longer touches MySQL — brand cleanup is dashboard-only.) | Both modes |
 | `tools/fetch-theme-images.mjs` | Source 7 page-level images (hero/about/services/finance/partExchange/sellYourCar/recentlySold). Curated Unsplash catalogue with classic-archetype fallback; live API mode when `UNSPLASH_ACCESS_KEY` is set. | Mode A only |

@@ -1,0 +1,146 @@
+.section {
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+}
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+}
+
+.empty {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: clamp(56px, 8vw, 96px) 16px;
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 4px;
+}
+.empty svg { color: var(--brand-primary); opacity: 0.6; }
+.empty h2 {
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  color: var(--text-on-light-strong);
+}
+.empty p {
+  color: var(--text-on-light-muted);
+  max-width: 36ch;
+  font-size: 1rem;
+}
+
+.tableWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border-on-light);
+}
+
+.headerRow {
+  display: grid;
+  grid-template-columns: 180px repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1px;
+  background: var(--border-on-light);
+}
+.headerCell {
+  background: var(--surface-card-light);
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.headerLabel {
+  font-family: var(--font-brand-family-override, 'Anton', 'Impact', sans-serif);
+  font-size: 0.92rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+}
+.cardImage {
+  aspect-ratio: 4 / 3;
+  background-color: var(--image-placeholder-bg);
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 6px;
+}
+.headerCell h3 {
+  font-family: var(--font-brand-family-override);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--text-on-light-strong);
+}
+.price {
+  font-family: var(--font-brand-family-override);
+  font-size: 1.3rem;
+  color: var(--brand-primary);
+}
+.removeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--border-on-light-strong);
+  color: var(--text-on-light-muted);
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-top: 4px;
+  border-radius: 2px;
+}
+.removeBtn:hover {
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 180px repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1px;
+  background: var(--border-on-light);
+}
+.rowAlt .rowLabel,
+.rowAlt .rowCell {
+  background: var(--surface-card-light);
+}
+.rowLabel {
+  background: var(--surface-bg-light);
+  padding: 14px 18px;
+  font-family: var(--font-brand-family-override);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+  color: var(--text-on-light-strong);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.rowLabel svg { color: var(--brand-primary); }
+.rowCell {
+  background: var(--surface-bg-light);
+  padding: 14px 18px;
+  color: var(--text-on-light-strong);
+  font-size: 0.92rem;
+}
+
+.actionsRow {
+  display: grid;
+  grid-template-columns: 180px repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1px;
+  background: var(--border-on-light);
+  margin-top: 1px;
+}
+.actionsRow .rowLabel,
+.actionsRow .rowCell {
+  background: var(--surface-card-light);
+}
+
+@media (max-width: 760px) {
+  .headerRow,
+  .row,
+  .actionsRow {
+    grid-template-columns: 1fr;
+  }
+}

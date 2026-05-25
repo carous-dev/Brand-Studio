@@ -1,0 +1,167 @@
+.section {
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+}
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+}
+
+.empty {
+  text-align: center;
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-left: 3px solid var(--brand-primary);
+  padding: clamp(48px, 8vw, 96px) 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  border-radius: 4px;
+}
+.empty svg { color: var(--brand-primary); opacity: 0.6; }
+.empty h2 {
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  color: var(--text-on-light-strong);
+}
+.empty p {
+  color: var(--text-on-light-muted);
+  font-size: 1rem;
+}
+
+.header {
+  max-width: 720px;
+  margin-bottom: clamp(28px, 4vw, 44px);
+}
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-brand-family-override, 'Anton', 'Impact', sans-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  margin-bottom: 8px;
+}
+.header h2 {
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+  color: var(--text-on-light-strong);
+  letter-spacing: 0.02em;
+}
+.header p {
+  font-size: 1rem;
+  color: var(--text-on-light-muted);
+  margin-top: 10px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(16px, 2vw, 24px);
+}
+
+.card {
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  /* Visual signal: this is sold, not live. */
+  opacity: 0.92;
+}
+
+.cardImage {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background-color: var(--image-placeholder-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: grayscale(0.85);
+  transition: filter 0.18s ease;
+}
+.card:hover .cardImage {
+  filter: grayscale(0.55);
+}
+
+/* Diagonal SOLD banner — the canonical rugged-archetype treatment. */
+.soldBanner {
+  position: absolute;
+  top: 18px;
+  right: -28px;
+  transform: rotate(35deg);
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  padding: 6px 32px;
+  font-family: var(--font-brand-family-override);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.cardBody {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+.cardBody h3 {
+  font-family: var(--font-brand-family-override);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--text-on-light-strong);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cardMeta {
+  font-size: 0.78rem;
+  color: var(--text-on-light-muted);
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-on-light);
+  margin-top: auto;
+}
+.struckPrice {
+  font-family: var(--font-brand-family-override);
+  font-size: 1.1rem;
+  color: var(--text-on-light-muted);
+  text-decoration: line-through;
+}
+.soldLabel {
+  font-family: var(--font-brand-family-override);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+}
+
+.cta {
+  margin-top: clamp(36px, 5vw, 64px);
+  padding-top: 32px;
+  border-top: 1px solid var(--border-on-light);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.cta p {
+  font-family: var(--font-brand-family-override);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 1rem;
+  color: var(--text-on-light-strong);
+}

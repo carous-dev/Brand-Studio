@@ -1,0 +1,103 @@
+.ticker {
+  /* Brand-tinted dark band — pairs visually with the top contact bar. */
+  background: color-mix(in srgb, var(--brand-primary) 6%, var(--surface-bg-dark));
+  color: var(--text-on-dark-strong);
+  border-block: 1px solid color-mix(in srgb, var(--brand-primary) 18%, transparent);
+  padding-block: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-inline: clamp(16px, 3vw, 32px);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: clamp(16px, 3vw, 32px);
+}
+
+.lead {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--state-success);
+  --mfx-dot-color: var(--state-success);
+}
+.label {
+  font-family: var(--font-brand-family-override, 'Anton', 'Impact', sans-serif);
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+}
+.count {
+  font-size: 0.88rem;
+  color: var(--text-on-dark-muted);
+}
+.count strong {
+  color: var(--text-on-dark-strong);
+  font-weight: 700;
+}
+
+.rail {
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+}
+.railTrack {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  animation: tickerScroll 38s linear infinite;
+  width: max-content;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-on-dark-muted);
+  border: 1px solid var(--border-on-dark);
+  padding: 6px 14px;
+  font-family: var(--font-brand-family-override);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@keyframes tickerScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .railTrack { animation: none; }
+}
+
+.cta {
+  flex-shrink: 0;
+  color: var(--brand-primary);
+}
+
+@media (max-width: 720px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .rail { display: none; }
+}

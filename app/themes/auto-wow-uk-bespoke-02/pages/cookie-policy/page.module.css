@@ -1,0 +1,34 @@
+.body {
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+}
+.article {
+  max-width: 760px;
+  margin: 0 auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: var(--text-on-light-strong);
+}
+.article h2 {
+  font-size: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 16px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-on-light);
+}
+.article h3 {
+  font-size: 1rem;
+  font-family: var(--font-brand-family-override, 'Anton', 'Impact', sans-serif);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brand-primary);
+  margin-top: 8px;
+}
+.article p {
+  font-size: 1rem;
+  color: var(--text-on-light-muted);
+  line-height: 1.6;
+}

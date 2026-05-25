@@ -1,0 +1,177 @@
+.section {
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+}
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+}
+
+.header {
+  max-width: 720px;
+  margin-bottom: clamp(28px, 4vw, 48px);
+}
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-brand-family-override, 'Anton', 'Impact', sans-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  margin-bottom: 10px;
+}
+.title {
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  color: var(--text-on-light-strong);
+}
+.lead {
+  font-size: 1rem;
+  color: var(--text-on-light-muted);
+  margin-top: 10px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: clamp(40px, 6vw, 64px);
+}
+
+.card {
+  background: var(--surface-card-light);
+  color: var(--text-on-light-strong);
+  border: 1px solid var(--border-on-light);
+  border-top: 3px solid var(--brand-primary);
+  padding: 28px 26px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cardEyebrow {
+  font-family: var(--font-brand-family-override);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+}
+.cardTitle {
+  font-family: var(--font-brand-family-override);
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-on-light-strong);
+}
+.cardBody {
+  font-size: 0.92rem;
+  color: var(--text-on-light-muted);
+  line-height: 1.55;
+}
+.cardList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-on-light);
+}
+.cardList li {
+  font-size: 0.88rem;
+  color: var(--text-on-light-strong);
+  display: flex;
+  gap: 8px;
+}
+.cardList li::before {
+  content: '\002B';
+  color: var(--brand-primary);
+  font-weight: 700;
+}
+
+.softSearch {
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+  border-radius: 4px;
+  padding: clamp(28px, 4vw, 44px);
+  display: grid;
+  grid-template-columns: 1.4fr auto;
+  align-items: center;
+  gap: 28px;
+  border-left: 3px solid var(--brand-primary);
+  margin-bottom: clamp(28px, 4vw, 44px);
+}
+.softSearchCopy { max-width: 56ch; }
+.softSearchEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-brand-family-override);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  margin-bottom: 8px;
+}
+.softSearchTitle {
+  font-size: clamp(1.5rem, 2.8vw, 2rem);
+  color: var(--text-on-dark-strong);
+  margin-bottom: 8px;
+}
+.softSearch p {
+  color: var(--text-on-dark-strong);
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+.softSearchActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.assurance {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.assuranceItem {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 12px;
+  align-items: start;
+  background: var(--surface-card-light);
+  padding: 18px 20px;
+  border: 1px solid var(--border-on-light);
+  border-radius: 4px;
+}
+.assuranceItem svg {
+  color: var(--brand-primary);
+  margin-top: 2px;
+}
+.assuranceItem strong {
+  display: block;
+  font-family: var(--font-brand-family-override);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.92rem;
+  font-weight: 400;
+  color: var(--text-on-light-strong);
+  margin-bottom: 4px;
+}
+.assuranceItem span {
+  font-size: 0.85rem;
+  color: var(--text-on-light-muted);
+  line-height: 1.45;
+}
+
+@media (max-width: 980px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .softSearch {
+    grid-template-columns: 1fr;
+  }
+  .assurance {
+    grid-template-columns: 1fr;
+  }
+}

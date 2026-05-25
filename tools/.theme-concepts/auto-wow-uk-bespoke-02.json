@@ -1,0 +1,15 @@
+{
+  "themeId": "auto-wow-uk-bespoke-02",
+  "archetype": "rugged",
+  "signatureConcept": "Performance-dealer-floor rugged with a brand-tinted grid-overlay hero, horizontal live-stock ticker, dense filtered-sidebar inventory, and full-bleed mosaic detail page in a brutalist voice",
+  "signatureMove": "grid-overlaid-photo",
+  "personalityVoice": "brutalist",
+  "headerStructure": "dark-accent-strip-top",
+  "heroPattern": "grid-overlaid-photo",
+  "homepageSections": ["hero", "horizontal-stock-ticker", "featured-stock", "category-band", "editorial-intro", "stats-band", "service-highlights", "cta-band", "reviews"],
+  "inventoryListPattern": "filtered-sidebar",
+  "vehicleDetailPattern": "full-bleed-mosaic",
+  "fontHeading": "Anton",
+  "fontBody": "Inter",
+  "oneBigMove": "decorative-density"
+}

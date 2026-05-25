@@ -1,0 +1,133 @@
+.band {
+  position: relative;
+  isolation: isolate;
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+  overflow: hidden;
+}
+
+.imageLayer {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  background-image:
+    var(--brand-image-finance, none),
+    url('/themes/auto-wow-uk-bespoke-02/images/finance.jpg');
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  opacity: 0.5;
+}
+
+.gridOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(120deg, rgba(var(--surface-bg-dark-rgb), 0.92), rgba(var(--surface-bg-dark-rgb), 0.78)),
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--brand-primary) 22%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--brand-primary) 16%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 100% 100%, 8.33% 100%, 100% 12.5%;
+  pointer-events: none;
+}
+
+.glow {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  left: -100px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: radial-gradient(
+    circle at center,
+    color-mix(in srgb, var(--brand-primary) 50%, transparent) 0%,
+    transparent 70%
+  );
+  z-index: -1;
+  pointer-events: none;
+  filter: blur(40px);
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(48px, 7vw, 88px) clamp(20px, 4vw, 48px);
+  display: grid;
+  grid-template-columns: 1.4fr auto;
+  align-items: center;
+  gap: 36px;
+}
+
+.copy { max-width: 64ch; }
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-brand-family-override, 'Anton', 'Impact', sans-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  margin-bottom: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 6px 12px;
+  border-left: 2px solid var(--brand-primary);
+}
+
+.title {
+  font-size: clamp(2rem, 4.4vw, 3rem);
+  line-height: 1.05;
+  color: var(--text-on-dark-strong);
+  letter-spacing: 0.02em;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.titleAccent {
+  color: var(--brand-primary);
+}
+
+.lead {
+  font-size: 1.05rem;
+  color: var(--text-on-dark-strong);
+  opacity: 0.9;
+  margin-top: 16px;
+  max-width: 52ch;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+  min-width: 240px;
+}
+
+.primary,
+.ghost {
+  justify-content: center;
+}
+
+@media (max-width: 880px) {
+  .inner {
+    grid-template-columns: 1fr;
+  }
+  .actions {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .actions {
+    flex-direction: column;
+  }
+}

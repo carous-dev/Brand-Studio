@@ -1,0 +1,116 @@
+.form {
+  background: var(--surface-card-light);
+  color: var(--text-on-light-strong);
+  border: 1px solid var(--border-on-light);
+  border-top: 3px solid var(--brand-primary);
+  padding: clamp(24px, 3vw, 36px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  border-radius: 4px;
+}
+
+.header { display: flex; flex-direction: column; gap: 6px; }
+.eyebrow {
+  font-family: var(--font-brand-family-override, 'Anton', 'Impact', sans-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+}
+.title {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  color: var(--text-on-light-strong);
+}
+.lead {
+  font-size: 0.95rem;
+  color: var(--text-on-light-muted);
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.field > span {
+  font-family: var(--font-brand-family-override);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  color: var(--text-on-light-muted);
+}
+
+.fieldError {
+  color: var(--brand-primary-strong);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.checkbox {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 10px;
+  align-items: start;
+  font-size: 0.88rem;
+  color: var(--text-on-light-strong);
+  padding-top: 4px;
+}
+.checkbox input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--brand-primary);
+}
+
+.alert {
+  background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+  border-left: 3px solid var(--brand-primary);
+  color: var(--brand-primary-strong);
+  padding: 12px 14px;
+  font-size: 0.9rem;
+}
+
+.submit {
+  width: 100%;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.success {
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-left: 3px solid var(--brand-primary);
+  padding: clamp(32px, 4vw, 48px);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  color: var(--text-on-light-strong);
+}
+.success svg { color: var(--brand-primary); }
+.success h2 {
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  color: var(--text-on-light-strong);
+}
+.success p {
+  color: var(--text-on-light-muted);
+  font-size: 1rem;
+  max-width: 56ch;
+}
+
+@media (max-width: 640px) {
+  .row { grid-template-columns: 1fr; }
+}
