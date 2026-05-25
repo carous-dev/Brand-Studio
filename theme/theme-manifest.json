@@ -15,6 +15,12 @@
       "status": "experimental"
     },
     {
+      "id": "axis-autos-bespoke",
+      "name": "Axis Autos",
+      "description": "Bespoke industrial-archetype theme for Axis Autos Ltd — workshop-floor utilitarian site with vertical side-rail navigation, monospace stencil typography, compact data-row inventory, and decorative-density-minimum restraint axis.",
+      "status": "experimental"
+    },
+    {
       "id": "classic-dealer",
       "name": "Classic Dealer",
       "description": "Current production-compatible theme.",

@@ -1,0 +1,733 @@
+/* Inventory list — compact-list pattern (dense image-left rows).
+   Class names match the kept-verbatim JSX (UsedCarsClient.tsx); the design
+   is wholesale fresh per SKILL pitfall #30. Industrial archetype + monospace
+   stencil typography + decorative-density-minimum (zero decorative layers). */
+
+.page {
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+}
+
+/* ============================================================================
+ * HERO — light surface, monospace headline. Zero decorative layers. */
+.hero {
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+  padding: clamp(56px, 9vw, 120px) 0 clamp(48px, 7vw, 88px);
+  border-bottom: 1px solid var(--border-on-light);
+}
+
+.heroInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 48px);
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 1.4fr 1fr;
+  align-items: end;
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.82rem;
+  color: var(--brand-primary);
+  display: inline-block;
+}
+
+.heroTitle {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: clamp(2rem, 4.4vw, 3.2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-on-light-strong);
+  line-height: 1.05;
+  max-width: 22ch;
+}
+
+.heroLead {
+  margin: 0;
+  color: var(--text-on-light-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 56ch;
+  font-family: var(--font-ui-family-override, 'IBM Plex Sans', sans-serif);
+}
+
+.heroHighlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  align-self: end;
+  grid-column: 2;
+  grid-row: 1 / span 3;
+}
+
+.heroHighlight {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  color: var(--text-on-light-strong);
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.74rem;
+  border-radius: 4px;
+}
+.heroHighlight svg { color: var(--brand-primary); }
+
+/* ============================================================================
+ * SECTION + TOOLBAR */
+.section {
+  padding: clamp(24px, 4vw, 48px) 0 clamp(48px, 8vw, 96px);
+}
+.sectionInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 48px);
+  display: grid;
+  gap: clamp(20px, 3vw, 32px);
+}
+
+.toolbar {
+  display: grid;
+  gap: 14px;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-on-light);
+}
+
+.searchInput {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light-strong);
+  padding: 10px 14px;
+  border-radius: 4px;
+}
+.searchInput svg { color: var(--brand-primary); }
+.searchInput input {
+  border: 0;
+  background: transparent;
+  width: 100%;
+  font: inherit;
+  color: var(--text-on-light-strong);
+  outline: none;
+  font-family: var(--font-ui-family-override, 'IBM Plex Sans', sans-serif);
+}
+.searchInput input::placeholder { color: var(--text-on-light-muted); }
+
+.toolbarActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.topbarControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.sortSelect, .priceRangeSelect, .yearRangeSelect {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.76rem;
+  color: var(--text-on-light-muted);
+}
+.sortSelect select, .priceRangeSelect select, .yearRangeSelect select {
+  border: 1px solid var(--border-on-light-strong);
+  padding: 9px 12px;
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+  font-family: var(--font-ui-family-override, 'IBM Plex Sans', sans-serif);
+  font-size: 0.88rem;
+  border-radius: 4px;
+}
+.sortSelect select:focus, .priceRangeSelect select:focus, .yearRangeSelect select:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 18%, transparent);
+}
+
+.filterToggle {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border: 0;
+  padding: 11px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-brand-family-override);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  min-height: 44px;
+}
+.filterToggle:hover { background: var(--brand-primary-strong); }
+
+/* ============================================================================
+ * CONTENT GRID (filters + list) */
+.contentGrid {
+  display: grid;
+  gap: clamp(20px, 3vw, 32px);
+  grid-template-columns: 1fr;
+}
+
+.filters {
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-left: 2px solid var(--brand-primary);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  border-radius: 4px;
+  position: sticky;
+  top: 24px;
+}
+
+.filtersHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-on-light);
+}
+.filtersTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-on-light-strong);
+}
+.filtersTitle svg { color: var(--brand-primary); }
+.filtersHeader h2 {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.94rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+.filtersMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.filtersCount { display: none; }
+
+.clearButton {
+  background: transparent;
+  border: 1px solid var(--border-on-light-strong);
+  color: var(--text-on-light-strong);
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-family: var(--font-brand-family-override);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 4px;
+}
+.clearButton:hover {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-color: var(--brand-primary);
+}
+
+.filterControls {
+  display: grid;
+  gap: 14px;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.filterGroup label {
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.72rem;
+  color: var(--text-on-light-muted);
+}
+.filterGroup select, .filterGroup input {
+  border: 1px solid var(--border-on-light-strong);
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+  padding: 10px 12px;
+  font-size: 0.92rem;
+  font-family: var(--font-ui-family-override, 'IBM Plex Sans', sans-serif);
+  border-radius: 4px;
+}
+.filterGroup select:focus, .filterGroup input:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 20%, transparent);
+}
+
+.filterRow { display: grid; gap: 12px; }
+
+/* ============================================================================
+ * RESULTS */
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.resultsHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 4px;
+}
+.resultsHeader h2 {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: clamp(1.2rem, 1.9vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-on-light-strong);
+}
+
+.activeFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.activeFilterPill {
+  padding: 4px 10px;
+  background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+  color: var(--brand-primary);
+  font-family: var(--font-brand-family-override);
+  font-size: 0.72rem;
+  border-radius: 4px;
+}
+
+/* ============================================================================
+ * COMPACT-LIST ROWS — the industrial signature inventory layout */
+.cardGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--surface-bg-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 140px 1fr auto;
+  gap: 18px;
+  padding: 14px 18px;
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+  border-bottom: 1px solid var(--border-on-light);
+  border-radius: 0;
+  overflow: hidden;
+  transition: background 0.14s ease;
+  min-height: 110px;
+  align-items: center;
+}
+.card:last-child { border-bottom: 0; }
+.card:hover {
+  background: color-mix(in srgb, var(--brand-primary) 4%, var(--surface-bg-light));
+}
+
+.cardImage {
+  position: relative;
+  width: 140px;
+  height: 96px;
+  background-color: var(--image-placeholder-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  border-radius: 2px;
+  border: 1px solid var(--border-on-light);
+}
+
+.featured {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  padding: 3px 6px;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  font-family: var(--font-brand-family-override);
+  font-size: 0.62rem;
+  font-weight: 600;
+  border-radius: 2px;
+}
+
+.cardQuickActions {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: inline-flex;
+  gap: 4px;
+  z-index: 3;
+}
+
+.iconButton {
+  width: 26px;
+  height: 26px;
+  background: rgba(var(--surface-bg-dark-rgb), 0.6);
+  color: var(--text-on-dark-strong);
+  border: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  transition: background 0.14s ease;
+}
+.iconButton:hover, .iconButton[data-active='true'] {
+  background: var(--brand-primary);
+}
+
+.cardOverlay { display: none; }
+.overlayButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 12px;
+  background: transparent;
+  color: var(--brand-primary);
+  text-decoration: none;
+  font-family: var(--font-brand-family-override);
+  font-size: 0.84rem;
+  font-weight: 600;
+  border: 1px solid var(--border-on-light-strong);
+  border-radius: 4px;
+  transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+  position: relative;
+  z-index: 2;
+}
+.overlayButton:hover {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-color: var(--brand-primary);
+}
+
+.cardBody {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.cardTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+.cardTitleRow h3 {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-on-light-strong);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+}
+.cardMeta span:first-child {
+  font-size: 0.84rem;
+  color: var(--text-on-light-muted);
+  font-family: var(--font-ui-family-override, 'IBM Plex Sans', sans-serif);
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cardPrice {
+  font-family: var(--font-brand-family-override);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--brand-primary);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.cardSpecs {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.74rem;
+  color: var(--text-on-light-muted);
+}
+.cardSpecs span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.cardSpecs span svg {
+  width: 12px;
+  height: 12px;
+  color: var(--brand-primary);
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+.cardFooter { display: none; }
+
+/* ============================================================================
+ * PAGINATION */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 22px 0 0;
+  border-top: 1px solid var(--border-on-light);
+  margin-top: 6px;
+}
+
+.paginationMeta {
+  color: var(--text-on-light-muted);
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.82rem;
+}
+
+.paginationControls {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.pageButton {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--border-on-light-strong);
+  background: var(--surface-card-light);
+  color: var(--text-on-light-strong);
+  font-family: var(--font-brand-family-override);
+  font-size: 0.88rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+.pageButton:hover {
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+}
+.pageButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.pageButtonActive {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-color: var(--brand-primary);
+}
+.pageEllipsis {
+  color: var(--text-on-light-muted);
+  padding: 0 4px;
+}
+
+/* ============================================================================
+ * EMPTY STATE */
+.emptyState {
+  grid-column: 1 / -1;
+  border: 1px dashed var(--border-on-light-strong);
+  background: var(--surface-card-light);
+  padding: clamp(36px, 6vw, 56px) 24px;
+  text-align: center;
+  color: var(--text-on-light-muted);
+  border-radius: 4px;
+  border-left: 2px solid var(--brand-primary);
+}
+.emptyStateIcon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+  display: grid;
+  place-items: center;
+  color: var(--brand-primary);
+  position: relative;
+}
+.emptyStateIconBadge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 22px;
+  height: 22px;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  display: grid;
+  place-items: center;
+}
+.emptyState h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-on-light-strong);
+}
+.emptyState p {
+  margin: 0;
+  color: var(--text-on-light-muted);
+  font-family: var(--font-ui-family-override, 'IBM Plex Sans', sans-serif);
+}
+
+/* ============================================================================
+ * SKELETONS — match the row layout */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--border-on-light) 35%, transparent);
+  border-radius: 2px;
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: axisListShimmer 1.4s infinite;
+}
+@keyframes axisListShimmer {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+.skeletonSearch { height: 42px; width: 100%; }
+.skeletonSelect { height: 36px; width: 150px; }
+.skeletonButton { height: 36px; width: 100px; }
+.skeletonButtonSmall { height: 26px; width: 70px; }
+.skeletonInput { height: 38px; }
+.skeletonLine { height: 12px; width: 120px; }
+.skeletonLineWide { height: 16px; width: 200px; }
+.skeletonPills { display: flex; gap: 8px; flex-wrap: wrap; }
+.skeletonPill { height: 22px; width: 80px; }
+.skeletonFilterHeader { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.skeletonFilterControls { display: grid; gap: 14px; }
+.skeletonFilterBlock { display: grid; gap: 6px; }
+.skeletonResultsHeader { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.skeletonCard {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 18px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-on-light);
+  background: var(--surface-bg-light);
+}
+.skeletonMedia { width: 140px; height: 96px; border-radius: 2px; }
+.skeletonBody { display: grid; gap: 10px; }
+.skeletonSpecRow {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+.skeletonChip { height: 12px; }
+
+/* ============================================================================
+ * RESPONSIVE */
+@media (min-width: 720px) {
+  .toolbar {
+    grid-template-columns: 1.2fr 1fr;
+    align-items: center;
+  }
+  .toolbarActions { justify-content: flex-end; }
+  .topbarControls { justify-content: flex-end; }
+}
+
+@media (max-width: 640px) {
+  .heroInner { grid-template-columns: 1fr; gap: 12px; }
+  .heroHighlights { grid-column: 1; grid-row: auto; justify-content: flex-start; }
+  .heroLead { display: none; }
+}
+
+@media (min-width: 980px) {
+  .filterToggle { display: none; }
+  .contentGrid {
+    grid-template-columns: 260px minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+@media (min-width: 1280px) {
+  .toolbar {
+    display: grid;
+    grid-template-columns: 1.2fr auto;
+    gap: 18px;
+    align-items: center;
+  }
+  .searchInput { max-width: none; }
+  .toolbarActions { flex-wrap: nowrap; }
+  .topbarControls { flex-wrap: nowrap; }
+}
+
+@media (max-width: 720px) {
+  .card {
+    grid-template-columns: 100px 1fr;
+    gap: 12px;
+    padding: 12px;
+    min-height: 0;
+  }
+  .cardImage { width: 100px; height: 80px; }
+  .cardTitleRow h3 { font-size: 0.94rem; }
+  .cardPrice { font-size: 1.1rem; }
+  .cardSpecs span { font-size: 0.7rem; }
+  .skeletonCard { grid-template-columns: 100px 1fr; padding: 12px; }
+  .skeletonMedia { width: 100px; height: 80px; }
+}
+
+@media (max-width: 979px) {
+  .filters {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    background: var(--surface-bg-light);
+    overflow-y: auto;
+    padding: 64px 24px 88px;
+    display: none;
+    border-left: 0;
+    border-radius: 0;
+    border-top: 2px solid var(--brand-primary);
+  }
+  .filtersOpen { display: flex; }
+  .filterToggle {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 45;
+    box-shadow: var(--shadow-press);
+  }
+}

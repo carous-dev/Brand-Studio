@@ -1,0 +1,745 @@
+/* Vehicle detail — sticky-thumbnail-rail gallery + spec-sheet-vertical layout. */
+
+.page {
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+  overflow-x: hidden;
+}
+
+/* BREADCRUMB */
+.breadcrumb {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px clamp(16px, 3vw, 32px) 0;
+}
+.crumbLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-on-light-muted);
+  text-decoration: none;
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.82rem;
+  transition: color 0.14s ease;
+}
+.crumbLink:hover { color: var(--brand-primary); }
+.crumbAll { display: none; }
+.crumbBack { display: inline; }
+@media (min-width: 720px) {
+  .crumbAll { display: inline; }
+  .crumbBack { display: none; }
+}
+
+/* TITLE STRIP */
+.titleStrip {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px clamp(16px, 3vw, 32px) 16px;
+}
+.titleStripInner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: clamp(16px, 3vw, 32px);
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border-on-light);
+}
+.titleBody { min-width: 0; }
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.78rem;
+  color: var(--brand-primary);
+  margin-bottom: 8px;
+}
+.title {
+  font-family: var(--font-brand-family-override);
+  font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-on-light-strong);
+  line-height: 1.1;
+}
+.titleMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 12px;
+  font-size: 0.84rem;
+  color: var(--text-on-light-muted);
+  align-items: center;
+  font-family: var(--font-ui-family-override, 'IBM Plex Sans', sans-serif);
+}
+.titleMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.titleMeta svg { color: var(--brand-primary); }
+.regChip {
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light-strong);
+  color: var(--text-on-light-strong);
+  padding: 4px 10px;
+  font-size: 0.82rem;
+  border-radius: 2px;
+}
+.titleActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.titleIconRow { display: inline-flex; gap: 6px; }
+.iconAction {
+  width: 38px;
+  height: 38px;
+  background: transparent;
+  border: 1px solid var(--border-on-light-strong);
+  color: var(--brand-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+.iconAction:hover, .iconAction[data-active='true'] {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-color: var(--brand-primary);
+}
+.bigPrice {
+  font-family: var(--font-brand-family-override);
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--brand-primary);
+  white-space: nowrap;
+}
+
+/* GALLERY — sticky-thumbnail-rail */
+.galleryBand {
+  background: var(--surface-bg-light);
+  padding: 16px 0 24px;
+}
+.galleryInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 3vw, 32px);
+}
+.galleryGrid {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
+}
+.thumbRail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 560px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.thumb {
+  width: 92px;
+  height: 70px;
+  background-color: var(--surface-card-dark);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 1px solid var(--border-on-light);
+  cursor: pointer;
+  padding: 0;
+  border-radius: 2px;
+  opacity: 0.75;
+  flex-shrink: 0;
+  transition: opacity 0.14s ease, border-color 0.14s ease;
+}
+.thumb:hover { opacity: 1; }
+.thumbActive {
+  opacity: 1;
+  border-color: var(--brand-primary);
+  border-width: 2px;
+}
+.thumbMore {
+  background: var(--surface-card-light);
+  color: var(--text-on-light-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-weight: 600;
+  opacity: 1;
+}
+.galleryMain {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background-color: var(--surface-card-dark);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 1px solid var(--border-on-light);
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 0;
+  overflow: hidden;
+  min-height: 380px;
+}
+.galleryExpand {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  background: rgba(var(--surface-bg-dark-rgb), 0.7);
+  color: var(--text-on-dark-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  pointer-events: none;
+}
+.galleryEmpty {
+  background: var(--surface-card-light);
+  border: 1px dashed var(--border-on-light-strong);
+  padding: 48px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  color: var(--text-on-light-muted);
+}
+.galleryEmpty svg { color: var(--brand-primary); }
+
+/* QUICK SPEC STRIP */
+.specStrip {
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+}
+.specStripInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 22px clamp(16px, 3vw, 32px);
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 22px;
+}
+.specCell {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+.specCell svg { color: var(--brand-primary); }
+.specCell div { display: flex; flex-direction: column; }
+.specValue {
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--text-on-dark-strong);
+  line-height: 1.15;
+}
+.specLabel {
+  font-family: var(--font-brand-family-override);
+  font-size: 0.68rem;
+  color: var(--text-on-dark-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+
+/* CONTENT + STICKY SIDEBAR */
+.content {
+  background: var(--surface-bg-light);
+  padding: clamp(32px, 5vw, 56px) 0;
+}
+.contentInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 3vw, 32px) 80px;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+.contentMain { min-width: 0; }
+
+.contentBlock { margin-bottom: clamp(28px, 4vw, 44px); }
+.blockTitle {
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--text-on-light-strong);
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--brand-primary);
+  width: max-content;
+  margin-bottom: 16px;
+}
+.description {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--text-on-light-muted);
+  max-width: 64ch;
+  font-family: var(--font-ui-family-override, 'IBM Plex Sans', sans-serif);
+}
+
+.featureList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 16px;
+}
+.featureList li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--text-on-light-strong);
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+}
+.featureList li svg { color: var(--brand-primary); }
+
+.specsTable {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+.specsRow {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-on-light);
+  font-size: 0.92rem;
+}
+.specsRow dt {
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.8rem;
+  color: var(--text-on-light-muted);
+}
+.specsRow dd {
+  margin: 0;
+  color: var(--text-on-light-strong);
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+}
+
+/* SIDEBAR */
+.sidebar {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.priceCard {
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-top: 2px solid var(--brand-primary);
+  padding: 26px 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 4px;
+}
+.priceEyebrow {
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.74rem;
+  color: var(--brand-primary);
+}
+.priceFigure {
+  font-family: var(--font-brand-family-override);
+  font-size: clamp(1.9rem, 3.8vw, 2.6rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--brand-primary);
+  line-height: 1;
+}
+.priceFinance {
+  font-size: 0.84rem;
+  color: var(--text-on-light-muted);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-on-light);
+  font-family: var(--font-ui-family-override, 'IBM Plex Sans', sans-serif);
+}
+.enquireBtn { width: 100%; justify-content: center; margin-top: 6px; }
+
+.contactGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  margin-top: 8px;
+}
+.contactCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border: 1px solid var(--border-on-light-strong);
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+  text-decoration: none;
+  font-family: var(--font-brand-family-override);
+  font-size: 0.74rem;
+  border-radius: 4px;
+  transition: border-color 0.14s ease, color 0.14s ease;
+  min-height: 60px;
+}
+.contactCell svg { color: var(--brand-primary); }
+.contactCell:hover {
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+.assuranceCard {
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+  border-radius: 4px;
+  padding: 22px 24px;
+  border-left: 2px solid var(--brand-primary);
+}
+.assuranceTitle {
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-on-dark-strong);
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-on-dark);
+}
+.assuranceList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.assuranceList li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--text-on-dark-strong);
+  font-family: var(--font-ui-family-override, 'IBM Plex Sans', sans-serif);
+}
+.assuranceList li svg { color: var(--brand-primary); }
+
+/* MOBILE STICKY BAR */
+.stickyMobileBar { display: none; }
+@media (max-width: 720px) {
+  .stickyMobileBar {
+    display: flex;
+    position: fixed;
+    inset: auto 0 0 0;
+    background: var(--surface-bg-dark);
+    color: var(--text-on-dark-strong);
+    padding: 12px 16px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    z-index: 50;
+    border-top: 2px solid var(--brand-primary);
+    padding-right: 80px;
+  }
+  .stickyPrice {
+    font-family: var(--font-brand-family-override);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--brand-primary);
+    line-height: 1;
+  }
+  .stickyEnquire {
+    flex: 1;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 16px;
+    font-size: 0.85rem;
+  }
+}
+
+/* SIMILAR VEHICLES */
+.similar {
+  background: var(--surface-card-light);
+  color: var(--text-on-light-strong);
+  border-top: 1px solid var(--border-on-light);
+  border-bottom: 1px solid var(--border-on-light);
+}
+.similarInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 3vw, 32px);
+}
+.similarHeader {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: clamp(18px, 3vw, 32px);
+  flex-wrap: wrap;
+}
+.similarTitle {
+  font-family: var(--font-brand-family-override);
+  font-size: clamp(1.3rem, 2.6vw, 1.9rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.similarRail {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(14px, 2vw, 18px);
+}
+.similarCard {
+  background: var(--surface-bg-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 4px;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--text-on-light-strong);
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.14s ease, transform 0.18s ease;
+}
+.similarCard:hover {
+  border-color: var(--brand-primary);
+  transform: translateY(-2px);
+}
+.similarImage {
+  aspect-ratio: 4 / 3;
+  background-color: var(--image-placeholder-bg);
+  background-size: cover;
+  background-position: center;
+}
+.similarBody { padding: 14px 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.similarBody h3 {
+  font-family: var(--font-brand-family-override);
+  font-size: 0.94rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.similarMeta {
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.76rem;
+  color: var(--text-on-light-muted);
+}
+.similarPrice {
+  font-family: var(--font-brand-family-override);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--brand-primary);
+  margin-top: 4px;
+}
+
+/* BROWSE BY MAKE SEO */
+.makesSeo {
+  background: var(--surface-bg-light);
+  padding-block: clamp(36px, 5vw, 56px);
+}
+.makesInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 3vw, 32px);
+}
+.makesHeader { margin-bottom: clamp(18px, 3vw, 28px); }
+.makesTitle {
+  font-family: var(--font-brand-family-override);
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-top: 6px;
+}
+.makesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+}
+.makeChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  color: var(--text-on-light-strong);
+  text-decoration: none;
+  font-family: var(--font-brand-family-override);
+  font-size: 0.86rem;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+.makeChip:hover {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-color: var(--brand-primary);
+}
+.makeChip svg { color: inherit; }
+
+/* LIGHTBOX */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(var(--surface-bg-dark-rgb), 0.92);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(20px, 4vw, 48px);
+  gap: 16px;
+}
+.lightboxClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 1px solid var(--border-on-dark-strong);
+  color: var(--text-on-dark-strong);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  z-index: 1;
+}
+.lightboxClose:hover {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+.lightboxStage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+.lightboxStage img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.lightboxStrip {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px 0;
+  scrollbar-width: thin;
+}
+.lightboxThumb {
+  flex: 0 0 80px;
+  height: 60px;
+  background-color: var(--surface-card-dark);
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--border-on-dark);
+  cursor: pointer;
+  padding: 0;
+  border-radius: 2px;
+  opacity: 0.6;
+  transition: opacity 0.14s ease, border-color 0.14s ease;
+}
+.lightboxThumb:hover { opacity: 1; }
+.lightboxThumbActive {
+  opacity: 1;
+  border-color: var(--brand-primary);
+}
+
+/* NOT FOUND */
+.notFound {
+  max-width: 540px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: clamp(48px, 8vw, 96px) 24px;
+}
+.notFoundEyebrow {
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.78rem;
+  color: var(--brand-primary);
+}
+.notFound h1 {
+  font-family: var(--font-brand-family-override);
+  font-size: clamp(1.6rem, 3.6vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-on-light-strong);
+}
+.notFound p {
+  color: var(--text-on-light-muted);
+  font-size: 1rem;
+  font-family: var(--font-ui-family-override, 'IBM Plex Sans', sans-serif);
+}
+
+/* SKELETONS */
+.skeletonWrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px clamp(16px, 3vw, 32px) 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--border-on-light) 35%, transparent);
+  border-radius: 2px;
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: axisDetailShimmer 1.4s infinite;
+}
+.skBreadcrumb { height: 14px; width: 140px; }
+.skTitle { height: 36px; width: 70%; max-width: 480px; }
+.skMain { aspect-ratio: 16 / 10; }
+@keyframes axisDetailShimmer {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .specStripInner { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .contentInner { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+  .similarRail { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 720px) {
+  .titleStripInner { grid-template-columns: 1fr; }
+  .titleActions { flex-direction: row; align-items: center; justify-content: space-between; }
+  .galleryGrid { grid-template-columns: 1fr; }
+  .thumbRail {
+    flex-direction: row;
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .galleryMain { min-height: 240px; }
+  .specStripInner { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .featureList { grid-template-columns: 1fr; }
+  .specsRow { grid-template-columns: 120px 1fr; gap: 10px; font-size: 0.85rem; }
+  .similarRail { grid-template-columns: 1fr; }
+  .makesGrid { grid-template-columns: repeat(2, 1fr); }
+  .content { padding: clamp(28px, 4vw, 44px) 0 120px; }
+}

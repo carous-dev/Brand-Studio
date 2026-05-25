@@ -1,0 +1,302 @@
+/* ============================================================================
+ * VerticalSideRailNav — signature-move chrome.
+ * Desktop (≥980px): 244px fixed left rail. Mobile (≤980px): top bar + overlay.
+ */
+
+/* ----------------------------------------------------------------- Top bar */
+.topBar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+  border-bottom: 1px solid var(--border-on-dark);
+}
+@media (min-width: 980px) {
+  .topBar { display: none; }
+}
+.topBrand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-on-dark-strong);
+}
+.topLogo {
+  display: block;
+  max-height: 30px;
+  width: auto;
+  object-fit: contain;
+}
+.topWordmark {
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-on-dark-strong);
+}
+.hamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  color: var(--text-on-dark-strong);
+  border: 1px solid var(--border-on-dark-strong);
+  cursor: pointer;
+  border-radius: 4px;
+}
+.hamburger:hover {
+  background: color-mix(in srgb, var(--color-bg) 6%, transparent);
+}
+
+/* ---------------------------------------------------------------- Side rail */
+.rail {
+  display: none;
+}
+@media (min-width: 980px) {
+  .rail {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: var(--rail-width);
+    background: var(--surface-bg-dark);
+    color: var(--text-on-dark-strong);
+    border-right: 1px solid var(--border-on-dark);
+    z-index: 50;
+    padding: 32px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    overflow-y: auto;
+  }
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-decoration: none;
+  color: var(--text-on-dark-strong);
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-on-dark);
+}
+.brandLogo {
+  display: block;
+  max-height: 38px;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 6px;
+}
+.brandWordmark {
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-on-dark-strong);
+}
+.brandTagline {
+  font-family: var(--font-brand-family-override);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  color: var(--text-on-dark-faint);
+  text-transform: uppercase;
+}
+
+.statusRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-on-dark-muted);
+  font-family: var(--font-brand-family-override);
+  font-size: 0.78rem;
+  letter-spacing: -0.005em;
+}
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.statusOnline { background: var(--state-success); }
+.statusOffline { background: var(--state-warning); }
+.statusLabel { white-space: nowrap; }
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.navLink {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 8px;
+  color: var(--text-on-dark-muted);
+  text-decoration: none;
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.94rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  border-left: 2px solid transparent;
+  transition: color 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+  border-radius: 0 4px 4px 0;
+  min-height: 44px;
+}
+.navLink:hover {
+  color: var(--text-on-dark-strong);
+  background: color-mix(in srgb, var(--color-bg) 4%, transparent);
+}
+.navLinkActive {
+  color: var(--text-on-dark-strong);
+  border-left-color: var(--brand-primary);
+  background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+}
+
+.navCode {
+  font-family: var(--font-brand-family-override);
+  font-size: 0.74rem;
+  color: var(--brand-primary);
+  letter-spacing: 0;
+  font-weight: 500;
+}
+.navLabel {
+  font-weight: 500;
+}
+
+.spacer { flex: 1; }
+
+.contactBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-on-dark);
+}
+
+.contactRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-on-dark-muted);
+  font-size: 0.82rem;
+}
+
+.phoneCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 12px;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  text-decoration: none;
+  border-radius: 4px;
+  font-family: var(--font-brand-family-override);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  min-height: 44px;
+  justify-content: flex-start;
+  transition: background 0.14s ease;
+}
+.phoneCta:hover { background: var(--brand-primary-strong); }
+
+.socials {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid var(--border-on-dark-strong);
+  color: var(--text-on-dark-muted);
+  background: transparent;
+  transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+.socialLink:hover {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-color: var(--brand-primary);
+}
+
+/* --------------------------------------------------------- Mobile overlay */
+.mobilePanel {
+  position: fixed;
+  inset: 0;
+  top: 56px;
+  z-index: 65;
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+  padding: 24px 24px 28px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.mobilePanelOpen {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+@media (min-width: 980px) {
+  .mobilePanel { display: none !important; }
+}
+
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+}
+.mobileLink {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 16px 6px;
+  border-bottom: 1px solid var(--border-on-dark);
+  color: var(--text-on-dark-strong);
+  text-decoration: none;
+  font-family: var(--font-brand-family-override);
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  min-height: 56px;
+}
+.mobileLink:hover,
+.mobileLinkActive { color: var(--brand-primary); }
+
+.mobileContact {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.mobilePhone {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  text-decoration: none;
+  border-radius: 4px;
+  font-family: var(--font-brand-family-override);
+  font-weight: 600;
+  font-size: 1rem;
+  justify-content: center;
+}
+.mobilePhone:hover { background: var(--brand-primary-strong); }

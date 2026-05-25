@@ -1,0 +1,92 @@
+.section {
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+}
+.inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+}
+
+.header { max-width: 640px; margin-bottom: clamp(28px, 4vw, 44px); }
+.eyebrow {
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.78rem;
+  color: var(--brand-primary);
+  display: inline-block;
+  margin-bottom: 8px;
+}
+.title {
+  font-family: var(--font-brand-family-override);
+  font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.lead {
+  font-size: 1rem;
+  color: var(--text-on-light-muted);
+  margin-top: 8px;
+  font-family: var(--font-ui-family-override, 'IBM Plex Sans', sans-serif);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(14px, 1.8vw, 22px);
+}
+
+.pillar {
+  position: relative;
+  background: var(--surface-card-light);
+  color: var(--text-on-light-strong);
+  border: 1px solid var(--border-on-light);
+  border-radius: 4px;
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pillarCode {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  font-family: var(--font-brand-family-override);
+  font-size: 0.74rem;
+  color: var(--text-on-light-muted);
+  opacity: 0.6;
+}
+
+.pillarIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: color-mix(in srgb, var(--brand-primary) 12%, transparent);
+  color: var(--brand-primary);
+  border-radius: 4px;
+}
+
+.pillarTitle {
+  font-family: var(--font-brand-family-override);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-on-light-strong);
+  margin-top: 4px;
+}
+
+.pillarBody {
+  font-size: 0.92rem;
+  color: var(--text-on-light-muted);
+  line-height: 1.55;
+  font-family: var(--font-ui-family-override, 'IBM Plex Sans', sans-serif);
+}
+
+@media (max-width: 1024px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 540px) {
+  .grid { grid-template-columns: 1fr; }
+}

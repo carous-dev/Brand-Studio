@@ -1,0 +1,108 @@
+.section {
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+}
+.inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+
+.sidebar {
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-left: 2px solid var(--brand-primary);
+  padding: 26px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  border-radius: 4px;
+  position: sticky;
+  top: 24px;
+}
+.sidebarTitle {
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--text-on-light-strong);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-on-light);
+}
+
+.detailRow {
+  display: grid;
+  grid-template-columns: 28px 22px 1fr;
+  gap: 8px 12px;
+  align-items: start;
+  color: var(--text-on-light-strong);
+  text-decoration: none;
+}
+.code {
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+  font-size: 0.74rem;
+  color: var(--brand-primary);
+  padding-top: 2px;
+}
+.detailRow svg {
+  color: var(--brand-primary);
+  margin-top: 1px;
+}
+.detailRow strong {
+  display: block;
+  font-family: var(--font-brand-family-override);
+  font-weight: 600;
+  font-size: 0.84rem;
+  letter-spacing: -0.005em;
+  color: var(--text-on-light-strong);
+  margin-bottom: 2px;
+}
+.detailRow span {
+  font-size: 0.88rem;
+  color: var(--text-on-light-muted);
+  line-height: 1.45;
+  font-family: var(--font-ui-family-override, 'IBM Plex Sans', sans-serif);
+}
+.detailRow:hover strong { color: var(--brand-primary); }
+
+.hoursList {
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.84rem;
+  color: var(--text-on-light-muted);
+  font-family: var(--font-brand-family-override, 'IBM Plex Mono', monospace);
+}
+.hoursRow {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 6px;
+}
+.hoursRow dt {
+  font-weight: 500;
+  color: var(--text-on-light-strong);
+  letter-spacing: -0.005em;
+}
+.hoursRow dd {
+  margin: 0;
+  color: var(--text-on-light-muted);
+}
+
+.quickLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-on-light);
+}
+
+@media (max-width: 880px) {
+  .inner { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+}

@@ -152,6 +152,27 @@ const ARCHETYPE_ITEMS = {
     { path: 'components/AcquisitionsRow.tsx', title: 'NEW: AcquisitionsRow — horizontal-scrolling 5-card row', notes: 'overflow-x: auto; scroll-snap-type: x mandatory.' },
     { path: 'components/PullQuote.tsx', title: 'NEW: PullQuote — Playfair italic, max-width 880px', notes: 'Centered, clamp(1.5rem, 3vw, 2.4rem) font-size, line-height 1.4.' },
   ],
+  // Archetypes added by the 2026-05-25 distinctiveness contract. Each maps
+  // visually to an existing neighbour for required-component inheritance,
+  // but Phase 8 designs to the per-theme Signature Concept (Phase A2e) not
+  // the archetype default — these lists are seeds for the work-package
+  // TodoWrite, not mandates.
+  'classic-trad': [],
+  'classic-warm': [
+    { path: 'components/FounderNote.tsx', title: 'NEW: FounderNote — 1-column narrative + small portrait', notes: 'Centered, soft serif heading + humanist sans body. Pull quote from the founder/owner.' },
+  ],
+  industrial: [
+    { path: 'components/Header.tsx', title: 'Header — vertical side-rail OR thin utilitarian top bar (industrial)', notes: 'If signatureMove=vertical-side-rail-navigation: 220–260px left rail on desktop, top bar on mobile. Else: thin 52px hairline top bar. Mechanical sans (Rajdhani, IBM Plex Sans). Sharp 4px corners.' },
+    { path: 'components/Hero.tsx', title: 'Hero — utilitarian, restrained decoration (industrial)', notes: 'If oneBigMove=decorative-density-minimum: ZERO decorative layers. Eyebrow + headline + lead + ONE CTA. Typography-only-hero pattern preferred for stencil-aesthetic logos.' },
+    { path: 'components/StockTable.tsx', title: 'NEW: StockTable — minimalist data-row inventory', notes: 'Image-left, dense rows, fixed column widths, monospace specs. Workshop-floor inventory log feel.' },
+  ],
+  minimalist: [
+    { path: 'components/Hero.tsx', title: 'Hero — typography-only or single-photo minimal (minimalist)', notes: 'Generous whitespace. Single font weight. NO chip rows, NO stat strips. Often oneBigMove=decorative-density-minimum.' },
+  ],
+  editorial: [
+    { path: 'components/Hero.tsx', title: 'Hero — lead-image + byline caption (editorial)', notes: 'Big lead photo. Byline-style caption above the headline ("This week’s pick"). Mixed serif heading + humanist sans body.' },
+    { path: 'components/EditorialLeadStory.tsx', title: 'NEW: EditorialLeadStory — long-form article-led opener', notes: 'Newspaper-style: lead image + 200–300 word opening paragraph. Drop cap optional.' },
+  ],
 }
 
 // Always-required Quality Bar items that don't fit a single file — these
