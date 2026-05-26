@@ -2,6 +2,11 @@
 
 Newest entry at the top. One entry per logical change, not per file.
 
+- 2026-05-26: Fixed `queensbury-cars-bespoke` hero live-stock marquee — clumsy 4-row grid under reduced-motion (owner: Difatha)
+  - Scope: `app/themes/queensbury-cars-bespoke/components/Hero.module.css` (`@media (prefers-reduced-motion: reduce)` block).
+  - Reason: The reduced-motion fallback was applying `flex-wrap: wrap` + `white-space: normal` to the marquee track, which dumped the *duplicated* 24-item ticker payload (`[...vehicles, ...vehicles]`, intended for seamless looping) into a 4-row stacked grid every time the animation was paused. Visible in BrandStudio's preview and on any OS with reduced-motion on — section looked broken. Now matches the `auto-wow-uk-bespoke-02` HorizontalStockTicker pattern: `animation: none` only; the parent's `overflow: hidden` + right-edge `.marqueeFade` clip the overflow cleanly so the static state reads as a snapshot, not a grid.
+  - Notes: Only the CSS fallback path changed — animated path (no reduced-motion) is untouched. Visual regression-tested in head: with reduced motion on, marquee shows the first ~5–6 vehicles on a single row with the fade cueing more behind it.
+
 - 2026-05-26: `/api/ai/brand` now reads the dealer's site via OpenAI's web-search tool instead of inventing content (owner: Difatha)
   - Scope: `backend/services/ai_openai.py` (rewritten to add a browsing path), `.env.local.example` (documented new env vars). Production VPS `/home/brandstudio/.env` pre-positioned with the new vars ahead of this deploy.
   - Reason: previous behaviour passed the website URL to OpenAI Chat Completions as a string in the prompt — the model never actually fetched the page, so it invented brand voice, services, address, hours. Worse, when something timed out the operator saw a 502 from `brandstudio.carous.co.uk/api/ai/brand` and no draft at all. New behaviour: when `website` is supplied, call the Responses API (`/v1/responses`) with `tools=[{type:"web_search_preview"}]` so OpenAI fetches the page itself (handles Cloudflare-fronted dealer sites that a server-side scrape would be blocked on), then writes the structured `brand` payload grounded in what it actually read.

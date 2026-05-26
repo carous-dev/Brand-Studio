@@ -273,9 +273,6 @@
 @media (prefers-reduced-motion: reduce) {
   .marqueeTrack {
     animation: none;
-    flex-wrap: wrap;
-    white-space: normal;
-    padding-inline: 24px;
   }
 }
 
