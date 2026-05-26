@@ -1,10 +1,10 @@
 .cta {
   position: relative;
-  margin: clamp(48px, 7vw, 96px) clamp(16px, 3vw, 28px);
-  border-radius: 12px;
+  margin: clamp(48px, 7vw, 96px) 0;
+  border-radius: 0;
   overflow: hidden;
   isolation: isolate;
-  padding: clamp(40px, 6vw, 72px) clamp(24px, 5vw, 64px);
+  padding: clamp(48px, 7vw, 96px) clamp(20px, 5vw, 48px);
   color: #ffffff;
   background-image:
     linear-gradient(120deg,
@@ -23,9 +23,10 @@
 .glow {
   position: absolute;
   top: -30%;
-  right: -10%;
-  width: 60%;
-  height: 80%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 90%;
   background: radial-gradient(50% 50% at 50% 50%, color-mix(in srgb, var(--brand-primary) 40%, transparent) 0%, transparent 70%);
   filter: blur(60px);
   pointer-events: none;
@@ -39,8 +40,8 @@
     linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
   background-size: 36px 36px, 36px 36px;
-  mask-image: radial-gradient(60% 80% at 20% 50%, #000 0%, transparent 80%);
-  -webkit-mask-image: radial-gradient(60% 80% at 20% 50%, #000 0%, transparent 80%);
+  mask-image: radial-gradient(70% 80% at 50% 50%, #000 0%, transparent 80%);
+  -webkit-mask-image: radial-gradient(70% 80% at 50% 50%, #000 0%, transparent 80%);
   z-index: 0;
   pointer-events: none;
 }
@@ -49,8 +50,11 @@
   position: relative;
   z-index: 1;
   max-width: 720px;
+  margin-inline: auto;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: 16px;
 }
 
@@ -66,7 +70,8 @@
   color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
   width: max-content;
 }
-.eyebrow::before {
+.eyebrow::before,
+.eyebrow::after {
   content: '';
   width: 28px;
   height: 2px;
@@ -96,6 +101,7 @@
 .ctaRow {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 14px;
   flex-wrap: wrap;
   margin-top: 8px;
