@@ -12,25 +12,87 @@
   margin-bottom: clamp(28px, 4vw, 44px);
 }
 
+/* ------------------------ Mobile / base: manual horizontal swipe ------------------------ */
+.railWrap {
+  position: relative;
+}
+
 .rail {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(260px, 1fr);
+  display: flex;
   gap: 16px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   padding-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
 }
+
 .railItem {
+  flex: 0 0 clamp(240px, 72vw, 300px);
   scroll-snap-align: start;
   min-width: 0;
 }
 
+/* On mobile we don't need the duplicated items — they'd just feel like
+   the user keeps swiping past the same stock. Hide the second half. */
+.railItem[aria-hidden='true'] {
+  display: none;
+}
+
+/* ------------------------ Desktop: infinite auto-scrolling marquee ------------------------ */
 @media (min-width: 960px) {
+  .railWrap {
+    overflow: hidden;
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 5%,
+      #000 95%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 5%,
+      #000 95%,
+      transparent 100%
+    );
+  }
+
   .rail {
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-flow: row;
-    overflow-x: visible;
+    width: max-content;
+    overflow: visible;
+    scroll-snap-type: none;
+    animation: soldRailScroll 70s linear infinite;
+    padding-bottom: 4px;
+  }
+
+  /* Pause on hover so users can read / click. */
+  .railWrap:hover .rail {
+    animation-play-state: paused;
+  }
+
+  .railItem {
+    flex: 0 0 320px;
+  }
+
+  /* Duplicated items render on desktop for the seamless loop. */
+  .railItem[aria-hidden='true'] {
+    display: block;
+  }
+}
+
+@keyframes soldRailScroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail {
+    animation: none;
   }
 }
 

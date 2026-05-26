@@ -19,13 +19,13 @@ export default function RecentlySoldPreview() {
   // audit-ignore: data-useeffect-fetch — brand context client-side
   useEffect(() => {
     const ctrl = new AbortController()
-    const url = apiUrl(`/recently-sold?brand=${encodeURIComponent(brand?.slug || '')}&limit=6`)
+    const url = apiUrl(`/recently-sold?brand=${encodeURIComponent(brand?.slug || '')}&limit=10`)
     fetch(url, { signal: ctrl.signal })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then((data) => {
         const items = Array.isArray(data) ? data : data.items || data.vehicles || []
         const normalized = items.map(normalizeInventoryItem).filter(Boolean) as InventoryVehicle[]
-        setVehicles(normalized.slice(0, 6))
+        setVehicles(normalized.slice(0, 10))
         setState(normalized.length > 0 ? 'ready' : 'empty')
       })
       .catch((err) => {
@@ -56,12 +56,18 @@ export default function RecentlySoldPreview() {
         {state === 'loading' && <SkeletonRail count={4} variant="light" />}
 
         {state === 'ready' && (
-          <div className={styles.rail}>
-            {vehicles.map((v, i) => (
-              <div key={v.id} className={styles.railItem} data-aos="fade-up" data-aos-delay={i * 60}>
-                <VehicleCard vehicle={v as any} variant="sold" showActions={false} />
-              </div>
-            ))}
+          <div className={styles.railWrap} data-aos="fade-up">
+            <div className={styles.rail} aria-label="Recently sold vehicles, auto-scrolling">
+              {[...vehicles, ...vehicles].map((v, i) => (
+                <div
+                  key={`${v.id}-${i}`}
+                  className={styles.railItem}
+                  aria-hidden={i >= vehicles.length ? 'true' : undefined}
+                >
+                  <VehicleCard vehicle={v as any} variant="sold" showActions={false} />
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
