@@ -1,14 +1,28 @@
 """
 OpenAI wrapper for structured brand generation.
 
-Uses the Chat Completions API with JSON mode to return a BrandConfig payload.
+Two execution paths:
+
+  * **Browsing path** — Responses API + `web_search_preview` tool. Used when a
+    `website` URL is supplied so the model actually reads the dealer's page
+    and grounds the output in real content (real brand voice, services,
+    address, opening hours). Removes the need for a server-side scrape, which
+    avoids Cloudflare blocks on the brandstudio host.
+  * **No-browse path** — Chat Completions with JSON mode. Used when no
+    website is supplied OR the browsing path errors. The model invents
+    plausible content from the seed context only.
+
+`generate_brand()` is the public API. It tries browsing first when possible
+and falls back to no-browse on any failure so the endpoint always returns a
+draft instead of a 502.
 """
 
 from __future__ import annotations
 
 import json
 import os
-from typing import Any, Dict, List, Optional
+import re
+from typing import Any, Dict, List, Optional, Tuple
 
 import requests
 
@@ -26,6 +40,14 @@ def _get_api_key() -> str:
 
 def _get_model() -> str:
     return (os.environ.get("OPENAI_MODEL") or "gpt-4.1-mini").strip()
+
+
+def _get_browsing_model() -> str:
+    """Model used for the Responses API + web_search_preview path. Override via
+    OPENAI_BROWSING_MODEL. Defaults to OPENAI_MODEL so a single env var can
+    drive both paths unless you explicitly want different models."""
+    explicit = (os.environ.get("OPENAI_BROWSING_MODEL") or "").strip()
+    return explicit or _get_model()
 
 
 def _headers(api_key: str) -> Dict[str, str]:
@@ -162,42 +184,48 @@ def _text_recipe_prompt_block(text_recipe: Optional[Dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
-def generate_brand(
-    context: str = "",
-    website: str = "",
-    scopes: Optional[List[str]] = None,
-    preferred_theme_id: str = "",
-    text_recipe: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
-    """
-    Generate structured brand data via OpenAI Chat Completions (JSON mode).
-
-    Args:
-        context: Freeform text describing the brand.
-        website: Optional website URL to hint the model.
-        scopes: Optional list of scopes (basic/contact/seo/theme/pages/why/services/testimonials/faq).
-                Currently used only to mention focus in prompt; the full structure is always returned.
-        preferred_theme_id: Theme id that determines which text recipe to load.
-        text_recipe: Per-component text recipe loaded from `app/themes/<id>/recipes/text-recipe.json`.
-            When provided, the AI must populate `brand.text` with values for every recipe key
-            (component copy is the most-customised surface per preview and the recipe is the
-            single source of truth for what each theme needs).
-
-    Returns:
-        dict containing the full brand payload.
-    """
-    api_key = _get_api_key()
-    model = _get_model()
+def _build_user_prompt(
+    context: str,
+    website: str,
+    scopes: Optional[List[str]],
+    preferred_theme_id: str,
+    text_recipe: Optional[Dict[str, Any]],
+    *,
+    with_browsing_instructions: bool,
+) -> str:
+    """Compose the user prompt. When browsing is on, prepend instructions telling
+    the model to fetch the website FIRST before writing the brand record."""
     prompt = _base_prompt(context, website, preferred_theme_id=preferred_theme_id)
     scope_hint = ""
     if scopes:
         scope_hint = "\nFocus especially on: " + ", ".join(scopes)
 
     recipe_block = _text_recipe_prompt_block(text_recipe)
-    recipe_rule = "\n- `brand.text` MUST be an object whose keys exactly match the recipe field keys listed above; values are short strings under each field's maxLength. Omit no required key." if recipe_block else ""
+    recipe_rule = (
+        "\n- `brand.text` MUST be an object whose keys exactly match the recipe field keys "
+        "listed above; values are short strings under each field's maxLength. Omit no required key."
+        if recipe_block
+        else ""
+    )
 
-    user_content = (
-        prompt
+    browsing_block = ""
+    if with_browsing_instructions and website:
+        browsing_block = (
+            "\n\nBROWSING INSTRUCTIONS\n"
+            f"Before writing the JSON, use the web_search tool to fetch and read the dealer's "
+            f"website at {website}. Pull at minimum: trading name, tagline / hero headline, town "
+            "and county, postcode, phone, email, opening hours, named services, and any "
+            "established-since / years-in-business signal. ALSO try the /about and /contact "
+            "pages if the homepage is thin. Ground every field of `brand` in what you actually "
+            "read — do not invent. If a specific field genuinely is not present on the site, "
+            "leave it as a sensible empty string rather than making something up. When the "
+            "site is unreachable (404, 5xx, blocked), still produce a valid draft from the "
+            "seed context and mark `brand.description` with a one-line note about the gap.\n"
+        )
+
+    return (
+        browsing_block
+        + prompt
         + "\n\nJSON STRUCTURE (do not rename keys):\n"
         + _response_structure(scopes or [])
         + recipe_block
@@ -212,13 +240,145 @@ def generate_brand(
         + scope_hint
     )
 
+
+SYSTEM_PROMPT = (
+    "You are a brand content generator. Reply with JSON only that matches the provided "
+    "schema. When given browsing instructions and a dealer URL, fetch the site first and "
+    "ground every field in the actual content you read."
+)
+
+
+# ---------------------------------------------------------------------------
+# Browsing path (Responses API + web_search_preview tool)
+# ---------------------------------------------------------------------------
+
+def _extract_response_text(payload: Dict[str, Any]) -> str:
+    """
+    Pull the assistant text out of the Responses API payload. The Responses API
+    returns `output: [<items>]` where items can be `message`, `web_search_call`,
+    `reasoning`, etc. The message item has `content: [{type:"output_text", text}]`.
+
+    Also handles the convenience `output_text` field that newer SDK versions
+    surface as a flat string.
+    """
+    # Newer convenience field
+    flat = payload.get("output_text")
+    if isinstance(flat, str) and flat.strip():
+        return flat
+
+    pieces: List[str] = []
+    for item in payload.get("output") or []:
+        if not isinstance(item, dict):
+            continue
+        if item.get("type") != "message":
+            continue
+        for content in item.get("content") or []:
+            if not isinstance(content, dict):
+                continue
+            ctype = content.get("type")
+            if ctype in ("output_text", "text"):
+                text = content.get("text")
+                if isinstance(text, str):
+                    pieces.append(text)
+                elif isinstance(text, dict):
+                    # Some schemas wrap text in {value: "..."}
+                    val = text.get("value")
+                    if isinstance(val, str):
+                        pieces.append(val)
+    return "\n".join(pieces).strip()
+
+
+def _parse_json_from_text(text: str) -> Dict[str, Any]:
+    """
+    Parse JSON from a model response. The browsing model sometimes wraps the
+    JSON in ```json fences or prepends a sentence; strip both before parsing.
+    """
+    if not isinstance(text, str) or not text.strip():
+        raise OpenAIError("Empty model response")
+
+    raw = text.strip()
+    # Strip markdown fences if present
+    fence = re.match(r"^```(?:json)?\s*([\s\S]*?)\s*```\s*$", raw)
+    if fence:
+        raw = fence.group(1).strip()
+
+    # First try whole-string parse
+    try:
+        return json.loads(raw)
+    except Exception:
+        pass
+
+    # Fall back to the first {...} block
+    match = re.search(r"\{[\s\S]*\}", raw)
+    if match:
+        try:
+            return json.loads(match.group(0))
+        except Exception as exc:
+            raise OpenAIError(f"Failed to parse JSON from model: {exc}") from exc
+
+    raise OpenAIError("Model response contained no JSON object")
+
+
+def _generate_with_browsing(
+    api_key: str,
+    user_content: str,
+) -> Dict[str, Any]:
+    """Call the Responses API with the web_search_preview tool enabled."""
+    model = _get_browsing_model()
+    body = {
+        "model": model,
+        "instructions": SYSTEM_PROMPT,
+        "input": user_content,
+        "tools": [{"type": "web_search_preview"}],
+        "tool_choice": "auto",
+        "temperature": 0.4,
+        # No response_format here — web_search + structured outputs together
+        # is brittle on current models. We instruct JSON-only in the prompt
+        # and parse defensively.
+    }
+
+    try:
+        resp = requests.post(
+            "https://api.openai.com/v1/responses",
+            headers=_headers(api_key),
+            json=body,
+            timeout=90,  # Browsing adds latency (one or two fetches + reasoning)
+        )
+    except Exception as exc:  # pragma: no cover - network failure path
+        raise OpenAIError(f"Failed to reach OpenAI (browsing): {exc}") from exc
+
+    if not resp.ok:
+        try:
+            detail = resp.json()
+        except Exception:
+            detail = resp.text
+        raise OpenAIError(f"OpenAI browsing error {resp.status_code}: {detail}")
+
+    data = resp.json()
+    text = _extract_response_text(data)
+    parsed = _parse_json_from_text(text)
+
+    if "brand" not in parsed:
+        raise OpenAIError("Browsing response missing 'brand' key")
+
+    return parsed
+
+
+# ---------------------------------------------------------------------------
+# No-browse path (Chat Completions + JSON mode) — the original implementation
+# ---------------------------------------------------------------------------
+
+def _generate_without_browsing(
+    api_key: str,
+    user_content: str,
+) -> Dict[str, Any]:
+    """Original Chat Completions path. No tool use, model invents content from
+    the seed context only. Always reachable as a fallback."""
+    model = _get_model()
     body = {
         "model": model,
         "messages": [
-            {
-                "role": "system",
-                "content": "You are a brand content generator. Reply with JSON only that matches the provided schema.",
-            },
+            {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": user_content},
         ],
         "temperature": 0.5,
@@ -251,12 +411,88 @@ def generate_brand(
     if not isinstance(content, str):
         raise OpenAIError("OpenAI response content missing")
 
-    try:
-        parsed = json.loads(content)
-    except Exception as exc:
-        raise OpenAIError(f"Failed to parse JSON from model: {exc}") from exc
-
+    parsed = _parse_json_from_text(content)
     if "brand" not in parsed:
         raise OpenAIError("Model response missing 'brand' key")
 
     return parsed
+
+
+# ---------------------------------------------------------------------------
+# Public API
+# ---------------------------------------------------------------------------
+
+def generate_brand(
+    context: str = "",
+    website: str = "",
+    scopes: Optional[List[str]] = None,
+    preferred_theme_id: str = "",
+    text_recipe: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """
+    Generate structured brand data via OpenAI.
+
+    When `website` is non-empty, the **browsing path** runs first (Responses API
+    + `web_search_preview` tool) so the model reads the dealer's site and
+    grounds the output in real content. On any failure it falls back to the
+    **no-browse path** (Chat Completions + JSON mode) so the endpoint always
+    returns a draft instead of a 502.
+
+    Disable browsing entirely by setting `OPENAI_DISABLE_BROWSING=1`.
+
+    Args:
+        context: Freeform text describing the brand.
+        website: Optional website URL — when supplied, triggers the browsing path.
+        scopes: Optional list of scopes; mentioned in the prompt focus hint only.
+        preferred_theme_id: Theme id; mentioned in seed + used by the caller to
+            load `text_recipe`.
+        text_recipe: Per-component text recipe loaded from
+            `app/themes/<id>/recipes/text-recipe.json`. When provided, the AI
+            must populate `brand.text` with values for every recipe key.
+
+    Returns:
+        dict containing the full brand payload (always has a `brand` key).
+    """
+    api_key = _get_api_key()
+
+    # Caller can hard-disable the browsing path via env var, useful when
+    # OpenAI is rate-limiting search or in offline test environments.
+    browsing_disabled = (os.environ.get("OPENAI_DISABLE_BROWSING") or "").strip() in {
+        "1",
+        "true",
+        "yes",
+    }
+
+    use_browsing = bool(website) and not browsing_disabled
+
+    browsing_prompt = _build_user_prompt(
+        context, website, scopes, preferred_theme_id, text_recipe,
+        with_browsing_instructions=True,
+    )
+    no_browse_prompt = _build_user_prompt(
+        context, website, scopes, preferred_theme_id, text_recipe,
+        with_browsing_instructions=False,
+    )
+
+    last_error: Optional[OpenAIError] = None
+
+    if use_browsing:
+        try:
+            return _generate_with_browsing(api_key, browsing_prompt)
+        except OpenAIError as exc:
+            # Capture and fall through — operator gets a draft from the
+            # no-browse path even when browsing fails (search quota, model
+            # 429, parse failure, etc.).
+            last_error = exc
+
+    try:
+        return _generate_without_browsing(api_key, no_browse_prompt)
+    except OpenAIError as exc:
+        # Surface the no-browse error if the browsing path also failed — it
+        # carries more useful detail than the browsing failure (since the
+        # browsing tool can fail for many opaque reasons).
+        if last_error is not None:
+            raise OpenAIError(
+                f"Both paths failed. Browsing: {last_error}. Fallback: {exc}"
+            ) from exc
+        raise
