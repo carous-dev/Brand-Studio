@@ -1,0 +1,131 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.actionsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.summary {
+  margin: 0;
+  color: var(--text-on-light-muted);
+}
+
+.scrollFrame {
+  overflow-x: auto;
+  border: 1px solid var(--border-on-light);
+  border-radius: 8px;
+  background: var(--surface-card-light);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+}
+
+.specHead {
+  width: 180px;
+  background: var(--surface-card-light);
+  border-bottom: 1px solid var(--border-on-light);
+  padding: 16px;
+  text-align: left;
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+}
+
+.vehicleHead {
+  text-align: left;
+  background: var(--surface-card-light);
+  border-bottom: 1px solid var(--border-on-light);
+  padding: 16px;
+  vertical-align: top;
+  min-width: 220px;
+}
+
+.cardHead {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.thumb,
+.thumbPlaceholder {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--brand-primary) 8%, var(--surface-bg-light));
+}
+
+.cardTitle {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 0.98rem;
+}
+
+.cardActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.removeBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-on-light-muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.removeBtn:hover {
+  color: var(--brand-primary);
+}
+
+.rowLabel {
+  background: var(--surface-bg-light);
+  border-bottom: 1px solid var(--border-on-light);
+  padding: 14px 16px;
+  text-align: left;
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-on-light-muted);
+  width: 180px;
+}
+
+.cell {
+  border-bottom: 1px solid var(--border-on-light);
+  padding: 14px 16px;
+  font-size: 0.95rem;
+  color: var(--text-on-light-strong);
+}
+
+.empty {
+  background: var(--surface-card-light);
+  border: 1px dashed var(--border-on-light);
+  border-radius: 8px;
+  padding: clamp(28px, 5vw, 56px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.empty h2 {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  margin: 0;
+  font-size: 1.4rem;
+}
+.empty p {
+  color: var(--text-on-light-muted);
+}

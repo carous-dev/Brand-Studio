@@ -1,0 +1,77 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 640px) {
+  .row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.field > span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-on-light-strong);
+  letter-spacing: 0.02em;
+}
+
+.error {
+  color: #b42318;
+  font-size: 0.82rem;
+}
+
+.formError {
+  background: color-mix(in srgb, #b42318 8%, var(--surface-bg-light));
+  border: 1px solid color-mix(in srgb, #b42318 36%, transparent);
+  color: #b42318;
+  border-radius: 4px;
+  padding: 12px 14px;
+  font-size: 0.92rem;
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.submit {
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+.success {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: color-mix(in srgb, var(--brand-primary) 6%, var(--surface-bg-light));
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 24%, var(--border-on-light));
+  border-radius: 8px;
+}
+.successHead {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 1.2rem;
+  margin: 0;
+  color: var(--brand-primary);
+}
+.success p {
+  margin: 0;
+}
+.success button {
+  width: max-content;
+}

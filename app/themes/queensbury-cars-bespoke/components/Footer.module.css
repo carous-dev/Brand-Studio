@@ -1,0 +1,208 @@
+.footer {
+  position: relative;
+  background: var(--surface-bg-dark);
+  color: rgba(255, 255, 255, 0.85);
+  padding: clamp(48px, 7vw, 80px) clamp(16px, 3vw, 32px) 24px;
+  margin-top: clamp(48px, 8vw, 96px);
+  overflow: hidden;
+  isolation: isolate;
+}
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--brand-primary) 30%,
+    color-mix(in srgb, var(--brand-primary) 60%, #ffffff) 50%,
+    var(--brand-primary) 70%,
+    transparent 100%);
+  z-index: 1;
+}
+
+.gradientGlow {
+  position: absolute;
+  inset: -20% -10% auto -10%;
+  height: 60%;
+  background: radial-gradient(60% 70% at 30% 0%, color-mix(in srgb, var(--brand-primary) 30%, transparent) 0%, transparent 70%);
+  filter: blur(40px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 4vw, 48px);
+}
+
+.brandCol {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.brandLink {
+  display: inline-block;
+  text-decoration: none;
+}
+.brandLogo {
+  height: 48px;
+  width: auto;
+  max-width: 260px;
+  object-fit: contain;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+.brandWordmark {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.brandLead {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 38ch;
+}
+
+.address {
+  font-style: normal;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.5;
+}
+
+.contactLine {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  width: max-content;
+}
+.contactLine:hover {
+  color: var(--brand-primary);
+}
+
+.colTitle {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  margin-bottom: 16px;
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.link {
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.15s ease, padding-left 0.15s ease;
+}
+.link:hover {
+  color: var(--brand-primary);
+  padding-left: 4px;
+}
+
+.hoursList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hoursRow {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.82);
+}
+.hoursDay {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--brand-primary);
+}
+.hoursFallback {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+}
+
+.divider {
+  position: relative;
+  z-index: 2;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: clamp(28px, 5vw, 48px) auto 20px;
+  max-width: 1240px;
+}
+
+.legalRow {
+  position: relative;
+  z-index: 2;
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.62);
+}
+.copy {
+  letter-spacing: 0.02em;
+}
+.legalNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+.legalLink {
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.legalLink:hover {
+  color: var(--brand-primary);
+}
+.credit {
+  color: rgba(255, 255, 255, 0.6);
+}
+.creditLink {
+  color: var(--brand-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+.creditLink:hover {
+  text-decoration: underline;
+}
+
+@media (min-width: 760px) {
+  .inner {
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  }
+}

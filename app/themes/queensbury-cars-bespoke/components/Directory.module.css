@@ -1,0 +1,87 @@
+.section {
+  background:
+    radial-gradient(50% 60% at 100% 0%, color-mix(in srgb, var(--brand-primary) 6%, transparent) 0%, transparent 60%),
+    var(--surface-bg-light);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 4px;
+  color: var(--text-on-light-strong);
+  text-decoration: none;
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-weight: 600;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+}
+.chip:hover {
+  background: color-mix(in srgb, var(--brand-primary) 8%, var(--surface-card-light));
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+  transform: translateY(-1px);
+}
+
+.chipName {
+  font-size: 0.92rem;
+  letter-spacing: 0.005em;
+}
+
+.chipCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--brand-primary) 14%, transparent);
+  color: var(--brand-primary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.chipSkeleton {
+  display: block;
+  height: 46px;
+  border-radius: 4px;
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--text-on-light-strong) 6%, transparent) 0%,
+    color-mix(in srgb, var(--text-on-light-strong) 14%, transparent) 50%,
+    color-mix(in srgb, var(--text-on-light-strong) 6%, transparent) 100%
+  );
+  background-size: 200% 100%;
+  animation: dirShimmer 1.3s ease-in-out infinite;
+}
+@keyframes dirShimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+.fallback {
+  text-align: center;
+  color: var(--text-on-light-muted);
+  padding: 24px;
+}
+.fallbackLink {
+  color: var(--brand-primary);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

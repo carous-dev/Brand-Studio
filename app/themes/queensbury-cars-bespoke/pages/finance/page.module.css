@@ -1,0 +1,128 @@
+.heroCtas {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.heroCta {
+  /* shared button class — gradient + shimmer */
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 720px) {
+  .steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1100px) {
+  .steps {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.step {
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 8px;
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.step::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: linear-gradient(to bottom, var(--brand-primary), var(--brand-primary-strong));
+}
+
+.stepNumber {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: color-mix(in srgb, var(--brand-primary) 26%, transparent);
+  line-height: 1;
+}
+.stepTitle {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+}
+.stepDesc {
+  font-size: 0.92rem;
+  color: var(--text-on-light-muted);
+  line-height: 1.55;
+}
+
+.faq {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 720px) {
+  .faq {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.faqItem {
+  background: var(--surface-bg-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 6px;
+  padding: 22px;
+}
+.faqQ {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: var(--brand-primary);
+}
+.faqA {
+  font-size: 0.95rem;
+  color: var(--text-on-light-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.applyBand {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: center;
+}
+@media (min-width: 880px) {
+  .applyBand {
+    grid-template-columns: 1.5fr 1fr;
+  }
+}
+
+.applyLead {
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 14px;
+  max-width: 56ch;
+  line-height: 1.55;
+}
+
+.applyCtas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.disclaimer {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}

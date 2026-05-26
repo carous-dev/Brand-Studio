@@ -1,0 +1,41 @@
+.section {
+  background: color-mix(in srgb, var(--brand-primary) 3%, var(--surface-bg-light));
+  border-block: 1px solid var(--border-on-light);
+}
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(28px, 4vw, 44px);
+}
+
+.rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(260px, 1fr);
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 8px;
+}
+.railItem {
+  scroll-snap-align: start;
+  min-width: 0;
+}
+
+@media (min-width: 960px) {
+  .rail {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-flow: row;
+    overflow-x: visible;
+  }
+}
+
+.errorLine {
+  text-align: center;
+  color: var(--text-on-light-muted);
+  padding: 24px;
+}

@@ -1,0 +1,485 @@
+/* =============================================================================
+ * QUEENSBURY CARS — BASE STYLES
+ * Sport-modern dealer · archetype=modern · oneBigMove=gradient-coverage
+ *
+ * Every rule is scoped under [data-theme-id='queensbury-cars-bespoke'] (often
+ * wrapped in :where(...) to keep specificity (0,1,0) so component CSS modules
+ * win cleanly). No blanket :where(a){} or global h1-h4{color:...} — colors
+ * cascade per surface (Pitfall row 8 + row 26).
+ * ============================================================================= */
+
+[data-theme-id='queensbury-cars-bespoke'] {
+  color-scheme: light;
+  font-family: var(--font-ui-family-override, 'Plus Jakarta Sans', system-ui, sans-serif);
+  background: var(--color-bg);
+  color: var(--color-text);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+[data-theme-id='queensbury-cars-bespoke'] *,
+[data-theme-id='queensbury-cars-bespoke'] *::before,
+[data-theme-id='queensbury-cars-bespoke'] *::after {
+  box-sizing: border-box;
+}
+
+/* hidden attr defeats display:flex/grid/block — see Pitfall row "hidden attr vs display" */
+[data-theme-id='queensbury-cars-bespoke'] [hidden] {
+  display: none !important;
+}
+
+/* Typography baseline — type-only, no color (let cascade resolve per surface) */
+:where([data-theme-id='queensbury-cars-bespoke']) h1,
+:where([data-theme-id='queensbury-cars-bespoke']) h2,
+:where([data-theme-id='queensbury-cars-bespoke']) h3,
+:where([data-theme-id='queensbury-cars-bespoke']) h4 {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  margin: 0;
+  line-height: 1.1;
+}
+
+:where([data-theme-id='queensbury-cars-bespoke']) p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+:where([data-theme-id='queensbury-cars-bespoke']) img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+:where([data-theme-id='queensbury-cars-bespoke']) ul,
+:where([data-theme-id='queensbury-cars-bespoke']) ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Form inputs — visible 1px solid border at all surfaces (Pitfall row 7) */
+:where([data-theme-id='queensbury-cars-bespoke']) input,
+:where([data-theme-id='queensbury-cars-bespoke']) select,
+:where([data-theme-id='queensbury-cars-bespoke']) textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--text-on-light-strong);
+  background: var(--surface-bg-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 4px;
+  padding: 12px 14px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+:where([data-theme-id='queensbury-cars-bespoke']) input:focus,
+:where([data-theme-id='queensbury-cars-bespoke']) select:focus,
+:where([data-theme-id='queensbury-cars-bespoke']) textarea:focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 22%, transparent);
+}
+:where([data-theme-id='queensbury-cars-bespoke']) label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-on-light-strong);
+  margin-bottom: 6px;
+}
+
+/* Skip-to-content (a11y) */
+[data-theme-id='queensbury-cars-bespoke'] .queensbury-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+[data-theme-id='queensbury-cars-bespoke'] .queensbury-skip-link:focus {
+  left: 12px;
+  top: 12px;
+  width: auto;
+  height: auto;
+  padding: 12px 16px;
+  background: var(--surface-bg-light);
+  color: var(--brand-primary);
+  font-weight: 700;
+  border-radius: 4px;
+  z-index: 1000;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
+}
+
+/* Main wrapper */
+[data-theme-id='queensbury-cars-bespoke'] .queensbury-main {
+  display: block;
+  min-height: calc(100vh - 200px);
+  overflow-x: hidden;
+}
+
+/* ----------------------------------------------------------------------------
+ * Reusable section + container utilities
+ * ---------------------------------------------------------------------------- */
+[data-theme-id='queensbury-cars-bespoke'] .qb-section {
+  padding-block: clamp(48px, 7vw, 96px);
+  padding-inline: clamp(16px, 3vw, 28px);
+  position: relative;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-section--tight {
+  padding-block: clamp(36px, 5vw, 64px);
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-section--dark {
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-section--tint {
+  background: color-mix(in srgb, var(--brand-primary) 4%, var(--surface-bg-light));
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-section--gradient {
+  background:
+    radial-gradient(80% 60% at 20% 0%, color-mix(in srgb, var(--brand-primary) 14%, transparent) 0%, transparent 60%),
+    radial-gradient(60% 40% at 100% 100%, color-mix(in srgb, var(--brand-primary) 10%, transparent) 0%, transparent 70%),
+    var(--surface-bg-light);
+}
+
+[data-theme-id='queensbury-cars-bespoke'] .qb-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  width: 100%;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-container--wide {
+  max-width: 1440px;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-container--narrow {
+  max-width: 880px;
+}
+
+[data-theme-id='queensbury-cars-bespoke'] .qb-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--brand-primary);
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 2px;
+  background: var(--brand-primary);
+}
+
+[data-theme-id='queensbury-cars-bespoke'] .qb-eyebrow--on-dark {
+  color: color-mix(in srgb, var(--brand-primary) 40%, #ffffff);
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-eyebrow--on-dark::before {
+  background: color-mix(in srgb, var(--brand-primary) 40%, #ffffff);
+}
+
+[data-theme-id='queensbury-cars-bespoke'] .qb-section-title {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  margin-top: 14px;
+  text-wrap: balance;
+}
+
+[data-theme-id='queensbury-cars-bespoke'] .qb-section-lead {
+  font-size: clamp(1rem, 1.2vw, 1.125rem);
+  color: var(--text-on-light-muted);
+  margin-top: 14px;
+  max-width: 64ch;
+  text-wrap: pretty;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-section-head {
+  margin-bottom: clamp(28px, 4vw, 44px);
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-section--dark .qb-section-title {
+  color: var(--text-on-dark-strong);
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-section--dark .qb-section-lead {
+  color: var(--text-on-dark-muted);
+}
+
+/* ----------------------------------------------------------------------------
+ * Button system
+ * ---------------------------------------------------------------------------- */
+[data-theme-id='queensbury-cars-bespoke'] .qb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 22px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  white-space: nowrap;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-btn:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--brand-primary) 50%, transparent);
+  outline-offset: 3px;
+}
+
+[data-theme-id='queensbury-cars-bespoke'] .qb-btn--primary {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--brand-primary) 32%, transparent);
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-btn--primary:hover {
+  background: var(--brand-primary-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px color-mix(in srgb, var(--brand-primary) 38%, transparent);
+}
+
+[data-theme-id='queensbury-cars-bespoke'] .qb-btn--gradient {
+  background: linear-gradient(110deg,
+    var(--brand-primary) 0%,
+    var(--brand-primary-strong) 60%,
+    color-mix(in srgb, var(--brand-primary-strong) 60%, var(--surface-bg-dark)) 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--brand-primary) 36%, transparent);
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-btn--gradient:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 32px color-mix(in srgb, var(--brand-primary) 42%, transparent);
+}
+
+[data-theme-id='queensbury-cars-bespoke'] .qb-btn--ghost {
+  background: transparent;
+  color: var(--text-on-light-strong);
+  border-color: var(--border-on-light);
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-btn--ghost:hover {
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+[data-theme-id='queensbury-cars-bespoke'] .qb-section--dark .qb-btn--ghost,
+[data-theme-id='queensbury-cars-bespoke'] .qb-btn--ghost-on-dark {
+  background: transparent;
+  color: var(--text-on-dark-strong);
+  border-color: rgba(255, 255, 255, 0.32);
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-section--dark .qb-btn--ghost:hover,
+[data-theme-id='queensbury-cars-bespoke'] .qb-btn--ghost-on-dark:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #ffffff;
+}
+
+[data-theme-id='queensbury-cars-bespoke'] .qb-btn--sm {
+  min-height: 38px;
+  padding: 8px 14px;
+  font-size: 0.78rem;
+}
+
+/* ----------------------------------------------------------------------------
+ * Page hero (inner pages) — dark uniform overlay over brand image
+ * Pattern: 3-layer background — gradient overlay above brand image above
+ * theme default. So a 404 on the brand URL still reveals the theme default.
+ * ---------------------------------------------------------------------------- */
+[data-theme-id='queensbury-cars-bespoke'] .qb-page-hero {
+  position: relative;
+  padding-block: clamp(72px, 11vw, 160px);
+  padding-inline: clamp(16px, 3vw, 28px);
+  color: var(--text-on-dark-strong);
+  overflow: hidden;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-page-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg,
+    color-mix(in srgb, var(--brand-primary) 18%, transparent) 0%,
+    transparent 60%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 1;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-page-hero > * {
+  position: relative;
+  z-index: 2;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-page-hero__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-page-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-page-hero__title {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.05;
+  margin-top: 16px;
+  color: #ffffff;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
+  text-wrap: balance;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-page-hero__lead {
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+  color: rgba(255, 255, 255, 0.92);
+  margin-top: 16px;
+  max-width: 60ch;
+  text-wrap: pretty;
+}
+
+/* 7 page-hero image variants — layered backgrounds so 404 on brand URL falls
+ * through to the curated theme default. */
+[data-theme-id='queensbury-cars-bespoke'] .qb-page-hero--about {
+  background-image:
+    linear-gradient(160deg, rgba(8, 11, 28, 0.82), rgba(8, 11, 28, 0.7)),
+    var(--brand-image-about, none),
+    url('/themes/queensbury-cars-bespoke/images/about.jpg');
+  background-size: auto, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-page-hero--services {
+  background-image:
+    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.7)),
+    var(--brand-image-services, none),
+    url('/themes/queensbury-cars-bespoke/images/services.jpg');
+  background-size: auto, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-page-hero--finance {
+  background-image:
+    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.66)),
+    var(--brand-image-finance, none),
+    url('/themes/queensbury-cars-bespoke/images/finance.jpg');
+  background-size: auto, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-page-hero--part-exchange {
+  background-image:
+    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.66)),
+    var(--brand-image-part-exchange, none),
+    url('/themes/queensbury-cars-bespoke/images/partExchange.jpg');
+  background-size: auto, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-page-hero--sell {
+  background-image:
+    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.66)),
+    var(--brand-image-sell-your-car, none),
+    url('/themes/queensbury-cars-bespoke/images/sellYourCar.jpg');
+  background-size: auto, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-page-hero--recently-sold {
+  background-image:
+    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.66)),
+    var(--brand-image-recently-sold, none),
+    url('/themes/queensbury-cars-bespoke/images/recentlySold.jpg');
+  background-size: auto, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-page-hero--inventory {
+  background-image:
+    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.7)),
+    var(--brand-image-hero, none),
+    url('/themes/queensbury-cars-bespoke/images/hero.jpg');
+  background-size: auto, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+}
+
+[data-theme-id='queensbury-cars-bespoke'] .qb-page-hero--plain {
+  background:
+    radial-gradient(70% 60% at 30% 0%, color-mix(in srgb, var(--brand-primary) 24%, var(--surface-bg-dark)) 0%, var(--surface-bg-dark) 70%),
+    var(--surface-bg-dark);
+}
+
+/* ----------------------------------------------------------------------------
+ * Decorative grid + speed-line motifs (one big move: gradient-coverage)
+ * ---------------------------------------------------------------------------- */
+[data-theme-id='queensbury-cars-bespoke'] .qb-accent-strip {
+  height: 3px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--brand-primary) 30%,
+    color-mix(in srgb, var(--brand-primary) 60%, #ffffff) 50%,
+    var(--brand-primary) 70%,
+    transparent 100%);
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--border-on-light) 30%, var(--border-on-light) 70%, transparent 100%);
+  border: 0;
+  margin: 0;
+}
+
+/* ----------------------------------------------------------------------------
+ * Breadcrumbs
+ * ---------------------------------------------------------------------------- */
+[data-theme-id='queensbury-cars-bespoke'] .qb-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  font-size: 0.85rem;
+  color: var(--text-on-light-muted);
+  padding: 14px clamp(16px, 3vw, 28px);
+  max-width: 1240px;
+  margin: 0 auto;
+  width: 100%;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-breadcrumb a {
+  color: var(--text-on-light-muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-breadcrumb a:hover {
+  color: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-breadcrumb__sep {
+  color: var(--text-on-light-muted);
+  opacity: 0.5;
+}
+[data-theme-id='queensbury-cars-bespoke'] .qb-breadcrumb__current {
+  color: var(--text-on-light-strong);
+  font-weight: 600;
+}
+
+/* ----------------------------------------------------------------------------
+ * Reduced motion
+ * ---------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  :where([data-theme-id='queensbury-cars-bespoke']) * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

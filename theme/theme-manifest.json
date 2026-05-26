@@ -15,6 +15,12 @@
       "status": "experimental"
     },
     {
+      "id": "axis-autos-bespoke",
+      "name": "Axis Autos — Minimalist",
+      "description": "Calm minimalist dealer with a left-anchored single hero photo against generous whitespace, hairline-borderless chrome, and sentence-case display titles in a formal voice.",
+      "status": "experimental"
+    },
+    {
       "id": "classic-dealer",
       "name": "Classic Dealer",
       "description": "Current production-compatible theme.",
@@ -36,6 +42,12 @@
       "id": "kain-motors-bespoke",
       "name": "Prestige Dark",
       "description": "Bespoke prestige theme with gold-on-black styling, appointment-led presentation, bold display wordmark and editorial dark-tier composition.",
+      "status": "experimental"
+    },
+    {
+      "id": "queensbury-cars-bespoke",
+      "name": "Queensbury Cars",
+      "description": "Bespoke sport-modern theme for Queensbury Cars — cobalt-on-white with bold display typography, a live horizontal stock ticker hero band, and gradient sweeps threading through alternating sections.",
       "status": "experimental"
     },
     {

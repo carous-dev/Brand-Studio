@@ -1,0 +1,98 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  background: var(--surface-bg-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(70% 60% at 0% 100%, color-mix(in srgb, var(--brand-primary) 10%, transparent) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: -1;
+}
+.card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--brand-primary) 40%, var(--border-on-light));
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--brand-primary) 12%, rgba(15, 23, 42, 0.14));
+}
+.card:hover::before {
+  opacity: 1;
+}
+
+.title {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  margin: 0;
+}
+
+.body {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--text-on-light-muted);
+  text-wrap: pretty;
+}
+
+.link {
+  margin-top: auto;
+  padding-top: 6px;
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--brand-primary);
+  text-decoration: none;
+}
+
+.callBack {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(20px, 4vw, 36px);
+  align-items: center;
+}
+@media (min-width: 880px) {
+  .callBack {
+    grid-template-columns: 1.5fr 1fr;
+  }
+}
+
+.callBackLead {
+  margin-top: 14px;
+  color: var(--text-on-light-muted);
+  line-height: 1.55;
+  max-width: 56ch;
+}
+
+.callBackCtas {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}

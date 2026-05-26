@@ -1,0 +1,47 @@
+.legal {
+  max-width: 760px;
+}
+
+.legal h2 {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 28px 0 12px;
+  color: var(--brand-primary);
+}
+
+.legal p,
+.legal li {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--text-on-light-strong);
+}
+
+.legal ul {
+  padding-left: 0;
+  margin: 0 0 16px;
+}
+.legal li {
+  padding-left: 22px;
+  position: relative;
+  margin-bottom: 8px;
+}
+.legal li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--brand-primary) 26%, transparent);
+}
+
+.legal a {
+  color: var(--brand-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.legal a:hover {
+  color: var(--brand-primary-strong);
+}

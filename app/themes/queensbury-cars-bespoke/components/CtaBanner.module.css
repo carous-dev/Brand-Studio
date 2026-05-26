@@ -1,0 +1,118 @@
+.cta {
+  position: relative;
+  margin: clamp(48px, 7vw, 96px) clamp(16px, 3vw, 28px);
+  border-radius: 12px;
+  overflow: hidden;
+  isolation: isolate;
+  padding: clamp(40px, 6vw, 72px) clamp(24px, 5vw, 64px);
+  color: #ffffff;
+  background-image:
+    linear-gradient(120deg,
+      var(--surface-bg-dark) 0%,
+      color-mix(in srgb, var(--brand-primary) 25%, var(--surface-bg-dark)) 45%,
+      color-mix(in srgb, var(--brand-primary) 60%, var(--surface-bg-dark)) 75%,
+      color-mix(in srgb, var(--brand-primary) 35%, var(--surface-bg-dark)) 100%),
+    var(--brand-image-finance, none),
+    url('/themes/queensbury-cars-bespoke/images/finance.jpg');
+  background-size: auto, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-blend-mode: normal, multiply, multiply;
+}
+
+.glow {
+  position: absolute;
+  top: -30%;
+  right: -10%;
+  width: 60%;
+  height: 80%;
+  background: radial-gradient(50% 50% at 50% 50%, color-mix(in srgb, var(--brand-primary) 40%, transparent) 0%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.gridPattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 36px 36px, 36px 36px;
+  mask-image: radial-gradient(60% 80% at 20% 50%, #000 0%, transparent 80%);
+  -webkit-mask-image: radial-gradient(60% 80% at 20% 50%, #000 0%, transparent 80%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
+  width: max-content;
+}
+.eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 2px;
+  background: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
+}
+
+.title {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: clamp(1.85rem, 3.6vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: #ffffff;
+  text-wrap: balance;
+}
+
+.lead {
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.55;
+  max-width: 56ch;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.ctaRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.financeLink {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.financeLink:hover {
+  color: #ffffff;
+  border-color: #ffffff;
+}

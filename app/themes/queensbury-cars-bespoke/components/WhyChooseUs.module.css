@@ -1,0 +1,89 @@
+.pillars {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.pillar {
+  position: relative;
+  background: var(--surface-bg-dark);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: background-color 0.18s ease;
+  overflow: hidden;
+}
+.pillar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(60% 60% at 80% 0%, color-mix(in srgb, var(--brand-primary) 16%, transparent) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.pillar:hover {
+  background: color-mix(in srgb, var(--brand-primary) 6%, var(--surface-bg-dark));
+}
+.pillar:hover::before {
+  opacity: 1;
+}
+.pillar > * {
+  position: relative;
+  z-index: 1;
+}
+
+.statBadge {
+  align-self: flex-start;
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--brand-primary) 22%, transparent);
+  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 32%, transparent);
+}
+
+.iconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--brand-primary) 20%, transparent);
+  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
+}
+
+.title {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  color: #ffffff;
+  margin: 0;
+}
+.desc {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+@media (min-width: 720px) {
+  .pillars {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .pillars {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

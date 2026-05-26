@@ -1,0 +1,47 @@
+.legal {
+  max-width: 760px;
+}
+
+.legal h2 {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 28px 0 12px;
+  color: var(--brand-primary);
+}
+.legal p {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--text-on-light-strong);
+  margin: 0 0 12px;
+}
+
+.categories {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 12px 0;
+}
+.cat {
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 6px;
+  padding: 16px 20px;
+}
+.catLabel {
+  display: inline-block;
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: var(--brand-primary);
+  padding: 4px 10px;
+  border-radius: 3px;
+  margin-bottom: 8px;
+}
+.cat p {
+  margin: 6px 0 0;
+  color: var(--text-on-light-strong);
+}

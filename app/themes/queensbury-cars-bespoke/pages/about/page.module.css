@@ -1,0 +1,152 @@
+.intro {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 5vw, 56px);
+  align-items: center;
+}
+@media (min-width: 880px) {
+  .intro {
+    grid-template-columns: 1.2fr 1fr;
+  }
+}
+
+.introCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 56ch;
+}
+.introCopy .qb-btn {
+  margin-top: 8px;
+  width: fit-content;
+}
+
+.bodyText {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--text-on-light-strong);
+  text-wrap: pretty;
+}
+
+.introMedia {
+  position: relative;
+}
+.mediaFrame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  isolation: isolate;
+}
+.mediaImage {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(160deg, rgba(8, 11, 28, 0.4), transparent),
+    var(--brand-image-about, none),
+    url('/themes/queensbury-cars-bespoke/images/about.jpg');
+  background-size: auto, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+}
+.mediaTag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+  background: var(--brand-primary);
+  color: #ffffff;
+  padding: 5px 11px;
+  border-radius: 4px;
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 640px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 960px) {
+  .stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.statCard {
+  background: var(--surface-bg-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 6px;
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.statValue {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: clamp(2rem, 3.5vw, 2.6rem);
+  font-weight: 800;
+  color: var(--brand-primary);
+  line-height: 1;
+}
+.statLabel {
+  font-size: 0.88rem;
+  color: var(--text-on-light-muted);
+  font-weight: 600;
+  letter-spacing: 0.005em;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 720px) {
+  .steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1100px) {
+  .steps {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.step {
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-on-light);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.stepNumber {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: color-mix(in srgb, var(--brand-primary) 26%, transparent);
+  line-height: 1;
+}
+.stepTitle {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0;
+}
+.stepDesc {
+  font-size: 0.95rem;
+  color: var(--text-on-light-muted);
+  line-height: 1.55;
+  text-wrap: pretty;
+}

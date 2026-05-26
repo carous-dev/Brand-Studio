@@ -1,0 +1,394 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  background: var(--surface-bg-dark);
+  isolation: isolate;
+}
+
+.accentStrip {
+  height: 3px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--brand-primary) 50%, transparent) 10%,
+    var(--brand-primary) 40%,
+    color-mix(in srgb, var(--brand-primary) 60%, #ffffff) 50%,
+    var(--brand-primary) 60%,
+    color-mix(in srgb, var(--brand-primary) 50%, transparent) 90%,
+    transparent 100%);
+}
+
+/* ------------------------ Top contact bar ------------------------ */
+.topBar {
+  background: #050810;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.78rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
+  max-height: 60px;
+  overflow: hidden;
+}
+.headerScrolled .topBar {
+  max-height: 0;
+  opacity: 0;
+  padding-block: 0;
+  border-bottom-width: 0;
+}
+
+.topBarInner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 8px clamp(16px, 3vw, 28px);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.topBarItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.statusPill {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.statusDot {
+  --mfx-dot-color: #22c55e;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--mfx-dot-color);
+  display: inline-block;
+}
+.statusDotOnline {
+  --mfx-dot-color: #22c55e;
+}
+.statusDotOffline {
+  --mfx-dot-color: #f59e0b;
+}
+
+.topBarSpacer {
+  flex: 1 1 auto;
+}
+
+.socialRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.socialLink {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.04);
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+.socialLink:hover {
+  background: var(--brand-primary);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.phoneCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--brand-primary);
+  color: #ffffff;
+  padding: 5px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  font-size: 0.82rem;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+.phoneCta:hover {
+  background: var(--brand-primary-strong);
+  transform: translateY(-1px);
+}
+
+/* ------------------------ Main nav bar ------------------------ */
+.navBar {
+  background: var(--surface-bg-dark);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.navInner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 12px clamp(16px, 3vw, 28px);
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2vw, 28px);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: #ffffff;
+  margin-right: auto;
+  min-height: 44px;
+}
+.brandLogo {
+  height: 40px;
+  width: auto;
+  max-width: 220px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+.brandWordmark {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.nav {
+  display: none;
+  align-items: center;
+  gap: clamp(6px, 1vw, 18px);
+}
+
+.navLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 10px 6px;
+  min-height: 44px;
+  transition: color 0.15s ease;
+}
+.navLink:hover {
+  color: #ffffff;
+}
+.navLink::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  height: 2px;
+  background: var(--brand-primary);
+  border-radius: 1px;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.25s ease;
+}
+.navLink:hover::after {
+  transform: scaleX(0.6);
+}
+.navLinkActive {
+  color: #ffffff;
+}
+.navLinkActive::after,
+.navLinkActive:hover::after {
+  transform: scaleX(1);
+}
+
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.iconAction {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.iconAction:hover {
+  background: var(--brand-primary);
+  color: #ffffff;
+  border-color: var(--brand-primary);
+}
+
+.actionBadge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--brand-primary);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--surface-bg-dark);
+}
+
+.searchCta {
+  display: none;
+}
+
+.menuToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  color: #ffffff;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ------------------------ Mobile overlay ------------------------ */
+.mobileOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 90;
+  background: var(--surface-bg-dark);
+  padding: clamp(72px, 14vw, 96px) clamp(20px, 5vw, 36px) 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  pointer-events: none;
+}
+.mobileOverlayOpen {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+.mobileLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 6px;
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 1.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #ffffff;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.mobileLink::after {
+  content: '→';
+  color: var(--brand-primary);
+}
+.mobileLinkActive {
+  color: var(--brand-primary);
+}
+
+.mobileFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+}
+.mobilePhone {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--brand-primary);
+  color: #ffffff;
+  padding: 12px 18px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.mobileSocials {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.mobileSocialLink {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ------------------------ Responsive ------------------------ */
+@media (min-width: 880px) {
+  .searchCta {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 1024px) {
+  .nav {
+    display: inline-flex;
+  }
+  .menuToggle {
+    display: none;
+  }
+  .mobileOverlay {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .topBar {
+    font-size: 0.72rem;
+  }
+  .topBarItem span:not(.statusDot) {
+    max-width: 22ch;
+  }
+  .iconAction {
+    width: 38px;
+    height: 38px;
+  }
+}

@@ -1,0 +1,310 @@
+/* =============================================================================
+ * HERO — full-bleed photo backdrop, centered text, marquee strip at the bottom
+ * Composition: ONE focal block centered over a strong dark overlay; ticker
+ * runs as a thin live-data strip across the bottom to keep the signature.
+ * ============================================================================= */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  color: var(--text-on-dark-strong);
+  min-height: clamp(540px, 78vh, 760px);
+  display: flex;
+  flex-direction: column;
+  isolation: isolate;
+}
+
+/* 3-layer brand image: brand URL → theme default → solid surface fallback */
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    var(--brand-image-hero, none),
+    url('/themes/queensbury-cars-bespoke/images/hero.jpg');
+  background-size: cover, cover;
+  background-position: center 30%, center 30%;
+  background-repeat: no-repeat, no-repeat;
+  background-color: var(--surface-bg-dark);
+}
+
+/* Strong dark gradient overlay for AAA contrast on the title */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(160deg,
+      rgba(8, 11, 28, 0.88) 0%,
+      rgba(8, 11, 28, 0.72) 50%,
+      rgba(8, 11, 28, 0.62) 100%),
+    radial-gradient(50% 60% at 50% 35%, color-mix(in srgb, var(--brand-primary) 18%, transparent) 0%, transparent 70%);
+  background-blend-mode: multiply, screen;
+}
+
+.glow {
+  position: absolute;
+  bottom: -10%;
+  left: -5%;
+  width: 60%;
+  height: 70%;
+  background: radial-gradient(50% 50% at 50% 50%, color-mix(in srgb, var(--brand-primary) 32%, transparent) 0%, transparent 70%);
+  filter: blur(80px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ------------------------ Centered content block ------------------------ */
+.inner {
+  position: relative;
+  z-index: 3;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(72px, 11vw, 140px) clamp(16px, 4vw, 40px);
+}
+
+.content {
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 18px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 7px 16px;
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+}
+.eyebrowDot {
+  --mfx-dot-color: #22c55e;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--mfx-dot-color);
+}
+.eyebrow strong {
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.title {
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: clamp(2.4rem, 5.2vw, 4rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  margin: 6px 0 0;
+  color: #ffffff;
+  text-wrap: balance;
+  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.45);
+}
+.titleBreak {
+  display: none;
+}
+.titleAccent {
+  color: color-mix(in srgb, var(--brand-primary) 35%, #ffffff);
+  font-style: italic;
+}
+
+.lead {
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.55;
+  margin: 6px 0 0;
+  max-width: 56ch;
+  text-wrap: pretty;
+}
+
+.ctaRow {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 16px;
+}
+.primaryCta,
+.secondaryCta {
+  /* base button class from base.css */
+}
+
+.assurance {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+  width: 100%;
+  max-width: 560px;
+}
+.assuranceItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.assuranceItem svg {
+  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
+}
+.assuranceSep {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* ------------------------ Marquee strip ------------------------ */
+.marqueeWrap {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  background: color-mix(in srgb, var(--surface-bg-dark) 92%, #000);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px 0;
+  overflow: hidden;
+}
+
+.marqueeLabel {
+  position: relative;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 0 clamp(16px, 3vw, 28px);
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  height: 22px;
+}
+.marqueeLabelDot {
+  --mfx-dot-color: #22c55e;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--mfx-dot-color);
+}
+
+.marqueeFade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 120px;
+  z-index: 2;
+  background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--surface-bg-dark) 92%, #000) 90%);
+  pointer-events: none;
+}
+
+.marqueeTrack {
+  display: flex;
+  gap: 44px;
+  width: max-content;
+  animation: marqueeScroll 50s linear infinite;
+  white-space: nowrap;
+  padding-left: 24px;
+}
+
+.marqueeItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+}
+.marqueeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  flex-shrink: 0;
+}
+.marqueeTitle {
+  font-weight: 700;
+  color: #ffffff;
+}
+.marqueePrice {
+  font-weight: 700;
+  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
+}
+
+.marqueeLoading {
+  display: flex;
+  gap: 36px;
+  padding-inline: 24px;
+}
+
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marqueeTrack {
+    animation: none;
+    flex-wrap: wrap;
+    white-space: normal;
+    padding-inline: 24px;
+  }
+}
+
+/* ------------------------ Responsive ------------------------ */
+@media (max-width: 640px) {
+  .hero {
+    min-height: clamp(520px, 90vh, 660px);
+  }
+  .title {
+    font-size: clamp(2.1rem, 9vw, 2.8rem);
+  }
+  .lead {
+    font-size: 0.98rem;
+  }
+  .assurance {
+    font-size: 0.7rem;
+    gap: 8px;
+    padding-top: 16px;
+    margin-top: 18px;
+  }
+  .ctaRow .primaryCta,
+  .ctaRow .secondaryCta {
+    flex: 1 1 100%;
+  }
+  .marqueeLabel {
+    font-size: 0.62rem;
+    padding: 0 14px;
+  }
+  .marqueeItem {
+    font-size: 0.72rem;
+  }
+}

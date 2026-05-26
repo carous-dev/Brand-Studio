@@ -1,0 +1,26 @@
+{
+  "themeId": "queensbury-cars-bespoke",
+  "archetype": "modern",
+  "signatureConcept": "Sport-modern dealer led by a live horizontal stock ticker hero band, with vivid cobalt gradient sweeps threading through alternating sections, filtered-sidebar inventory, and a gallery-forward detail page in a playful voice.",
+  "signatureMove": "horizontal-stock-ticker",
+  "personalityVoice": "playful",
+  "headerStructure": "dark-accent-strip-top",
+  "heroPattern": "horizontal-stock-ticker",
+  "homepageSections": [
+    "hero",
+    "category-band",
+    "featured-stock",
+    "service-highlights",
+    "why-choose-us",
+    "recently-sold-preview",
+    "reviews",
+    "cta-banner",
+    "directory"
+  ],
+  "inventoryListPattern": "filtered-sidebar",
+  "vehicleDetailPattern": "gallery-forward",
+  "fontHeading": "Saira",
+  "fontBody": "Plus Jakarta Sans",
+  "titleTreatment": "uppercase-condensed",
+  "oneBigMove": "gradient-coverage"
+}
