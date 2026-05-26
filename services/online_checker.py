@@ -365,23 +365,39 @@ class OnlineCheckerService:
                     select_columns.append('status')
                 if 'updated_at' in column_names:
                     select_columns.append('updated_at')
-                
-                # Get previews that haven't been checked recently
+                if 'status_checked_at' in column_names:
+                    select_columns.append('status_checked_at')
+
+                # Pick previews whose last status probe is stale.
+                # IMPORTANT: filter on status_checked_at (when the checker last
+                # ran), NOT updated_at (which the editor bumps on every save).
+                # Falls back to updated_at only for legacy schemas where the
+                # migration to add status_checked_at hasn't run yet.
                 where_conditions = []
                 params = []
-                
-                # Since there's no domain column, we'll extract domain from config
-                if 'updated_at' in column_names:
-                    where_conditions.append("(updated_at IS NULL OR updated_at < DATE_SUB(NOW(), INTERVAL %s SECOND))")
+
+                if 'status_checked_at' in column_names:
+                    where_conditions.append(
+                        "(status_checked_at IS NULL OR status_checked_at < DATE_SUB(NOW(), INTERVAL %s SECOND))"
+                    )
                     params.append(self.check_interval)
-                
+                    order_col = 'status_checked_at'
+                elif 'updated_at' in column_names:
+                    where_conditions.append(
+                        "(updated_at IS NULL OR updated_at < DATE_SUB(NOW(), INTERVAL %s SECOND))"
+                    )
+                    params.append(self.check_interval)
+                    order_col = 'updated_at'
+                else:
+                    order_col = primary_key
+
                 where_clause = " WHERE " + " AND ".join(where_conditions) if where_conditions else ""
-                
+
                 query = f"""
                     SELECT {', '.join(select_columns)}
-                    FROM previews 
+                    FROM previews
                     {where_clause}
-                    ORDER BY updated_at ASC
+                    ORDER BY {order_col} ASC
                     LIMIT %s
                 """
                 params.append(self.config.get('batch_size', 50))
@@ -549,20 +565,24 @@ class OnlineCheckerService:
                     self.logger.warning("Status column not found in previews table. Skipping update.")
                     return
                 
-                # Build update query
+                # Build update query.
+                # Status probes are NOT data edits — never bump updated_at here,
+                # otherwise the dashboard's "recently updated" ordering and the
+                # editor-pause heuristic break. status_checked_at is the right
+                # column to advance (added in preview_store init_schema).
                 set_clauses = ["status = %s"]
                 params = [status]
-                
-                if 'updated_at' in column_names:
-                    set_clauses.append("updated_at = NOW()")
-                
+
+                if 'status_checked_at' in column_names:
+                    set_clauses.append("status_checked_at = NOW()")
+
                 query = f"""
-                    UPDATE previews 
+                    UPDATE previews
                     SET {', '.join(set_clauses)}
                     WHERE {primary_key} = %s
                 """
                 params.append(preview_id)
-                
+
                 self.logger.info(f"Updating status: {query} with params {[status, preview_id]}")
                 cursor.execute(query, params)
                 connection.commit()
@@ -575,14 +595,31 @@ class OnlineCheckerService:
     def check_single_domain(self, domain: str) -> str:
         """
         Check a single domain immediately (for manual checks)
-        
+
         Args:
             domain: Domain to check
-            
+
         Returns:
             'online' or 'offline'
         """
         return self._check_domain_status(domain)
+
+    def recheck_slug(self, slug: str, domain: str) -> Optional[str]:
+        """Probe a single preview's domain right now and persist the result.
+
+        Used by app.py after every preview upsert so the dashboard badge
+        reflects current reality instead of waiting for the next batch cycle
+        (up to check_interval seconds in production).
+        """
+        if not slug or not domain:
+            return None
+        try:
+            status = self._check_domain_status(domain)
+            self._update_preview_status(slug, status)
+            return status
+        except Exception as e:
+            self.logger.error(f"recheck_slug failed for {slug}: {e}")
+            return None
     
     def get_queue_status(self) -> Dict:
         """Get current queue status"""

@@ -63,20 +63,32 @@ class PreviewStore:
             config TEXT NOT NULL,
             created_at VARCHAR(64),
             updated_at VARCHAR(64),
-            status ENUM('online', 'offline') NOT NULL DEFAULT 'offline'
+            status ENUM('online', 'offline') NOT NULL DEFAULT 'offline',
+            status_checked_at DATETIME NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         """
         conn = self._get_mysql_conn()
         try:
             with conn.cursor() as cur:
                 cur.execute(sql)
-                
+
                 # Check if status column exists and add it if it doesn't
                 cur.execute("SHOW COLUMNS FROM previews LIKE 'status'")
                 if not cur.fetchone():
                     cur.execute("""
-                        ALTER TABLE previews 
+                        ALTER TABLE previews
                         ADD COLUMN status ENUM('online', 'offline') NOT NULL DEFAULT 'offline'
+                    """)
+
+                # status_checked_at decouples "when was status last probed" from
+                # updated_at (which the editor bumps on every save). Without it,
+                # the online-checker's stale filter keeps skipping freshly-edited
+                # brands and the status badge sticks at the INSERT default.
+                cur.execute("SHOW COLUMNS FROM previews LIKE 'status_checked_at'")
+                if not cur.fetchone():
+                    cur.execute("""
+                        ALTER TABLE previews
+                        ADD COLUMN status_checked_at DATETIME NULL
                     """)
 
                 cur.execute("""

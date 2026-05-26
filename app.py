@@ -1370,6 +1370,29 @@ def preview_exists(slug):
     return preview_store.exists(slug)
 
 
+def _async_recheck_preview_status(slug: str, domain: str) -> None:
+    """Fire-and-forget online-status recheck for one preview.
+
+    Without this, the status badge can stay at the INSERT default of 'offline'
+    for up to check_interval seconds (10 min in production) after a brand is
+    created or edited, even when the preview subdomain is already up.
+    """
+    if not slug or not domain:
+        return
+    try:
+        import threading
+        def _run():
+            try:
+                from services.online_checker import get_service
+                get_service().recheck_slug(slug, domain)
+            except Exception as e:
+                # Status checking is best-effort. Never let it break a save.
+                print(f"[STATUS] Background recheck failed for {slug}: {e}")
+        threading.Thread(target=_run, daemon=True).start()
+    except Exception as e:
+        print(f"[STATUS] Could not schedule recheck for {slug}: {e}")
+
+
 def upsert_preview(slug, config):
     """Insert or update a preview configuration."""
     config = dict(config) if isinstance(config, dict) else {}
@@ -1386,6 +1409,10 @@ def upsert_preview(slug, config):
         updated_at=now,
         config_json=payload,
     )
+
+    # Kick a background probe so the dashboard "Online/Offline" badge reflects
+    # reality right after the save instead of waiting for the next batch cycle.
+    _async_recheck_preview_status(slug, (config.get('domain') or '').strip())
 
 
 def delete_preview_record(slug):
@@ -4670,8 +4697,29 @@ def update_brand(slug):
                 'theme': existing.get('theme', {}),
             }
 
-        # Preserve explicit asset paths from the payload (if present).
-        for asset_key in ('logo', 'favicon', 'heroImage'):
+        # Preserve explicit asset paths from the payload (if present), BUT
+        # never let the hidden-input value clobber a freshly-uploaded file.
+        # The editor's brand-asset cards keep the hidden field at its prior
+        # value when a new file is dropped (so URL-tab edits land there too),
+        # so an unconditional copy here silently dropped the upload's new
+        # path — especially obvious when the new file had a different
+        # extension (config kept .png, file on disk was .svg).
+        ASSET_UPLOAD_FIELDS = {
+            'logo': 'logoFile',
+            'favicon': 'faviconFile',
+            'heroImage': 'heroImageFile',
+        }
+        for asset_key, upload_field in ASSET_UPLOAD_FIELDS.items():
+            uploaded = (
+                upload_field in request.files
+                and request.files[upload_field]
+                and request.files[upload_field].filename
+                and allowed_file(request.files[upload_field].filename)
+            )
+            if uploaded:
+                # The uploaded path was already written into brand_from_form
+                # above — leave it alone.
+                continue
             if prepared.get(asset_key):
                 brand_from_form[asset_key] = prepared.get(asset_key)
 
