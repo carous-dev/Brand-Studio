@@ -1,0 +1,51 @@
+/* Homepage typography consistency */
+:where(
+  .home-hero,
+  .brands-section,
+  .stats-section,
+  .featured-cars-section,
+  .about,
+  .testimonials,
+  .contact-section
+) {
+  font-family: var(--font-brand-body-override, var(--font-body));
+}
+
+:where(
+  .home-hero,
+  .brands-section,
+  .stats-section,
+  .featured-cars-section,
+  .about,
+  .testimonials,
+  .contact-section
+) :is(input, select, textarea, button) {
+  font-family: var(--font-brand-body-override, var(--font-body));
+}
+
+:where(
+  .home-hero,
+  .brands-section,
+  .stats-section,
+  .featured-cars-section,
+  .about,
+  .testimonials,
+  .contact-section
+) :is(
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .home-hero-title,
+  .stats-header h2,
+  .section-header h2,
+  .stat-number,
+  .stat-label,
+  .car-title,
+  .car-price,
+  .contact-info h4
+) {
+  font-family: var(--font-brand-body-override, var(--font-heading));
+}

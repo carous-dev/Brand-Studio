@@ -1,0 +1,26 @@
+/* Used cars page typography consistency */
+.inventory-page {
+  font-family: var(--font-brand-body-override, var(--font-body));
+}
+
+.inventory-page :is(input, select, textarea, button) {
+  font-family: var(--font-brand-body-override, var(--font-body));
+}
+
+.inventory-page :is(
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .hero-title,
+  .filter-header h2,
+  .card-title,
+  .card-price,
+  .car-name,
+  .car-price,
+  .empty-state h3
+) {
+  font-family: var(--font-brand-body-override, var(--font-heading));
+}

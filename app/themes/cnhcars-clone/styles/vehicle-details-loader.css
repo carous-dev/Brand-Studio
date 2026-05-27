@@ -1,0 +1,77 @@
+.vehicle-details-root .loader-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--color-text-muted);
+}
+
+.vehicle-details-root .loader-spinner-ring {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(84, 98, 119, 0.22);
+  border-top-color: #667286;
+  animation: vehicle-details-spinner-rotate 0.78s linear infinite;
+}
+
+.vehicle-details-root .loader-spinner.is-sm .loader-spinner-ring {
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
+}
+
+.vehicle-details-root .loader-spinner.is-md .loader-spinner-ring {
+  width: 18px;
+  height: 18px;
+}
+
+.vehicle-details-root .loader-spinner.is-lg .loader-spinner-ring {
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+}
+
+.vehicle-details-root .loader-spinner.is-light {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.vehicle-details-root .loader-spinner.is-light .loader-spinner-ring {
+  border-color: rgba(255, 255, 255, 0.25);
+  border-top-color: rgba(255, 255, 255, 0.95);
+}
+
+.vehicle-details-root .loader-spinner-text {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.vehicle-details-root .loader-spinner.is-sm .loader-spinner-text {
+  font-size: 12px;
+}
+
+.vehicle-details-root .loader-spinner.is-lg .loader-spinner-text {
+  font-size: 14px;
+}
+
+.vehicle-details-root .loader-spinner-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+@keyframes vehicle-details-spinner-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

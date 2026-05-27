@@ -243,7 +243,13 @@
 html,
 body {
   min-height: 100%;
-  /* Prevent temporary horizontal scrollbars caused by transform-based animations */
+}
+
+/* Prevent temporary horizontal scrollbars caused by transform-based
+   animations. Applied to `body` only — putting `overflow-x: hidden` on
+   both `html` AND `body` makes browsers render TWO vertical scrollbars
+   (one per overflow container). Single source keeps it to one scrollbar. */
+body {
   overflow-x: hidden;
 }
 
@@ -637,9 +643,10 @@ input[type="number"] {
   }
 }
 
-/* Prevent horizontal scroll */
-html, body {
-  overflow-x: hidden;
+/* Prevent horizontal scroll — body only (see note above for why we don't
+   include `html` here: dual-scrollbar bug). `max-width: 100%` left on body
+   so transform-overflowing children can't push the viewport wider. */
+body {
   max-width: 100%;
 }
 

@@ -1,0 +1,239 @@
+/* YouTube Floating Player */
+.youtube-player-float {
+    position: fixed;
+    z-index: 1000;
+    font-family: var(--font-brand-body-override, var(--font-family-body));
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, box-shadow 0.3s ease;
+    user-select: none;
+}
+
+.youtube-player-float.dragging {
+    transition: none;
+    z-index: 1001;
+}
+
+.youtube-player-container {
+    background: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    width: 320px;
+    backdrop-filter: blur(10px);
+}
+
+/* Header Styles */
+.youtube-player-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-red-dark) 100%);
+    color: var(--white);
+    cursor: grab;
+}
+
+.youtube-player-float.dragging .youtube-player-header {
+    cursor: grabbing;
+}
+
+.youtube-player-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: var(--font-weight-medium);
+}
+
+.youtube-player-logo {
+    height: 20px;
+    width: auto;
+    object-fit: contain;
+}
+
+.youtube-player-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.youtube-control-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--white);
+}
+
+.youtube-control-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+/* Content Styles */
+.youtube-player-content {
+    background: var(--white);
+}
+
+.youtube-video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    background: #000;
+}
+
+.youtube-video-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.youtube-video-info {
+    padding: 16px;
+}
+
+.youtube-video-title {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: var(--font-weight-medium);
+    color: var(--dark-gray);
+    line-height: 1.3;
+}
+
+.youtube-video-description {
+    margin: 0 0 16px;
+    font-size: 14px;
+    color: var(--medium-gray);
+    line-height: 1.4;
+}
+
+.youtube-video-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.youtube-btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary-red);
+    color: var(--white);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.youtube-btn-primary:hover {
+    background: var(--primary-red-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
+}
+
+/* Minimized State */
+.youtube-player-float.minimized .youtube-player-container {
+    width: auto;
+    min-width: 200px;
+    border-radius: 50px;
+}
+
+.youtube-player-float.minimized .youtube-player-header {
+    padding: 10px 14px;
+}
+
+.youtube-player-float.minimized .youtube-player-title {
+    font-size: 13px;
+}
+
+.youtube-player-float.minimized .youtube-control-btn {
+    width: 24px;
+    height: 24px;
+}
+
+/* Hover Effects */
+.youtube-player-float:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+}
+
+.youtube-player-float.minimized:hover {
+    transform: none;
+}
+
+/* Animations */
+@keyframes slideInUp {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.youtube-player-float {
+    animation: slideInUp 0.5s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .youtube-player-float {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .youtube-player-float {
+        display: none;
+    }
+    
+    .youtube-video-info {
+        padding: 12px;
+    }
+    
+    .youtube-video-title {
+        font-size: 15px;
+    }
+    
+    .youtube-video-description {
+        font-size: 13px;
+    }
+}
+
+/* Ensure it doesn't interfere with other fixed elements */
+.youtube-player-float {
+    z-index: 999;
+}
+
+/* Smooth transitions for state changes */
+.youtube-player-content {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.youtube-player-float.minimized .youtube-player-content {
+    max-height: 0;
+    opacity: 0;
+}
+
+/* Dragging visual feedback */
+.youtube-player-float.dragging {
+    opacity: 0.9;
+    transform: scale(0.98);
+}
+
+.youtube-player-float.dragging .youtube-player-container {
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}

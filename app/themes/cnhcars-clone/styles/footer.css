@@ -1,0 +1,254 @@
+/* cnhcars-clone footer — redesigned 2026-05-27 for a premium dark-navy
+   feel. Forced flex layout (not grid) so it can't collapse to a single
+   column under unexpected cascade. Scoped to the theme via the body
+   selector so global rules can't fight it. */
+
+body[data-theme-id='cnhcars-clone'] footer {
+  background: #0a0e14;
+  color: #ffffff;
+  padding: 3.5rem 0 2.25rem;
+  border-top: 3px solid var(--color-primary, #4169E1);
+  position: relative;
+}
+
+body[data-theme-id='cnhcars-clone'] footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-primary, #4169E1) 50%,
+    transparent 100%
+  );
+  opacity: 0.6;
+}
+
+body[data-theme-id='cnhcars-clone'] footer .container {
+  max-width: 1280px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 clamp(1.25rem, 2.6vw, 2rem) !important;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-content {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: flex-start !important;
+  gap: clamp(1.75rem, 3vw, 3rem) !important;
+  width: 100% !important;
+  margin: 0 0 2.25rem !important;
+  padding: 0 !important;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-col {
+  flex: 1 1 200px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-brand {
+  flex: 2 1 280px;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-col h4 {
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  margin: 0 0 1.25rem 0 !important;
+  color: #ffffff !important;
+  background: transparent !important;
+  padding: 0 !important;
+  border: none !important;
+  position: relative;
+  padding-bottom: 0.65rem !important;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-col h4::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 28px;
+  height: 2px;
+  background: var(--color-primary, #4169E1);
+  border-radius: 1px;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-brand img {
+  display: block;
+  width: 160px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 1.25rem;
+}
+
+body[data-theme-id='cnhcars-clone'] .brand-description {
+  font-size: 0.92rem !important;
+  color: rgba(255, 255, 255, 0.72) !important;
+  line-height: 1.65 !important;
+  margin: 0 !important;
+  max-width: 360px;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-links ul {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.6rem !important;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-links li {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-links a {
+  color: rgba(255, 255, 255, 0.72) !important;
+  font-size: 0.92rem !important;
+  text-decoration: none !important;
+  transition: color 0.18s ease, transform 0.18s ease !important;
+  display: inline-block !important;
+  padding: 0 !important;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-links a:hover {
+  color: #ffffff !important;
+  transform: translateX(3px);
+  text-decoration: none !important;
+  padding-left: 0 !important;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-contact .contact-line {
+  display: flex !important;
+  gap: 0.75rem !important;
+  align-items: flex-start !important;
+  margin: 0 0 0.85rem 0 !important;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-contact .contact-line p {
+  margin: 0 !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 0.92rem !important;
+  line-height: 1.5 !important;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-contact .contact-line a {
+  color: rgba(255, 255, 255, 0.85) !important;
+  text-decoration: none !important;
+  transition: color 0.18s ease !important;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-contact .contact-line a:hover {
+  color: #ffffff !important;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-contact .contact-line svg,
+body[data-theme-id='cnhcars-clone'] .footer-contact .contact-icon {
+  width: 16px !important;
+  height: 16px !important;
+  color: var(--color-primary, #4169E1) !important;
+  stroke: var(--color-primary, #4169E1) !important;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+/* Bottom strip — slightly lighter dark, hairline separator above. */
+body[data-theme-id='cnhcars-clone'] .footer-bottom {
+  width: 100%;
+  padding: 1rem clamp(1.25rem, 2.8vw, 2rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #060a10;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.82rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-bottom .footer-legal {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-bottom .legal-link {
+  color: rgba(255, 255, 255, 0.6) !important;
+  text-decoration: none !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  transition: color 0.18s ease !important;
+  background: transparent !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-bottom .legal-link:hover {
+  color: #ffffff !important;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-bottom .legal-divider {
+  color: rgba(255, 255, 255, 0.25);
+  font-weight: 300;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-bottom .footer-bottom-text {
+  margin: 0 !important;
+  font-size: 0.82rem !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  text-align: center;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-bottom .footer-credit {
+  margin: 0;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: right;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-bottom .footer-credit a {
+  color: rgba(255, 255, 255, 0.78) !important;
+  text-decoration: none !important;
+  transition: color 0.18s ease;
+}
+
+body[data-theme-id='cnhcars-clone'] .footer-bottom .footer-credit a:hover {
+  color: var(--color-primary, #4169E1) !important;
+}
+
+/* Responsive: stack at tablet/mobile */
+@media (max-width: 900px) {
+  body[data-theme-id='cnhcars-clone'] .footer-content {
+    gap: 2rem !important;
+  }
+  body[data-theme-id='cnhcars-clone'] .footer-col {
+    flex: 1 1 100% !important;
+  }
+  body[data-theme-id='cnhcars-clone'] .footer-brand {
+    flex: 1 1 100% !important;
+  }
+  body[data-theme-id='cnhcars-clone'] .footer-bottom {
+    flex-direction: column;
+    gap: 0.85rem;
+    text-align: center;
+  }
+  body[data-theme-id='cnhcars-clone'] .footer-bottom .footer-legal {
+    justify-content: center;
+  }
+  body[data-theme-id='cnhcars-clone'] .footer-bottom .footer-credit {
+    text-align: center;
+  }
+}

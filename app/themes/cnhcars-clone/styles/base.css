@@ -1,0 +1,267 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Brand Colors - Black and Blue theme for car dealership */
+  --primary: var(--color-primary); /* Royal blue */
+  --primary-hover: var(--color-accent);
+  --primary-active: #2A4A9F;
+  --secondary: var(--color-text); /* Black */
+  --accent: var(--color-primary); /* Royal blue */
+  --success: #28a745;
+  --warning: #ffc107;
+  --danger: #dc3545;
+
+  /* Text */
+  --text-heading: var(--secondary);
+  --text-body: #495057;
+
+  /* Surfaces */
+  --surface-page: #FFFFFF;
+  --surface-section: #F8F9FA;
+  --surface-card: #FFFFFF;
+  --surface-elevated: #FFFFFF;
+  --surface-hover: #F3F4F6;
+
+  /* Borders */
+  --border: #E5E7EB;
+  --border-strong: #D1D5DB;
+
+  /* Core */
+  --white: #FFFFFF;
+  /* Dark Theme Variables */
+  --bg: var(--color-surface);
+  --surface-card-dark: #1A1A1A;
+  --surface-section-dark: #2D2D2D;
+  --text-heading-dark: #FFFFFF;
+  --text-body-dark: #E5E7EB;
+  --text-muted-dark: #9CA3AF;
+  --border-dark: #374151;
+
+  /* Typography - Best fonts for a car dealership website */
+  --font-heading: 'Montserrat', 'Arial', sans-serif;
+  --font-body: 'Montserrat', 'Arial', sans-serif;
+  /* Font Weights */
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-extrabold: 800;
+
+  /* Font Sizes */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.25rem;
+  --fs-2xl: 1.5rem;
+  --fs-3xl: 1.875rem;
+  --fs-4xl: 2.25rem;
+  --fs-5xl: 3rem;
+  --fs-6xl: 3.75rem;
+
+  /* Effects */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+
+  --glow-primary: 0 0 0 rgba(0, 0, 0, 0); /* Disabled in light mode */
+
+  /* Compatibility aliases for shared vehicle-details components */
+  --font-ui: var(--font-body);
+  --font-brand: var(--font-heading);
+  --font-base: var(--font-body);
+  --font-display: var(--font-heading);
+  --font-family-heading: var(--font-heading);
+  --font-family-body: var(--font-body);
+  --font-family-sans: var(--font-body);
+
+  --font-weight-medium: var(--fw-semibold);
+  --font-weight-bold: var(--fw-bold);
+
+  --text-inverse: var(--white);
+  --text-dark: var(--text-heading);
+  --dark-gray: #1f2937;
+  --medium-gray: var(--color-text-muted);
+
+  --accent-primary: var(--primary);
+  --accent-hover: var(--primary-hover);
+  --accent-active: var(--primary-active);
+  --accent-secondary: var(--primary);
+  --accent-secondary-hover: var(--primary-hover);
+  --accent-rgb: 65, 105, 225;
+  --accent-primary-rgb: 65, 105, 225;
+  --accent-secondary-rgb: 65, 105, 225;
+  --accent-2: var(--primary-hover);
+
+  --bg-primary-light: #f5f7fb;
+  --panel-bg-light: var(--surface-card);
+  --card-bg-light: var(--surface-card);
+  --text-primary-light: #111827;
+  --text-secondary-light: #4b5563;
+  --border-primary-light: var(--border);
+  --border-subtle: rgba(209, 213, 219, 0.92);
+
+  --field-bg-light: #ffffff;
+  --field-border-light: var(--border);
+  --field-text-light: var(--text-heading);
+  --field-placeholder-light: var(--color-text-muted);
+
+  --border-radius-full: 999px;
+  --border-radius-sm: var(--radius-sm);
+  --border-radius-lg: var(--radius-lg);
+  --primary-red: var(--primary);
+  --primary-red-dark: var(--primary-hover);
+
+  --vehicle-lightbox-fill-image: contain;
+  --vehicle-lightbox-scroll-y: auto;
+}
+
+/* Keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-brand-body-override, var(--font-family-body));
+  line-height: 1.6;
+  color: var(--text-body);
+  background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
+  background-size: cover;
+  background-attachment: fixed;
+  scroll-behavior: smooth;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-brand-body-override, var(--font-family-body));
+}
+
+/* Font utility classes for consistency */
+.font-heading {
+  font-family: var(--font-brand-body-override, var(--font-family-heading) !important);
+}
+
+.font-body {
+  font-family: var(--font-brand-body-override, var(--font-family-body) !important);
+}
+
+p, label {
+  font-family: var(--font-brand-body-override, var(--font-family-body));
+  color: var(--text-heading);
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-brand-body-override, var(--font-family-heading));
+  font-weight: var(--fw-bold);
+  color: var(--text-heading);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--primary-hover);
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--accent);
+  color: var(--white);
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+}
+
+.cta-button svg,
+.cta-button i svg {
+  width: 20px;
+  height: 20px;
+  color: var(--white);
+  transition: transform 0.3s ease;
+}
+
+.cta-button:hover svg,
+.cta-button:hover i svg {
+  transform: translateX(3px);
+}
+
+.cta-button:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-secondary {
+  display: inline-block;
+  background: var(--secondary);
+  color: var(--white);
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-weight: var(--fw-semibold);
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--text-heading);
+  transform: translateY(-1px);
+}
+
+/* Hero Section */
+/* Section styles moved to modular CSS files: */
+/* - css/hero.css
+   - css/featured.css
+   - css/about.css
+   - css/testimonials.css
+   - css/footer.css */
+
+/* Section styles moved into modular files. Responsive rules for those
+   sections also live in their respective CSS files: css/hero.css,
+   css/featured.css, css/about.css, css/testimonials.css, css/footer.css */
+
+/* @carous/sell-your-car widget — CNH Cars theme overrides */
+.sycw-app-mount-inline { width: 100%; }
+.sycw-app-mount-inline .sycw-shell { max-width: none; }
+.sycw-app-mount .sycw-root,
+.sycw-app-mount-inline .sycw-root {
+  --sycw-accent: var(--primary, var(--color-primary));
+  --sycw-accent-foreground: #ffffff;
+  --sycw-accent-soft: rgba(65, 105, 225, 0.14);
+}

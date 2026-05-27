@@ -1,0 +1,391 @@
+/* Sell Your Car Page - Modern Redesign */
+
+/* Form Styles */
+.quick-valuation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.form-group-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-group-compact label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group-compact input {
+  padding: 0.875rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background: #ffffff;
+}
+
+.form-group-compact input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
+  background: #ffffff;
+}
+
+.form-group-compact input::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.btn-quote {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #1e3a8a 100%);
+  color: white;
+  border: none;
+  padding: 0.875rem 1.5rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  box-shadow: 0 4px 12px rgba(65, 105, 225, 0.3);
+}
+
+.btn-quote:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e3a8a 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(65, 105, 225, 0.4);
+}
+
+.btn-quote:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.form-success,
+.form-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.form-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: 1px solid #059669;
+}
+
+.form-error {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: 1px solid #dc2626;
+}
+
+.form-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.field-error {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #ef4444;
+  margin-top: 0.25rem;
+}
+
+/* Hero Section */
+.sell-hero {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  padding: 4rem 0;
+  color: white;
+}
+
+.sell-hero-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.sell-hero-content h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.sell-hero-content p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+  color: #f3f4f6;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.sell-hero-badges {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.sell-badge {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sell-form-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sell-form-card h3 {
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+/* Benefits Section */
+.sell-benefits {
+  padding: 4rem 0;
+  background: #f8f9fa;
+}
+
+.sell-benefits-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.sell-benefits h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: #1a1a2e;
+}
+
+.sell-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.sell-benefit {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sell-benefit:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.sell-benefit-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.sell-benefit h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #1a1a2e;
+}
+
+.sell-benefit p {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Process Section */
+.sell-process {
+  padding: 4rem 0;
+  background: white;
+}
+
+.sell-process-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.sell-process h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: #1a1a2e;
+}
+
+.sell-process-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.sell-step {
+  text-align: center;
+  position: relative;
+}
+
+.sell-step-number {
+  width: 50px;
+  height: 50px;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin: 0 auto 1rem;
+}
+
+.sell-step h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #1a1a2e;
+}
+
+.sell-step p {
+  color: #666;
+  line-height: 1.5;
+}
+
+/* CTA Section */
+.sell-cta {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #1e3a8a 100%);
+  color: white;
+  text-align: center;
+}
+
+.sell-cta-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.sell-cta h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.sell-cta p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.sell-cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.sell-cta-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.sell-cta-button.primary {
+  background: white;
+  color: var(--color-primary);
+}
+
+.sell-cta-button.secondary {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.sell-cta-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sell-hero-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+
+  .sell-hero-badges {
+    justify-content: center;
+  }
+  
+  .sell-benefits-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .sell-process-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .sell-cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .sell-cta-button {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .sell-process-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .sell-hero-container,
+  .sell-benefits-container,
+  .sell-process-container,
+  .sell-cta-container {
+    padding: 0 1rem;
+  }
+}

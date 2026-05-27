@@ -1,0 +1,30 @@
+{
+  "id": "cnhcars-clone",
+  "name": "Cnhcars (clone)",
+  "description": "Page-for-page clone of carous-platform app `cnhcars`, tokenized for brand overrides.",
+  "status": "experimental",
+  "mode": "app-clone",
+  "source": {
+    "app": "cnhcars",
+    "clonedAt": "2026-05-26"
+  },
+  "fonts": {
+    "heading": "'Montserrat', 'Arial', sans-serif",
+    "body": "'Montserrat', 'Arial', sans-serif",
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+    ],
+    "headingWeight": 700,
+    "bodyWeight": 400
+  },
+  "colors": {
+    "primary": "#4169E1",
+    "primaryDark": "#2A4A9F",
+    "accent": "#5680E9",
+    "bg": "#ffffff",
+    "surface": "#f8f9fa",
+    "text": "#0f1623",
+    "muted": "#6b7280",
+    "border": "#e5e7eb"
+  }
+}

@@ -1,0 +1,226 @@
+/* Hero Filter Form - Tabbed Card - Mobile First */
+.hero-filter-card {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 2rem;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  z-index: 3;
+  animation: slideInUp 600ms ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tab Navigation */
+.hero-filter-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.hero-filter-tab {
+  flex: 1;
+  padding: 1rem 0.75rem;
+  border: none;
+  background: transparent;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 200ms ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.hero-filter-tab i {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.hero-filter-tab span {
+  white-space: nowrap;
+}
+
+.hero-filter-tab:hover {
+  color: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.hero-filter-tab.active {
+  color: var(--accent);
+}
+
+.hero-filter-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+}
+
+/* Tab Content */
+.hero-filter-content {
+  padding: 1.5rem;
+  display: none;
+  animation: fadeIn 300ms ease-out;
+}
+
+.hero-filter-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Form Fields */
+.hero-filter-group {
+  margin-bottom: 1.25rem;
+}
+
+.hero-filter-group:last-child {
+  margin-bottom: 0;
+}
+
+.hero-filter-label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.hero-filter-input,
+.hero-filter-select {
+  width: 100%;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 0.875rem;
+  font-family: var(--font-brand-body-override, inherit);
+  transition: all 200ms ease;
+}
+
+.hero-filter-input::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.hero-filter-input:focus,
+.hero-filter-select:focus {
+  outline: none;
+  background: rgba(0, 0, 0, 0.04);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(65, 105, 225, 0.15);
+}
+
+.hero-filter-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23000000' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2rem;
+}
+
+/* Submit Button */
+.hero-filter-button {
+  width: 100%;
+  padding: 0.9rem;
+  margin-top: 0.5rem;
+  background: var(--accent);
+  color: var(--white);
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 200ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.hero-filter-button:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(65, 105, 225, 0.3);
+}
+
+.hero-filter-button:active {
+  transform: translateY(0);
+  background: var(--accent);
+}
+
+.hero-filter-button i {
+  width: 16px;
+  height: 16px;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .hero-filter-card {
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+    margin: 0;
+    animation: slideInUp 600ms ease-out;
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero-filter-tab {
+    padding: 1rem;
+    font-size: 0.875rem;
+  }
+
+  .hero-filter-tab span {
+    display: inline;
+  }
+}
+
+/* Desktop - Large screens */
+@media (min-width: 1200px) {
+  .hero-filter-card {
+    max-width: 360px;
+  }
+}

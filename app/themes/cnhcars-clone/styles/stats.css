@@ -1,0 +1,195 @@
+/* Trusted brands strip */
+.brands-section {
+  padding: 0.75rem 0;
+  overflow: hidden;
+}
+
+.brands-slider-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  max-width: calc((80px + 2rem) * 8);
+  margin: 0 auto;
+}
+
+.brands-slider {
+  display: flex;
+  gap: 2rem;
+  animation: scrollBrands 25s linear infinite;
+  width: calc((80px + 2rem) * 16);
+  padding: 10px;
+}
+
+.brand-logo {
+  flex: 0 0 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: all 0.3s ease;
+  padding: 1rem;
+  border-radius: 12px;
+  min-height: 80px;
+  background: #f9fafb;
+}
+
+.brand-logo:hover {
+  transform: translateY(-4px);
+  background: #ffffff;
+}
+
+.brand-logo img {
+  width: 68px;
+  height: 68px;
+  filter: brightness(0.8);
+  transition: filter 0.3s ease;
+}
+
+.brand-logo:hover img {
+  filter: brightness(1);
+}
+
+.brands-slider-container:hover .brands-slider {
+  animation-play-state: paused;
+}
+
+@keyframes scrollBrands {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(calc(-1 * (80px + 2rem) * 12));
+  }
+}
+
+@media (max-width: 768px) {
+  .brands-slider-container {
+    max-width: calc((60px + 1.5rem) * 8);
+  }
+
+  .brands-slider {
+    animation: scrollBrandsMobile 20s linear infinite;
+    width: calc((60px + 1.5rem) * 16);
+  }
+
+  .brand-logo {
+    flex: 0 0 60px;
+    padding: 0.75rem;
+    min-height: 60px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .brand-logo img {
+    width: 36px;
+    height: 36px;
+    filter: brightness(0.8);
+  }
+}
+
+@keyframes scrollBrandsMobile {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(calc(-1 * (60px + 1.5rem) * 12));
+  }
+}
+
+/* Springalls-style trust signals section for CNH stats */
+.stats-section {
+  background: var(--surface-page);
+  padding: 40px 20px 56px;
+}
+
+.stats-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  gap: 28px;
+  text-align: center;
+}
+
+.stats-lead {
+  margin: 0 auto;
+  max-width: 860px;
+  font-size: clamp(1rem, 1.3vw, 1.2rem);
+  line-height: 1.7;
+  color: var(--text-body);
+}
+
+.stats-grid {
+  display: grid;
+  gap: 22px;
+}
+
+.stats-card {
+  display: grid;
+  gap: 10px;
+  align-items: center;
+  justify-items: center;
+  padding: 18px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(47, 59, 255, 0.08);
+  background: linear-gradient(180deg, rgba(247, 247, 249, 0.9), rgba(255, 255, 255, 0.95));
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.08);
+}
+
+.stats-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(65, 105, 225, 0.12);
+  color: var(--primary);
+  border: 1px solid rgba(65, 105, 225, 0.2);
+}
+
+.stats-icon-wrap svg {
+  width: 30px;
+  height: 30px;
+  stroke-width: 1.8;
+}
+
+.stats-card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.stats-card-text {
+  margin: 0;
+  color: var(--text-body);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.stats-card-value {
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+@media (min-width: 700px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1000px) {
+  .stats-section {
+    padding: 48px 20px 64px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .stats-card {
+    padding: 22px 18px;
+  }
+}

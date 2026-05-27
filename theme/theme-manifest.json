@@ -27,6 +27,12 @@
       "status": "stable"
     },
     {
+      "id": "cnhcars-clone",
+      "name": "Cnhcars (clone)",
+      "description": "Page-for-page clone of carous-platform app `cnhcars`, tokenized for brand overrides.",
+      "status": "experimental"
+    },
+    {
       "id": "dual-stock-modern-bespoke",
       "name": "Dual Stock Modern",
       "description": "Modern dual-stock theme for UK dealers selling cars AND motorbikes side by side — racing-red brand accent, dark dealer-signage typography, type-aware inventory contract with engine_size/body_type for bikes.",
