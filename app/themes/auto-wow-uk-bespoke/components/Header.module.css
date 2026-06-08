@@ -1,15 +1,22 @@
-/* AutoWow UK Header — rugged archetype.
+/* AutoWow UK Header â€” rugged archetype.
    Dark-mode default top bar + header, light-themed when scrolled past hero
    on light pages. Phone CTA + mobile overlay nav with full social surface. */
 
 .topbar {
   position: sticky;
-  /* Sticks below PreviewBanner when present (var falls back to 0px). */
-  top: var(--brandstudio-preview-banner-height, 0px);
+  /* Sticks below PreviewBanner when present (var falls back to 0px).
+     Subtract 1px to close the sub-pixel gap that opens up when the
+     banner's measured height ceil()'s to a higher value than its actual
+     painted height — without the -1px the body bg shows as a hairline
+     line between banner and topbar. The 1px overlap is invisible. */
+  top: calc(var(--brandstudio-preview-banner-height, 0px) - 1px);
   z-index: 50;
-  background: #050810;
-  color: rgba(255, 255, 255, 0.92);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  /* CTA-style filled brand surface: secondary bg + bg-token foreground.
+     All inner copy pairs against var(--color-bg) variants below. */
+  background: var(--color-secondary);
+  color: color-mix(in srgb, var(--color-bg) 92%, transparent);
+  border-bottom: 0;
+  box-shadow: none;
 }
 
 .topbarInner {
@@ -29,21 +36,21 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: rgba(255, 255, 255, 0.88);
+  color: color-mix(in srgb, var(--color-bg) 88%, transparent);
   white-space: nowrap;
 }
 
 .topChip svg {
-  color: var(--color-primary);
+  color: var(--color-bg);
   flex-shrink: 0;
 }
 
 .liveChip {
-  color: rgba(255, 255, 255, 0.95);
+  color: color-mix(in srgb, var(--color-bg) 95%, transparent);
 }
 
 .liveDot {
-  --mfx-dot-color: #25c55e;
+  --mfx-dot-color: var(--color-accent);
   width: 8px;
   height: 8px;
   border-radius: 999px;
@@ -70,15 +77,15 @@
   width: 28px;
   height: 28px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.86);
+  background: color-mix(in srgb, var(--color-bg) 14%, transparent);
+  color: var(--color-bg);
   transition: background 150ms ease, color 150ms ease;
 }
 
 .socials a:hover,
 .socials a:focus-visible {
-  background: var(--color-primary);
-  color: #fff;
+  background: var(--color-bg);
+  color: var(--color-secondary);
 }
 
 .socialDisabled {
@@ -88,23 +95,23 @@
   width: 28px;
   height: 28px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
-  color: rgba(255, 255, 255, 0.36);
+  background: color-mix(in srgb, var(--color-bg) 6%, transparent);
+  color: color-mix(in srgb, var(--color-bg) 38%, transparent);
   cursor: not-allowed;
 }
 
 .mobileSocials .socialDisabled {
   width: 44px;
   height: 44px;
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.4);
+  background: color-mix(in srgb, var(--color-bg) 8%, transparent);
+  color: color-mix(in srgb, var(--color-bg) 42%, transparent);
 }
 
 .topPhone {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #ffffff;
+  color: var(--color-bg);
   text-decoration: none;
   padding: 4px 10px;
   border-radius: 4px;
@@ -112,11 +119,11 @@
 }
 
 .topPhone:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--color-bg) 14%, transparent);
 }
 
 .topPhone svg {
-  color: var(--color-primary);
+  color: var(--color-bg);
 }
 
 @media (min-width: 720px) {
@@ -147,18 +154,23 @@
 
 .header {
   position: sticky;
-  top: 33px; /* sits under topbar; will shift after preview banner adjusts */
+  /* Sits under the sticky topbar (which itself sits under PreviewBanner).
+     The 35px offset is the topbar's resting height (8px padding × 2 + ~20px
+     content row) minus the 1px gap-closer the topbar uses. Preview banner
+     height tracks the same var the topbar uses. */
+  top: calc(var(--brandstudio-preview-banner-height, 0px) + 35px);
   z-index: 49;
-  background: #0a0e14;
-  color: #ffffff;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  transition: background 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border-bottom: 0;
+  box-shadow: none;
+  transition: background 220ms ease;
 }
 
 .headerScrolled {
-  background: #0a0e14;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
-  border-bottom-color: rgba(255, 255, 255, 0.04);
+  background: var(--color-bg);
+  border-bottom: 0;
+  box-shadow: none;
 }
 
 .headerInner {
@@ -177,13 +189,12 @@
   grid-column: 1;
   justify-self: start;
   text-decoration: none;
-  color: #ffffff;
+  color: var(--color-text);
 }
 
 .brandLogo {
   height: 44px;
   width: auto;
-  filter: brightness(1) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
 }
 
 .brandWordmark {
@@ -192,7 +203,7 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #ffffff;
+  color: var(--color-text);
 }
 
 .nav {
@@ -210,7 +221,7 @@
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.86);
+  color: color-mix(in srgb, var(--color-text) 86%, transparent);
   text-decoration: none;
   padding: 12px 4px;
   min-height: 44px;
@@ -221,7 +232,7 @@
 
 .navLink:hover,
 .navLinkActive {
-  color: #ffffff;
+  color: var(--color-text);
 }
 
 .navLinkActive::after {
@@ -250,17 +261,17 @@
   width: 44px;
   height: 44px;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid color-mix(in srgb, var(--color-text) 18%, transparent);
   border-radius: 4px;
-  color: #ffffff;
+  color: var(--color-text);
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
 .menuToggle:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.36);
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+  border-color: color-mix(in srgb, var(--color-text) 36%, transparent);
 }
 
 @media (min-width: 980px) {
@@ -281,8 +292,8 @@
   position: fixed;
   inset: 0;
   z-index: 80;
-  background: #0a0e14;
-  color: #ffffff;
+  background: var(--color-bg);
+  color: var(--color-text);
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
@@ -324,9 +335,9 @@
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #ffffff;
+  color: var(--color-text);
   text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--color-border);
   transition: color 150ms ease, padding-left 200ms ease;
 }
 
@@ -337,7 +348,7 @@
 }
 
 .mobileNavLink svg {
-  color: rgba(255, 255, 255, 0.46);
+  color: color-mix(in srgb, var(--color-text) 46%, transparent);
 }
 
 .mobileFooter {
@@ -368,10 +379,11 @@
   width: 44px;
   height: 44px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+  color: var(--color-text);
 }
 
 .mobileSocials a:hover {
   background: var(--color-primary);
+  color: var(--color-bg);
 }

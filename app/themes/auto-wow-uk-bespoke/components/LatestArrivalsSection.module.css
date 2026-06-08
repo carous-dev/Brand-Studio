@@ -8,13 +8,70 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 18px;
-  margin-bottom: clamp(32px, 4vw, 48px);
+  margin: 0 0 clamp(32px, 4vw, 48px);
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0;
+  padding: 0;
+}
+
+.headerCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.eyebrowMark {
+  display: inline-block;
+  width: 28px;
+  height: 2px;
+  background: var(--color-primary);
+}
+
+.title {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+  line-height: 1.18;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+  text-wrap: balance;
 }
 
 .viewAll {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-primary);
   font-family: 'Oswald', sans-serif;
-  letter-spacing: 0.16em;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 2px;
+  transition: border-color 200ms ease, gap 200ms ease;
+}
+
+.viewAll:hover {
+  border-bottom-color: var(--color-primary);
+  gap: 12px;
 }
 
 .grid {
@@ -28,10 +85,10 @@
 
 .card {
   position: relative;
-  /* Paired with .cardTitle / .specs colors — fixed light surface so brand
-     records can't flip this dark and break title contrast. */
-  background: #f6f7fb;
-  border: 2px solid #e3e6ee;
+  /* Token-driven surface; cardTitle/specs pair against --color-text so the
+     brand-record dashboard tokens flow through every surface. */
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-card, 8px);
   overflow: hidden;
   transition: border-color 200ms ease, transform 200ms ease;
@@ -51,7 +108,7 @@
 .media {
   position: relative;
   aspect-ratio: 16 / 10;
-  background: #0a0e14;
+  background: var(--color-surface);
   overflow: hidden;
   filter: saturate(0.85);
   transition: filter 280ms ease;
@@ -75,15 +132,15 @@
 .mediaPlaceholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #1a1f2a 0%, #0a0e14 100%);
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-bg) 100%);
 }
 
 .stockChip {
   position: absolute;
   top: 12px;
   left: 12px;
-  background: rgba(10, 14, 20, 0.86);
-  color: #ffffff;
+  background: color-mix(in srgb, var(--color-bg) 86%, transparent);
+  color: var(--color-text);
   padding: 4px 10px;
   font-family: 'Oswald', sans-serif;
   font-size: 0.7rem;
@@ -105,12 +162,9 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  /* Pair with .card's --color-surface explicitly via fixed neutral. Avoid
-     var(--color-text) here — when a brand record overrides --color-surface
-     to dark, the dark --color-text would render invisibly. Hard-coded
-     neutral guarantees AA against the light card surface even under
-     brand-record overrides. */
-  color: #0f1623;
+  /* Pair with .card's --color-surface â€” both tokens flow from the dashboard
+     so the surface/text relationship stays valid under brand-record overrides. */
+  color: var(--color-text);
   margin: 0;
   /* limit to 2 lines */
   display: -webkit-box;
@@ -143,14 +197,13 @@
   align-items: center;
   gap: 6px;
   font-size: 0.84rem;
-  /* Fixed muted-on-light pairing — see .card comment. */
-  color: #5b6573;
+  color: var(--color-muted);
   font-feature-settings: 'tnum' 1;
   letter-spacing: 0.02em;
 }
 
 .specs svg {
-  color: #5b6573;
+  color: var(--color-muted);
 }
 
 .empty {

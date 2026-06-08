@@ -31,7 +31,7 @@
 .mediaInner {
   position: absolute;
   inset: 0;
-  /* Layered fallback — operator upload on top, theme default underneath. */
+  /* Layered fallback â€” operator upload on top, theme default underneath. */
   background-image:
     var(--brand-image-about, none),
     url('/themes/auto-wow-uk-bespoke/images/about.jpg');
@@ -50,8 +50,8 @@
   position: absolute;
   left: 18px;
   bottom: 18px;
-  background: rgba(10, 14, 20, 0.92);
-  color: #ffffff;
+  background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+  color: var(--color-text);
   padding: 14px 18px;
   border-left: 3px solid var(--color-primary);
   display: flex;
@@ -63,7 +63,7 @@
   font-family: 'Oswald', sans-serif;
   font-size: 1.6rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text);
   letter-spacing: 0.02em;
 }
 
@@ -71,7 +71,7 @@
   font-size: 0.78rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--color-muted);
 }
 
 @media (min-width: 880px) {
@@ -95,8 +95,8 @@
 }
 
 .valueGrid li {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-card, 8px);
   padding: 28px 26px;
   display: flex;
@@ -107,7 +107,7 @@
 
 .valueGrid li:hover {
   border-color: var(--color-primary);
-  background: rgba(190, 14, 17, 0.08);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
 }
 
 .valueNum {
@@ -124,12 +124,12 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #ffffff;
+  color: var(--color-text);
   margin: 0;
 }
 
 .valueGrid p {
-  color: rgba(255, 255, 255, 0.74);
+  color: color-mix(in srgb, var(--color-text) 74%, transparent);
   font-size: 0.94rem;
   line-height: 1.55;
   margin: 0;

@@ -246,11 +246,14 @@ body {
 }
 
 /* Prevent temporary horizontal scrollbars caused by transform-based
-   animations. Applied to `body` only — putting `overflow-x: hidden` on
-   both `html` AND `body` makes browsers render TWO vertical scrollbars
-   (one per overflow container). Single source keeps it to one scrollbar. */
+   animations. Uses `overflow-x: clip` instead of `hidden` because `hidden`
+   creates an implicit `overflow-y: auto` scrolling context on the body,
+   which breaks `position: sticky` (the sticky element binds to the body
+   scroll container instead of the viewport — never actually sticks).
+   `clip` clips overflow without creating a scroll container, so sticky
+   stays bound to the viewport. Modern-browser supported. */
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {

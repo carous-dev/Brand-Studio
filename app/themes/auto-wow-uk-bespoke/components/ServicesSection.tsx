@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import {
   CarFront, ArrowLeftRight, Banknote, ShieldCheck,
-  ScanLine, Truck, ChevronRight,
+  ScanLine, Truck, ArrowUpRight,
 } from 'lucide-react'
 import styles from './ServicesSection.module.css'
 
@@ -50,12 +50,15 @@ export default function ServicesSection() {
   return (
     <section className={`auto-section auto-section--dark ${styles.section}`} aria-labelledby="services-title">
       <div className={`auto-container ${styles.inner}`}>
-        <header className={styles.header}>
-          <p className="auto-eyebrow" data-aos="fade-right">Our services</p>
-          <h2 id="services-title" className="auto-section-title" data-aos="fade-up">
+        <header className={styles.header} data-aos="fade-up">
+          <span className={styles.eyebrow}>
+            <span className={styles.eyebrowMark} aria-hidden="true" />
+            Our services
+          </span>
+          <h2 id="services-title" className={styles.title}>
             Complete support, enquiry to handover.
           </h2>
-          <p className="auto-section-lead" data-aos="fade-up" data-aos-delay="120">
+          <p className={styles.lead}>
             We don&rsquo;t just sell cars &mdash; we make the entire ownership journey easier. From
             sourcing through finance, paperwork, prep, and post-sale, we&rsquo;re the dealer you can
             keep calling.
@@ -65,20 +68,25 @@ export default function ServicesSection() {
         <ul className={styles.grid}>
           {SERVICES.map((service, i) => {
             const { Icon } = service
+            const num = String(i + 1).padStart(2, '0')
             return (
               <li
                 key={service.title}
                 className={styles.card}
-                data-aos="zoom-in"
+                data-aos="fade-up"
                 data-aos-delay={i * 80}
               >
-                <span className={styles.iconWrap} aria-hidden="true">
-                  <Icon size={24} strokeWidth={2.2} />
-                </span>
-                <h3 className={styles.cardTitle}>{service.title}</h3>
-                <p className={styles.cardBlurb}>{service.blurb}</p>
                 <Link href={service.href} className={styles.cardLink}>
-                  Learn more <ChevronRight size={14} aria-hidden="true" />
+                  <span className={styles.cardNum} aria-hidden="true">{num}</span>
+                  <span className={styles.iconWrap} aria-hidden="true">
+                    <Icon size={22} strokeWidth={2} />
+                  </span>
+                  <h3 className={styles.cardTitle}>{service.title}</h3>
+                  <p className={styles.cardBlurb}>{service.blurb}</p>
+                  <span className={styles.cardCta}>
+                    Learn more
+                    <ArrowUpRight size={14} aria-hidden="true" />
+                  </span>
                 </Link>
               </li>
             )

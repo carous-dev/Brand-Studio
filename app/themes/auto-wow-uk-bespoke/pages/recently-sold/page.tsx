@@ -19,17 +19,6 @@ export function AutoRecentlySoldPage({ initialInventory }: ThemePageProps) {
 
   return (
     <>
-      <section className="auto-page-hero auto-page-hero--recently-sold">
-        <div className="auto-page-hero-inner">
-          <p className="auto-page-hero-crumb">Recently sold</p>
-          <h1>Cars that found their new homes.</h1>
-          <p>
-            A snapshot of recent sales. Each car here was prepared, sold, and delivered through our
-            forecourt &mdash; live stock is just a click away.
-          </p>
-        </div>
-      </section>
-
       <section className={`auto-section ${styles.section}`}>
         <div className="auto-container">
           {items.length === 0 ? (

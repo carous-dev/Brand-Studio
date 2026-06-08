@@ -98,25 +98,10 @@ export async function AutoUsedCarsPage({ searchParams }: UsedCarsRuntimeProps) {
     .map((item) => normalizeInventoryItem(item))
     .filter((v): v is InventoryVehicle => Boolean(v))
 
-  const totalCount = typeof meta?.total === 'number' ? meta.total : initialVehicles.length
-
   return (
-    <>
-      <section className="auto-page-hero">
-        <div className="auto-page-hero-inner">
-          <p className="auto-page-hero-crumb">Used cars</p>
-          <h1>{totalCount > 0 ? `${totalCount}+ used cars on the forecourt.` : 'Used cars on the forecourt.'}</h1>
-          <p>
-            Quality used vehicles with clear listing details. Filter by make, body, price
-            and mileage to narrow your shortlist.
-          </p>
-        </div>
-      </section>
-
-      <section className={styles.listingWrap}>
-        <UsedCarsClient initialVehicles={initialVehicles} initialMeta={meta} />
-      </section>
-    </>
+    <section className={styles.listingWrap}>
+      <UsedCarsClient initialVehicles={initialVehicles} initialMeta={meta} />
+    </section>
   )
 }
 

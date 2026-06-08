@@ -38,17 +38,20 @@ export default function RecentlySoldPreview() {
 
   return (
     <section className={`auto-section ${styles.section}`} aria-labelledby="recently-sold-title">
-      <div className="auto-container">
-        <header className={styles.header}>
-          <div>
-            <p className="auto-eyebrow" data-aos="fade-right">Recently sold</p>
-            <h2 id="recently-sold-title" className="auto-section-title" data-aos="fade-up">
+      <div className={`auto-container ${styles.inner}`}>
+        <header className={styles.header} data-aos="fade-up">
+          <div className={styles.headerCopy}>
+            <span className={styles.eyebrow}>
+              <span className={styles.eyebrowMark} aria-hidden="true" />
+              Recently sold
+            </span>
+            <h2 id="recently-sold-title" className={styles.title}>
               These found new owners. Yours could be next.
             </h2>
           </div>
-          <Link href="/recently-sold" className="auto-cta-link" data-aos="fade-left">
+          <Link href="/recently-sold" className={styles.viewAll}>
             See sold archive
-            <ArrowUpRight size={18} aria-hidden="true" />
+            <ArrowUpRight size={16} aria-hidden="true" />
           </Link>
         </header>
 
@@ -57,8 +60,8 @@ export default function RecentlySoldPreview() {
             <li
               key={v.id}
               className={styles.card}
-              data-aos="flip-up"
-              data-aos-delay={i * 120}
+              data-aos="fade-up"
+              data-aos-delay={i * 100}
             >
               <div className={styles.media}>
                 {v.image ? (
@@ -66,15 +69,15 @@ export default function RecentlySoldPreview() {
                 ) : (
                   <div className={styles.mediaPlaceholder} aria-hidden="true" />
                 )}
-                <span className="auto-sold-banner" aria-hidden="true">SOLD</span>
-                <div className={styles.mediaOverlay} aria-hidden="true" />
+                <div className={styles.mediaScrim} aria-hidden="true" />
+                <span className={styles.soldBanner} aria-hidden="true">Sold</span>
               </div>
               <div className={styles.body}>
-                <p className={styles.title}>{v.title}</p>
-                <p className={styles.priceRow}>
+                <p className={styles.cardTitle}>{v.title}</p>
+                <div className={styles.priceRow}>
                   <span className={styles.priceWas}>Was {formatPrice(v.price)}</span>
-                  <span className={styles.soldNote}>Find your match below</span>
-                </p>
+                  <span className={styles.soldNote}>Find your next match</span>
+                </div>
               </div>
             </li>
           ))}

@@ -32,8 +32,8 @@ Two modes:
 /new-theme                                       # Mode A — skill prompts for logo + URL + primary hex
 /new-theme <theme-id>                            # Mode A with caller-supplied id
 /new-theme --context "<free text>"               # Mode A with inline context hint (also accepted in the freeform input message)
-/new-theme --from <app>                          # Mode B — carous-platform port
-/new-theme <id> --from <app>                     # Mode B with explicit id
+/new-theme --app-mode <app>                      # Mode B — page-for-page clone of a carous-platform app
+/new-theme <id> --app-mode <app>                 # Mode B with explicit theme id
 ```
 
 Examples:
@@ -44,8 +44,17 @@ Examples:
   same flow, but the optional context hint threads into A3 scrape (also
   pulls /bikes pages), A5 DNA notes, A8 hero copy + inventory chips
   (chips become All / Cars / Bikes instead of body-type defaults).
-- `/new-theme huntsmotors-cobalt --from huntsmotors` → ports the
-  huntsmotors carous-platform app into a new theme.
+- `/new-theme --app-mode lancashirecarsalesltd` → clones the
+  lancashirecarsalesltd carous-platform app page-for-page into a new theme
+  (default id: `lancashirecarsalesltd-clone`), tokenizes its colors / fonts /
+  image URLs so brand records can override them.
+- `/new-theme huntsmotors-bold --app-mode huntsmotors` → same, with an
+  explicit theme id.
+
+The older `--from <app>` flag (which did a light DNA-only adaptation onto
+the skeleton scaffolder) was superseded on 2026-05-26 by `--app-mode`. If
+you see `--from` referenced in older docs or commits, treat it as the old
+mode B behaviour; new runs should use `--app-mode`.
 
 ## Prerequisites checklist
 
@@ -57,13 +66,14 @@ Before doing anything else, confirm:
    specific drive letter. If you're not at the repo root, `cd` there
    first.
 2. `tools/scaffold-theme-skeleton.mjs` exists for Mode A and
-   `tools/scaffold-theme.mjs` exists for Mode B. (Mode A doesn't need
-   `extract-theme-dna.mjs`; Mode B does.)
+   `tools/clone-app-to-theme.mjs` exists for Mode B. (Mode A doesn't need
+   `extract-theme-dna.mjs`; Mode B calls it under the hood.)
 3. **For Mode B only**: a `carous-platform` checkout is reachable.
    Resolution order: `--apps <path>` CLI arg → `CAROUS_PLATFORM_APPS`
    env var → `../carous-platform/apps` (sibling of brandstudio) →
-   `../../carous-platform/apps`. `extract-theme-dna.mjs` errors with
-   a clear "could not locate" message if none of those resolve.
+   `../../carous-platform/apps`. The cloner and `extract-theme-dna.mjs`
+   share the same resolver and error with a clear "could not locate"
+   message if none of those resolve.
 
 ## Quality Bar — every theme must clear this
 
@@ -200,23 +210,81 @@ keeping the others restrained.
   `check-theme-similarity.mjs --peer-threshold 0.55` — both must pass.
 - Phase 11 appends the new fingerprint to the registry.
 
-**Color palette policy — paired surface + foreground tokens (must-have, learned 2026-05-11 from cross-brand contrast bugs):**
+**Color policy — natural-role dashboard tokens (must-have, settled 2026-06-09):**
 
-> **Canonical home for color policy.** This section is the source of
-> truth for how `/new-theme` derives + uses color. If any downstream rule
-> (archetype spec, motion CSS examples, etc.) implies a generic
-> `color: var(--color-text)` pattern, this policy supersedes it.
+> **Canonical home for color policy.** Themes consume the 8 dashboard
+> tokens (Primary, Secondary, Accent, Background, Text, Border, Muted,
+> Surface) in their **natural semantic roles**. `--color-bg` is ALWAYS
+> the surface. `--color-text` is ALWAYS the foreground. NO inversion,
+> NO `--t-feature-*` locked tokens, NO hex literals.
 
-The previous approach (extract palette from logo via
-`extract-logo-colors.mjs`, then run post-hoc contrast check) produced
-contrast bugs that survived to prospect previews. Two failure classes:
-(1) the logo-extracted primary often failed AA white-on-primary and
-required iterative manual darkening; (2) generic foreground tokens
-(`var(--color-text)`) painted onto components whose surface was
-brand-record-overridden flipped to invisible (dark-on-dark or
-light-on-light) at runtime. The new policy is **structural** — contrast
-can't fail because surface and foreground are paired at the token level
-and brand records can't break the pairing.
+## How to use the 8 tokens
+
+**Brand accents (flow with brand record):**
+- `var(--color-primary)` — CTAs, eyebrows, link accents, focus rings, brand-tinted highlights
+- `var(--color-secondary)` — soft section tints (low-% color-mix with `--color-bg`)
+- `var(--color-accent)` — decorative chevrons, hover highlights
+
+**Surfaces and text — natural roles for EVERY section (no dark/light tier split):**
+- `background: var(--color-bg);` — page bg
+- `background: var(--color-surface);` — card / panel (slightly off-bg)
+- `color: var(--color-text);` — foreground text
+- `color: var(--color-muted);` — secondary / caption text
+- `border-color: var(--color-border);` — borders, dividers
+- Brand-tinted surface: `color-mix(in srgb, var(--color-primary) NN%, var(--color-bg))` — primary subtly tints the page bg
+
+## Dark structural surfaces — NOT a separate pattern
+
+There is no "dark feature band" pattern. A theme's dark identity exists ONLY when the brand record sets `--color-bg` to a dark hex. For a brand with `--color-bg: #FFFFFF` + `--color-text: #302C2C`, every section renders LIGHT. The rugged-dark archetype's locked-dark identity is sacrificed for light-brand records. This is the explicit trade-off — the dashboard is the source of truth.
+
+If a future review demands "rugged themes must stay dark for every brand", the only valid responses are:
+1. Petition the platform team to add a 9th picker (Chrome Surface or similar).
+2. Reject the request and stand on the natural-roles policy.
+
+Do NOT reintroduce `--t-feature-*` locked tokens (rejected — see `feedback_theme_dark_surface_role_tokens.md`). Do NOT reintroduce the inverted-role pattern (rejected — `background: var(--color-text)` is "absurd").
+
+## Allowed `--t-*` role aliases
+
+`color-policy.css` may define role aliases that **derive from dashboard tokens** — these are abstractions, not new color definitions:
+
+```css
+--t-action-bg: var(--color-primary);
+--t-action-fg: var(--color-bg);
+--t-link: var(--color-text);
+--t-link-hover: var(--color-accent);
+--t-eyebrow: var(--color-primary);
+--t-card: var(--color-surface);
+--t-border: var(--color-border);
+--t-section-tint: color-mix(in srgb, var(--color-secondary) 6%, var(--color-bg));
+```
+
+**Status tokens** (`--t-success: #0f5132`, `--t-error: #b42318`) stay literal — they're semantic UI signals, not brand-driven.
+
+**Forbidden:** `--t-feature-bg: #0a0e14` and similar locked literals for surfaces. If a token has a hex value and represents a surface, it's banned.
+
+## Audit checks (Phase 10c)
+
+Treat ALL of these as a blocker:
+- `background: var(--color-text)` / `background-color: var(--color-text)` — inverted-role abuse, use `var(--color-bg)` or `var(--color-surface)`
+- `color: var(--color-bg)` on a non-CTA surface — inverted-role abuse, use `var(--color-text)` or `var(--color-muted)`. **CTA exception** only when the same rule sets `background: var(--color-primary)`.
+- Hex / rgba color literals in component CSS (`#0a0e14`, `rgba(255,255,255,0.08)`, etc) — bypass the dashboard. Use `color-mix` over `var(--color-*)`.
+- `--t-*` token definitions with literal hex values (status `--t-success` / `--t-error` excepted).
+
+**Allowed literal exception:** photo overlays / lightbox scrims / gallery chrome over imagery may use literal `rgba(0,0,0,X)` or `rgba(255,255,255,X)`. Document with a near-by comment.
+
+## Component rule (paired surfaces, still in force)
+
+Every CSS rule that sets `background:` MUST set `color:` in the same rule or enclosing scope. Pair `var(--color-bg)` / `var(--color-surface)` with `var(--color-text)`. Never let cascade decide.
+
+The historical journey: (1) logo-extracted primary often failed AA
+white-on-primary, so we moved to operator-provided primary + automated
+darken; (2) generic `var(--color-text)` cascade onto brand-overridable
+surfaces caused invisible text; (3) the "invert role tokens for dark
+tier" attempt (use `--color-text` as dark bg, `--color-bg` as light fg)
+fixed the cascade but introduced semantic abuse — Difatha rejected it
+2026-06-08: "why would text color token be used for bg color". The
+current three-tier model isolates each concern: brand voice (tier 1),
+locked theme dark intent (tier 2), brand-tinted dark variants (tier 3).
 
 **The policy:**
 
@@ -2477,49 +2545,171 @@ components, 12–14 page bodies, the same number of CSS modules, the
 per-theme cookie banner, plus the inventory list + detail rewrites).
 Don't ship a 5-file recolor and call it a theme.
 
-## Mode B — Port from carous-platform sibling
+## Mode B — App clone (`--app-mode <app>`)
 
-Phases B1–B5 replace A1–A5; everything from Phase 6 onward is shared with
-Mode A.
+> **Reshaped on 2026-05-26.** Mode B used to be a light DNA-only adaptation
+> onto the skeleton scaffolder (which strips the visual layer) — the result
+> was effectively a recolored springalls clone, not a port of the source
+> app's actual design. The new Mode B is a **page-for-page faithful clone**
+> of the source app's components, pages, styles, and lib helpers, with
+> brand-overridable tokens swapped in for colors / fonts / image URLs. The
+> result reads like the source app in a different palette/font/image set
+> via brand record overrides — i.e. "highly configurable like the usual
+> preview themes."
+>
+> The old `--from <app>` flag was retired in favour of `--app-mode <app>`.
+> The underlying tool is now `tools/clone-app-to-theme.mjs` (replacing the
+> `scaffold-theme.mjs` + `extract-theme-dna.mjs` two-step). DNA extraction
+> still runs under the hood, so the standalone `extract-theme-dna.mjs`
+> remains useful for one-off inspection.
+
+Phases B1–B5 replace A1–A5; everything from Phase 9 onward is shared with
+Mode A. **Skip Phases A2e (Lock Signature Concept) and the cross-theme
+similarity peer pass** — clones are intentionally similar to their source
+app; the peer pass should ignore themes whose `theme.json.mode === 'app-clone'`.
 
 ### B1 — Pick a source app
 
 Source apps live under `<carous-platform>/apps/`. The carous-platform
-checkout is discovered automatically by `extract-theme-dna.mjs` in
-this order: `--apps <path>` CLI arg → `CAROUS_PLATFORM_APPS` env var
+checkout is discovered automatically (same resolver used by `extract-theme-dna.mjs`):
+`--apps <path>` CLI arg → `CAROUS_PLATFORM_APPS` env var
 → `../carous-platform/apps` (sibling of brandstudio) →
 `../../carous-platform/apps`. Use `Glob` against the resolved apps
 directory to enumerate the current pool — examples from recent runs:
 
 ```
 a2zautocompletezltd, amcarsalesltd, berksmotors, carsofmanchester, cnhcars,
-csmotorsltd, huntsmotors, kainmotorsltd, lancashirecarsalesltd, motorsinc,
-powercarsales, revupautosgroup, scottishvancenter, springallscarsalesltd,
-thebikebuyer, vagtechsolutionltd, visionprestige
+columbusvehicles, csmotorsltd, huntsmotors, kainmotorsltd, lancashirecarsalesltd,
+motorsinc, powercarsales, prestigemarques, revupautosgroup, scottishvancenter,
+springallscarsalesltd, thebikebuyer, vagtechsolutionltd, visionprestige
 ```
 
-If the user passed `--from <app>`, validate the folder exists. Else pick
-the first app not yet ported (skip `springallscarsalesltd` since it's
-already → `springalls-classic`; skip any source whose name appears as a
-substring of an existing theme id in `theme/theme-manifest.json`).
+The user always names the source via `--app-mode <app>`; this mode never
+auto-picks. Validate the folder exists at `<apps-root>/<source>/app/`
+before proceeding.
 
-### B2–B5 — Extract DNA via the script
+### B2 — Decide the theme id
+
+Default: `<source>-clone` (e.g. `lancashirecarsalesltd-clone`). The user
+may override via `/new-theme <id> --app-mode <source>`. Theme ids must be
+kebab-case with ≥2 segments — the cloner validates and errors clearly.
+
+### B3 — Run the cloner
 
 ```bash
-node tools/extract-theme-dna.mjs --source <app>
+node tools/clone-app-to-theme.mjs \
+  --source <app> \
+  --target <theme-id>               # optional; defaults to <app>-clone
+  [--apps <abs-path>]               # optional; same resolver as extract-theme-dna
+  [--name "<Display Name>"]         # optional theme.json display name
+  [--description "<one-liner>"]     # optional theme.json description
+  [--no-tokenize]                   # skip the color/font/image tokenization pass
+  [--dry-run]                       # report counts only, write nothing
 ```
 
-Read the resulting `tools/.theme-dna/<app>.json` with the **Read** tool.
-The script handles `app/globals.css`, `theme-style.json`, `next/font/google`
-imports and synthesizes a Google Fonts URL when no `@import` exists.
+The cloner does, in order:
 
-### B-adaptation (Phase 8 in Mode B)
+1. **Resolve** the carous-platform checkout and verify the source app exists.
+2. **Extract DNA** by shelling out to `extract-theme-dna.mjs` — captures the
+   source's palette, font stack, radii, shadows, hero metrics.
+3. **Resolve `var(--name)` references** in the DNA palette via the source's
+   `globals.css` `:root` block so we can build a real hex→token map (most
+   source apps store their colors as CSS custom properties — the DNA file
+   carries the var references, not the underlying hex).
+4. **Discover routes** by walking `app/` for `page.tsx` files. Skips
+   `api/`, `dashboard/`, `login/`, `data/` (as a routed dir), `hooks/`,
+   `search/`, `in/`, `out/`. Route groups `(group)/<route>/page.tsx`
+   collapse to `<route>`.
+5. **Plan the writes**: every routed page → `pages/<route>/page.tsx`;
+   every component → `components/<name>.tsx`; every style → `styles/<name>.css`;
+   `app/globals.css` → `styles/base.css`; `lib/` and `data/` copied verbatim.
+6. **Rewrite imports** in each text file:
+   - `@/app/<seg>/...` → `<themeRoot>/<seg>/...` (strips `app/` prefix)
+   - `@/<seg>/...` → `<themeRoot>/<seg>/...`
+   - `./components/X` / `./styles/X` / `./lib/X` / `./data/X` from a page
+     → `<themeRoot>/<seg>/X` (the source homepage at `app/page.tsx` reached
+     siblings; the cloned homepage at `pages/home/page.tsx` is two folders
+     deeper).
+7. **Tokenize CSS** (per CSS module + `styles/base.css`):
+   - hex literals matching the resolved palette → `var(--color-*)`
+   - `font-family: ...;` declarations → `var(--font-brand-family-override, ...)`
+     (heading) or `var(--font-brand-body-override, ...)` (body), inferred by
+     comparing the first family to the DNA heading family.
+   - `background-image: url('/images/<file>')` → multi-layer
+     `background-image: var(--brand-image-<slot>, none), url('/themes/<id>/images/<slot>.jpg')`
+     — slot inferred from the filename (hero / about / services / finance /
+     partExchange / sellYourCar / recentlySold).
+8. **Emit the theme contract** files: `theme.json` (with
+   `mode: "app-clone"` and the source app name), `pages.ts` (one entry per
+   discovered route), `shell.tsx` (mounts all the standard brandstudio
+   widgets — AnimateOnScroll, MotionFX, ScrollProgress, PreviewBanner,
+   CookieBanner, WhatsAppFab), `tokens.ts`, `context/BrandClientWrapper.tsx`,
+   `context/BrandStyles.tsx` (emits the brand-overridable CSS variables
+   the tokenized files now consume).
+9. **Emit `CLONE_FOLLOWUPS.md`** at the theme root listing the things the
+   tool couldn't auto-fix:
+   - `@carous/*` workspace package imports (cloner doesn't know which are
+     available in brandstudio).
+   - `hooks/` imports (source's `hooks/` isn't copied — inline or move to `lib/`).
+   - `data/` imports (the cloner copies `data/` verbatim so the theme
+     compiles, but these references should be rewired to read from the
+     brand record at runtime).
+   - Direct `fetch('/api/...')` calls (source-app API routes don't exist
+     in brandstudio; rewire to brandstudio's shared API).
 
-Read the source app's `app/page.tsx`, `app/components/Hero*.tsx`,
-`app/components/Header.tsx`, `app/components/Footer.tsx`, and
-`app/styles/hero-*.css` to inform the adaptation edits. The targets in the
-new theme are the same files listed in Phase 8 (Mode A); the *content
-source* changes.
+### B4 — Resolve the follow-ups checklist
+
+Open `app/themes/<id>/CLONE_FOLLOWUPS.md` and walk it top-to-bottom.
+The hierarchy of fixes (most → least likely to break the build):
+
+1. **Workspace `@carous/*` imports** — type-check will fail until each is
+   either swapped for an in-tree equivalent, inlined, or added to
+   brandstudio's dependencies. Common cases:
+   - `@carous/seo` → already lives in brandstudio (`packages/seo`); just
+     update the import path.
+   - `@carous/sell-your-car` → mount `<SellYourCarWidget />` from
+     `@/app/widgets/SellYourCarWidget` instead (see Pitfall row 28).
+   - `@carous/hooks` → inline the specific hook (usually one helper per
+     consumer) into `lib/`.
+2. **`hooks/` imports** — either inline into the consumer (if used in one
+   place) or move to `lib/<name>.ts`. Update import paths.
+3. **`data/<file>` imports** — the source's hardcoded dealer profile.
+   Replace each reference with the equivalent brand-record read:
+   - `companyProfile.name` → `brand.name`
+   - `companyProfile.location.address` → `brand.location?.address`
+   - `companyProfile.location.phone` → `brand.location?.phone`
+   - `companyProfile.openingHours` → `brand.openingHours`
+   - `companyProfile.services` → `brand.services`
+   This is the bulk of "highly configurable" — once `data/` is gone, the
+   theme is genuinely brand-record-driven.
+4. **`fetch('/api/...')` calls** — rewire to the shared brandstudio API
+   surface using `apiUrl()` from `lib/api.ts` and pass `?brand=<slug>`
+   (Pitfalls catalogue row 14 / 29 invariants still apply).
+5. **The queensbury-era pitfalls** — re-verify rows 40 / 41 / 42 against
+   the cloned hero / CTA / sold-cars rail. The source app may have shipped
+   patterns that we've since learned not to use; the clone inherits them
+   verbatim.
+
+### B5 — Phase-8 polish (the "maybe better styles" pass)
+
+The cloner aims for "same design, maybe better styles." Phase 8 in
+Mode B is lighter than Mode A (no fresh design needed) but still has
+work to do:
+
+- Apply the **Pitfalls catalogue** to the cloned files: rows 40 (reduced-
+  motion fallback), 41 (CTA centering), 42 (card-rail repeat-grid),
+  plus the rest as relevant.
+- Sweep CSS modules for hardcoded hex that the cloner missed (the
+  tokenizer only handles palette colors; ad-hoc decorative hex stays).
+  Replace with brand tokens where the brand would want them overridable.
+- Apply the **Modern / futuristic visual language** restraint rule (§"Visual
+  hierarchy per section") — source apps sometimes ship 4-5 attention-pullers
+  in a section; trim to two per the restraint rule.
+- Audit blocker pass per Phase 10c (`node tools/audit-theme.mjs --id <id>`).
+
+Skip the cross-theme similarity *peer pass* — clones are intentionally
+similar to their source app. The baseline pass (vs `springalls-classic`)
+is still meaningful and should run.
 
 ## Phase 9 — Sync registries
 
@@ -3206,8 +3396,111 @@ the row stays as institutional memory.
 | `tools/rollback-theme.mjs` | Partial-theme cleanup when a run fails between Phase 7 and 12. Removes theme folder, public images, DNA JSON, images manifest, logo-colors JSON, then re-runs theme:sync. Idempotent. Flag: `--dry-run`. (No longer touches MySQL — brand cleanup is dashboard-only.) | Both modes |
 | `tools/fetch-theme-images.mjs` | Source 7 page-level images (hero/about/services/finance/partExchange/sellYourCar/recentlySold). Curated Unsplash catalogue with classic-archetype fallback; live API mode when `UNSPLASH_ACCESS_KEY` is set. | Mode A only |
 | `tools/generate-theme-favicon.mjs` | Emit a 32×32 archetype-aware SVG favicon at `public/themes/<id>/favicon.svg`. Five templates (classic / modern / rugged / luxury / prestige). Auto-discovers primary color + archetype + glyph from the DNA JSON; accepts `--primary`, `--accent`, `--archetype`, `--glyph` overrides. | Both modes |
-| `tools/extract-theme-dna.mjs` | DNA extractor from a carous-platform sibling app. | Mode B only |
-| `tools/scaffold-theme.mjs` | Full clone-and-edit scaffolder. Used by Mode B — clones springalls-classic, applies DNA, downloads hero. | Mode B |
+| `tools/extract-theme-dna.mjs` | DNA extractor from a carous-platform sibling app — palette, fonts, radii, shadows, hero metrics. Called internally by `clone-app-to-theme.mjs`; still useful as a standalone for inspecting a source app's design tokens. | Mode B (internal) |
+| `tools/clone-app-to-theme.mjs` | **Mode B's new core (2026-05-26)**. Page-for-page faithful clone of a carous-platform app into a brandstudio theme. Discovers routed pages, copies components + styles + lib + data, rewires imports (`@/`, `@/app/`, plain relative-from-page), tokenizes hex/fonts/image URLs into brand-overridable tokens, emits the theme contract files (`theme.json`, `pages.ts`, `shell.tsx`, `tokens.ts`, `context/`), and writes a `CLONE_FOLLOWUPS.md` listing what Phase 8 still needs to handle (workspace packages, `hooks/`, `data/` rewiring, direct `fetch('/api/...')`). Flags: `--source`, `--target`, `--apps`, `--name`, `--description`, `--no-tokenize`, `--dry-run`. | Mode B (required) |
+| `tools/scaffold-theme.mjs` | _Deprecated for Mode B as of 2026-05-26._ Was the previous Mode B core — clone-and-edit scaffolder that cloned `springalls-classic` and applied DNA. Retained for retrospective use; Mode B now uses `clone-app-to-theme.mjs`. | (deprecated) |
 | `tools/scaffold-theme-skeleton.mjs` | Skeleton-first scaffolder. Used by Mode A — produces ONLY contract + plumbing (~39 files), strips visual layer for Phase 8 fresh design. | Mode A |
 | `tools/build-preview-from-theme.py` | Optional Phase 13a helper. Registers a preview brand against a theme via `backend.services.preview.upsert_preview` (same path the dashboard `/create` POST takes). Flags: `--theme-id`, `--brand-name`, `--slug`, `--domain`, `--dna`, `--automation`, `--overwrite`. On Windows uses `sys.stdout.reconfigure(errors='replace')` to survive emoji output from `app.py` import. Exits 0 with preview URL on stdout; 2 if slug collides; 3 on persistence failure. | Both modes (optional) |
 | `npm run theme:sync` | Auto-discovers themes, regenerates registries + manifest. Run automatically by `.github/workflows/deploy.yml` on every prod deploy so new themes wire into the dashboard's `/create` picker without manual steps. | Both modes |
+
+---
+
+## Session-learned fixes (auto-wow-uk-bespoke, 2026-06-08) — bake into every future theme
+
+These came up during Columbus Vehicles preview review. Every new theme must ship with these patterns from Phase 8.
+
+### 1. Dark-section `<header>` must own typography locally — never reuse global utility classes
+
+When a section uses a `<header>` inside an explicitly dark band, the `<header>` JSX must NOT contain `<p class="auto-eyebrow">` / `<h2 class="auto-section-title">` / `<p class="auto-section-lead">`. The global cascade leaks a mystery white surface and the title goes invisible. Pattern:
+
+```tsx
+// Wrong:
+<header className={styles.header}>
+  <p className="auto-eyebrow">Customer reviews</p>
+  <h2 className="auto-section-title">Verified feedback from real buyers.</h2>
+</header>
+
+// Right — local typography in the module CSS:
+<header className={styles.header}>
+  <span className={styles.eyebrow}>
+    <span className={styles.eyebrowMark} aria-hidden="true" />
+    Customer reviews
+  </span>
+  <h2 className={styles.title}>Verified feedback from real buyers.</h2>
+</header>
+```
+
+Belt-and-braces in base.css: `.<section-class> header { background: transparent !important; box-shadow: none !important; }` scoped to the theme's section utility class — defensive net for future sections.
+
+### 2. Footer butts against last section — no margin-top gap
+
+`margin-top` on `<Footer>` exposes the page bg, which on light-brand records (Columbus has `--color-bg: #ffffff`) leaks as a white strip between the last dark section and the dark footer. Use only `padding` inside the footer; let it sit flush against `<main>`.
+
+### 3. Listing pages get NO hero (or a slim header strip max)
+
+Inventory / wishlist / compare / recently-sold pages: cards must be near the fold. Either skip the page-hero entirely or use a slim `.auto-listings-header` strip (~60–80px tall) with crumb + h1 only. NEVER the tall `auto-page-hero` with background image, big padding, and lead paragraph. Marketing pages (about / services / finance / part-exchange / sell-your-car / contact) keep the tall hero — that's the right treatment there.
+
+### 4. CtaBanner ghost buttons need explicit overrides for contrast
+
+On full-bleed banners with brand-tinted gradient overlays, the global `.auto-btn--ghost` rule's faint cascade is too weak. Module override per banner — natural-role tokens, frosted backdrop carries the contrast:
+
+```css
+.cta:global(.auto-btn--ghost) {
+  background: color-mix(in srgb, var(--color-text) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  color: var(--color-text);
+  backdrop-filter: blur(8px);
+}
+.cta:global(.auto-btn--ghost):hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-bg);
+}
+```
+
+### 5. Hero / section title — no `max-width` clamp
+
+Per existing memory (`feedback_no_max_width_on_titles`): drop ALL `max-width` caps on `h1` / `.title` elements. Let `text-wrap: balance` + `clamp()` font-size handle line breaking. `max-width: 28ch` on titles produces ugly 4-line stacks of 2 words.
+
+### 6. Footer "Visit Us" — pull today's opening hours from `brand.openingHours`
+
+Don't ship "Contact us for today's opening hours" as static fallback. Read `brand.openingHours[<weekday>]` and render `Today: <hours>` / `Closed today` / `Open by appointment` based on what's set. Single helper at the top of `Footer.tsx`.
+
+### 7. AOS attrs are dead weight unless AosProvider is wired
+
+The skeleton scaffolder emits `data-aos="..."` on section eyebrows/titles. Without `<AosProvider />` in the Shell, those attrs do nothing AND in some themes have been associated with the white-block bug. Either wire AosProvider OR strip the attrs from JSX. Default: strip them — animations are easy to add later, dead attrs are easy to overlook.
+
+### 8. Natural-role tokens only — no inversion, no locked theme literals (FINAL: settled 2026-06-09)
+
+`background: var(--color-text)` and non-CTA `color: var(--color-bg)` are **FORBIDDEN**. `var(--color-bg)` is always a surface. `var(--color-text)` is always a foreground. The rugged-dark archetype's locked-dark identity dies for light-brand records — that's the explicit trade-off Difatha accepted.
+
+This rule has flip-flopped four times. The current direction is final. If a future review says "the rugged theme should stay dark for every brand", the only valid response is: ask the platform team to add a 9th dashboard picker. Do NOT reintroduce `--t-feature-*` tokens. Do NOT reintroduce inverted-role.
+
+Forbidden by Phase 10c audit:
+- `background:.*var\(--color-text\)` — anywhere
+- `color:.*var\(--color-bg\)` — except when the same rule sets `background: var(--color-primary)` or `background: var(--color-secondary)` (CTA-style filled brand-surface exception)
+- Hex / rgba color literals in component CSS (`color-mix` over `var(--color-*)` instead). Photo-chrome scrims excepted with a comment.
+- `--t-*` token definitions with literal hex values (status tokens `--t-success` / `--t-error` excepted).
+
+### 9. Chrome layout — brand-color bands for header topbar + footer (default for rugged archetype)
+
+Header topbar, footer body, and footer bottom strip use **filled brand-color surfaces**, paired against `var(--color-bg)` as foreground (legitimate CTA-style exception):
+
+| Surface | Background | Foreground |
+|---|---|---|
+| Header `.topbar` (contact strip) | `var(--color-secondary)` | `var(--color-bg)` + alpha variants |
+| Header `.header` (main nav) | `var(--color-bg)` | `var(--color-text)` |
+| Footer `.footer` (body) | `var(--color-primary)` | `var(--color-bg)` + alpha variants |
+| Footer `.bottomBar` (copyright strip) | `var(--color-secondary)` | `var(--color-bg)` + alpha variants |
+
+Pattern rules for these bands:
+- All inner copy (wordmark, headings, body, links, nav, icons) → `color: var(--color-bg)` or `color-mix(... var(--color-bg) NN%, transparent)` (80% for primary text, 86% for footer-bottom legal links, 88% for topbar chips)
+- Heading underline accents (`h2::after`) → `var(--color-bg)` (NOT `var(--color-primary)` — invisible on primary surface)
+- Social icon pills → `color-mix(... var(--color-bg) 14%, transparent)` bg, `var(--color-bg)` glyph; hover INVERTS to `var(--color-bg)` pill + brand-color glyph
+- No `box-shadow`, no `border-bottom` separators between these bands — let the brand-color polarity carry the visual seam
+- Top accent strip above footer (if used) → white-fading gradient (`linear-gradient(90deg, var(--color-bg), color-mix(... var(--color-bg) 60%, transparent), transparent)`)
+- "Site by Carous Limited" link in footer-bottom → `var(--color-bg)` with `text-decoration: underline; text-underline-offset: 3px;` (was `var(--color-primary)` — invisible on a primary/secondary surface)
+
+For Columbus's brand record where primary == secondary (`#CC0F48`), the topbar + footer + footer-bottom all render the same red — a unified branded chrome. For brands with distinct primary/secondary hues, the three bands show as a layered brand-color story.
+
+Scaffolder default: emit Header + Footer with this layout from Phase 7. The Section bgs stay plain `var(--color-bg)` (don't tint sections with brand colors — Difatha rejected that in the same session).

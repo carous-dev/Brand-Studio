@@ -1,5 +1,5 @@
 .section {
-  background: #ffffff;
+  background: var(--color-bg);
 }
 
 .grid {
@@ -9,8 +9,8 @@
 }
 
 .detailsCard {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: clamp(24px, 4vw, 38px);
 }
@@ -22,7 +22,7 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: #111827;
+  color: var(--color-text);
   margin: 0 0 24px;
   max-width: 24ch;
 }
@@ -46,8 +46,8 @@
   width: 36px;
   height: 36px;
   border-radius: 8px;
-  background: color-mix(in srgb, var(--color-primary) 10%, #ffffff);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 24%, #dbe4ee);
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-bg));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
   color: var(--color-primary);
   display: inline-flex;
   align-items: center;
@@ -60,13 +60,13 @@
   font-size: 0.78rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #64748b;
+  color: var(--color-muted);
   margin: 0 0 2px;
   font-weight: 500;
 }
 
 .value {
-  color: #111827;
+  color: var(--color-text);
   text-decoration: none;
   font-size: 0.96rem;
   margin: 0;
@@ -80,9 +80,9 @@ a.value:hover {
 .whatsappBtn {
   width: 100%;
   justify-content: center;
-  color: #111827;
-  border-color: #cbd5e1;
-  background: #ffffff;
+  color: var(--color-text);
+  border-color: var(--color-border);
+  background: var(--color-bg);
 }
 
 .whatsappBtn:hover {
@@ -90,8 +90,8 @@ a.value:hover {
 }
 
 .form {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: clamp(24px, 4vw, 38px);
   display: flex;
@@ -117,7 +117,7 @@ a.value:hover {
   font-size: 0.78rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #111827;
+  color: var(--color-text);
   font-weight: 500;
 }
 
@@ -125,11 +125,11 @@ a.value:hover {
 .field textarea {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
   border-radius: 6px;
   font-size: 0.96rem;
-  color: #111827;
+  color: var(--color-text);
   transition:
     border-color 160ms ease,
     background 160ms ease;
@@ -137,13 +137,13 @@ a.value:hover {
 
 .field input::placeholder,
 .field textarea::placeholder {
-  color: #94a3b8;
+  color: var(--color-muted);
 }
 
 .field input:focus,
 .field textarea:focus {
   outline: none;
-  background: #ffffff;
+  background: var(--color-bg);
   border-color: var(--color-primary);
 }
 
@@ -172,7 +172,7 @@ a.value:hover {
 }
 
 .formSuccess {
-  color: #157f3b;
+  color: var(--t-success, #0f5132);
   font-weight: 600;
   margin: 0;
 }

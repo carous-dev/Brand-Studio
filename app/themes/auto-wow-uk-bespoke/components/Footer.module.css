@@ -1,18 +1,19 @@
-/* AutoWow UK Footer — rugged dark dock with brand accent stripe. */
+/* AutoWow UK Footer â€” rugged dock with brand accent stripe. */
 
 .footer {
   position: relative;
-  background: #0a0e14;
-  color: rgba(255, 255, 255, 0.86);
+  /* CTA-style filled surface: primary brand bg + bg-token foreground.
+     Inner copy elements pair with var(--color-bg) variants below. */
+  background: var(--color-primary);
+  color: color-mix(in srgb, var(--color-bg) 90%, transparent);
   padding: 0;
-  margin-top: clamp(48px, 8vw, 96px);
   font-size: 0.92rem;
   line-height: 1.55;
 }
 
 .accent {
   height: 4px;
-  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary) 30%, transparent 80%);
+  background: linear-gradient(90deg, var(--color-bg) 0%, color-mix(in srgb, var(--color-bg) 60%, transparent) 30%, transparent 80%);
 }
 
 .inner {
@@ -20,8 +21,8 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 36px;
-  padding: clamp(48px, 6vw, 80px) clamp(20px, 4vw, 48px);
+  gap: 28px;
+  padding: clamp(32px, 4vw, 48px) clamp(20px, 4vw, 48px) clamp(28px, 3.5vw, 40px);
 }
 
 @media (min-width: 720px) {
@@ -62,12 +63,12 @@
   font-size: 1.6rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: #ffffff;
+  color: var(--color-bg);
   text-transform: uppercase;
 }
 
 .tagline {
-  color: rgba(255, 255, 255, 0.7);
+  color: color-mix(in srgb, var(--color-bg) 80%, transparent);
   margin: 0 0 20px;
 }
 
@@ -86,26 +87,27 @@
   width: 38px;
   height: 38px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #ffffff;
-  transition: background 150ms ease;
+  background: color-mix(in srgb, var(--color-bg) 14%, transparent);
+  color: var(--color-bg);
+  transition: background 150ms ease, color 150ms ease;
 }
 
 .socials a:hover {
-  background: var(--color-primary);
+  background: var(--color-bg);
+  color: var(--color-primary);
 }
 
 .linkCol h2,
 .contactCol h2 {
   font-family: 'Oswald', sans-serif;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #ffffff;
-  margin: 0 0 18px;
+  color: var(--color-bg);
+  margin: 0 0 14px;
   position: relative;
-  padding-bottom: 10px;
+  padding-bottom: 8px;
 }
 
 .linkCol h2::after,
@@ -116,7 +118,7 @@
   bottom: 0;
   width: 28px;
   height: 2px;
-  background: var(--color-primary);
+  background: var(--color-bg);
 }
 
 .linkCol ul,
@@ -126,18 +128,18 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .linkCol a {
-  color: rgba(255, 255, 255, 0.7);
+  color: color-mix(in srgb, var(--color-bg) 80%, transparent);
   text-decoration: none;
   transition: color 150ms ease, padding-left 150ms ease;
   display: inline-block;
 }
 
 .linkCol a:hover {
-  color: #ffffff;
+  color: var(--color-bg);
   padding-left: 6px;
 }
 
@@ -149,52 +151,55 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  color: rgba(255, 255, 255, 0.78);
+  color: color-mix(in srgb, var(--color-bg) 82%, transparent);
 }
 
 .contactCol li svg {
-  color: var(--color-primary);
+  color: var(--color-bg);
   margin-top: 4px;
   flex-shrink: 0;
 }
 
 .contactCol a {
-  color: #ffffff;
+  color: var(--color-bg);
   text-decoration: none;
 }
 
 .contactCol a:hover {
-  color: var(--color-primary);
+  color: color-mix(in srgb, var(--color-bg) 75%, transparent);
 }
 
 /* Bottom strip */
 
 .bottomBar {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  background: #050810;
+  border-top: 1px solid color-mix(in srgb, var(--color-bg) 14%, transparent);
+  /* Secondary brand bg — filled brand surface so foreground uses bg-token. */
+  background: var(--color-secondary);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 18px clamp(20px, 4vw, 48px);
+  padding: 16px clamp(20px, 4vw, 48px);
   font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: color-mix(in srgb, var(--color-bg) 86%, transparent);
   text-align: center;
 }
 
 .bottomBar p {
   margin: 0;
+  color: var(--color-bg);
 }
 
 .carousCredit a {
-  color: var(--color-primary);
-  text-decoration: none;
+  color: var(--color-bg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
   font-weight: 600;
 }
 
 .carousCredit a:hover {
-  text-decoration: underline;
+  color: color-mix(in srgb, var(--color-bg) 80%, transparent);
 }
 
 .legalNav {
@@ -205,12 +210,12 @@
 }
 
 .legalNav a {
-  color: rgba(255, 255, 255, 0.7);
+  color: color-mix(in srgb, var(--color-bg) 86%, transparent);
   text-decoration: none;
 }
 
 .legalNav a:hover {
-  color: #ffffff;
+  color: var(--color-bg);
 }
 
 @media (min-width: 720px) {

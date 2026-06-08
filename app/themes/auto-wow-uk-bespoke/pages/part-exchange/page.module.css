@@ -41,7 +41,7 @@
   width: 44px;
   height: 44px;
   border-radius: 6px;
-  background: rgba(190, 14, 17, 0.1);
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
   color: var(--color-primary);
   display: inline-flex;
   align-items: center;
@@ -156,7 +156,7 @@
 }
 
 .formSuccess {
-  color: #1a7d34;
+  color: var(--t-success, #0f5132);
   font-weight: 600;
   margin: 0;
 }

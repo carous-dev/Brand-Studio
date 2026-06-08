@@ -4,20 +4,14 @@ import { useMemo, useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import {
   ArrowUpRight,
-  BadgeCheck,
   ChevronLeft,
   ChevronRight,
   CarFront,
-  Filter,
   Fuel,
   Gauge,
   GitCompare,
   Heart,
-  LayoutGrid,
-  MapPin,
   Palette,
-  RefreshCcw,
-  Search,
   SlidersHorizontal,
   X
 } from 'lucide-react'
@@ -27,7 +21,8 @@ import { useBrand } from '../../context/BrandClientWrapper'
 import { apiUrl } from '../../lib/api'
 import { normalizeInventoryItem, type InventoryMeta, type InventoryVehicle } from '../../lib/inventory'
 import { buildVehiclePermalink } from '../../lib/vehicle-links'
-import { HeroBackdrop } from '../../components/HeroBackdrop'
+import { InventoryFilters } from './InventoryFilters'
+import { InventoryToolbar } from './InventoryToolbar'
 
 type Vehicle = InventoryVehicle
 
@@ -191,7 +186,6 @@ export default function UsedCarsClient({
   const [maxYear, setMaxYear] = useState(yearBounds.max)
   const [maxMileage, setMaxMileage] = useState('')
   const [sort, setSort] = useState(initialSort)
-  const [filtersOpen, setFiltersOpen] = useState(false)
   const [hasInitializedFilters, setHasInitializedFilters] = useState(false)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(() => {
@@ -240,118 +234,8 @@ export default function UsedCarsClient({
     }
   }, [vehicles, minPrice, maxPrice, minYear, maxYear, priceBounds, yearBounds])
 
-  const makes = useMemo(() => ['All', ...availableMakes], [availableMakes])
-  const bodies = useMemo(() => ['All', ...availableBodies], [availableBodies])
-  const fuels = useMemo(() => ['All', ...availableFuels], [availableFuels])
-  const transmissions = useMemo(() => ['All', ...uniqueValues(vehicles.length ? vehicles : initialVehicles, 'transmission')], [vehicles, initialVehicles])
+  // Sort allow-list used when restoring sort from the URL.
   const sortOptions = useMemo(() => ['newest', 'price-asc', 'price-desc', 'mileage'], [])
-
-  const priceRangeOptions = useMemo(() => {
-    const min = priceBounds.min
-    const max = priceBounds.max
-    if (max < min) return []
-
-    const configuredMin = 1000
-    const configuredMax = 50000
-    const step = 5000
-
-    const options = [{ value: 'all', label: 'All prices', min, max }]
-
-    if (min < configuredMin) {
-      options.push({
-        value: `${min}-${configuredMin - 1}`,
-        label: `Under ${formatPrice(configuredMin)}`,
-        min,
-        max: configuredMin - 1
-      })
-    }
-
-    for (let lower = configuredMin; lower < configuredMax;) {
-      const upper = lower === configuredMin
-        ? configuredMin + (step - 1000)
-        : Math.min(configuredMax, lower + step)
-      options.push({
-        value: `${lower}-${upper}`,
-        label: `${formatPrice(lower)}-${formatPrice(upper)}`,
-        min: lower,
-        max: upper
-      })
-      lower = upper
-    }
-
-    if (max > configuredMax) {
-      options.push({
-        value: `${configuredMax + 1}-${max}`,
-        label: `Over ${formatPrice(configuredMax)}`,
-        min: configuredMax + 1,
-        max
-      })
-    }
-
-    return options.filter((option) => option.max >= min && option.min <= max)
-  }, [priceBounds])
-
-  const selectedPriceRangeValue = useMemo(() => {
-    if (minPrice <= priceBounds.min && maxPrice >= priceBounds.max) return 'all'
-    const matched = priceRangeOptions.find((option) => option.min === minPrice && option.max === maxPrice)
-    if (matched) return matched.value
-    return `custom-${minPrice}-${maxPrice}`
-  }, [minPrice, maxPrice, priceBounds, priceRangeOptions])
-
-  const priceRangeSelectOptions = useMemo(() => {
-    if (!selectedPriceRangeValue.startsWith('custom-')) return priceRangeOptions
-    return [
-      ...priceRangeOptions,
-      {
-        value: selectedPriceRangeValue,
-        label: `${formatPrice(minPrice)}-${formatPrice(maxPrice)}`,
-        min: minPrice,
-        max: maxPrice
-      }
-    ]
-  }, [selectedPriceRangeValue, minPrice, maxPrice, priceRangeOptions])
-
-  const yearRangeOptions = useMemo(() => {
-    const min = yearBounds.max >= 2000 ? 2000 : yearBounds.min
-    const max = yearBounds.max
-    if (max < min) return []
-
-    const options = [{ value: 'all', label: 'All years', min, max }]
-    const rangeSize = 5
-
-    for (let upper = max; upper >= min; upper -= rangeSize) {
-      const lower = Math.max(min, upper - (rangeSize - 1))
-      const label = lower === upper ? `${upper}` : `${lower}-${upper}`
-      options.push({
-        value: `${lower}-${upper}`,
-        label,
-        min: lower,
-        max: upper
-      })
-    }
-
-    return options
-  }, [yearBounds])
-
-  const selectedYearRangeValue = useMemo(() => {
-    if (minYear <= yearBounds.min && maxYear >= yearBounds.max) return 'all'
-    const matched = yearRangeOptions.find((option) => option.min === minYear && option.max === maxYear)
-    if (matched) return matched.value
-    return `custom-${minYear}-${maxYear}`
-  }, [minYear, maxYear, yearBounds, yearRangeOptions])
-
-  const yearRangeSelectOptions = useMemo(() => {
-    if (!selectedYearRangeValue.startsWith('custom-')) return yearRangeOptions
-    return [
-      ...yearRangeOptions,
-      {
-        value: selectedYearRangeValue,
-        label: `${minYear}-${maxYear}`,
-        min: minYear,
-        max: maxYear
-      }
-    ]
-  }, [selectedYearRangeValue, minYear, maxYear, yearRangeOptions])
 
   useEffect(() => {
     try {
@@ -700,42 +584,9 @@ export default function UsedCarsClient({
   const showSkeleton = loading && vehicles.length === 0
   const showFilterEmpty = !noInventory && !showSkeleton && fetchedOnce && !loading && visibleVehicles.length === 0
   const resultsCount = typeof inventoryMeta?.total === 'number' ? inventoryMeta.total : totalResults
-  const brandName = brand?.name || 'this dealership'
-  const address = (brand as any)?.location?.address || {}
-  const city = address.city || ''
-  const county = address.county || ''
-  const area = [city, county].filter(Boolean).join(', ')
 
   return (
     <main className={styles.page}>
-      <section className={styles.hero}>
-        <HeroBackdrop />
-        <div className={styles.heroInner}>
-          <div>
-            <p className={styles.eyebrow}>Used Cars</p>
-            <h1 className={styles.heroTitle}>{area ? `Used Cars in ${area}` : 'Used Cars'}</h1>
-            <p className={styles.heroLead}>
-              Browse carefully presented used cars from {brandName}, with finance options, part exchange, and
-              transparent pricing across every listing.
-            </p>
-          </div>
-          <div className={styles.heroHighlights}>
-            <div className={styles.heroHighlight}>
-              <BadgeCheck size={18} strokeWidth={2} />
-              Privately sourced stock
-            </div>
-            <div className={styles.heroHighlight}>
-              <MapPin size={18} strokeWidth={2} />
-              {area || 'Contact the showroom'}
-            </div>
-            <div className={styles.heroHighlight}>
-              <Gauge size={18} strokeWidth={2} />
-              Fully inspected & prepared
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section className={styles.section}>
         <div className={styles.sectionInner}>
           {noInventory ? (
@@ -751,194 +602,57 @@ export default function UsedCarsClient({
             </div>
           ) : (
             <>
-              <div className={styles.toolbar}>
+              <div className={styles.toolbarRow}>
                 {showSkeleton ? (
                   <>
+                    <div className={`${styles.skeleton} ${styles.skeletonButton}`} />
                     <div className={`${styles.skeleton} ${styles.skeletonSearch}`} />
-                    <div className={styles.toolbarActions}>
-                      <div className={styles.topbarControls}>
-                        <div className={`${styles.skeleton} ${styles.skeletonSelect}`} />
-                        <div className={`${styles.skeleton} ${styles.skeletonSelect}`} />
-                        <div className={`${styles.skeleton} ${styles.skeletonSelect}`} />
-                      </div>
-                      <div className={`${styles.skeleton} ${styles.skeletonButton}`} />
-                    </div>
+                    <div className={`${styles.skeleton} ${styles.skeletonSelect}`} />
                   </>
                 ) : (
                   <>
-                    <div className={styles.searchInput}>
-                      <Search size={18} strokeWidth={2} />
-                      <input
-                        type="search"
-                        placeholder="Search by make, model, or keyword"
-                        value={search}
-                        onChange={(event) => setSearch(event.target.value)}
-                      />
-                    </div>
-                    <div className={styles.toolbarActions}>
-                      <div className={styles.topbarControls}>
-                        <div className={styles.sortSelect}>
-                          <label htmlFor="sort">Sort by</label>
-                          <select id="sort" value={sort} onChange={(event) => setSort(event.target.value)} aria-label="Sort by">
-                            <option value="newest">Newest</option>
-                            <option value="price-asc">Price: Low to high</option>
-                            <option value="price-desc">Price: High to low</option>
-                            <option value="mileage">Lowest mileage</option>
-                          </select>
-                        </div>
-                        <div className={styles.priceRangeSelect}>
-                          <label htmlFor="price-range-topbar">Price</label>
-                          <select
-                            id="price-range-topbar"
-                            value={selectedPriceRangeValue}
-                            aria-label="Price"
-                            onChange={(event) => {
-                              const selected = priceRangeSelectOptions.find((option) => option.value === event.target.value)
-                              if (!selected) return
-                              setMinPrice(selected.min)
-                              setMaxPrice(selected.max)
-                            }}
-                          >
-                            {priceRangeSelectOptions.map((option) => (
-                              <option key={`price-range-${option.value}`} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div className={styles.yearRangeSelect}>
-                          <label htmlFor="year-range-topbar">Year</label>
-                          <select
-                            id="year-range-topbar"
-                            value={selectedYearRangeValue}
-                            aria-label="Year"
-                            onChange={(event) => {
-                              const selected = yearRangeSelectOptions.find((option) => option.value === event.target.value)
-                              if (!selected) return
-                              setMinYear(selected.min)
-                              setMaxYear(selected.max)
-                            }}
-                          >
-                            {yearRangeSelectOptions.map((option) => (
-                              <option key={`year-range-${option.value}`} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        className={styles.filterToggle}
-                        onClick={() => setFiltersOpen((open) => !open)}
-                        aria-expanded={filtersOpen}
-                      >
-                        <Filter size={18} strokeWidth={2} />
-                        Filters
-                      </button>
-                    </div>
+                    <InventoryFilters
+                      make={make}
+                      body={body}
+                      fuel={fuel}
+                      transmission={transmission}
+                      minPrice={minPrice}
+                      maxPrice={maxPrice}
+                      minYear={minYear}
+                      maxYear={maxYear}
+                      maxMileage={maxMileage}
+                      setMake={setMake}
+                      setBody={setBody}
+                      setFuel={setFuel}
+                      setTransmission={setTransmission}
+                      setMinPrice={setMinPrice}
+                      setMaxPrice={setMaxPrice}
+                      setMinYear={setMinYear}
+                      setMaxYear={setMaxYear}
+                      setMaxMileage={setMaxMileage}
+                      availableMakes={availableMakes}
+                      availableBodies={availableBodies}
+                      availableFuels={availableFuels}
+                      availableTransmissions={uniqueValues(
+                        vehicles.length ? vehicles : initialVehicles,
+                        'transmission'
+                      )}
+                      priceBounds={priceBounds}
+                      yearBounds={yearBounds}
+                      onClearAll={resetFilters}
+                    />
+                    <InventoryToolbar
+                      total={resultsCount}
+                      search={search}
+                      onSearchChange={setSearch}
+                      sort={sort}
+                      onSortChange={setSort}
+                    />
                   </>
                 )}
               </div>
 
               <div className={styles.contentGrid}>
-                <aside className={`${styles.filters} ${filtersOpen ? styles.filtersOpen : ''}`}>
-                  {showSkeleton ? (
-                    <>
-                      <div className={styles.skeletonFilterHeader}>
-                        <div className={`${styles.skeleton} ${styles.skeletonLineWide}`} />
-                        <div className={`${styles.skeleton} ${styles.skeletonButtonSmall}`} />
-                      </div>
-                      <div className={styles.skeletonFilterControls}>
-                        {Array.from({ length: 4 }).map((_, index) => (
-                          <div key={`filter-skeleton-${index}`} className={styles.skeletonFilterBlock}>
-                            <div className={`${styles.skeleton} ${styles.skeletonLine}`} />
-                            <div className={`${styles.skeleton} ${styles.skeletonSelect}`} />
-                          </div>
-                        ))}
-                        <div className={styles.skeletonFilterBlock}>
-                          <div className={`${styles.skeleton} ${styles.skeletonLine}`} />
-                          <div className={`${styles.skeleton} ${styles.skeletonInput}`} />
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className={styles.filtersHeader}>
-                        <div className={styles.filtersTitle}>
-                          <LayoutGrid size={18} strokeWidth={2} />
-                          <div>
-                            <h2>Filters</h2>
-                          </div>
-                        </div>
-                        <div className={styles.filtersMeta}>
-                          <span className={styles.filtersCount}>{resultsCount} vehicles available</span>
-                          <button type="button" className={styles.clearButton} onClick={resetFilters}>
-                            <RefreshCcw size={16} strokeWidth={2} />
-                            Reset
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className={styles.filterControls}>
-                        <div className={styles.filterGroup}>
-                          <label>Make</label>
-                          <select value={make} onChange={(event) => setMake(event.target.value)}>
-                            {makes.map((item) => (
-                              <option key={item} value={item}>
-                                {item}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div className={styles.filterGroup}>
-                          <label>Body type</label>
-                          <select value={body} onChange={(event) => setBody(event.target.value)}>
-                            {bodies.map((item) => (
-                              <option key={item} value={item}>
-                                {item}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div className={styles.filterGroup}>
-                          <label>Fuel</label>
-                          <select value={fuel} onChange={(event) => setFuel(event.target.value)}>
-                            {fuels.map((item) => (
-                              <option key={item} value={item}>
-                                {item}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div className={styles.filterGroup}>
-                          <label>Transmission</label>
-                          <select value={transmission} onChange={(event) => setTransmission(event.target.value)}>
-                            {transmissions.map((item) => (
-                              <option key={item} value={item}>
-                                {item}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div className={styles.filterGroup}>
-                          <label>Max mileage</label>
-                          <input
-                            type="number"
-                            value={maxMileage}
-                            onChange={(event) => setMaxMileage(event.target.value)}
-                            placeholder="e.g. 40000"
-                          />
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </aside>
-
                 <div className={styles.results}>
                   <div className={styles.resultsHeader}>
                     {showSkeleton ? (

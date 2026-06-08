@@ -31,12 +31,23 @@ const LEGAL_LINKS = [
   { label: 'Cookie policy', href: '/cookie-policy' },
 ]
 
+const DAY_KEYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+
+function getTodayHours(brand: any): string {
+  const hours = brand?.openingHours
+  if (!hours || typeof hours !== 'object') return 'Open by appointment — please call ahead'
+  const today = hours[DAY_KEYS[new Date().getDay()]]
+  if (!today || /closed/i.test(String(today))) return 'Closed today — message us anytime'
+  return `Today: ${String(today).trim()}`
+}
+
 export default function Footer() {
   const brand = useBrand()
   const contact = getBrandContactInfo(brand)
   const year = new Date().getFullYear()
   const brandName = brand?.name || 'this dealership'
   const address = contact.showroomAddress || 'Contact the showroom for location details'
+  const todayHours = getTodayHours(brand)
   const social = brand?.socialLinks || {}
   const socialItems = [
     social.facebook && { Icon: Facebook, href: social.facebook as string, label: 'Facebook' },
@@ -114,7 +125,7 @@ export default function Footer() {
             )}
             <li>
               <Clock size={14} aria-hidden="true" />
-              <span>Contact us for today's opening hours</span>
+              <span>{todayHours}</span>
             </li>
           </ul>
         </address>

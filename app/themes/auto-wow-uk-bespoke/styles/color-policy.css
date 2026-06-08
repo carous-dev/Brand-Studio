@@ -68,7 +68,7 @@
   --t-action-bg: var(--color-primary);
   --t-action-bg-hover: color-mix(in srgb, var(--color-primary) 88%, #000);
   --t-action-bg-soft: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
-  --t-action-fg: #ffffff;
+  --t-action-fg: var(--color-bg);
   --t-action-fg-on-light: var(--color-primary);
   --t-action-ring: color-mix(in srgb, var(--color-primary) 22%, transparent);
 
@@ -109,11 +109,30 @@
   /* Text */
   --t-text: var(--color-text);
   --t-muted: var(--color-muted);
-  --t-text-on-brand: #ffffff;
+  --t-text-on-brand: var(--color-bg);
 
   /* Status (semantic, not brand-tinted) */
   --t-success: #0f5132;
   --t-error: #b42318;
+
+  /* -----------------------------------------------------------------------
+   * NATURAL-ROLE SURFACE PATTERN — dashboard tokens used in semantic roles
+   *
+   * Every surface (including the rugged archetype's signature structural
+   * bands) consumes ONLY the 8 dashboard tokens, AND each token is used
+   * in its natural semantic role:
+   *   background : var(--color-bg)                   // bg token AS surface
+   *   surface    : var(--color-surface)              // slightly off-bg cards
+   *   color      : var(--color-text)                 // text token AS foreground
+   *   muted      : var(--color-muted)                // captions, secondary
+   *   border     : var(--color-border)               // dividers
+   *   brand-tint : color-mix(in srgb, var(--color-primary) X%, var(--color-bg))
+   *
+   * Identity is now brand-driven: a brand that picks a dark --color-bg
+   * gets the rugged-dark structural identity automatically; a brand that
+   * picks a light --color-bg gets light surfaces throughout. Text color
+   * is foreground only — never a background token.
+   * ----------------------------------------------------------------------- */
 
   /* -----------------------------------------------------------------------
    * GRADIENT TOKENS — for visual depth on coloured surfaces

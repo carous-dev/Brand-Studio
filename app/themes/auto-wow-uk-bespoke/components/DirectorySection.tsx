@@ -64,14 +64,17 @@ export default function DirectorySection() {
   return (
     <section className={`auto-section auto-section--dark ${styles.section}`} aria-labelledby="directory-title">
       <div className="auto-container">
-        <header className={styles.header}>
-          <div>
-            <p className="auto-eyebrow" data-aos="fade-right">Browse by make</p>
-            <h2 id="directory-title" className="auto-section-title" data-aos="fade-up">
+        <header className={styles.header} data-aos="fade-up">
+          <div className={styles.headerCopy}>
+            <span className={styles.eyebrow}>
+              <span className={styles.eyebrowMark} aria-hidden="true" />
+              Browse by make
+            </span>
+            <h2 id="directory-title" className={styles.title}>
               Stock from the makes you trust.
             </h2>
           </div>
-          <Link href="/used-cars" className="auto-cta-link" data-aos="fade-left">
+          <Link href="/used-cars" className={styles.viewAll}>
             See full directory
             <ArrowUpRight size={18} aria-hidden="true" />
           </Link>

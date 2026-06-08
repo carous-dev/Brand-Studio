@@ -16,7 +16,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: rgba(190, 14, 17, 0.1);
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
   color: var(--color-primary);
   margin-bottom: 18px;
 }
@@ -65,8 +65,8 @@
   width: 32px;
   height: 32px;
   border-radius: 999px;
-  background: rgba(10, 14, 20, 0.86);
-  color: #ffffff;
+  background: var(--color-primary);
+  color: var(--color-bg);
   border: none;
   cursor: pointer;
   display: inline-flex;
@@ -75,7 +75,7 @@
 }
 
 .removeBtn:hover {
-  background: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 88%, #000);
 }
 
 .cardLink {
@@ -86,7 +86,7 @@
 
 .media {
   aspect-ratio: 16 / 10;
-  background: #0a0e14;
+  background: var(--color-surface);
   overflow: hidden;
 }
 
@@ -99,7 +99,7 @@
 .placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #1a1f2a 0%, #0a0e14 100%);
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-bg) 100%);
 }
 
 .body {

@@ -1,12 +1,12 @@
-/* AutoWow UK Hero — rugged archetype dark-mode full-bleed.
+/* AutoWow UK Hero â€” rugged archetype dark-mode full-bleed.
    Single dominant photograph + brand-tinted overlay; condensed-bold display
    headline capped to fit two lines on mobile, one phrase on desktop. */
 
 .hero {
   position: relative;
   min-height: auto;
-  background: #0a0e14;
-  color: #ffffff;
+  background: var(--color-bg);
+  color: var(--color-text);
   overflow: hidden;
   isolation: isolate;
   display: flex;
@@ -48,8 +48,8 @@
      cross-environment URL) the browser silently fails the top layer and
      the curated default shows through. The CSS `var(name, fallback)`
      idiom doesn't help here because BrandStyles always emits the var as
-     a non-empty url() — fallback only fires when the var is UNDECLARED.
-     See SKILL Quality Bar §"Brand-uploaded images" + memory
+     a non-empty url() â€” fallback only fires when the var is UNDECLARED.
+     See SKILL Quality Bar Â§"Brand-uploaded images" + memory
      `feedback_brand_image_plumbing.md`. */
   background-image:
     var(--brand-image-hero, none),
@@ -60,13 +60,17 @@
   filter: saturate(0.95) contrast(1.05);
 }
 
+/* Photo-chrome exception (documented in policy): the hero overlay is a
+   literal dark scrim that's brand-agnostic. The brand bg/text tokens
+   would either bury the image (light bg) or merge into it (dark bg).
+   Pure dark scrim guarantees the image stays visible AND white text on
+   top reads at every brand-record permutation. */
 .heroOverlay {
   position: absolute;
   inset: 0;
   z-index: 2;
   background:
-    radial-gradient(circle at 50% 48%, rgba(10, 14, 20, 0.5) 0%, rgba(10, 14, 20, 0.76) 48%, rgba(8, 11, 17, 0.94) 100%),
-    linear-gradient(180deg, rgba(8, 11, 17, 0.62) 0%, rgba(8, 11, 17, 0.86) 100%);
+    linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.72) 100%);
   pointer-events: none;
 }
 
@@ -76,7 +80,7 @@
   left: 50%;
   width: clamp(360px, 42vw, 620px);
   aspect-ratio: 1;
-  background: radial-gradient(circle, rgba(253, 19, 23, 0.28) 0%, rgba(253, 19, 23, 0.12) 36%, transparent 72%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 28%, transparent) 0%, color-mix(in srgb, var(--color-primary) 12%, transparent) 36%, transparent 72%);
   transform: translateX(-50%);
   z-index: 3;
   pointer-events: none;
@@ -88,8 +92,8 @@
   z-index: 3;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    linear-gradient(color-mix(in srgb, var(--color-text) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-text) 5%, transparent) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.4) 30%, rgba(0, 0, 0, 0.4) 70%, transparent 100%);
   opacity: 0.4;
@@ -110,6 +114,8 @@
   gap: var(--hero-content-gap, 18px);
 }
 
+/* Photo-chrome: hero text sits over the dark scrim — literal white for
+   guaranteed contrast at every brand-record permutation. */
 .eyebrow {
   display: inline-flex;
   align-items: center;
@@ -120,8 +126,8 @@
   text-transform: uppercase;
   font-weight: 500;
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 999px;
   padding: 6px 14px;
   margin: 0;
@@ -130,7 +136,7 @@
 }
 
 .eyebrow > :global(.mfx-pulse-dot) {
-  --mfx-dot-color: #25c55e;
+  --mfx-dot-color: var(--color-accent);
 }
 
 .title {
@@ -140,6 +146,7 @@
   font-weight: 700;
   letter-spacing: 0.01em;
   text-transform: uppercase;
+  /* Photo-chrome literal — white over dark scrim, brand-agnostic */
   color: #ffffff;
   margin: 0;
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
@@ -147,7 +154,7 @@
 }
 
 .titleAccent {
-  background: linear-gradient(90deg, #fd1317 0%, #ff6b6e 60%, #fd1317 100%);
+  background: linear-gradient(90deg, var(--color-primary) 0%, color-mix(in srgb, var(--color-primary) 70%, #ffffff) 60%, var(--color-primary) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -157,7 +164,8 @@
 .lead {
   font-size: clamp(0.98rem, 1.05vw, 1.08rem);
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.86);
+  /* Photo-chrome literal — white-alpha over dark scrim */
+  color: rgba(255, 255, 255, 0.88);
   margin: 0;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
   max-width: 62ch;
@@ -177,18 +185,17 @@
 
 .ctaGhost {
   min-width: 160px;
-  /* Hero is always dark; pair foreground with surface explicitly so
-     brand-record overrides on --color-text can't make the button content
-     invisible. */
+  /* Photo-chrome: ghost CTA sits over the dark hero scrim — literal white. */
   color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.28) !important;
-  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.42) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(6px);
 }
 
 .ctaGhost:hover {
   background: var(--color-primary) !important;
   border-color: var(--color-primary) !important;
-  color: #ffffff !important;
+  color: var(--color-bg) !important;
 }
 
 .ctaGhost svg {
@@ -204,7 +211,8 @@
   margin: 0;
   padding: 0;
   font-size: 0.86rem;
-  color: rgba(255, 255, 255, 0.82);
+  /* Photo-chrome literal — white-alpha over dark hero scrim */
+  color: rgba(255, 255, 255, 0.84);
 }
 
 .trustRow li {
@@ -232,7 +240,8 @@
     background-position: center top, center top;
   }
   .heroOverlay {
-    background: linear-gradient(180deg, rgba(8, 11, 17, 0.88) 0%, rgba(8, 11, 17, 0.76) 44%, rgba(8, 11, 17, 0.94) 100%);
+    /* Mobile keeps the same dark-scrim approach as desktop */
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.36) 0%, rgba(0, 0, 0, 0.56) 56%, rgba(0, 0, 0, 0.78) 100%);
   }
   .heroGrid {
     display: none;

@@ -45,14 +45,17 @@ export default function LatestArrivalsSection() {
   return (
     <section className={`auto-section ${styles.section}`} aria-labelledby="latest-arrivals-title">
       <div className="auto-container">
-        <header className={styles.header}>
-          <div>
-            <p className="auto-eyebrow" data-aos="fade-right">Latest arrivals</p>
-            <h2 id="latest-arrivals-title" className="auto-section-title" data-aos="fade-up">
+        <header className={styles.header} data-aos="fade-up">
+          <div className={styles.headerCopy}>
+            <span className={styles.eyebrow}>
+              <span className={styles.eyebrowMark} aria-hidden="true" />
+              Latest arrivals
+            </span>
+            <h2 id="latest-arrivals-title" className={styles.title}>
               Fresh in. Forecourt-ready.
             </h2>
           </div>
-          <Link href="/used-cars" className={`auto-cta-link ${styles.viewAll}`} data-aos="fade-left">
+          <Link href="/used-cars" className={styles.viewAll}>
             View all stock
             <ArrowUpRight size={18} aria-hidden="true" />
           </Link>

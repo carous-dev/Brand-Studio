@@ -3,7 +3,7 @@
   min-height: 340px;
   display: flex;
   align-items: center;
-  background: #0a0e14;
+  /* Photo-chrome literal — white over dark scrim, brand-agnostic */
   color: #ffffff;
   isolation: isolate;
   overflow: hidden;
@@ -20,15 +20,18 @@
   background-size: cover, cover;
   background-position: center, center;
   background-repeat: no-repeat, no-repeat;
-  filter: saturate(0.8) contrast(1.05);
 }
 
+/* Photo-chrome exception (documented in policy): banner overlay is a
+   literal dark scrim. Image stays revealing at the top, darkens at the
+   bottom and right where text + actions live. Brand-agnostic. */
 .overlay {
   position: absolute;
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(110deg, rgba(8, 11, 17, 0.92) 0%, rgba(8, 11, 17, 0.6) 60%, rgba(140, 9, 12, 0.55) 100%);
+    linear-gradient(110deg, rgba(0, 0, 0, 0.66) 0%, rgba(0, 0, 0, 0.46) 55%, rgba(0, 0, 0, 0.3) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.32) 100%);
 }
 
 .glow {
@@ -37,9 +40,10 @@
   right: -8%;
   width: clamp(280px, 32vw, 420px);
   aspect-ratio: 1;
-  background: radial-gradient(circle, rgba(253, 19, 23, 0.42) 0%, rgba(253, 19, 23, 0.16) 35%, transparent 70%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 42%, transparent) 0%, color-mix(in srgb, var(--color-primary) 16%, transparent) 35%, transparent 70%);
   z-index: -1;
   pointer-events: none;
+  mix-blend-mode: screen;
 }
 
 .inner {
@@ -63,7 +67,8 @@
   font-size: 0.82rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--color-primary);
+  /* Photo-chrome literal — white over dark scrim */
+  color: #ffffff;
   margin: 0 0 12px;
   display: inline-flex;
   align-items: center;
@@ -84,18 +89,20 @@
   letter-spacing: 0.01em;
   text-transform: uppercase;
   font-weight: 700;
+  /* Photo-chrome literal — white on dark scrim */
   color: #ffffff;
   margin: 0 0 16px;
-  max-width: 18ch;
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
 }
 
 .lead {
   font-size: 1rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.85);
+  /* Photo-chrome literal — white-alpha on dark scrim */
+  color: rgba(255, 255, 255, 0.88);
   margin: 0;
-  max-width: 54ch;
+  max-width: 62ch;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
 }
 
 .actions {
@@ -107,6 +114,22 @@
 
 .cta {
   min-width: 180px;
+}
+
+/* Photo-chrome literals — frosted white-on-dark ghost buttons over the
+   banner's dark scrim, brand-agnostic. */
+.cta:global(.auto-btn--ghost) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.cta:global(.auto-btn--ghost):hover {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: var(--color-primary);
 }
 
 @media (min-width: 980px) {

@@ -37,9 +37,12 @@ export default function ReviewsSection() {
   return (
     <section className={`auto-section ${styles.section}`} aria-labelledby="reviews-title">
       <div className="auto-container">
-        <header className={styles.header}>
-          <p className="auto-eyebrow" data-aos="fade-right">Customer reviews</p>
-          <h2 id="reviews-title" className="auto-section-title" data-aos="fade-up">
+        <header className={styles.header} data-aos="fade-up">
+          <span className={styles.eyebrow}>
+            <span className={styles.eyebrowMark} aria-hidden="true" />
+            Customer reviews
+          </span>
+          <h2 id="reviews-title" className={styles.title}>
             Verified feedback from real buyers.
           </h2>
         </header>
@@ -81,7 +84,7 @@ export default function ReviewsSection() {
           })}
         </ul>
 
-        <div className={styles.platforms} data-aos="fade-up" data-aos-delay="300">
+        <div className={styles.platforms}>
           <span>Reviews shown where available from the dealer profile.</span>
         </div>
       </div>

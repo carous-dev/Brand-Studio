@@ -1,11 +1,11 @@
 .section {
-  background: #ffffff;
+  background: var(--color-bg);
 }
 
 .empty {
   text-align: center;
-  background: #f8fafc;
-  border: 1px dashed #cbd5e1;
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
   border-radius: var(--radius-card, 8px);
   padding: 56px 24px;
 }
@@ -15,12 +15,12 @@
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #111827;
+  color: var(--color-text);
   margin: 0 0 8px;
 }
 
 .emptyLead {
-  color: #64748b;
+  color: var(--color-muted);
   margin: 0 0 24px;
 }
 
@@ -38,8 +38,8 @@
   grid-template-columns: 1fr;
   gap: 0;
   align-items: stretch;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
   border-radius: 10px;
   overflow: hidden;
   transition:
@@ -49,8 +49,8 @@
 }
 
 .row:hover {
-  background: #f8fafc;
-  border-color: color-mix(in srgb, var(--color-primary) 42%, #dbe4ee);
+  background: var(--color-surface);
+  border-color: color-mix(in srgb, var(--color-primary) 42%, var(--color-border));
 }
 
 .rowNum {
@@ -60,10 +60,10 @@
   font-family: 'Oswald', sans-serif;
   font-size: 0.78rem;
   letter-spacing: 0.18em;
-  color: #475569;
-  background: rgba(255, 255, 255, 0.94);
+  color: var(--color-muted);
+  background: color-mix(in srgb, var(--color-bg) 94%, transparent);
   padding: 2px 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   z-index: 1;
 }
@@ -71,7 +71,7 @@
 .rowMedia {
   position: relative;
   aspect-ratio: 16 / 10;
-  background: #f1f5f9;
+  background: var(--color-surface);
   overflow: hidden;
   filter: grayscale(0.2);
   transition: filter 280ms ease;
@@ -92,7 +92,7 @@
   position: relative;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+  background: linear-gradient(135deg, var(--color-surface) 0%, color-mix(in srgb, var(--color-surface) 80%, var(--color-border)) 100%);
 }
 
 .rowPlaceholder::before {
@@ -102,7 +102,7 @@
   display: grid;
   place-items: center;
   padding: 24px;
-  color: #94a3b8;
+  color: var(--color-muted);
   font-family: 'Oswald', sans-serif;
   font-size: 0.95rem;
   font-weight: 600;
@@ -117,8 +117,8 @@
   right: -34px;
   padding: 7px 36px;
   font-size: 0.74rem;
-  background: #7f9193;
-  color: #ffffff;
+  background: var(--color-primary);
+  color: var(--color-bg);
 }
 
 .rowBody {
@@ -132,7 +132,7 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: #111827;
+  color: var(--color-text);
   overflow-wrap: anywhere;
   margin: 0 0 10px;
 }
@@ -145,7 +145,7 @@
   margin: 0;
   padding: 0;
   font-size: 0.86rem;
-  color: #64748b;
+  color: var(--color-muted);
 }
 
 .rowMeta li {
@@ -160,7 +160,7 @@
   top: 4px;
   bottom: 4px;
   width: 1px;
-  background: #cbd5e1;
+  background: var(--color-border);
 }
 
 .rowAside {
@@ -175,7 +175,7 @@
   font-family: 'Oswald', sans-serif;
   font-size: 1.15rem;
   font-weight: 700;
-  color: #64748b;
+  color: var(--color-muted);
   margin: 0;
   text-decoration: line-through;
 }
@@ -186,8 +186,8 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-primary);
-  background: color-mix(in srgb, var(--color-primary) 12%, #ffffff);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 28%, #dbe4ee);
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-bg));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 28%, var(--color-border));
   border-radius: 999px;
   padding: 6px 12px;
   margin: 0;
@@ -219,15 +219,15 @@
     min-width: 150px;
     padding: 24px 28px;
     gap: 6px;
-    background: #f8fafc;
-    border-left: 1px solid #e2e8f0;
+    background: var(--color-surface);
+    border-left: 1px solid var(--color-border);
   }
 }
 
 @media (max-width: 719px) {
   .rowAside {
-    background: #f8fafc;
-    border-top: 1px solid #e2e8f0;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
     padding: 14px 16px;
   }
 }
@@ -236,15 +236,15 @@
   margin-top: 40px;
   text-align: center;
   padding: 18px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-left: 3px solid var(--color-primary);
   border-radius: 6px;
 }
 
 .helperLead {
   margin: 0;
-  color: #64748b;
+  color: var(--color-muted);
 }
 
 .helperLead a {
