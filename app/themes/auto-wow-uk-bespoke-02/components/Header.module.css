@@ -1,29 +1,27 @@
+/* Header — plain white surface with center nav + Get-in-Touch CTA on the right.
+   Mirrors the C&S Motors structure (logo · pipe-separated nav · search + CTA)
+   without the colorful gradient bar — top bar lives in TopContactBar.module.css. */
+
 .header {
-  position: sticky;
-  top: 0;
-  z-index: 60;
-  background: var(--surface-bg-dark);
-  color: var(--text-on-dark-strong);
-  border-bottom: 1px solid var(--border-on-dark);
-  transition: background 0.18s ease, box-shadow 0.18s ease;
-}
-.header[data-scrolled='true'] {
-  box-shadow: var(--shadow-dark-press);
+  position: relative;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
 }
 
-/* The 3-px brand strip — the "dark-accent-strip-top" signature element. */
+/* 3-px brand accent strip — signature top edge */
 .accentStrip {
   height: 3px;
   background: linear-gradient(
     90deg,
-    var(--brand-primary) 0%,
-    var(--brand-primary) 60%,
-    var(--brand-primary-strong) 100%
+    var(--color-primary) 0%,
+    var(--color-primary) 60%,
+    var(--color-primary-strong) 100%
   );
 }
 
 .navbar {
-  background: var(--surface-bg-dark);
+  background: var(--color-bg);
 }
 .navbarInner {
   max-width: 1400px;
@@ -33,19 +31,19 @@
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: clamp(16px, 3vw, 32px);
-  min-height: 70px;
+  min-height: 78px;
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
   text-decoration: none;
-  color: var(--text-on-dark-strong);
+  color: var(--color-text);
 }
 
 .brandLogo {
   display: block;
-  max-height: 44px;
+  max-height: 52px;
   width: auto;
   object-fit: contain;
 }
@@ -54,59 +52,61 @@
   font-family: var(--font-brand-family-override, 'Anton', 'Impact', sans-serif);
   font-size: clamp(1.4rem, 2.2vw, 1.9rem);
   letter-spacing: 0.04em;
-  color: var(--text-on-dark-strong);
+  color: var(--color-text);
 }
 
 .nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(16px, 2vw, 28px);
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+
+.navItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.navDivider {
+  color: color-mix(in srgb, var(--color-text) 22%, transparent);
+  font-size: 0.95rem;
+  user-select: none;
+  pointer-events: none;
+  padding: 0 6px;
 }
 
 .navLink {
   position: relative;
-  color: var(--text-on-dark-muted);
+  color: color-mix(in srgb, var(--color-text) 82%, transparent);
   text-decoration: none;
-  font-family: var(--font-brand-family-override);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.92rem;
-  padding: 22px 4px;
+  font-family: var(--font-brand-family-override, inherit);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  font-size: 0.98rem;
+  padding: 22px 6px;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
   transition: color 0.16s ease;
 }
 .navLink:hover {
-  color: var(--text-on-dark-strong);
+  color: var(--color-primary);
 }
-.navLink::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 0;
-  height: 6px;
-  background: var(--brand-primary);
-  transform: translateY(-50%);
-  transition: width 0.18s ease;
-}
-.navLink:hover::before { width: 6px; }
+
 .navLinkActive {
-  color: var(--text-on-dark-strong);
-}
-.navLinkActive::before {
-  width: 6px;
+  color: var(--color-primary);
 }
 .navLinkActive::after {
   content: '';
   position: absolute;
-  left: 14px;
-  right: 0;
+  left: 6px;
+  right: 6px;
   bottom: 14px;
-  height: 2px;
-  background: var(--brand-primary);
+  height: 3px;
+  background: var(--color-primary);
+  border-radius: 2px;
 }
 
 .actions {
@@ -115,24 +115,47 @@
   gap: 10px;
 }
 
-.searchBtn {
+.searchIconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+.searchIconBtn:hover {
+  background: var(--color-primary);
+  color: var(--color-bg);
+  border-color: var(--color-primary);
+}
+
+.getInTouchBtn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--brand-primary);
-  color: var(--brand-on-primary);
-  border-radius: 2px;
-  padding: 10px 16px;
+  background: var(--color-primary);
+  color: var(--color-bg);
+  border-radius: 999px;
+  padding: 12px 22px 12px 18px;
   min-height: 44px;
-  font-family: var(--font-brand-family-override);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  font-size: 0.95rem;
   text-decoration: none;
-  transition: background 0.16s ease;
+  transition: background 0.16s ease, transform 0.14s ease;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--color-primary) 28%, transparent);
 }
-.searchBtn:hover {
-  background: var(--brand-primary-strong);
+.getInTouchBtn:hover {
+  background: var(--color-primary-strong);
+  transform: translateY(-1px);
+}
+.getInTouchBtn svg {
+  flex-shrink: 0;
 }
 
 .hamburger {
@@ -141,22 +164,23 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  border-radius: 2px;
+  border-radius: 999px;
   background: transparent;
-  color: var(--text-on-dark-strong);
-  border: 1px solid var(--border-on-dark-strong);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
   cursor: pointer;
 }
 .hamburger:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+  border-color: color-mix(in srgb, var(--color-text) 38%, transparent);
 }
 
 .mobilePanel {
   position: fixed;
   inset: 0;
   top: 0;
-  background: var(--surface-bg-dark);
-  color: var(--text-on-dark-strong);
+  background: var(--color-bg);
+  color: var(--color-text);
   z-index: 65;
   display: flex;
   flex-direction: column;
@@ -179,32 +203,36 @@
 }
 .mobileLink {
   display: block;
-  font-family: var(--font-brand-family-override);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: 1.4rem;
-  color: var(--text-on-dark-strong);
+  font-family: var(--font-brand-family-override, inherit);
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--color-text);
   text-decoration: none;
   padding: 18px 6px;
-  border-bottom: 1px solid var(--border-on-dark);
+  border-bottom: 1px solid var(--color-border);
   min-height: 56px;
 }
 .mobileLink:hover,
 .mobileLinkActive {
-  color: var(--brand-primary);
+  color: var(--color-primary);
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1080px) {
   .nav { display: none; }
   .navbarInner {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto 1fr auto;
   }
   .hamburger { display: inline-flex; }
 }
 
-@media (max-width: 640px) {
-  .searchBtn span { display: none; }
-  .searchBtn { padding: 10px 12px; }
-  .brandLogo { max-height: 36px; }
+@media (max-width: 720px) {
+  .getInTouchBtn span { display: none; }
+  .getInTouchBtn { padding: 12px 14px; }
+  .brandLogo { max-height: 42px; }
   .brandWordmark { font-size: 1.25rem; }
+  .navbarInner { padding: 10px 16px; min-height: 64px; }
+}
+
+@media (max-width: 480px) {
+  .searchIconBtn { display: none; }
 }

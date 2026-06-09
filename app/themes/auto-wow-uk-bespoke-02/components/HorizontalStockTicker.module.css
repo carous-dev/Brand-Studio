@@ -1,8 +1,11 @@
+/* Brand-primary band — replaces the brand-tinted dark surface with the dealer's
+   primary color so the makes ticker reads as a confident on-brand strip.
+   Logo glyphs are tinted white via CSS mask so they pop against the colored bg. */
+
 .ticker {
-  /* Brand-tinted dark band — pairs visually with the top contact bar. */
-  background: color-mix(in srgb, var(--brand-primary) 6%, var(--surface-bg-dark));
-  color: var(--text-on-dark-strong);
-  border-block: 1px solid color-mix(in srgb, var(--brand-primary) 18%, transparent);
+  background: var(--brand-primary, var(--color-primary));
+  color: var(--color-bg);
+  border-block: 1px solid color-mix(in srgb, var(--color-bg) 18%, transparent);
   padding-block: 16px;
   position: relative;
   overflow: hidden;
@@ -36,14 +39,14 @@
   font-size: 0.85rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--brand-primary);
+  color: var(--color-bg);
 }
 .count {
   font-size: 0.88rem;
-  color: var(--text-on-dark-muted);
+  color: color-mix(in srgb, var(--color-bg) 82%, transparent);
 }
 .count strong {
-  color: var(--text-on-dark-strong);
+  color: var(--color-bg);
   font-weight: 700;
 }
 
@@ -60,24 +63,51 @@
 .railTrack {
   display: inline-flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   animation: tickerScroll 38s linear infinite;
   width: max-content;
 }
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-on-dark-muted);
-  border: 1px solid var(--border-on-dark);
-  padding: 6px 14px;
+  gap: 8px;
+  background: color-mix(in srgb, var(--color-bg) 16%, transparent);
+  color: var(--color-bg);
+  border: 1px solid color-mix(in srgb, var(--color-bg) 32%, transparent);
+  padding: 6px 14px 6px 8px;
+  border-radius: 999px;
   font-family: var(--font-brand-family-override);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   font-size: 0.78rem;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.chipLogo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+  flex-shrink: 0;
+}
+.chipLogoImg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%);
+  opacity: 0.92;
+}
+.chipMonogram {
+  font-family: var(--font-brand-family-override);
+  font-weight: 700;
+  font-size: 0.7rem;
+  color: var(--brand-primary, var(--color-primary));
+  letter-spacing: 0;
 }
 
 @keyframes tickerScroll {
@@ -91,7 +121,11 @@
 
 .cta {
   flex-shrink: 0;
-  color: var(--brand-primary);
+  color: var(--color-bg);
+  font-weight: 600;
+}
+.cta:hover {
+  color: color-mix(in srgb, var(--color-bg) 88%, transparent);
 }
 
 @media (max-width: 720px) {

@@ -1,8 +1,10 @@
+/* Footer — primary brand-filled main surface + secondary bottom strip
+   (matches Rugged Auto color theory). All inner foregrounds pair with
+   var(--color-bg) so contrast follows the brand-primary picker. */
 .footer {
-  background: var(--surface-bg-dark);
-  color: var(--text-on-dark-muted);
-  padding-top: clamp(48px, 7vw, 80px);
-  margin-top: clamp(64px, 10vw, 120px);
+  background: var(--color-primary);
+  color: color-mix(in srgb, var(--color-bg) 90%, transparent);
+  padding-top: clamp(64px, 10vw, 120px);
   position: relative;
 }
 .footer::before {
@@ -12,9 +14,9 @@
   height: 3px;
   background: linear-gradient(
     90deg,
-    var(--brand-primary) 0%,
-    var(--brand-primary-strong) 60%,
-    transparent 100%
+    var(--color-bg) 0%,
+    color-mix(in srgb, var(--color-bg) 60%, transparent) 30%,
+    transparent 80%
   );
 }
 
@@ -37,7 +39,7 @@
   display: inline-flex;
   align-items: center;
   text-decoration: none;
-  color: var(--text-on-dark-strong);
+  color: var(--color-bg);
 }
 .brandLogo {
   display: block;
@@ -48,11 +50,12 @@
   font-family: var(--font-brand-family-override, 'Anton', 'Impact', sans-serif);
   font-size: 1.8rem;
   letter-spacing: 0.04em;
+  color: var(--color-bg);
 }
 
 .tagline {
   font-size: 0.92rem;
-  color: var(--text-on-dark-muted);
+  color: color-mix(in srgb, var(--color-bg) 82%, transparent);
   max-width: 28ch;
 }
 
@@ -67,15 +70,15 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border: 1px solid var(--border-on-dark-strong);
-  color: var(--text-on-dark-muted);
+  border: 1px solid color-mix(in srgb, var(--color-bg) 28%, transparent);
+  color: var(--color-bg);
   background: transparent;
   transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
 }
 .socialLink:hover {
-  background: var(--brand-primary);
-  color: var(--brand-on-primary);
-  border-color: var(--brand-primary);
+  background: var(--color-bg);
+  color: var(--color-primary);
+  border-color: var(--color-bg);
 }
 
 .column {
@@ -89,23 +92,24 @@
   font-size: 0.85rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-on-dark-strong);
+  color: var(--color-bg);
   margin-bottom: 6px;
   padding-bottom: 8px;
-  border-bottom: 2px solid var(--brand-primary);
+  border-bottom: 2px solid var(--color-bg);
   width: max-content;
 }
 
 .colLink {
-  color: var(--text-on-dark-muted);
+  color: color-mix(in srgb, var(--color-bg) 82%, transparent);
   text-decoration: none;
   font-size: 0.92rem;
   padding: 2px 0;
   min-height: 28px;
-  transition: color 0.14s ease;
+  transition: color 0.14s ease, padding-left 0.14s ease;
 }
 .colLink:hover {
-  color: var(--text-on-dark-strong);
+  color: var(--color-bg);
+  padding-left: 4px;
 }
 
 .contactCol {
@@ -124,39 +128,45 @@
   display: inline-flex;
   align-items: flex-start;
   gap: 8px;
-  color: var(--text-on-dark-muted);
+  color: color-mix(in srgb, var(--color-bg) 82%, transparent);
   text-decoration: none;
   line-height: 1.45;
 }
 .addressRow:hover {
-  color: var(--text-on-dark-strong);
+  color: var(--color-bg);
 }
 .addressRow svg {
   margin-top: 3px;
   flex-shrink: 0;
+  color: var(--color-bg);
 }
 
 .bottomStrip {
-  border-top: 1px solid var(--border-on-dark);
-  padding: 20px clamp(16px, 3vw, 32px);
+  background: var(--color-secondary);
+  border-top: 0;
+  padding: 16px clamp(16px, 3vw, 32px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  font-size: 0.8rem;
-  color: var(--text-on-dark-faint);
-  max-width: 1400px;
-  margin: 0 auto;
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--color-bg) 86%, transparent);
+  margin: 0;
+  /* Full-bleed across the footer — overrides the .inner max-width. */
 }
 
+.carousCredit {
+  color: color-mix(in srgb, var(--color-bg) 86%, transparent);
+}
 .carousCredit a {
-  color: var(--brand-primary);
-  text-decoration: none;
-  font-weight: 500;
+  color: var(--color-bg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
 }
 .carousCredit a:hover {
-  color: var(--text-on-dark-strong);
+  color: color-mix(in srgb, var(--color-bg) 80%, transparent);
 }
 
 .legalNav {
@@ -164,11 +174,11 @@
   gap: 16px;
 }
 .legalNav a {
-  color: var(--text-on-dark-faint);
+  color: color-mix(in srgb, var(--color-bg) 86%, transparent);
   text-decoration: none;
 }
 .legalNav a:hover {
-  color: var(--text-on-dark-strong);
+  color: var(--color-bg);
 }
 
 @media (max-width: 1100px) {

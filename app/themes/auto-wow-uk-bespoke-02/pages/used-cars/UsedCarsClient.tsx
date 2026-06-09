@@ -3,22 +3,16 @@
 import { useMemo, useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import {
-  ArrowUpRight,
-  BadgeCheck,
   ChevronLeft,
   ChevronRight,
   CarFront,
-  Filter,
+  Camera,
+  Calendar,
   Fuel,
   Gauge,
   GitCompare,
   Heart,
-  LayoutGrid,
-  MapPin,
-  Palette,
-  RefreshCcw,
-  Search,
-  SlidersHorizontal,
+  Settings2,
   X
 } from 'lucide-react'
 import styles from './page.module.css'
@@ -27,7 +21,6 @@ import { useBrand } from '../../context/BrandClientWrapper'
 import { apiUrl } from '../../lib/api'
 import { normalizeInventoryItem, type InventoryMeta, type InventoryVehicle } from '../../lib/inventory'
 import { buildVehiclePermalink } from '../../lib/vehicle-links'
-import { HeroBackdrop } from '../../components/HeroBackdrop'
 
 type Vehicle = InventoryVehicle
 
@@ -119,7 +112,7 @@ export default function UsedCarsClient({
   initialVehicles: Vehicle[]
   initialMeta?: InventoryMeta | null
 }) {
-  const { toggleWishlist, toggleCompare, isWishlisted, isCompared } = useGarage()
+  const { toggleWishlist, toggleCompare, isWishlisted, isCompared, wishlistCount, compareCount } = useGarage()
   const brand = useBrand()
   const brandSlug = (brand?.slug || '').trim()
   const skipInitialFetchRef = useRef(Boolean(initialMeta || initialVehicles.length))
@@ -707,30 +700,16 @@ export default function UsedCarsClient({
   return (
     <main className={styles.page}>
       <section className={styles.hero}>
-        <HeroBackdrop />
         <div className={styles.heroInner}>
-          <div>
-            <p className={styles.eyebrow}>[ Live stock ]</p>
-            <h1 className={styles.heroTitle}>{area ? `Stock — ${area}` : 'Live stock'}</h1>
-            <p className={styles.heroLead}>
-              Every car on the floor at {brandName}. Prepped, inspected, ready to drive.
-              Finance, part-exchange and nationwide delivery built in.
-            </p>
-          </div>
-          <div className={styles.heroHighlights}>
-            <div className={styles.heroHighlight}>
-              <BadgeCheck size={18} strokeWidth={2} />
-              Privately sourced stock
-            </div>
-            <div className={styles.heroHighlight}>
-              <MapPin size={18} strokeWidth={2} />
-              {area || 'Contact the showroom'}
-            </div>
-            <div className={styles.heroHighlight}>
-              <Gauge size={18} strokeWidth={2} />
-              Fully inspected & prepared
-            </div>
-          </div>
+          <span className={styles.eyebrow}>
+            {area ? `Quality used cars in ${area}` : 'Quality used cars'}
+          </span>
+          <h1 className={styles.heroTitle}>{brandName} Used Cars</h1>
+          <p className={styles.heroLead}>
+            {area
+              ? `Browse inspected stock from our ${area} dealership.`
+              : 'Browse inspected stock from our showroom.'}
+          </p>
         </div>
       </section>
 
@@ -748,242 +727,145 @@ export default function UsedCarsClient({
               <p>Please check back soon or contact us for upcoming stock.</p>
             </div>
           ) : (
-            <>
-              <div className={styles.toolbar}>
-                {showSkeleton ? (
-                  <>
-                    <div className={`${styles.skeleton} ${styles.skeletonSearch}`} />
-                    <div className={styles.toolbarActions}>
-                      <div className={styles.topbarControls}>
-                        <div className={`${styles.skeleton} ${styles.skeletonSelect}`} />
-                        <div className={`${styles.skeleton} ${styles.skeletonSelect}`} />
-                        <div className={`${styles.skeleton} ${styles.skeletonSelect}`} />
-                      </div>
-                      <div className={`${styles.skeleton} ${styles.skeletonButton}`} />
+            <div className={styles.contentGrid}>
+              <aside className={styles.filters}>
+                <h2 className={styles.filtersTitle}>Filters</h2>
+
+                <div className={styles.filterGroup}>
+                  <label htmlFor="filter-make">Make</label>
+                  <select id="filter-make" value={make} onChange={(e) => setMake(e.target.value)}>
+                    <option value="All">Any Make</option>
+                    {availableMakes.map((item) => (
+                      <option key={item} value={item}>{item}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.filterGroup}>
+                  <label htmlFor="filter-body">Body Type</label>
+                  <select id="filter-body" value={body} onChange={(e) => setBody(e.target.value)}>
+                    <option value="All">Any Body Type</option>
+                    {availableBodies.map((item) => (
+                      <option key={item} value={item}>{item}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.filterGroup}>
+                  <label htmlFor="filter-fuel">Fuel Type</label>
+                  <select id="filter-fuel" value={fuel} onChange={(e) => setFuel(e.target.value)}>
+                    <option value="All">Any Fuel</option>
+                    {availableFuels.map((item) => (
+                      <option key={item} value={item}>{item}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.filterGroup}>
+                  <label htmlFor="filter-transmission">Transmission</label>
+                  <select
+                    id="filter-transmission"
+                    value={transmission}
+                    onChange={(e) => setTransmission(e.target.value)}
+                  >
+                    {transmissions.map((item) => (
+                      <option key={item} value={item}>{item === 'All' ? 'Any Transmission' : item}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.filterGroup}>
+                  <label htmlFor="filter-price">Max Price</label>
+                  <select
+                    id="filter-price"
+                    value={selectedPriceRangeValue}
+                    onChange={(event) => {
+                      const selected = priceRangeSelectOptions.find((option) => option.value === event.target.value)
+                      if (!selected) return
+                      setMinPrice(selected.min)
+                      setMaxPrice(selected.max)
+                    }}
+                  >
+                    {priceRangeSelectOptions.map((option) => (
+                      <option key={`price-${option.value}`} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.filterGroup}>
+                  <label htmlFor="filter-mileage">Max Mileage</label>
+                  <input
+                    id="filter-mileage"
+                    type="number"
+                    value={maxMileage}
+                    onChange={(e) => setMaxMileage(e.target.value)}
+                    placeholder="No Limit"
+                  />
+                </div>
+
+                <div className={styles.filterActions}>
+                  <button type="button" className={styles.clearBtn} onClick={resetFilters}>
+                    Clear
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.applyBtn}
+                    onClick={() => {
+                      if (typeof window !== 'undefined') {
+                        window.scrollTo({ top: 0, behavior: 'smooth' })
+                      }
+                    }}
+                  >
+                    Apply Filters
+                  </button>
+                </div>
+              </aside>
+
+              <div className={styles.results}>
+                <div className={styles.resultsBar}>
+                  <p className={styles.resultsStatus}>
+                    Showing <strong>{visibleVehicles.length}</strong> of{' '}
+                    <strong>{resultsCount}</strong> quality used cars
+                  </p>
+                  <div className={styles.resultsTools}>
+                    <span className={styles.counterChip} aria-label={`${wishlistCount} saved`}>
+                      <Heart size={14} strokeWidth={2} />
+                      {wishlistCount}
+                    </span>
+                    <span className={styles.counterChip} aria-label={`${compareCount} in compare`}>
+                      <GitCompare size={14} strokeWidth={2} />
+                      {compareCount}
+                    </span>
+                    <div className={styles.sortGroup}>
+                      <label htmlFor="sort">Sort by</label>
+                      <select id="sort" value={sort} onChange={(e) => setSort(e.target.value)}>
+                        <option value="newest">Latest Arrivals</option>
+                        <option value="price-asc">Price: Low to high</option>
+                        <option value="price-desc">Price: High to low</option>
+                        <option value="mileage">Lowest mileage</option>
+                      </select>
                     </div>
-                  </>
-                ) : (
-                  <>
-                    <div className={styles.searchInput}>
-                      <Search size={18} strokeWidth={2} />
-                      <input
-                        type="search"
-                        placeholder="Search by make, model, or keyword"
-                        value={search}
-                        onChange={(event) => setSearch(event.target.value)}
-                      />
-                    </div>
-                    <div className={styles.toolbarActions}>
-                      <div className={styles.topbarControls}>
-                        <div className={styles.sortSelect}>
-                          <label htmlFor="sort">Sort by</label>
-                          <select id="sort" value={sort} onChange={(event) => setSort(event.target.value)} aria-label="Sort by">
-                            <option value="newest">Newest</option>
-                            <option value="price-asc">Price: Low to high</option>
-                            <option value="price-desc">Price: High to low</option>
-                            <option value="mileage">Lowest mileage</option>
-                          </select>
-                        </div>
-                        <div className={styles.priceRangeSelect}>
-                          <label htmlFor="price-range-topbar">Price</label>
-                          <select
-                            id="price-range-topbar"
-                            value={selectedPriceRangeValue}
-                            aria-label="Price"
-                            onChange={(event) => {
-                              const selected = priceRangeSelectOptions.find((option) => option.value === event.target.value)
-                              if (!selected) return
-                              setMinPrice(selected.min)
-                              setMaxPrice(selected.max)
-                            }}
-                          >
-                            {priceRangeSelectOptions.map((option) => (
-                              <option key={`price-range-${option.value}`} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div className={styles.yearRangeSelect}>
-                          <label htmlFor="year-range-topbar">Year</label>
-                          <select
-                            id="year-range-topbar"
-                            value={selectedYearRangeValue}
-                            aria-label="Year"
-                            onChange={(event) => {
-                              const selected = yearRangeSelectOptions.find((option) => option.value === event.target.value)
-                              if (!selected) return
-                              setMinYear(selected.min)
-                              setMaxYear(selected.max)
-                            }}
-                          >
-                            {yearRangeSelectOptions.map((option) => (
-                              <option key={`year-range-${option.value}`} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        className={styles.filterToggle}
-                        onClick={() => setFiltersOpen((open) => !open)}
-                        aria-expanded={filtersOpen}
-                      >
-                        <Filter size={18} strokeWidth={2} />
-                        Filters
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <div className={styles.contentGrid}>
-                <aside className={`${styles.filters} ${filtersOpen ? styles.filtersOpen : ''}`}>
-                  {showSkeleton ? (
-                    <>
-                      <div className={styles.skeletonFilterHeader}>
-                        <div className={`${styles.skeleton} ${styles.skeletonLineWide}`} />
-                        <div className={`${styles.skeleton} ${styles.skeletonButtonSmall}`} />
-                      </div>
-                      <div className={styles.skeletonFilterControls}>
-                        {Array.from({ length: 4 }).map((_, index) => (
-                          <div key={`filter-skeleton-${index}`} className={styles.skeletonFilterBlock}>
-                            <div className={`${styles.skeleton} ${styles.skeletonLine}`} />
-                            <div className={`${styles.skeleton} ${styles.skeletonSelect}`} />
-                          </div>
-                        ))}
-                        <div className={styles.skeletonFilterBlock}>
-                          <div className={`${styles.skeleton} ${styles.skeletonLine}`} />
-                          <div className={`${styles.skeleton} ${styles.skeletonInput}`} />
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className={styles.filtersHeader}>
-                        <div className={styles.filtersTitle}>
-                          <LayoutGrid size={18} strokeWidth={2} />
-                          <div>
-                            <h2>Filters</h2>
-                          </div>
-                        </div>
-                        <div className={styles.filtersMeta}>
-                          <span className={styles.filtersCount}>{resultsCount} vehicles available</span>
-                          <button type="button" className={styles.clearButton} onClick={resetFilters}>
-                            <RefreshCcw size={16} strokeWidth={2} />
-                            Reset
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className={styles.filterControls}>
-                        <div className={styles.filterGroup}>
-                          <label>Make</label>
-                          <select value={make} onChange={(event) => setMake(event.target.value)}>
-                            {makes.map((item) => (
-                              <option key={item} value={item}>
-                                {item}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div className={styles.filterGroup}>
-                          <label>Body type</label>
-                          <select value={body} onChange={(event) => setBody(event.target.value)}>
-                            {bodies.map((item) => (
-                              <option key={item} value={item}>
-                                {item}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div className={styles.filterGroup}>
-                          <label>Fuel</label>
-                          <select value={fuel} onChange={(event) => setFuel(event.target.value)}>
-                            {fuels.map((item) => (
-                              <option key={item} value={item}>
-                                {item}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div className={styles.filterGroup}>
-                          <label>Transmission</label>
-                          <select value={transmission} onChange={(event) => setTransmission(event.target.value)}>
-                            {transmissions.map((item) => (
-                              <option key={item} value={item}>
-                                {item}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div className={styles.filterGroup}>
-                          <label>Max mileage</label>
-                          <input
-                            type="number"
-                            value={maxMileage}
-                            onChange={(event) => setMaxMileage(event.target.value)}
-                            placeholder="e.g. 40000"
-                          />
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </aside>
-
-                <div className={styles.results}>
-                  <div className={styles.resultsHeader}>
-                    {showSkeleton ? (
-                      <div className={styles.skeletonResultsHeader}>
-                        <div>
-                          <div className={`${styles.skeleton} ${styles.skeletonLineWide}`} />
-                          <div className={`${styles.skeleton} ${styles.skeletonLine}`} />
-                        </div>
-                        <div className={styles.skeletonPills}>
-                          {Array.from({ length: 3 }).map((_, index) => (
-                            <span key={`pill-${index}`} className={`${styles.skeleton} ${styles.skeletonPill}`} />
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <div>
-                          <h2>The Floor</h2>
-                        </div>
-                        {activeFilters.length > 0 ? (
-                          <div className={styles.activeFilters}>
-                            {activeFilters.map((filter) => (
-                              <span key={filter} className={styles.activeFilterPill}>
-                                {filter}
-                              </span>
-                            ))}
-                          </div>
-                        ) : null}
-                      </>
-                    )}
                   </div>
+                </div>
 
-                  <div className={styles.cardGrid}>
-                    {showFilterEmpty ? (
-                      <div className={styles.emptyState}>
-                        <div className={styles.emptyStateIcon} aria-hidden="true">
-                          <CarFront size={48} strokeWidth={1.6} />
-                          <span className={styles.emptyStateIconBadge}>
-                            <X size={18} strokeWidth={2} />
-                          </span>
-                        </div>
-                        <h3>No vehicles match those filters.</h3>
-                        <p>Try clearing a filter or broadening your search.</p>
+                <div className={styles.cardGrid}>
+                  {showFilterEmpty ? (
+                    <div className={styles.emptyState}>
+                      <div className={styles.emptyStateIcon} aria-hidden="true">
+                        <CarFront size={48} strokeWidth={1.6} />
+                        <span className={styles.emptyStateIconBadge}>
+                          <X size={18} strokeWidth={2} />
+                        </span>
                       </div>
-                    ) : null}
-                    {showSkeleton
-                      ? Array.from({ length: perPage }).map((_, index) => (
+                      <h3>No vehicles match those filters.</h3>
+                      <p>Try clearing a filter or broadening your search.</p>
+                    </div>
+                  ) : null}
+
+                  {showSkeleton
+                    ? Array.from({ length: perPage }).map((_, index) => (
                         <article key={`skeleton-${index}`} className={styles.skeletonCard}>
                           <div className={`${styles.skeleton} ${styles.skeletonMedia}`} />
                           <div className={styles.skeletonBody}>
@@ -992,139 +874,148 @@ export default function UsedCarsClient({
                             <div className={styles.skeletonSpecRow}>
                               <span className={`${styles.skeleton} ${styles.skeletonChip}`} />
                               <span className={`${styles.skeleton} ${styles.skeletonChip}`} />
-                              <span className={`${styles.skeleton} ${styles.skeletonChip}`} />
                             </div>
                             <div className={styles.skeletonSpecRow}>
-                              <span className={`${styles.skeleton} ${styles.skeletonChip}`} />
                               <span className={`${styles.skeleton} ${styles.skeletonChip}`} />
                               <span className={`${styles.skeleton} ${styles.skeletonChip}`} />
                             </div>
                           </div>
                         </article>
                       ))
-                      : visibleVehicles.map((vehicle) => {
-                      const savedVehicle = toSavedVehicle(vehicle)
-                      const wishlisted = isWishlisted(vehicle.id)
-                      const compared = isCompared(vehicle.id)
-                      return (
-                        <article key={vehicle.id} className={styles.card}>
-                          <div
-                            className={styles.cardImage}
-                            style={{ backgroundImage: `url(${vehicle.image})` }}
-                            role="img"
-                            aria-label={vehicle.title}
-                          >
-                            {vehicle.featured ? <span className={styles.featured}>Featured</span> : null}
-                          </div>
-                          <div className={styles.cardBody}>
-                            <div className={styles.cardTitleRow}>
-                              <h3 title={vehicle.title}>{vehicle.title}</h3>
-                            </div>
-                            <p className={styles.cardMeta}>
-                              <span>{vehicle.make} · {vehicle.body} · {vehicle.color}</span>
-                              <span className={styles.cardPrice}>{formatPrice(vehicle.price)}</span>
-                            </p>
-                            <div className={styles.cardSpecs}>
-                              <span>
-                                <Fuel size={16} strokeWidth={1.8} />
-                                {vehicle.fuel}
-                              </span>
-                              <span>
-                                <SlidersHorizontal size={16} strokeWidth={1.8} />
-                                {vehicle.transmission}
-                              </span>
-                              <span>
-                                <Gauge size={16} strokeWidth={1.8} />
-                                {vehicle.mileage.toLocaleString()} mi
-                              </span>
-                              <span>
-                                <Palette size={16} strokeWidth={1.8} />
-                                {vehicle.color}
-                              </span>
-                            </div>
-                            <div className={styles.cardFooter} />
-                          </div>
-                          <div className={styles.cardOverlay}>
-                            <div className={styles.cardQuickActions}>
-                              <button
-                                type="button"
-                                className={styles.iconButton}
-                                data-active={compared}
-                                aria-pressed={compared}
-                                aria-label={compared ? "Remove from compare" : "Add to compare"}
-                                onClick={() => toggleCompare(savedVehicle)}
-                              >
-                                <GitCompare size={16} strokeWidth={1.8} />
-                              </button>
-                              <button
-                                type="button"
-                                className={styles.iconButton}
-                                data-active={wishlisted}
-                                aria-pressed={wishlisted}
-                                aria-label={wishlisted ? "Remove from wishlist" : "Save to wishlist"}
-                                onClick={() => toggleWishlist(savedVehicle)}
-                              >
-                                <Heart size={16} strokeWidth={1.8} fill={wishlisted ? "currentColor" : "none"} />
-                              </button>
-                            </div>
-                            <Link
-                              href={buildVehiclePermalink({ slug: vehicle.slug || toSlug(vehicle.title), reg: vehicle.reg }, '/used-cars')}
-                              className={styles.overlayButton}
-                            >
-                              View details
-                              <ArrowUpRight size={16} strokeWidth={2} />
-                            </Link>
-                          </div>
-                        </article>
-                      )
-                    })}
-                  </div>
-
-                  <div className={styles.pagination}>
-                    <div className={styles.paginationMeta}>
-                      Page {page} of {totalPages}
-                    </div>
-                    <div className={styles.paginationControls}>
-                      <button
-                        type="button"
-                        className={styles.pageButton}
-                        onClick={() => handlePageChange(Math.max(1, page - 1))}
-                        disabled={page === 1}
-                        aria-label="Previous page"
-                      >
-                        <ChevronLeft size={16} strokeWidth={2} />
-                      </button>
-                      {paginationItems.map((item, index) =>
-                        item === '...' ? (
-                          <span key={`ellipsis-${index}`} className={styles.pageEllipsis}>
-                            …
-                          </span>
-                        ) : (
-                          <button
-                            key={`page-${item}`}
-                            type="button"
-                            className={`${styles.pageButton} ${item === page ? styles.pageButtonActive : ''}`}
-                            onClick={() => handlePageChange(item)}
-                            aria-current={item === page ? 'page' : undefined}
-                          >
-                            {item}
-                          </button>
+                    : visibleVehicles.map((vehicle) => {
+                        const savedVehicle = toSavedVehicle(vehicle)
+                        const wishlisted = isWishlisted(vehicle.id)
+                        const compared = isCompared(vehicle.id)
+                        const detailHref = buildVehiclePermalink(
+                          { slug: vehicle.slug || toSlug(vehicle.title), reg: vehicle.reg },
+                          '/used-cars'
                         )
-                      )}
-                      <button
-                        type="button"
-                        className={styles.pageButton}
-                        onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
-                        disabled={page === totalPages}
-                        aria-label="Next page"
-                      >
-                        <ChevronRight size={16} strokeWidth={2} />
-                      </button>
-                    </div>
+                        const subtitle = [vehicle.make, vehicle.body].filter(Boolean).join(' · ')
+                        const monthly = vehicle.price > 0 ? Math.max(15, Math.round(vehicle.price / 60)) : null
+
+                        return (
+                          <article key={vehicle.id} className={styles.card}>
+                            <Link
+                              href={detailHref}
+                              className={styles.cardLink}
+                              aria-label={`View ${vehicle.title}`}
+                            >
+                              <span className={styles.srOnly}>View details</span>
+                            </Link>
+
+                            <div className={styles.cardImageWrap}>
+                              <div
+                                className={styles.cardImage}
+                                style={{ backgroundImage: `url(${vehicle.image})` }}
+                                role="img"
+                                aria-label={vehicle.title}
+                              />
+                              <span className={styles.imageCount} aria-hidden="true">
+                                <Camera size={11} strokeWidth={2} />
+                                1/1
+                              </span>
+                              <div className={styles.quickActions}>
+                                <button
+                                  type="button"
+                                  className={styles.iconButton}
+                                  data-active={wishlisted}
+                                  aria-pressed={wishlisted}
+                                  aria-label={wishlisted ? 'Saved to wishlist' : 'Save to wishlist'}
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    toggleWishlist(savedVehicle)
+                                  }}
+                                >
+                                  <Heart size={14} strokeWidth={2} fill={wishlisted ? 'currentColor' : 'none'} />
+                                </button>
+                                <button
+                                  type="button"
+                                  className={styles.iconButton}
+                                  data-active={compared}
+                                  aria-pressed={compared}
+                                  aria-label={compared ? 'Remove from compare' : 'Add to compare'}
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    toggleCompare(savedVehicle)
+                                  }}
+                                >
+                                  <GitCompare size={14} strokeWidth={2} />
+                                </button>
+                              </div>
+                              {vehicle.featured ? <span className={styles.featured}>Featured</span> : null}
+                            </div>
+
+                            <div className={styles.cardBody}>
+                              <h3 className={styles.cardTitle} title={vehicle.title}>
+                                {vehicle.title}
+                              </h3>
+                              {subtitle ? <p className={styles.cardSubtitle}>{subtitle}</p> : null}
+
+                              <div className={styles.cardSpecs}>
+                                <span><Calendar size={13} strokeWidth={2} />{vehicle.year || '—'}</span>
+                                <span><Gauge size={13} strokeWidth={2} />{vehicle.mileage.toLocaleString()} miles</span>
+                                <span><Fuel size={13} strokeWidth={2} />{vehicle.fuel}</span>
+                                <span><Settings2 size={13} strokeWidth={2} />{vehicle.transmission}</span>
+                              </div>
+
+                              <div className={styles.cardFooter}>
+                                {monthly ? (
+                                  <span className={styles.fromMonthly}>From £{monthly}/mo</span>
+                                ) : <span />}
+                                <span className={styles.cardPrice}>{formatPrice(vehicle.price)}</span>
+                              </div>
+                            </div>
+                          </article>
+                        )
+                      })}
+                </div>
+
+                <div className={styles.pagination}>
+                  <div className={styles.paginationMeta}>
+                    Page {page} of {totalPages}
+                  </div>
+                  <div className={styles.paginationControls}>
+                    <button
+                      type="button"
+                      className={styles.pageButton}
+                      onClick={() => handlePageChange(Math.max(1, page - 1))}
+                      disabled={page === 1}
+                      aria-label="Previous page"
+                    >
+                      <ChevronLeft size={14} strokeWidth={2} />
+                      <span className={styles.pageBtnLabel}>Previous</span>
+                    </button>
+                    {paginationItems.map((item, index) =>
+                      item === '...' ? (
+                        <span key={`ellipsis-${index}`} className={styles.pageEllipsis}>…</span>
+                      ) : (
+                        <button
+                          key={`page-${item}`}
+                          type="button"
+                          className={`${styles.pageButton} ${item === page ? styles.pageButtonActive : ''}`}
+                          onClick={() => handlePageChange(item)}
+                          aria-current={item === page ? 'page' : undefined}
+                        >
+                          {item}
+                        </button>
+                      )
+                    )}
+                    <button
+                      type="button"
+                      className={styles.pageButton}
+                      onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
+                      disabled={page === totalPages}
+                      aria-label="Next page"
+                    >
+                      <span className={styles.pageBtnLabel}>Next</span>
+                      <ChevronRight size={14} strokeWidth={2} />
+                    </button>
                   </div>
                 </div>
               </div>
-            </>
+            </div>
           )}
         </div>
       </section>

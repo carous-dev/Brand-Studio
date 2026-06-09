@@ -50,7 +50,17 @@ const collectImages = (input: unknown) => {
       if (!item) return ''
       if (typeof item === 'string') return item
       if (typeof item === 'object') {
-        return toText((item as any).url || (item as any).href || (item as any).src || (item as any).image)
+        return toText(
+          (item as any).url ||
+          (item as any).href ||
+          (item as any).src ||
+          (item as any).image ||
+          (item as any).large_url ||
+          (item as any).full_url ||
+          (item as any).original ||
+          (item as any).large ||
+          (item as any).thumbnail
+        )
       }
       return ''
     })
@@ -78,9 +88,19 @@ export function normalizeInventoryItem(item: any): InventoryVehicle | null {
   const galleryImages = [
     ...collectImages(item.gallery),
     ...collectImages(vehicle.gallery),
+    ...collectImages(advert.gallery),
+    ...collectImages(item.images),
+    ...collectImages(vehicle.images),
+    ...collectImages(advert.images),
     ...collectImages(item.media),
+    ...collectImages(vehicle.media),
+    ...collectImages(advert.media),
+    ...collectImages(item.photos),
+    ...collectImages(vehicle.photos),
+    ...collectImages(advert.photos),
   ]
-  const image = toText(galleryImages[0] ?? vehicle.image ?? item.image)
+  const uniqueImages = Array.from(new Set(galleryImages.filter(Boolean)))
+  const image = toText(uniqueImages[0] ?? vehicle.image ?? item.image)
   const fallbackImage = '/images/image.png'
 
   const titleParts = [year || undefined, make || undefined, model || undefined, derivative || undefined].filter(Boolean)

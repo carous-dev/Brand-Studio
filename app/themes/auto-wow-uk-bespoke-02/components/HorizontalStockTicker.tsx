@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight, Car } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
+import { resolveLogoSlug, simpleIconsLogoUrl } from '../lib/make-logos'
 import styles from './HorizontalStockTicker.module.css'
 
 export default function HorizontalStockTicker({
@@ -13,7 +14,6 @@ export default function HorizontalStockTicker({
 }) {
   const count = typeof stockCount === 'number' && stockCount > 0 ? stockCount : null
   const makes = (sampleMakes || []).filter(Boolean).slice(0, 12)
-  // Duplicate the strip so the marquee loop reads seamlessly.
   const rail = makes.length ? [...makes, ...makes] : []
 
   return (
@@ -30,12 +30,30 @@ export default function HorizontalStockTicker({
         {rail.length ? (
           <div className={styles.rail} aria-hidden="true">
             <div className={styles.railTrack}>
-              {rail.map((make, idx) => (
-                <span key={`tick-${idx}-${make}`} className={styles.chip}>
-                  <Car size={14} strokeWidth={2} />
-                  {make}
-                </span>
-              ))}
+              {rail.map((make, idx) => {
+                const slug = resolveLogoSlug(make)
+                return (
+                  <span key={`tick-${idx}-${make}`} className={styles.chip}>
+                    <span className={styles.chipLogo}>
+                      {slug ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={simpleIconsLogoUrl(slug)}
+                          alt=""
+                          width={18}
+                          height={18}
+                          loading="lazy"
+                          decoding="async"
+                          className={styles.chipLogoImg}
+                        />
+                      ) : (
+                        <span className={styles.chipMonogram}>{make.charAt(0).toUpperCase()}</span>
+                      )}
+                    </span>
+                    {make}
+                  </span>
+                )
+              })}
             </div>
           </div>
         ) : null}

@@ -121,6 +121,17 @@
   background: var(--surface-card-light);
   color: var(--text-on-light-strong);
 }
+
+/* Defensive — keep any <header> inside a section transparent so a parent
+   surface (especially dark bands) cannot leak a white block behind the
+   eyebrow/title. The site Header_ (top of page) is excluded by class match.
+   See memory feedback_dark_section_header_local_typography.md. */
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-section > * header,
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-section > header,
+[data-theme-id='auto-wow-uk-bespoke-02'] .auto-section header:not([class*='Header_']) {
+  background: transparent !important;
+  box-shadow: none !important;
+}
 [data-theme-id='auto-wow-uk-bespoke-02'] .auto-section-inner {
   max-width: 1280px;
   margin: 0 auto;

@@ -1,62 +1,88 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight, Quote } from 'lucide-react'
+import { ArrowRight, ShieldCheck, BadgeCheck, Truck, Star } from 'lucide-react'
 import { useBrand } from '../context/BrandClientWrapper'
 import styles from './EditorialIntro.module.css'
+
+const TRUST_POINTS: Array<{ Icon: typeof ShieldCheck; label: string }> = [
+  { Icon: ShieldCheck, label: 'Independently inspected' },
+  { Icon: BadgeCheck, label: 'No-pressure pricing' },
+  { Icon: Truck, label: 'UK-wide delivery' },
+]
 
 export default function EditorialIntro() {
   const brand = useBrand()
   const brandName = brand?.name || 'Autowow'
   const address = (brand as any)?.location?.address || {}
   const locationLabel = [address.city, address.county].filter(Boolean).join(', ') || 'across the UK'
+  const heroImage =
+    (brand as any)?.images?.about
+    || (brand as any)?.aboutImage
+    || (brand as any)?.heroImage
+    || '/themes/auto-wow-uk-bespoke-02/images/about.jpg'
 
   return (
     <section className={`auto-section ${styles.section}`} aria-label="About the showroom">
+      <span className={styles.cornerMark} aria-hidden="true" />
       <div className={styles.inner}>
-        <div className={styles.body} data-aos="fade-up">
-          <span className={styles.eyebrow}>[ Who we are ]</span>
-          <h2 className={styles.title}>
-            No nonsense. No commission upsell. Honest cars priced to move.
-          </h2>
-          <div className={styles.copy}>
-            <p>
-              {brandName} is an independent used-car retailer in {locationLabel}. The
-              showroom floor is everything you need to know: every car listed has
-              been through inspection, prep, and ready-to-drive checks before the
-              key gets handed over.
-            </p>
-            <p>
-              Need finance? We&apos;ll quote with no hard credit search. Selling something?
-              We&apos;ll value it on the spot. Driving from out of town? We deliver
-              UK-wide. No theatre, no upsell. Just cars and the people who sell them.
-            </p>
+        <div className={styles.media} data-aos="fade-up">
+          <div
+            className={styles.mediaFrame}
+            style={{ backgroundImage: `url(${heroImage})` }}
+            role="img"
+            aria-label={`Inside the ${brandName} showroom`}
+          />
+          <div className={styles.statBadge} aria-hidden="true">
+            <span className={styles.statNumber}>12<span className={styles.statPlus}>+</span></span>
+            <span className={styles.statLabel}>Years on the forecourt</span>
           </div>
-          <div className={styles.ctaRow}>
-            <Link href="/about" className="auto-cta-link">
-              How we work
-              <ArrowRight size={16} strokeWidth={2} />
-            </Link>
-            <Link href="/contact" className="auto-cta-link">
-              Visit the showroom
-              <ArrowRight size={16} strokeWidth={2} />
-            </Link>
+          <div className={styles.ratingChip} aria-label="Google reviews rating">
+            <span className={styles.ratingStars}>
+              <Star size={14} fill="currentColor" strokeWidth={0} />
+              <Star size={14} fill="currentColor" strokeWidth={0} />
+              <Star size={14} fill="currentColor" strokeWidth={0} />
+              <Star size={14} fill="currentColor" strokeWidth={0} />
+              <Star size={14} fill="currentColor" strokeWidth={0} />
+            </span>
+            <span className={styles.ratingMeta}>4.9 · Google reviewed</span>
           </div>
         </div>
 
-        <aside className={styles.aside} aria-label="From the desk">
-          <div className={styles.quoteCard} data-aos="fade-left">
-            <Quote size={28} strokeWidth={2} className={styles.quoteMark} aria-hidden="true" />
-            <p className={styles.quoteText}>
-              &ldquo;Honest car. Honest price. Honest people. Three of you don&apos;t see often
-              enough at independents.&rdquo;
-            </p>
-            <p className={styles.quoteAttribution}>
-              <strong>R. Mitchell</strong>
-              <span>Recent customer</span>
-            </p>
+        <div className={styles.body} data-aos="fade-up" data-aos-delay="80">
+          <span className={styles.eyebrow}>Who we are</span>
+          <h2 className={styles.title}>
+            Honest cars,{' '}
+            <span className={styles.titleAccent}>priced to move.</span>
+          </h2>
+          <p className={styles.copy}>
+            {brandName} is an independent retailer in {locationLabel}. Every vehicle on
+            the floor has been inspected, prepped, and is ready to drive — no theatre,
+            no upsell, no hidden fees at handover.
+          </p>
+
+          <ul className={styles.trust} role="list">
+            {TRUST_POINTS.map(({ Icon, label }) => (
+              <li key={label} className={styles.trustItem}>
+                <span className={styles.trustIcon}>
+                  <Icon size={16} strokeWidth={2} />
+                </span>
+                {label}
+              </li>
+            ))}
+          </ul>
+
+          <div className={styles.ctaRow}>
+            <Link href="/about" className={styles.primaryCta}>
+              How we work
+              <ArrowRight size={16} strokeWidth={2} />
+            </Link>
+            <Link href="/contact" className={styles.ghostCta}>
+              Visit the showroom
+              <ArrowRight size={14} strokeWidth={2} />
+            </Link>
           </div>
-        </aside>
+        </div>
       </div>
     </section>
   )

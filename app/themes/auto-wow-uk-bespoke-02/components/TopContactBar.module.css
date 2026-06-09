@@ -1,11 +1,13 @@
+/* Plain neutral top contact bar — no gradients, no brand colorwash.
+   Light surface with text-color foreground; subtle divider below.
+   Matches the C&S Motors layout: contact info clustered left, socials far right. */
+
 .bar {
-  /* Subtle brand-primary tint over the dark base so the dealer's chosen
-     primary actually shows up in the chrome — switches with brand records. */
-  background: color-mix(in srgb, var(--brand-primary) 6%, var(--surface-bg-dark));
-  color: var(--text-on-dark-muted);
-  font-size: 0.78rem;
-  letter-spacing: 0.02em;
-  border-bottom: 1px solid color-mix(in srgb, var(--brand-primary) 18%, transparent);
+  background: var(--color-surface, var(--color-bg));
+  color: var(--color-text);
+  font-size: 0.8rem;
+  letter-spacing: 0.01em;
+  border-bottom: 1px solid var(--color-border);
   position: relative;
 }
 
@@ -22,31 +24,39 @@
 }
 .inner::-webkit-scrollbar { display: none; }
 
-.chip {
+.contacts {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  color: var(--text-on-dark-muted);
+  gap: clamp(14px, 2.4vw, 28px);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: color-mix(in srgb, var(--color-text) 82%, transparent);
   text-decoration: none;
   white-space: nowrap;
   flex-shrink: 0;
+  font-size: 0.8rem;
+  transition: color 0.14s ease;
 }
-
-.statusDot {
-  --mfx-dot-color: var(--state-success);
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  display: inline-block;
+.item:hover {
+  color: var(--color-primary);
 }
-.statusOpen { --mfx-dot-color: var(--state-success); background: var(--state-success); }
-.statusClosed { --mfx-dot-color: var(--state-warning); background: var(--state-warning); }
+.item svg {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
 
 .socials {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   margin-left: auto;
+  flex-shrink: 0;
 }
 
 .socialLink {
@@ -55,42 +65,27 @@
   justify-content: center;
   width: 26px;
   height: 26px;
-  border-radius: 2px;
-  background: transparent;
-  color: var(--text-on-dark-muted);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
+  color: var(--color-text);
+  border: 0;
+  transition: background 0.14s ease, color 0.14s ease;
   flex-shrink: 0;
 }
 .socialLink:hover {
-  background: var(--brand-primary);
-  color: var(--brand-on-primary);
-  border-color: var(--brand-primary);
+  background: var(--color-primary);
+  color: var(--color-bg);
 }
 
-.phoneCta {
-  color: var(--text-on-dark-strong);
-  font-weight: 600;
-  font-size: 0.82rem;
-  padding: 6px 12px;
-  border-left: 2px solid var(--brand-primary);
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 0;
-  text-decoration: none;
-}
-.phoneCta:hover {
-  background: var(--brand-primary);
-  color: var(--brand-on-primary);
-}
-
-/* Mobile: socials hidden, phone CTA stays right-aligned. */
-@media (max-width: 640px) {
-  .socials { display: none; }
+@media (max-width: 720px) {
   .inner {
     padding: 6px 16px;
     gap: 14px;
   }
-  .chip {
-    font-size: 0.72rem;
-  }
+  .item { font-size: 0.72rem; }
+  .item svg { width: 12px; height: 12px; }
+}
+
+@media (max-width: 540px) {
+  .socials { display: none; }
 }

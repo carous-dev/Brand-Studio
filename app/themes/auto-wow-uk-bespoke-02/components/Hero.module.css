@@ -1,8 +1,8 @@
 .hero {
   position: relative;
   isolation: isolate;
-  background-color: var(--surface-bg-dark);
-  color: var(--text-on-dark-strong);
+  background-color: #000;
+  color: #ffffff;
   padding-block: clamp(72px, 11vw, 140px);
   overflow: hidden;
   min-height: clamp(520px, 70vh, 700px);
@@ -11,30 +11,27 @@
 }
 
 /* Layer 1: photo background — multi-layer with theme-default fallback. */
+/* Photo-chrome literal — white over dark scrim, brand-agnostic */
 .bgLayer {
   position: absolute;
   inset: 0;
   z-index: -3;
   background-image:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.62) 55%, rgba(0, 0, 0, 0.78) 100%),
     var(--brand-image-hero, none),
     url('/themes/auto-wow-uk-bespoke-02/images/hero.jpg');
-  background-size: cover, cover;
-  background-position: center, center;
-  background-repeat: no-repeat, no-repeat;
+  background-size: cover, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
 }
 
-/* Layer 2: brand-tinted grid mask + dark gradient — the signature move. */
+/* Layer 2: brand-tinted grid mask — kept for signature dealer-floor character, but
+   light brand-tint only (no surface bg tint) so the photo reads. */
 .gridOverlay {
   position: absolute;
   inset: 0;
   z-index: -2;
   background:
-    linear-gradient(
-      125deg,
-      rgba(var(--surface-bg-dark-rgb), 0.88) 0%,
-      rgba(var(--surface-bg-dark-rgb), 0.72) 40%,
-      rgba(var(--surface-bg-dark-rgb), 0.55) 100%
-    ),
     linear-gradient(
       to right,
       color-mix(in srgb, var(--brand-primary) 22%, transparent) 1px,
@@ -45,7 +42,7 @@
       color-mix(in srgb, var(--brand-primary) 14%, transparent) 1px,
       transparent 1px
     );
-  background-size: 100% 100%, 8.33% 100%, 100% 8.33%;
+  background-size: 8.33% 100%, 100% 8.33%;
   pointer-events: none;
 }
 
@@ -77,7 +74,8 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
 }
 
 .eyebrow {
@@ -94,6 +92,7 @@
   border-left: 2px solid var(--brand-primary);
   width: max-content;
   max-width: 100%;
+  margin-inline: auto;
 }
 .eyeDot {
   width: 8px;
@@ -113,10 +112,10 @@
 .title {
   font-size: clamp(2.4rem, 5.4vw, 3.6rem);
   line-height: 1;
-  color: var(--text-on-dark-strong);
+  color: #ffffff;
   letter-spacing: 0.01em;
   text-shadow: 0 4px 32px rgba(0, 0, 0, 0.5);
-  max-width: 18ch;
+  text-wrap: balance;
 }
 .titleGlow {
   display: inline-block;
@@ -127,11 +126,12 @@
 
 .lead {
   font-size: clamp(1rem, 1.5vw, 1.125rem);
-  color: var(--text-on-dark-strong);
+  color: #ffffff;
   opacity: 0.92;
   max-width: 56ch;
   line-height: 1.55;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  margin-inline: auto;
 }
 
 .ctaRow {
@@ -139,6 +139,7 @@
   gap: 12px;
   flex-wrap: wrap;
   margin-top: 12px;
+  justify-content: center;
 }
 
 .primaryCta {
@@ -155,7 +156,6 @@
   }
   .title {
     font-size: clamp(2rem, 9vw, 2.8rem);
-    max-width: 100%;
   }
   .lead {
     font-size: 1rem;

@@ -1,9 +1,8 @@
 'use client'
 
-import { Facebook, Instagram, Linkedin, Youtube, MapPin, Phone } from 'lucide-react'
+import { Facebook, Instagram, Linkedin, Youtube, Mail, MapPin, Phone } from 'lucide-react'
 import { useBrand } from '../context/BrandClientWrapper'
 import { getBrandContactInfo } from '../lib/contact'
-import { useWorkingHours } from '@/app/hooks/use-working-hours'
 import styles from './TopContactBar.module.css'
 
 const SOCIALS: Array<{ key: string; label: string; Icon: typeof Facebook }> = [
@@ -16,27 +15,33 @@ const SOCIALS: Array<{ key: string; label: string; Icon: typeof Facebook }> = [
 export default function TopContactBar() {
   const brand = useBrand()
   const contact = getBrandContactInfo(brand)
-  const hours = useWorkingHours((brand as any)?.openingHours)
-  const address = (brand as any)?.location?.address || {}
-  const locationLabel = [address.city, address.county].filter(Boolean).join(', ')
   const socials: Record<string, string | undefined> = ((brand as any)?.socialLinks) || {}
+  const address = contact.showroomAddress
 
   return (
     <div className={styles.bar} role="complementary" aria-label="Showroom contact">
       <div className={styles.inner}>
-        {locationLabel ? (
-          <div className={styles.chip}>
-            <MapPin size={14} strokeWidth={2} />
-            <span>{locationLabel}</span>
-          </div>
-        ) : null}
+        <div className={styles.contacts}>
+          {contact.phoneTel ? (
+            <a href={`tel:${contact.phoneTel}`} className={styles.item} aria-label={`Call ${contact.phoneDisplay}`}>
+              <Phone size={14} strokeWidth={2} />
+              <span>{contact.phoneDisplay}</span>
+            </a>
+          ) : null}
 
-        <div className={styles.chip}>
-          <span
-            className={`mfx-pulse-dot ${styles.statusDot} ${hours?.isOnline ? styles.statusOpen : styles.statusClosed}`}
-            aria-hidden="true"
-          />
-          <span>{hours?.isOnline ? 'Live stock · open now' : 'Browse stock 24/7'}</span>
+          {contact.email ? (
+            <a href={`mailto:${contact.email}`} className={styles.item} aria-label={`Email ${contact.email}`}>
+              <Mail size={14} strokeWidth={2} />
+              <span>{contact.email}</span>
+            </a>
+          ) : null}
+
+          {address ? (
+            <span className={styles.item}>
+              <MapPin size={14} strokeWidth={2} />
+              <span>{address}</span>
+            </span>
+          ) : null}
         </div>
 
         <div className={styles.socials} aria-label="Social media">
@@ -68,17 +73,6 @@ export default function TopContactBar() {
             )
           })}
         </div>
-
-        {contact.phoneTel ? (
-          <a
-            href={`tel:${contact.phoneTel}`}
-            className={`${styles.chip} ${styles.phoneCta}`}
-            aria-label={`Call ${contact.phoneDisplay}`}
-          >
-            <Phone size={14} strokeWidth={2} />
-            <span>{contact.phoneDisplay}</span>
-          </a>
-        ) : null}
       </div>
     </div>
   )

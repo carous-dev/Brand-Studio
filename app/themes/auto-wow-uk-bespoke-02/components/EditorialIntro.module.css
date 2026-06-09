@@ -1,17 +1,37 @@
+/* Modern "Who we are" — split layout with a photo frame, floating stat badge,
+   and a small Google-rating chip on the left; lean editorial copy + trust
+   points + CTA pair on the right. */
+
 .section {
   background: var(--surface-bg-light);
   color: var(--text-on-light-strong);
   position: relative;
+  overflow: hidden;
 }
-.section::before {
-  content: '';
+
+/* Subtle brand-primary corner ornament — replaces the old left-edge strip
+   with something less "1990s sidebar" and more architectural. */
+.cornerMark {
   position: absolute;
-  left: 0;
   top: 0;
-  bottom: 0;
-  width: 3px;
-  background: var(--brand-primary);
-  display: block;
+  right: 0;
+  width: clamp(120px, 16vw, 220px);
+  height: clamp(120px, 16vw, 220px);
+  pointer-events: none;
+  background:
+    linear-gradient(
+      135deg,
+      transparent 0%,
+      transparent 58%,
+      color-mix(in srgb, var(--brand-primary) 14%, transparent) 58%,
+      color-mix(in srgb, var(--brand-primary) 14%, transparent) 62%,
+      transparent 62%,
+      transparent 70%,
+      color-mix(in srgb, var(--brand-primary) 22%, transparent) 70%,
+      color-mix(in srgb, var(--brand-primary) 22%, transparent) 73%,
+      transparent 73%
+    );
+  opacity: 0.85;
 }
 
 .inner {
@@ -19,93 +39,258 @@
   margin: 0 auto;
   padding-inline: clamp(20px, 4vw, 48px);
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: clamp(28px, 5vw, 64px);
-  align-items: start;
+  align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
+/* ── Media frame ──────────────────────────────────────────────── */
+
+.media {
+  position: relative;
+  isolation: isolate;
+  /* Float the frame slightly so the badge can hang past its corner. */
+  padding-block: clamp(20px, 3vw, 36px);
+  padding-inline-end: clamp(20px, 3vw, 40px);
+}
+.media::before {
+  /* Soft brand-tinted backdrop behind the frame — gives the image a sense
+     of depth and locks the composition to the brand color. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+  border-radius: 14px;
+  transform: translate(18px, 18px);
+}
+
+.mediaFrame {
+  position: relative;
+  aspect-ratio: 5 / 4;
+  background-color: var(--image-placeholder-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:
+    0 24px 60px rgba(var(--color-text-rgb), 0.18),
+    0 2px 6px rgba(var(--color-text-rgb), 0.08);
+}
+
+/* Floating stat badge — brand-primary block with big numeral + label */
+.statBadge {
+  position: absolute;
+  left: -12px;
+  bottom: 6%;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  padding: 18px 22px;
+  border-radius: 10px;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 140px;
+  box-shadow: 0 18px 36px rgba(var(--color-text-rgb), 0.22);
+  z-index: 2;
+}
+.statNumber {
+  font-family: var(--font-brand-family-override, 'Anton', 'Impact', sans-serif);
+  font-size: 2.6rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: flex-start;
+}
+.statPlus {
+  font-size: 1.4rem;
+  margin-left: 2px;
+  margin-top: 4px;
+  opacity: 0.85;
+}
+.statLabel {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.88;
+}
+
+/* Small rating chip — pinned to the upper-right of the frame */
+.ratingChip {
+  position: absolute;
+  top: 8px;
+  right: 0;
+  background: var(--surface-card-light);
+  color: var(--text-on-light-strong);
+  border: 1px solid var(--border-on-light);
+  padding: 8px 12px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  box-shadow: 0 12px 24px rgba(var(--color-text-rgb), 0.1);
+  z-index: 2;
+}
+.ratingStars {
+  color: #f5a623;
+  display: inline-flex;
+  gap: 1px;
+}
+.ratingMeta {
+  color: var(--text-on-light-muted);
+  font-weight: 500;
+}
+
+/* ── Body / editorial copy ────────────────────────────────────── */
+
 .body {
-  max-width: 64ch;
+  max-width: 56ch;
 }
 
 .eyebrow {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   font-family: var(--font-brand-family-override, 'Anton', 'Impact', sans-serif);
   font-size: 0.78rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--brand-primary);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  padding-left: 28px;
+  position: relative;
+}
+.eyebrow::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 20px;
+  height: 2px;
+  background: var(--brand-primary);
+  transform: translateY(-50%);
 }
 
 .title {
-  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  font-size: clamp(1.8rem, 3.4vw, 2.7rem);
   color: var(--text-on-light-strong);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   margin-bottom: 18px;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.titleAccent {
+  color: var(--brand-primary);
+  font-style: italic;
 }
 
 .copy {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
   color: var(--text-on-light-muted);
   font-size: 1.05rem;
   line-height: 1.65;
   margin-bottom: 22px;
 }
 
+.trust {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.trustItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.96rem;
+  color: var(--text-on-light-strong);
+  font-weight: 500;
+}
+.trustIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--brand-primary) 14%, transparent);
+  color: var(--brand-primary);
+  flex-shrink: 0;
+}
+
 .ctaRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
+  align-items: center;
+  gap: 14px;
 }
 
-.aside {
-  position: sticky;
-  top: 140px;
+.primaryCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary, var(--color-bg));
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.96rem;
+  text-decoration: none;
+  transition: background 0.16s ease, transform 0.14s ease;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--brand-primary) 30%, transparent);
+}
+.primaryCta:hover {
+  background: var(--brand-primary-strong, var(--brand-primary));
+  transform: translateY(-1px);
 }
 
-.quoteCard {
-  background: var(--surface-card-dark);
-  color: var(--text-on-dark-strong);
-  border: 1px solid var(--border-on-dark);
-  padding: 28px 26px 24px;
-  border-radius: 4px;
-  position: relative;
-  border-left: 3px solid var(--brand-primary);
+.ghostCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-on-light-strong);
+  font-weight: 600;
+  font-size: 0.96rem;
+  text-decoration: none;
+  padding: 12px 4px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.14s ease, border-color 0.14s ease;
 }
-.quoteMark {
+.ghostCta:hover {
   color: var(--brand-primary);
-  margin-bottom: 12px;
-  opacity: 0.6;
-}
-.quoteText {
-  font-size: 1.1rem;
-  line-height: 1.5;
-  color: var(--text-on-dark-strong);
-  margin-bottom: 18px;
-}
-.quoteAttribution {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border-on-dark);
-  font-family: var(--font-brand-family-override);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.78rem;
-  color: var(--text-on-dark-muted);
-}
-.quoteAttribution strong {
-  font-weight: 400;
-  color: var(--text-on-dark-strong);
+  border-bottom-color: var(--brand-primary);
 }
 
-@media (max-width: 880px) {
+/* ── Responsive ───────────────────────────────────────────────── */
+
+@media (max-width: 980px) {
   .inner {
     grid-template-columns: 1fr;
+    gap: 36px;
   }
-  .aside { position: static; }
+  .media {
+    padding-inline-end: 0;
+    max-width: 540px;
+    margin-inline: auto;
+    width: 100%;
+  }
+}
+
+@media (max-width: 540px) {
+  .statBadge {
+    left: 8px;
+    bottom: 8px;
+    padding: 14px 16px;
+    min-width: 120px;
+  }
+  .statNumber { font-size: 2.1rem; }
+  .ratingChip {
+    top: auto;
+    bottom: 8px;
+    right: 8px;
+  }
+  .title {
+    font-size: clamp(1.5rem, 7vw, 2rem);
+  }
 }

@@ -3,17 +3,19 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Search } from 'lucide-react'
+import { Menu, X, Search, Phone } from 'lucide-react'
 import { useBrand } from '../context/BrandClientWrapper'
+import { getBrandContactInfo } from '../lib/contact'
 import TopContactBar from './TopContactBar'
 import styles from './Header.module.css'
 
 const NAV_ITEMS: Array<{ label: string; href: string }> = [
   { label: 'Home', href: '/' },
-  { label: 'Stock', href: '/used-cars' },
+  { label: 'Used Cars', href: '/used-cars' },
+  { label: 'Recently Sold', href: '/recently-sold' },
+  { label: 'Sell Your Car', href: '/sell-my-car' },
   { label: 'Finance', href: '/finance' },
-  { label: 'Sell my car', href: '/sell-my-car' },
-  { label: 'Services', href: '/services' },
+  { label: 'Our Services', href: '/services' },
 ]
 
 function isActiveRoute(pathname: string, href: string): boolean {
@@ -28,6 +30,7 @@ export default function Header() {
   const brandName = brand?.name || 'Autowow'
   const logoUrl = (brand as any)?.logo || `/themes/auto-wow-uk-bespoke-02/images/hero.jpg`
   const hasLogo = Boolean((brand as any)?.logo)
+  const contact = getBrandContactInfo(brand)
   const [navOpen, setNavOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -67,26 +70,40 @@ export default function Header() {
           </Link>
 
           <nav aria-label="Primary" className={styles.nav}>
-            {NAV_ITEMS.map((item) => {
+            {NAV_ITEMS.map((item, idx) => {
               const active = isActiveRoute(pathname, item.href)
               return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`${styles.navLink} ${active ? styles.navLinkActive : ''}`}
-                  aria-current={active ? 'page' : undefined}
-                >
-                  {item.label}
-                </Link>
+                <span key={item.href} className={styles.navItem}>
+                  <Link
+                    href={item.href}
+                    className={`${styles.navLink} ${active ? styles.navLinkActive : ''}`}
+                    aria-current={active ? 'page' : undefined}
+                  >
+                    {item.label}
+                  </Link>
+                  {idx < NAV_ITEMS.length - 1 ? (
+                    <span className={styles.navDivider} aria-hidden="true">|</span>
+                  ) : null}
+                </span>
               )
             })}
           </nav>
 
           <div className={styles.actions}>
-            <Link href="/used-cars" className={styles.searchBtn} aria-label="Search stock">
+            <Link href="/used-cars" className={styles.searchIconBtn} aria-label="Search stock">
               <Search size={18} strokeWidth={2} />
-              <span>Search</span>
             </Link>
+            {contact.phoneTel ? (
+              <a href={`tel:${contact.phoneTel}`} className={styles.getInTouchBtn}>
+                <Phone size={16} strokeWidth={2} />
+                <span>Get in Touch</span>
+              </a>
+            ) : (
+              <Link href="/contact" className={styles.getInTouchBtn}>
+                <Phone size={16} strokeWidth={2} />
+                <span>Get in Touch</span>
+              </Link>
+            )}
             <button
               type="button"
               className={styles.hamburger}
