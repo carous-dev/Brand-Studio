@@ -24,6 +24,9 @@ type RoutedThemePageId = Extract<
   | 'sellYourCar'
   | 'finance'
   | 'partExchange'
+  | 'warranty'
+  | 'delivery'
+  | 'reviews'
   | 'recentlySold'
   | 'usedCars'
   | 'vehicleDetail'
@@ -543,7 +546,34 @@ export async function generateThemePageMetadata(options: ThemeRouteRuntimeOption
 
   if (options.pageId === 'partExchange') {
     const seo = generateSellCarPageSEO(brand)
-    return buildPageMetadata(brand, options.canonicalPath, { ...seo, title: `Part Exchange | ${brand.name}` })
+    return buildPageMetadata(brand, options.canonicalPath, { ...seo, title: `Sell Your Car | ${brand.name}` })
+  }
+
+  if (options.pageId === 'warranty') {
+    return buildSimpleMetadata(
+      brand,
+      options.canonicalPath,
+      `Warranty | ${brand.name}`,
+      `Learn about used car warranty options and aftersales support from ${brand.name}.`,
+    )
+  }
+
+  if (options.pageId === 'delivery') {
+    return buildSimpleMetadata(
+      brand,
+      options.canonicalPath,
+      `Delivery | ${brand.name}`,
+      `Learn about collection, handover and vehicle delivery options from ${brand.name}.`,
+    )
+  }
+
+  if (options.pageId === 'reviews') {
+    return buildSimpleMetadata(
+      brand,
+      options.canonicalPath,
+      `Reviews | ${brand.name}`,
+      `Read customer reviews and recent buyer feedback for ${brand.name}.`,
+    )
   }
 
   if (options.pageId === 'usedCars') {
