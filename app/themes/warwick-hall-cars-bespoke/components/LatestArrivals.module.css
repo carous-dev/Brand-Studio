@@ -1,0 +1,489 @@
+/* warwick-hall-cars-bespoke — LatestArrivals
+ * Heritage classic-trad "Just Arrived" grid. Cormorant Garamond display
+ * with accent underline, 4-up vehicle card grid, 4:3 image, single-line
+ * title clamp, 4 spec chips, prominent price, stretched-link whole-card click.
+ * Natural-role tokens only; no hex literals.
+ */
+
+.section {
+  background: var(--color-bg);
+  color: var(--color-text);
+  padding: clamp(56px, 7vw, 96px) clamp(20px, 4vw, 40px);
+  font-family: var(--font-ui-family-override, 'Karla', system-ui, sans-serif);
+}
+
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+
+/* ===== HEADER ===== */
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 16px 32px;
+  margin-bottom: clamp(24px, 3vw, 36px);
+  padding-bottom: clamp(18px, 2.4vw, 26px);
+  border-bottom: 1px solid var(--color-border);
+}
+@media (max-width: 720px) {
+  .header {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+.headerCopy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-primary);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+.eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.heading {
+  font-family: var(--font-brand-family-override, 'Cormorant Garamond', serif);
+  font-size: clamp(1.7rem, 2.6vw, 2.25rem);
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.12;
+  letter-spacing: 0.003em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.lead {
+  /* Derive muted text from --color-text so a brand record that mis-sets
+     --color-muted to a saturated value can't make the lead look chaotic. */
+  color: color-mix(in srgb, var(--color-text) 62%, var(--color-bg));
+  font-size: 14.5px;
+  line-height: 1.55;
+  margin: 4px 0 0;
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+.headerActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.railControls {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.railBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease, transform 160ms ease;
+}
+.railBtn:hover:not(:disabled),
+.railBtn:focus-visible:not(:disabled) {
+  background: var(--color-primary);
+  color: var(--color-bg);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+.railBtn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.viewAllDesktop,
+.viewAllMobile {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14.5px;
+  letter-spacing: 0.005em;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease, transform 160ms ease;
+  white-space: nowrap;
+}
+.viewAllDesktop:hover,
+.viewAllDesktop:focus-visible,
+.viewAllMobile:hover,
+.viewAllMobile:focus-visible {
+  background: var(--color-primary);
+  color: var(--color-bg);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+.viewAllDesktop svg,
+.viewAllMobile svg { transition: transform 200ms ease; }
+.viewAllDesktop:hover svg,
+.viewAllMobile:hover svg { transform: translateX(2px); }
+
+.viewAllMobile { display: none; }
+@media (max-width: 720px) {
+  .viewAllDesktop { display: none; }
+  .viewAllMobile { display: inline-flex; }
+  .railControls { display: none; }
+}
+
+
+/* ===== RAIL ===== */
+.railWrap {
+  position: relative;
+  /* Edge-fade indicates overflow without competing with content. */
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 28px,
+    #000 calc(100% - 28px),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 28px,
+    #000 calc(100% - 28px),
+    transparent 100%
+  );
+}
+
+.rail {
+  display: flex;
+  flex-direction: row;
+  gap: 18px;
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scroll-padding-inline: 4px;
+  padding: 8px 4px 24px;
+  /* room for hover-lift box-shadow + Edge/Safari rubber-band space */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.rail::-webkit-scrollbar {
+  display: none;
+}
+.rail:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+  border-radius: 14px;
+}
+
+@media (min-width: 520px) { .rail { gap: 20px; } }
+@media (min-width: 820px) { .rail { gap: 22px; } }
+@media (min-width: 1100px) { .rail { gap: 24px; } }
+
+
+/* ===== CARD ===== */
+.card {
+  position: relative;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  /* Slider-card sizing — fixed width so cards don't shrink in the rail.
+     Mobile shows ~1 card + a peek of the next so swipe affordance is obvious. */
+  flex: 0 0 78%;
+  min-width: 0;
+  max-width: 340px;
+  scroll-snap-align: start;
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+@media (min-width: 520px) { .card { flex-basis: 280px; max-width: 300px; } }
+@media (min-width: 820px) { .card { flex-basis: 300px; max-width: 320px; } }
+@media (min-width: 1100px) { .card { flex-basis: 296px; max-width: 320px; } }
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px color-mix(in srgb, var(--color-primary) 14%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 18%, var(--color-border));
+}
+
+/* Stretched click target — whole card is tappable on touch */
+.cardLink {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.cardLink:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -3px;
+  border-radius: 14px;
+}
+
+.cardImage {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background-color: var(--color-surface);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+.cardImageEmpty {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      var(--color-surface) 0 12px,
+      color-mix(in srgb, var(--color-primary) 4%, var(--color-surface)) 12px 24px
+    );
+}
+
+.justInBadge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  background: var(--color-primary);
+  color: var(--color-bg);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary) 32%, transparent);
+}
+
+.cardBody {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cardTitle {
+  font-family: var(--font-brand-family-override, 'Cormorant Garamond', serif);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.15;
+  margin: 0;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardSpecs {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px 12px;
+}
+.cardSpecs li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-muted);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cardSpecs svg {
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.cardFoot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+}
+
+.priceWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.priceLabel {
+  color: var(--color-muted);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.price {
+  color: var(--color-primary);
+  font-family: var(--font-brand-family-override, 'Cormorant Garamond', serif);
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.005em;
+}
+
+.cardCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-primary);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.012em;
+  padding: 6px 0;
+  transition: gap 200ms ease;
+}
+.card:hover .cardCta { gap: 8px; color: var(--color-accent); }
+
+
+/* ===== SKELETON ===== */
+.cardSkeleton {
+  pointer-events: none;
+}
+.cardSkeleton .cardImage {
+  background:
+    linear-gradient(
+      90deg,
+      var(--color-surface) 0%,
+      color-mix(in srgb, var(--color-primary) 6%, var(--color-surface)) 50%,
+      var(--color-surface) 100%
+    );
+  background-size: 200% 100%;
+  animation: warwickShimmer 1.4s ease-in-out infinite;
+}
+
+.skelLine {
+  height: 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  background-size: 200% 100%;
+  animation: warwickShimmer 1.4s ease-in-out infinite;
+}
+.skelLineShort { width: 55%; }
+.skelLineWide  { width: 75%; height: 18px; }
+
+@keyframes warwickShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+
+/* ===== EMPTY ===== */
+.empty {
+  text-align: center;
+  padding: clamp(36px, 6vw, 64px) 20px;
+  border: 1px dashed var(--color-border);
+  border-radius: 18px;
+  background: var(--color-surface);
+  color: var(--color-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.empty p {
+  margin: 0;
+  font-size: 15.5px;
+  max-width: 48ch;
+  line-height: 1.6;
+}
+.emptyCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-primary);
+  color: var(--color-bg);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14.5px;
+  letter-spacing: 0.005em;
+  padding: 12px 22px;
+  border-radius: 999px;
+  transition: background 200ms ease, transform 160ms ease;
+}
+.emptyCta:hover,
+.emptyCta:focus-visible {
+  background: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+
+/* ===== FOOTER (mobile View all) ===== */
+.footer {
+  margin-top: 28px;
+  display: flex;
+  justify-content: center;
+}
+@media (min-width: 721px) {
+  .footer { display: none; }
+}
+
+
+/* ===== UTILITY ===== */
+.srOnly {
+  position: absolute !important;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .cardCta,
+  .viewAllDesktop,
+  .viewAllMobile,
+  .viewAllDesktop svg,
+  .viewAllMobile svg,
+  .railBtn,
+  .emptyCta { transition: none !important; }
+  .card:hover,
+  .viewAllDesktop:hover,
+  .viewAllMobile:hover,
+  .railBtn:hover:not(:disabled),
+  .emptyCta:hover { transform: none !important; }
+  .rail { scroll-behavior: auto; }
+  .cardSkeleton .cardImage,
+  .skelLine { animation: none !important; }
+}

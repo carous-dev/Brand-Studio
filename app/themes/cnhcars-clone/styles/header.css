@@ -17,11 +17,11 @@
 /* Futuristic glassmorphism header */
 
 header {
-    position: static;
+    position: sticky;
+    z-index: 49;
     width: 100%;
     background: var(--surface-page);
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     overflow: hidden;
 }

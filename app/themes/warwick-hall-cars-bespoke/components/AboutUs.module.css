@@ -1,0 +1,317 @@
+/* =============================================================================
+ * Warwick Hall Cars — About Us
+ *
+ * Three-up feature grid below the hero. Intro: small accent-blue car glyph,
+ * brand-accent "ABOUT US" eyebrow, oversized dark serif-feeling sans heading
+ * "Welcome To <dealer name>". Cards float above a brand-primary semicircle
+ * icon and a soft grey footer ribbon stamped with the card's own glyph
+ * silhouette and a "View Showroom →" link.
+ *
+ * Mobile-first; cards stack at ≤900px, single col ≤600px.
+ * ============================================================================= */
+
+.section {
+  position: relative;
+  background: var(--color-bg);
+  color: var(--color-text);
+  padding: clamp(56px, 9vw, 112px) clamp(20px, 5vw, 64px) clamp(72px, 11vw, 144px);
+}
+
+.inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* ---- Intro ----
+   Selectors chain `.intro` so they beat the global
+   `[data-theme-id] h1,h2,h3,h4 { font-family: var(--font-brand-family-override) }`
+   rule in base.css — that rule would otherwise force the title into the
+   theme's serif (Cormorant Garamond), which doesn't fit the photo-chrome
+   bespoke. Same trick used on .cardTitle below. */
+
+.intro {
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: clamp(8px, 1.1vw, 14px);
+  margin-bottom: clamp(36px, 5vw, 64px);
+}
+
+.intro .carGlyph {
+  color: var(--color-accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: clamp(2px, 0.4vw, 6px);
+}
+
+.intro .eyebrow {
+  margin: 0;
+  font-family: 'Karla', 'Inter', sans-serif;
+  color: var(--color-accent);
+  font-size: clamp(0.74rem, 0.85vw, 0.84rem);
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.intro .title {
+  margin: 0;
+  font-family: 'Karla', 'Inter', system-ui, sans-serif;
+  font-weight: 800;
+  color: var(--color-text);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+/* ---- Cards grid ---- */
+
+.cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 3vw, 40px);
+  /* Leave space above the top edge of each card so the floating icon button
+     can straddle it without being clipped by the section. */
+  padding-top: clamp(36px, 4vw, 48px);
+}
+
+@media (min-width: 720px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ---- Card ---- */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  isolation: isolate;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.card .cardBody {
+  position: relative;
+  background: var(--color-surface, #ffffff);
+  border-radius: 14px 14px 0 0;
+  padding: clamp(56px, 6vw, 76px) clamp(24px, 2.6vw, 36px) clamp(36px, 4vw, 52px);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.07);
+  flex: 1 1 auto;
+  min-height: 200px;
+  overflow: hidden;
+}
+
+/* Large brand-tinted watermark of the card's own icon, sitting behind the
+   description on the right edge — matches the dealer's existing site
+   composition (silhouette is in the white body, not in the gray ribbon). */
+.cardBodyWatermark {
+  position: absolute;
+  right: clamp(-12px, -0.8vw, -4px);
+  top: 50%;
+  transform: translateY(-44%);
+  color: var(--color-primary);
+  opacity: 0.1;
+  pointer-events: none;
+  display: inline-flex;
+}
+
+.cardBodyWatermark svg {
+  width: clamp(120px, 14vw, 180px);
+  height: auto;
+}
+
+.card .cardTitle,
+.card .cardDesc {
+  position: relative;
+  z-index: 1;
+  max-width: 80%;
+}
+
+.card .cardTitle {
+  margin: 0 0 clamp(14px, 1.6vw, 20px);
+  font-family: 'Karla', 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.08rem, 1.3vw, 1.24rem);
+  line-height: 1.32;
+  color: var(--color-text);
+  letter-spacing: -0.005em;
+}
+
+.card .cardDesc {
+  margin: 0;
+  font-family: 'Karla', 'Inter', sans-serif;
+  font-size: clamp(0.94rem, 1vw, 1rem);
+  line-height: 1.65;
+  /* Dealer copy reads in brand-primary, mirroring the screenshot. Softened
+     via color-mix so brand records with high-saturation primaries (e.g.
+     Columbus Vehicles pink) don't shout at full strength. */
+  color: color-mix(in srgb, var(--color-primary) 88%, var(--color-text));
+  font-weight: 500;
+}
+
+/* ---- Footer ribbon (soft grey strip + silhouettes + CTA) ---- */
+
+.cardFoot {
+  position: relative;
+  background: linear-gradient(180deg, #f1f3f6 0%, #e6e9ee 100%);
+  border-radius: 0 0 14px 14px;
+  padding: clamp(18px, 1.8vw, 22px) clamp(24px, 2.6vw, 32px);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  overflow: hidden;
+  min-height: 72px;
+  transition: background 0.28s ease;
+}
+
+/* Hover the card → ribbon flips to solid brand-primary, CTA/silhouettes
+   re-tone to white so they read against the saturated surface. */
+.card:hover .cardFoot,
+.card:focus-within .cardFoot {
+  background: var(--color-primary);
+}
+
+.card:hover .cardFootSilhouettes,
+.card:focus-within .cardFootSilhouettes {
+  color: #ffffff;
+  opacity: 0.28;
+}
+
+.card:hover .cardCta,
+.card:focus-within .cardCta {
+  color: #ffffff;
+}
+
+/* Small repeat-pattern silhouette set in the gray ribbon — sits at the
+   left edge now that the floating icon has moved to the top of the card.
+   Stays subtle so it reads as chrome, not stickers. */
+.cardFootSilhouettes {
+  position: absolute;
+  left: clamp(20px, 2.4vw, 32px);
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--color-primary);
+  opacity: 0.13;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cardFootSilhouettes svg {
+  width: clamp(20px, 2vw, 26px);
+  height: auto;
+}
+
+.cardFootSilhouettes svg:nth-child(2) {
+  opacity: 0.6;
+  transform: scale(0.8);
+}
+
+.cardFootSilhouettes {
+  transition: opacity 0.28s ease, color 0.28s ease;
+}
+
+.cardCta {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Karla', 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #8a909c;
+  text-decoration: none;
+  transition: color 0.18s ease, gap 0.18s ease;
+}
+
+.cardCta:hover,
+.cardCta:focus-visible {
+  color: var(--color-primary);
+  gap: 14px;
+}
+
+.cardCta:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.cardCta svg {
+  transition: transform 0.18s ease;
+}
+
+.cardCta:hover svg {
+  transform: translateX(3px);
+}
+
+/* ---- Floating circular icon button ----
+   Sits on the TOP edge of the card, straddling it with translateY(-50%).
+   Lives as a direct child of `.card` (NOT inside `.cardBody`) because the
+   body has `overflow: hidden` to clip the watermark — putting the icon
+   there would clip its upper half too. The cardBody's top padding
+   reserves space so the title never crashes into the icon. */
+.cardIcon {
+  position: absolute;
+  left: clamp(24px, 2.6vw, 36px);
+  top: 0;
+  transform: translateY(-50%);
+  width: clamp(56px, 6.4vw, 72px);
+  height: clamp(56px, 6.4vw, 72px);
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 0 6px var(--color-bg, #ffffff),
+    0 10px 24px rgba(15, 23, 42, 0.2);
+  z-index: 3;
+}
+
+@media (max-width: 480px) {
+  .cardIcon {
+    left: 20px;
+    width: 56px;
+    height: 56px;
+  }
+
+  .card .cardBody {
+    padding-top: 52px;
+  }
+
+  .cardFoot {
+    padding-right: 18px;
+    min-height: 60px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .cardCta,
+  .cardCta svg,
+  .cardFoot,
+  .cardFootSilhouettes {
+    transition: none;
+  }
+  .card:hover {
+    transform: none;
+  }
+}

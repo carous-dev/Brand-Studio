@@ -1,0 +1,459 @@
+/* warwick-hall-cars-bespoke — Footer
+ * Three-column dark-primary footer (brand+contact · quick-links · newsletter+socials)
+ * with a light off-bg legal strip beneath. Natural-role tokens only — brand
+ * record overrides retint the whole footer cleanly.
+ */
+
+.footer {
+  position: relative;
+  background: var(--color-primary);
+  color: var(--color-bg);
+  font-family: var(--font-ui-family-override, 'Karla', system-ui, sans-serif);
+  padding: clamp(40px, 5.5vw, 64px) clamp(20px, 4vw, 40px) clamp(28px, 4vw, 44px);
+}
+
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 4vw, 48px);
+}
+
+@media (min-width: 900px) {
+  .inner {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 56px;
+    align-items: start;
+  }
+}
+
+
+/* ===== COLUMN 1 — BRAND ===== */
+.colBrand {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.brandLink {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  line-height: 0;
+  width: fit-content;
+}
+
+.brandLogo {
+  width: auto;
+  max-width: 220px;
+  height: 60px;
+  display: block;
+  background: var(--color-bg);
+  border-radius: 14px;
+  padding: 8px 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.brandDesc {
+  color: color-mix(in srgb, var(--color-bg) 86%, transparent);
+  margin: 4px 0 6px;
+  max-width: 400px;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+.contactList {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  display: grid;
+  gap: 12px;
+}
+
+.contactList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: color-mix(in srgb, var(--color-bg) 92%, transparent);
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.icoChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--color-bg);
+  color: var(--color-accent);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.contactList a {
+  color: var(--color-bg);
+  text-decoration: none;
+  transition: opacity 160ms ease;
+}
+.contactList a:hover {
+  opacity: 0.82;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+
+/* ===== COLUMN HEADINGS — heritage serif + accent underline ===== */
+.colHeading {
+  margin: 0 0 18px;
+  font-family: var(--font-brand-family-override, 'Cormorant Garamond', serif);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-bg);
+  position: relative;
+  display: inline-block;
+  padding-bottom: 10px;
+  letter-spacing: 0.005em;
+}
+.colHeading::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 42px;
+  bottom: 0;
+  height: 2px;
+  background: var(--color-accent);
+  border-radius: 999px;
+}
+
+
+/* ===== COLUMN 2 — LINKS ===== */
+.colLinks {
+  min-width: 0;
+}
+
+.linksList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.linksList a {
+  color: color-mix(in srgb, var(--color-bg) 86%, transparent);
+  text-decoration: none;
+  font-size: 14.5px;
+  letter-spacing: 0.005em;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  transition: color 160ms ease, transform 160ms ease;
+}
+.linksList a::before {
+  content: '›';
+  margin-right: 10px;
+  color: var(--color-accent);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+}
+.linksList a:hover {
+  color: var(--color-bg);
+  transform: translateX(3px);
+}
+
+.sellBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14.5px;
+  letter-spacing: 0.01em;
+  padding: 12px 24px;
+  border-radius: 999px;
+  margin-top: 24px;
+  transition: background 200ms ease, color 200ms ease, transform 160ms ease,
+              box-shadow 200ms ease;
+}
+.sellBtn:hover,
+.sellBtn:focus-visible {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-accent) 36%, transparent);
+}
+
+
+/* ===== COLUMN 3 — NEWSLETTER ===== */
+.colNews {
+  min-width: 0;
+}
+
+.newsLead {
+  color: color-mix(in srgb, var(--color-bg) 86%, transparent);
+  font-size: 14.5px;
+  line-height: 1.55;
+  margin: 0 0 14px;
+  max-width: 380px;
+}
+
+.newsForm {
+  margin-top: 4px;
+}
+
+.newsInputWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-bg);
+  border-radius: 999px;
+  padding: 5px;
+  border: 1px solid color-mix(in srgb, var(--color-bg) 30%, transparent);
+  transition: outline 200ms ease;
+}
+.newsInputWrap:focus-within {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.newsInput {
+  flex: 1 1 auto;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  padding: 10px 16px;
+  font-size: 14.5px;
+  color: var(--color-text);
+  font-family: inherit;
+  min-width: 0;
+}
+.newsInput::placeholder {
+  color: var(--color-muted);
+}
+
+.newsBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 0;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 200ms ease, transform 160ms ease;
+}
+.newsBtn:hover,
+.newsBtn:focus-visible {
+  background: var(--color-primary);
+  color: var(--color-bg);
+  transform: translateY(-1px);
+}
+
+.followTitle {
+  margin: 26px 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--color-bg) 88%, transparent);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.socialRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.socialIco {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-bg) 14%, transparent);
+  color: var(--color-bg);
+  text-decoration: none;
+  border: 1px solid color-mix(in srgb, var(--color-bg) 24%, transparent);
+  transition: background 200ms ease, color 200ms ease, transform 160ms ease;
+}
+.socialIco:hover,
+.socialIco:focus-visible {
+  background: var(--color-bg);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+/* Opening hours table — sits between newsletter form and Follow Us */
+.hoursTable {
+  margin: 14px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.hoursRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-bg) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-bg) 14%, transparent);
+}
+
+.hoursRowToday {
+  background: color-mix(in srgb, var(--color-accent) 22%, var(--color-primary));
+  border-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
+}
+
+.hoursLabel {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-bg);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  min-width: 0;
+}
+
+.todayBadge {
+  display: inline-flex;
+  align-items: center;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+  line-height: 1;
+}
+
+.hoursValue {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-bg) 92%, transparent);
+  font-size: 13.5px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.012em;
+  white-space: nowrap;
+}
+
+
+/* ===== LEGAL STRIP ===== */
+.legalStrip {
+  background: var(--color-secondary);
+  padding: 14px clamp(20px, 4vw, 40px);
+  font-family: var(--font-ui-family-override, 'Karla', system-ui, sans-serif);
+}
+
+.legalInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.copyright {
+  color: color-mix(in srgb, var(--color-bg) 82%, transparent);
+  font-size: 13.5px;
+}
+
+.legalLinks {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.legalLinks a {
+  color: color-mix(in srgb, var(--color-bg) 82%, transparent);
+  text-decoration: none;
+  font-size: 13.5px;
+  transition: color 160ms ease;
+}
+.legalLinks a:hover {
+  color: var(--color-bg);
+}
+
+.built {
+  color: color-mix(in srgb, var(--color-bg) 82%, transparent);
+  font-size: 13.5px;
+}
+.carousLink {
+  color: var(--color-bg);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 160ms ease;
+}
+.carousLink:hover {
+  opacity: 0.82;
+}
+
+
+/* ===== UTILITY ===== */
+.srOnly {
+  position: absolute !important;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 899px) {
+  .colHeading { font-size: 20px; margin-bottom: 14px; padding-bottom: 8px; }
+  .brandLogo { height: 52px; max-width: 200px; }
+  .sellBtn { padding: 11px 20px; }
+  .newsBtn { width: 38px; height: 38px; }
+
+  .legalInner {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+  }
+  .legalLinks { justify-content: center; gap: 14px; }
+  .copyright, .built, .legalLinks a { font-size: 12.5px; }
+}
+
+@media (max-width: 480px) {
+  .footer { padding-top: 36px; }
+  .colHeading { font-size: 19px; }
+  .brandDesc, .newsLead { font-size: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .linksList a,
+  .sellBtn,
+  .newsBtn,
+  .socialIco,
+  .contactList a,
+  .carousLink,
+  .legalLinks a { transition: none !important; }
+  .linksList a:hover,
+  .sellBtn:hover,
+  .newsBtn:hover,
+  .socialIco:hover { transform: none !important; }
+}

@@ -21,6 +21,12 @@
       "status": "experimental"
     },
     {
+      "id": "buy4lessuk-bespoke",
+      "name": "Buy4Less Diamond",
+      "description": "Bespoke dealer-signage theme inspired by Buy4Less UK — bold red diamond mark, twin-car hero with finance+sell split panel, big stock carousel with yellow safe-hands strip, image-trio CTA cards, finance-partner row and sticky 'Car Finance in 60 Seconds' CTA bar.",
+      "status": "experimental"
+    },
+    {
       "id": "classic-dealer",
       "name": "Classic Dealer",
       "description": "Current production-compatible theme.",
@@ -67,6 +73,12 @@
       "name": "Classic Teal",
       "description": "Crisp teal-accented dealer theme suited to independents who want a clean, trustworthy look.",
       "status": "stable"
+    },
+    {
+      "id": "warwick-hall-cars-bespoke",
+      "name": "Warwick Hall Cars",
+      "description": "Bespoke theme for Warwick Hall Cars Ltd — heritage family-run UK dealer with deep-indigo brand identity, Cormorant Garamond display + Karla body, warm team-photo hero treatment.",
+      "status": "experimental"
     }
   ]
 }

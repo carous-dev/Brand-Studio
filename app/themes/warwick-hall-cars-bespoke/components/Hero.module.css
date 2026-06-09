@@ -1,0 +1,224 @@
+/* =============================================================================
+ * Warwick Hall Cars — Hero
+ *
+ * Photo-chrome full-bleed showroom hero. Composition mirrors the dealer's
+ * existing site: dark scrim over a single dominant photograph, condensed-bold
+ * white headline, one brand-tinted brush stroke ornament under the title, and
+ * a single white pill CTA. No eyebrow, no lead, no chips — minimal by design.
+ * ============================================================================= */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(440px, 78vh, 720px);
+  background: var(--color-bg);
+}
+
+/* Background — brand image when set, brand-primary colour when not.
+   Theme-curated default photo dropped per Difatha 2026-06-09: dealer-record
+   previews without an uploaded hero now show a clean brand-coloured panel
+   instead of a generic stock photo. Ken-Burns zoom still runs (no-op when
+   there's no image to pan).
+   Oversized by default so the scale animation never reveals edges. */
+.heroImage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-color: var(--color-primary);
+  background-image: var(--brand-image-hero, none);
+  background-size: cover;
+  background-position: center 38%;
+  background-repeat: no-repeat;
+  filter: saturate(0.96) contrast(1.04);
+  transform: scale(1.08);
+  transform-origin: center 42%;
+  will-change: transform;
+  animation: heroKenBurns 22s ease-in-out infinite alternate;
+}
+
+@keyframes heroKenBurns {
+  0% {
+    transform: scale(1.08) translate3d(0, 0, 0);
+    transform-origin: 52% 44%;
+  }
+  100% {
+    transform: scale(1.18) translate3d(-1.2%, -0.8%, 0);
+    transform-origin: 48% 40%;
+  }
+}
+
+/* Photo-chrome literal: brand-agnostic dark scrim — guarantees the photo
+   stays visible AND white captions read at every brand-record permutation.
+   Uniform (not diagonal) so bright images don't wash through. */
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(8, 16, 32, 0.62) 0%,
+    rgba(8, 16, 32, 0.72) 55%,
+    rgba(8, 16, 32, 0.82) 100%
+  );
+  pointer-events: none;
+}
+
+.heroInner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: clamp(96px, 14vw, 168px) clamp(20px, 5vw, 64px) clamp(72px, 10vw, 128px);
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: clamp(24px, 3.5vw, 40px);
+}
+
+.titleWrap {
+  position: relative;
+  display: inline-block;
+}
+
+.title {
+  margin: 0;
+  /* Condensed-bold sans for the photo-chrome composition — independent of the
+     theme's serif brand font (Cormorant Garamond). Oswald is loaded in
+     base.css so this resolves to the actual font, not a system fallback. */
+  font-family: 'Oswald', 'Barlow Condensed', 'Montserrat', 'Segoe UI', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 5.6vw, 3.4rem);
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-wrap: balance;
+  text-shadow: 0 3px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Single ornament: brand-tinted brush stroke painted under the headline.
+   Sized relative to the title so it scales with viewport. */
+.brushStroke {
+  display: block;
+  width: clamp(160px, 26vw, 320px);
+  height: clamp(10px, 1.4vw, 18px);
+  margin: clamp(10px, 1.4vw, 18px) auto 0;
+  color: var(--color-primary, #1f7ad6);
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+}
+
+.ctas {
+  margin: 0;
+}
+
+/* "View Showroom" — solid-white pill, dark glyph + label.
+   Mirrors the screenshot: photo-chrome neutral CTA over dark hero scrim. */
+.ctaPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 14px 28px;
+  background: #ffffff;
+  color: #0b1320;
+  font-family: var(--font-ui-family-override, 'Montserrat'), 'Segoe UI', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  border: 0;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.ctaPrimary:hover,
+.ctaPrimary:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34);
+  background: #f6f8fb;
+}
+
+.ctaPrimary:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+.ctaArrow {
+  display: inline-flex;
+  color: inherit;
+}
+
+/* =============================================================================
+ * Responsive overrides — mobile-first means the base rules above already
+ * cover small screens via clamp(). These media queries fine-tune density.
+ * ============================================================================= */
+
+@media (max-width: 640px) {
+  .hero {
+    min-height: clamp(420px, 72vh, 560px);
+  }
+
+  .heroImage {
+    background-position: center 42%, center 42%;
+  }
+
+  .heroOverlay {
+    background: linear-gradient(
+      180deg,
+      rgba(8, 16, 32, 0.68) 0%,
+      rgba(8, 16, 32, 0.78) 55%,
+      rgba(8, 16, 32, 0.88) 100%
+    );
+  }
+
+  .heroInner {
+    padding: clamp(72px, 18vw, 110px) 18px clamp(48px, 12vw, 80px);
+    gap: clamp(18px, 5vw, 28px);
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 8.8vw, 2.6rem);
+    letter-spacing: 0.01em;
+  }
+
+  .ctaPrimary {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+@media (max-width: 420px) {
+  .brushStroke {
+    width: clamp(140px, 50vw, 200px);
+    margin-top: 10px;
+  }
+
+  .title {
+    font-size: clamp(1.75rem, 9.5vw, 2.3rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    min-height: clamp(560px, 82vh, 760px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ctaPrimary {
+    transition: none;
+  }
+  .ctaPrimary:hover,
+  .ctaPrimary:focus-visible {
+    transform: none;
+  }
+  .heroImage {
+    animation: none;
+    transform: scale(1.04);
+  }
+}

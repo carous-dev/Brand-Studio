@@ -1,0 +1,421 @@
+/* warwick-hall-cars-bespoke — Header
+ * Two-tier sticky chrome: contact topbar (collapses on scroll) + main row
+ * (logo · nav · finance CTA · phone block) + thin credit-broker disclosure strip.
+ * Natural-role tokens only; no hex literals; brand-record overrides retint cleanly.
+ */
+
+.header {
+  position: sticky;
+  top: var(--brandstudio-preview-banner-height, 0px);
+  z-index: 50;
+  background: var(--color-bg);
+  font-family: var(--font-ui-family-override, 'Karla', system-ui, sans-serif);
+  color: var(--color-text);
+}
+
+/* Mobile: scroll with the page instead of pinning. Sticky on phones eats
+   too much of an already-cramped viewport; let the header behave like a
+   normal banner under ~860px and re-engage sticky at tablet/desktop. */
+@media (max-width: 860px) {
+  .header {
+    position: relative;
+    top: auto;
+  }
+}
+
+/* ===== TOPBAR ===== */
+.topbarWrap {
+  background: var(--color-bg);
+  overflow: hidden;
+  max-height: 60px;
+  transition: max-height 320ms ease, opacity 240ms ease;
+}
+.scrolled .topbarWrap {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.topbar {
+  background: var(--color-secondary);
+  color: var(--color-bg);
+}
+
+.topbarInner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 11px clamp(20px, 3vw, 32px);
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2.4vw, 28px);
+}
+
+.topbarItem,
+.topbarItemPlain {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--color-bg);
+  white-space: nowrap;
+  letter-spacing: 0.005em;
+}
+.topbarItem {
+  text-decoration: none;
+  transition: opacity 160ms ease;
+}
+.topbarItem:hover { opacity: 0.82; }
+
+.topbarItem svg,
+.topbarItemPlain svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--color-bg);
+}
+
+.topbarSpacer { flex: 1 1 auto; }
+
+.topbarContact {
+  color: var(--color-bg);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 4px 0;
+  white-space: nowrap;
+  letter-spacing: 0.005em;
+  transition: opacity 160ms ease;
+}
+.topbarContact:hover { opacity: 0.82; }
+
+
+/* ===== MAIN ROW ===== */
+.main {
+  background: var(--color-bg);
+}
+.mainInner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 14px clamp(20px, 3vw, 32px);
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 2.6vw, 32px);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+  line-height: 0;
+}
+.brandImage {
+  height: 64px;
+  width: auto;
+  display: block;
+}
+.brandWordmark {
+  font-family: var(--font-brand-family-override, 'Cormorant Garamond', serif);
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2.2vw, 32px);
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+.navItem {
+  position: relative;
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.005em;
+  padding: 10px 6px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  transition: color 160ms ease;
+}
+.navItem:hover { color: var(--color-primary); }
+.navItemActive { color: var(--color-primary); font-weight: 600; }
+.navItemActive::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 4px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--color-primary);
+}
+
+.rightCluster {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 20px);
+  flex-shrink: 0;
+}
+
+/* Finance CTA — cyan pill, two-line stacked label */
+.financeCta {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  text-decoration: none;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 26px;
+  border-radius: 999px;
+  line-height: 1.15;
+  transition: background 200ms ease, transform 160ms ease, box-shadow 200ms ease;
+  white-space: nowrap;
+  min-height: 52px;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-accent) 28%, transparent);
+}
+.financeCta:hover,
+.financeCta:focus-visible {
+  background: var(--color-primary);
+  color: var(--color-bg);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary) 32%, transparent);
+}
+.financeCta:hover .financeCtaTitle,
+.financeCta:hover .financeCtaSub,
+.financeCta:focus-visible .financeCtaTitle,
+.financeCta:focus-visible .financeCtaSub {
+  color: var(--color-bg);
+}
+.financeCtaTitle {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.financeCtaSub {
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  opacity: 0.96;
+}
+
+/* Phone block — circle icon + stacked numbers */
+.phoneBlock {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.phoneIconBtn {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  text-decoration: none;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+.phoneIconBtn:hover {
+  border-color: var(--color-accent);
+  color: color-mix(in srgb, var(--color-accent) 86%, var(--color-text));
+}
+.phoneIconBtn svg { width: 20px; height: 20px; }
+
+.phoneNumbers {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.18;
+  gap: 1px;
+}
+.phoneNumber {
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.012em;
+  white-space: nowrap;
+  transition: color 160ms ease;
+}
+.phoneNumber:hover { color: var(--color-primary); }
+.phonePrimary::after {
+  content: '*';
+  color: var(--color-accent);
+  margin-left: 2px;
+  font-weight: 700;
+}
+
+/* Mobile menu toggle (hidden on desktop) */
+.menuToggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-primary);
+  cursor: pointer;
+}
+.menuToggle svg { width: 22px; height: 22px; }
+
+
+/* ===== RESPONSIVE — mobile-first simplification ===== */
+
+/* Hide topbar address at narrower viewports (email + facebook + Contact Us still show) */
+@media (max-width: 1080px) {
+  .topbarAddress { display: none; }
+}
+
+/* Tighten nav spacing on medium screens */
+@media (max-width: 960px) {
+  .nav { gap: 12px; }
+  .navItem { font-size: 14px; padding: 8px 4px; }
+}
+
+/* Tablet: collapse topbar, hide nav (hamburger), hide phone numbers (keep glyph) */
+@media (max-width: 860px) {
+  .topbarWrap { display: none !important; }
+  .nav { display: none !important; }
+  .menuToggle { display: inline-flex; }
+  .phoneNumbers { display: none; }
+  .financeCta {
+    padding: 8px 18px;
+    min-height: 44px;
+  }
+  .financeCtaSub { display: none; }
+  .financeCtaTitle { font-size: 13.5px; }
+}
+
+/* Phones: hide the finance CTA — header is too cramped at this width.
+   The Finance link stays available via the hamburger menu's mobile nav
+   (NAV_ITEMS) and the mobile-overlay call strip's "Finance Available"
+   button, so nothing is lost. */
+@media (max-width: 640px) {
+  .financeCta { display: none !important; }
+}
+
+/* Mobile: shrink logo, tighten padding */
+@media (max-width: 480px) {
+  .brandImage { height: 48px; }
+  .mainInner { padding: 10px 14px; gap: 10px; }
+  .phoneIconBtn { width: 44px; height: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topbarWrap,
+  .navItem,
+  .financeCta,
+  .phoneIconBtn,
+  .phoneNumber { transition: none !important; }
+  .financeCta:hover { transform: none; }
+}
+
+
+/* ===== MOBILE OVERLAY NAV ===== */
+.mobileOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  z-index: 100;
+  flex-direction: column;
+  padding: 20px clamp(16px, 5vw, 32px) 32px;
+  overflow-y: auto;
+}
+.mobileOverlay[data-open='true'] {
+  display: flex;
+}
+
+.mobileOverlayHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mobileOverlayBrand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  line-height: 0;
+}
+.mobileOverlayBrand img { height: 48px; width: auto; display: block; }
+
+.mobileOverlayClose {
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.mobileOverlayClose svg { width: 22px; height: 22px; }
+
+.mobileOverlayNav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 28px;
+}
+.mobileOverlayItem {
+  font-family: var(--font-brand-family-override, 'Cormorant Garamond', serif);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text);
+  text-decoration: none;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-border);
+  transition: color 160ms ease;
+}
+.mobileOverlayItem:hover { color: var(--color-primary); }
+
+.mobileOverlayCallStrip {
+  margin-top: 28px;
+  display: grid;
+  gap: 10px;
+}
+.mobileOverlayCta {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  text-decoration: none;
+  padding: 14px 20px;
+  border-radius: 999px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+}
+.mobileOverlayPhone {
+  background: var(--color-primary);
+  color: var(--color-bg);
+  text-decoration: none;
+  padding: 14px 20px;
+  border-radius: 999px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.mobileOverlayPhone svg { width: 18px; height: 18px; }

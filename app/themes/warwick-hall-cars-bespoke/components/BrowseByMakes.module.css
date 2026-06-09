@@ -1,0 +1,281 @@
+/* warwick-hall-cars-bespoke — BrowseByMakes
+ * Site-wide SEO + internal-linking band that sits between <main> and <Footer>
+ * in Shell. Centered header + 4-up card grid + dark pill CTA. Each card pairs
+ * a monogram badge with the make name and stock count. Natural-role tokens
+ * only; no hex literals.
+ */
+
+.section {
+  position: relative;
+  background: transparent;
+  color: var(--color-text);
+  padding: clamp(56px, 7vw, 96px) clamp(20px, 4vw, 40px);
+  font-family: var(--font-ui-family-override, 'Karla', system-ui, sans-serif);
+}
+
+.header {
+  background: transparent;
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+
+/* ===== HEADER (centered) ===== */
+.header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: clamp(28px, 4vw, 44px);
+}
+
+.eyebrow {
+  color: var(--color-primary);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.heading {
+  font-family: var(--font-brand-family-override, 'Cormorant Garamond', serif);
+  font-size: clamp(1.85rem, 3.6vw, 2.8rem);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.08;
+  letter-spacing: 0.003em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.lead {
+  color: color-mix(in srgb, var(--color-text) 62%, var(--color-bg));
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 4px 0 0;
+  max-width: 64ch;
+  text-wrap: pretty;
+}
+
+
+/* ===== GRID ===== */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+@media (min-width: 520px)  { .grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+@media (min-width: 820px)  { .grid { grid-template-columns: repeat(3, 1fr); gap: 18px; } }
+@media (min-width: 1100px) { .grid { grid-template-columns: repeat(4, 1fr); gap: 20px; } }
+
+.tileWrap {
+  list-style: none;
+  display: block;
+}
+
+
+/* ===== TILE — card with badge + text + arrow ===== */
+.tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+.tile:hover,
+.tile:focus-visible {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--color-primary) 32%, var(--color-border));
+  box-shadow:
+    0 16px 32px color-mix(in srgb, var(--color-primary) 10%, transparent),
+    0 2px 6px color-mix(in srgb, var(--color-primary) 6%, transparent);
+}
+.tile:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.tileBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-surface) 0%,
+      color-mix(in srgb, var(--color-primary) 4%, var(--color-surface)) 100%
+    );
+  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, var(--color-border));
+  flex-shrink: 0;
+  transition: background 220ms ease, border-color 220ms ease;
+}
+.tile:hover .tileBadge,
+.tile:focus-visible .tileBadge {
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-primary) 6%, var(--color-surface)) 0%,
+      color-mix(in srgb, var(--color-accent) 14%, var(--color-surface)) 100%
+    );
+  border-color: color-mix(in srgb, var(--color-primary) 26%, var(--color-border));
+}
+
+.tileMonogram {
+  font-family: var(--font-brand-family-override, 'Cormorant Garamond', serif);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.tileLogoImg {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+  /* simple-icons SVGs ship with each brand's official hex — render as-is. */
+}
+
+.tileText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.makeName {
+  font-family: var(--font-brand-family-override, 'Cormorant Garamond', serif);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: 0.005em;
+  line-height: 1.15;
+  /* one-line clamp so long make names don't push the arrow */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.makeCount {
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--color-text) 56%, var(--color-bg));
+}
+
+.tileArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: transparent;
+  color: color-mix(in srgb, var(--color-text) 38%, var(--color-bg));
+  flex-shrink: 0;
+  transition: background 200ms ease, color 200ms ease, transform 200ms ease;
+}
+.tile:hover .tileArrow,
+.tile:focus-visible .tileArrow {
+  background: var(--color-primary);
+  color: var(--color-bg);
+  transform: translateX(3px);
+}
+
+
+/* ===== SKELETON ===== */
+.tileSkeleton {
+  pointer-events: none;
+}
+.tileSkeleton .tileBadge {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+.skelLine {
+  height: 12px;
+  width: 70%;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  background-size: 200% 100%;
+  animation: warwickMakesShimmer 1.4s ease-in-out infinite;
+}
+.skelLineShort { width: 42%; height: 10px; }
+@keyframes warwickMakesShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+
+/* ===== FOOTER — centered dark CTA pill ===== */
+.footer {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(28px, 3.6vw, 40px);
+}
+
+.viewAllCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--color-primary);
+  color: var(--color-bg);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.012em;
+  padding: 14px 30px;
+  border-radius: 999px;
+  border: 1px solid var(--color-primary);
+  box-shadow:
+    0 12px 28px color-mix(in srgb, var(--color-primary) 22%, transparent),
+    0 2px 4px color-mix(in srgb, var(--color-primary) 14%, transparent);
+  transition: background 220ms ease, color 220ms ease, transform 200ms ease, box-shadow 220ms ease;
+}
+.viewAllCta svg { transition: transform 200ms ease; }
+.viewAllCta:hover,
+.viewAllCta:focus-visible {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+  transform: translateY(-2px);
+  box-shadow:
+    0 18px 36px color-mix(in srgb, var(--color-accent) 28%, transparent),
+    0 2px 4px color-mix(in srgb, var(--color-accent) 16%, transparent);
+}
+.viewAllCta:hover svg,
+.viewAllCta:focus-visible svg { transform: translateX(3px); }
+
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .tile,
+  .tileBadge,
+  .tileArrow,
+  .viewAllCta,
+  .viewAllCta svg { transition: none !important; }
+  .tile:hover,
+  .viewAllCta:hover { transform: none !important; }
+  .tile:hover .tileArrow,
+  .tile:focus-visible .tileArrow,
+  .viewAllCta:hover svg { transform: none !important; }
+  .skelLine { animation: none !important; }
+}

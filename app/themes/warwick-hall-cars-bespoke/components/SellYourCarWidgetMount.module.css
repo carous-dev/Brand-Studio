@@ -1,0 +1,34 @@
+.wrap {
+  --sycw-bg: var(--color-bg);
+  --sycw-fg: var(--color-text);
+  --sycw-muted: var(--color-muted);
+  --sycw-border: var(--color-border);
+  --sycw-border-strong: color-mix(in srgb, var(--color-text) 22%, var(--color-border));
+  --sycw-surface: var(--color-surface);
+  --sycw-accent: var(--color-primary);
+  --sycw-accent-soft: color-mix(in srgb, var(--color-primary) 10%, var(--color-bg));
+  --sycw-accent-foreground: var(--color-bg);
+  --sycw-radius-sm: 8px;
+  --sycw-radius-md: 8px;
+  --sycw-radius-lg: 8px;
+  --sycw-shadow-card: 0 18px 40px color-mix(in srgb, var(--color-primary) 10%, transparent);
+  --sycw-shadow-card-hover: 0 24px 48px color-mix(in srgb, var(--color-primary) 14%, transparent);
+  font-family: var(--font-ui-family-override, 'Karla', system-ui, sans-serif);
+}
+
+.wrap :global(.sycw-root) {
+  color: var(--color-text);
+}
+
+.wrap :global(.sycw-card-title),
+.wrap :global(.sycw-info-head h2),
+.wrap :global(.sycw-info-benefits h3) {
+  font-family: var(--font-brand-family-override, 'Cormorant Garamond', serif);
+  letter-spacing: 0;
+}
+
+.wrap :global(.sycw-card),
+.wrap :global(.sycw-info-step),
+.wrap :global(.sycw-info-benefits) {
+  border-radius: 8px;
+}

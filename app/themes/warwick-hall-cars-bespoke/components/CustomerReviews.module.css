@@ -1,0 +1,291 @@
+/* Warwick Hall Cars - Customer Reviews
+ * Compact review band: restrained header, strong average-rating summary,
+ * balanced cards that still look intentional with one, two, or three reviews.
+ */
+
+.section {
+  position: relative;
+  background: var(--color-bg);
+  color: var(--color-text);
+  padding: clamp(48px, 7vw, 88px) clamp(18px, 5vw, 64px);
+  font-family: var(--font-ui-family-override, 'Karla', system-ui, sans-serif);
+}
+
+.inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 22px;
+  align-items: end;
+  padding-bottom: clamp(24px, 4vw, 34px);
+  margin-bottom: clamp(22px, 3.5vw, 34px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.headerCopy {
+  max-width: 690px;
+  display: grid;
+  gap: 10px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  width: fit-content;
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.eyebrow svg {
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.heading {
+  font-family: var(--font-brand-family-override, 'Cormorant Garamond', serif);
+  font-size: clamp(32px, 4.6vw, 52px);
+  font-weight: 600;
+  line-height: 1.03;
+  letter-spacing: 0.003em;
+  color: var(--color-text);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.lead {
+  color: color-mix(in srgb, var(--color-text) 66%, var(--color-bg));
+  font-size: clamp(15px, 1.35vw, 17px);
+  line-height: 1.58;
+  margin: 0;
+  max-width: 60ch;
+  text-wrap: pretty;
+}
+
+.scorePanel {
+  display: grid;
+  gap: 8px;
+  justify-self: start;
+  width: min(100%, 340px);
+  padding: 18px 20px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  box-shadow: none;
+}
+
+.scoreLabel {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.scoreRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.scoreValue {
+  font-family: var(--font-brand-family-override, 'Cormorant Garamond', serif);
+  font-size: clamp(46px, 5vw, 58px);
+  font-weight: 700;
+  line-height: 0.95;
+  color: var(--color-primary);
+}
+
+.scorePanel p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.grid {
+  --review-grid-max: 100%;
+  list-style: none;
+  width: min(100%, var(--review-grid-max));
+  margin: 0 auto;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.grid[data-count='1'] {
+  --review-grid-max: 430px;
+}
+
+.grid[data-count='2'] {
+  --review-grid-max: 820px;
+}
+
+.card {
+  position: relative;
+  min-width: 0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: clamp(20px, 2.4vw, 26px);
+  border: 1px solid var(--color-border);
+  border-top: 4px solid var(--color-primary);
+  border-radius: 8px;
+  background: var(--color-bg);
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--color-primary) 9%, transparent);
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--color-primary) 32%, var(--color-border));
+  box-shadow: 0 20px 38px color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+
+.cardHeader {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-bg));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, var(--color-border));
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.author {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.name {
+  color: var(--color-text);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.detail {
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quote {
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.quote svg {
+  color: color-mix(in srgb, var(--color-accent) 78%, var(--color-primary));
+}
+
+.quote p {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 84%, var(--color-bg));
+  font-size: 15.5px;
+  line-height: 1.62;
+  text-wrap: pretty;
+}
+
+.cardFooter {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: flex-start;
+}
+
+.stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--color-review-star);
+  white-space: nowrap;
+}
+
+@media (min-width: 680px) {
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
+
+@media (min-width: 980px) {
+  .header {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 36px;
+  }
+
+  .scorePanel {
+    justify-self: end;
+  }
+
+  .grid[data-count='3'] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .grid[data-count='2'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .section {
+    padding-inline: 16px;
+  }
+
+  .heading {
+    font-size: clamp(30px, 10vw, 40px);
+  }
+
+  .scorePanel {
+    padding: 16px;
+  }
+
+  .scoreRow {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}
