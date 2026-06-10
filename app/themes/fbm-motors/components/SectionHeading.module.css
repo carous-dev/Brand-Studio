@@ -1,0 +1,30 @@
+.wrap {
+  max-width: 42rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--fbm-ember-600, var(--color-primary));
+}
+.eyebrowDark { color: var(--fbm-ember-400, var(--color-accent)); }
+
+.title {
+  margin-top: 12px;
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: inherit;
+}
+
+.lead {
+  margin-top: 16px;
+  color: var(--fbm-ink-500);
+  line-height: 1.6;
+}
+.leadDark { color: var(--fbm-mist); }

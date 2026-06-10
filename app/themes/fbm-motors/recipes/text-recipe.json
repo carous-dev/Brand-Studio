@@ -1,0 +1,336 @@
+{
+  "themeId": "fbm-motors",
+  "version": 1,
+  "description": "Per-component text fields for the FBM Motors theme. The dashboard /create + /update pages render form inputs per field. The AI brand generator reads this recipe to know what copy to emit. The theme runtime reads brand.text[<key>] first, falls back to defaults below.",
+  "tokens": {
+    "{brandName}": "Resolved brand name (or 'the showroom')",
+    "{city}": "Brand city",
+    "{county}": "Brand county",
+    "{cityish}": "city || county || 'the showroom'",
+    "{streetLine}": "line1 + line2 of address",
+    "{postcode}": "Brand postcode",
+    "{year}": "Current year",
+    "{tagline}": "brand.tagline"
+  },
+  "sections": [
+    {
+      "id": "topbar",
+      "label": "Header — top utility bar",
+      "fields": [
+        {
+          "key": "topbarLocationLabel",
+          "label": "Top bar location label",
+          "type": "short",
+          "default": "{cityish}",
+          "maxLength": 60
+        },
+        {
+          "key": "topbarOpeningLine",
+          "label": "Top bar opening hours line",
+          "type": "short",
+          "default": "Open Mon–Sat 09:00–18:00",
+          "maxLength": 80
+        }
+      ]
+    },
+    {
+      "id": "hero",
+      "label": "Home — hero",
+      "fields": [
+        {
+          "key": "heroEyebrow",
+          "label": "Hero eyebrow",
+          "type": "short",
+          "default": "{cityish}",
+          "maxLength": 60
+        },
+        {
+          "key": "heroTitleLead",
+          "label": "Hero title — lead word",
+          "type": "short",
+          "default": "Find Your",
+          "maxLength": 30
+        },
+        {
+          "key": "heroTitleAccent",
+          "label": "Hero title — accent word",
+          "type": "short",
+          "default": "Perfect",
+          "maxLength": 24,
+          "aiHint": "One-word accent word that gets the gradient treatment in the title (e.g. Perfect, Dream, Next, Right)."
+        },
+        {
+          "key": "heroTitleTrail",
+          "label": "Hero title — trailing word",
+          "type": "short",
+          "default": "Car",
+          "maxLength": 20
+        },
+        {
+          "key": "heroLead",
+          "label": "Hero lead paragraph",
+          "type": "long",
+          "default": "{tagline}",
+          "maxLength": 280,
+          "aiHint": "1-2 sentence sub-headline. State the main customer promise (warranties, breakdown cover, transparency, stock size)."
+        }
+      ]
+    },
+    {
+      "id": "stockStrip",
+      "label": "Home — current stock strip",
+      "fields": [
+        {
+          "key": "stockEyebrow",
+          "label": "Stock eyebrow",
+          "type": "short",
+          "default": "Live inventory",
+          "maxLength": 40
+        },
+        {
+          "key": "stockTitle",
+          "label": "Stock heading",
+          "type": "short",
+          "default": "Current Stock",
+          "maxLength": 60
+        },
+        {
+          "key": "stockViewAllLabel",
+          "label": "View-all link label",
+          "type": "short",
+          "default": "View all used →",
+          "maxLength": 30
+        }
+      ]
+    },
+    {
+      "id": "forecourt",
+      "label": "Home — forecourt photo break",
+      "fields": [
+        {
+          "key": "forecourtEyebrow",
+          "label": "Forecourt eyebrow",
+          "type": "short",
+          "default": "The forecourt",
+          "maxLength": 40
+        },
+        {
+          "key": "forecourtTitle",
+          "label": "Forecourt heading",
+          "type": "long",
+          "default": "Every car inspected, history-checked, and ready to drive away",
+          "maxLength": 140
+        },
+        {
+          "key": "forecourtCtaLabel",
+          "label": "Forecourt CTA label",
+          "type": "short",
+          "default": "Our story →",
+          "maxLength": 30
+        }
+      ]
+    },
+    {
+      "id": "whyUs",
+      "label": "Home — why choose us",
+      "fields": [
+        {
+          "key": "whyEyebrow",
+          "label": "Why-us eyebrow",
+          "type": "short",
+          "default": "The {brandName} promise",
+          "maxLength": 60
+        },
+        {
+          "key": "whyTitle",
+          "label": "Why-us heading",
+          "type": "short",
+          "default": "Why choose us?",
+          "maxLength": 60
+        },
+        { "key": "why1Title", "label": "Reason 1 — title", "type": "short", "default": "Free Warranty & Breakdown Cover", "maxLength": 60 },
+        { "key": "why1Body", "label": "Reason 1 — detail", "type": "long", "default": "We don't just simply forget about our customers after a purchase. Every car includes a minimum 3-month warranty and 12 months of AA Breakdown Cover.", "maxLength": 280 },
+        { "key": "why2Title", "label": "Reason 2 — title", "type": "short", "default": "Award-Winning Service", "maxLength": 60 },
+        { "key": "why2Body", "label": "Reason 2 — detail", "type": "long", "default": "A strong reputation as a reliable {cityish} dealership — multiple AutoTrader highly-rated awards with an overall rating of 4.9/5.", "maxLength": 280 },
+        { "key": "why3Title", "label": "Reason 3 — title", "type": "short", "default": "Fast & Easy Financing", "maxLength": 60 },
+        { "key": "why3Body", "label": "Reason 3 — detail", "type": "long", "default": "Established relationships with reputable lenders mean competitive financing options matched to your budget and needs.", "maxLength": 280 }
+      ]
+    },
+    {
+      "id": "partners",
+      "label": "Home — partners ticker",
+      "fields": [
+        {
+          "key": "partnersTitle",
+          "label": "Partners heading",
+          "type": "short",
+          "default": "Our Partners",
+          "maxLength": 40
+        }
+      ]
+    },
+    {
+      "id": "testimonials",
+      "label": "Home — testimonials",
+      "fields": [
+        {
+          "key": "testimonialsEyebrow",
+          "label": "Testimonials eyebrow",
+          "type": "short",
+          "default": "Feefo verified",
+          "maxLength": 40
+        },
+        {
+          "key": "testimonialsTitle",
+          "label": "Testimonials heading",
+          "type": "short",
+          "default": "Testimonials",
+          "maxLength": 40
+        }
+      ]
+    },
+    {
+      "id": "browseByMake",
+      "label": "Home — browse by make",
+      "fields": [
+        {
+          "key": "browseEyebrow",
+          "label": "Browse eyebrow",
+          "type": "short",
+          "default": "Our stock",
+          "maxLength": 40
+        },
+        {
+          "key": "browseTitle",
+          "label": "Browse heading",
+          "type": "short",
+          "default": "Browse by Make",
+          "maxLength": 60
+        },
+        {
+          "key": "browseLead",
+          "label": "Browse lead",
+          "type": "long",
+          "default": "Jump straight to the manufacturer you're after.",
+          "maxLength": 200
+        }
+      ]
+    },
+    {
+      "id": "visit",
+      "label": "Home — visit us",
+      "fields": [
+        {
+          "key": "visitTitle",
+          "label": "Visit heading",
+          "type": "short",
+          "default": "Visit Us",
+          "maxLength": 40
+        },
+        {
+          "key": "visitLead",
+          "label": "Visit lead (shown if no brand address)",
+          "type": "long",
+          "default": "Drop in to see the latest stock — we're {cityish}-based and open six days a week.",
+          "maxLength": 200,
+          "aiHint": "Fallback shown when the brand record has no address. The Home page prefers brand.location.fullAddress / address fields when set."
+        }
+      ]
+    },
+    {
+      "id": "footer",
+      "label": "Footer",
+      "fields": [
+        {
+          "key": "footerBrandLead",
+          "label": "Footer brand description",
+          "type": "long",
+          "default": "{tagline}",
+          "maxLength": 280
+        },
+        {
+          "key": "footerNewsletterTitle",
+          "label": "Newsletter heading",
+          "type": "short",
+          "default": "Newsletter",
+          "maxLength": 40
+        },
+        {
+          "key": "footerNewsletterLead",
+          "label": "Newsletter lead",
+          "type": "long",
+          "default": "New stock, exclusive offers, and finance updates — straight to your inbox.",
+          "maxLength": 200
+        },
+        {
+          "key": "footerOpeningHours",
+          "label": "Footer opening hours",
+          "type": "short",
+          "default": "Open Mon–Fri 09:00–18:00 · Sat 10:00–16:00",
+          "maxLength": 100
+        },
+        {
+          "key": "footerCopyright",
+          "label": "Footer copyright line",
+          "type": "short",
+          "default": "© {year} {brandName}. All rights reserved.",
+          "maxLength": 140
+        }
+      ]
+    },
+    {
+      "id": "aboutPage",
+      "label": "About page",
+      "fields": [
+        { "key": "aboutHeroTitle", "label": "About hero title", "type": "short", "default": "About {brandName}", "maxLength": 80 },
+        { "key": "aboutHeroLead", "label": "About hero lead", "type": "long", "default": "A {cityish} dealership built on a simple idea: treat every customer the way we'd want to be treated — before, during, and long after the sale.", "maxLength": 280 },
+        { "key": "aboutStoryEyebrow", "label": "Story eyebrow", "type": "short", "default": "Our story", "maxLength": 40 },
+        { "key": "aboutStoryTitle", "label": "Story heading", "type": "short", "default": "We don't forget about you after the keys change hands", "maxLength": 120 },
+        { "key": "aboutStoryParagraph1", "label": "Story paragraph 1", "type": "long", "default": "{brandName} started in {cityish} with a frustration every car buyer knows: dealerships that disappear the moment the sale completes. We built the opposite — every car we sell carries a minimum 3-month warranty and a full 12 months of AA Breakdown Cover, included as standard.", "maxLength": 480 },
+        { "key": "aboutStoryParagraph2", "label": "Story paragraph 2", "type": "long", "default": "That commitment to transparency, quality, and customer service has earned the trust of customers across {cityish} and beyond, and won us AutoTrader's highly-rated award multiple times with an overall rating of 4.9 out of 5.", "maxLength": 480 },
+        { "key": "aboutStoryParagraph3", "label": "Story paragraph 3", "type": "long", "default": "Whether you're buying your first car or your fifth, selling, part-exchanging, or arranging finance — you'll deal with real people who answer the phone and stand behind every vehicle on the forecourt.", "maxLength": 480 }
+      ]
+    },
+    {
+      "id": "contactPage",
+      "label": "Contact page",
+      "fields": [
+        { "key": "contactHeroTitle", "label": "Contact hero title", "type": "short", "default": "Contact Us", "maxLength": 60 },
+        { "key": "contactHeroLead", "label": "Contact hero lead", "type": "long", "default": "Questions about a car, finance, or a part exchange? Call, email, or send a message — we typically reply within the hour during opening times.", "maxLength": 280 }
+      ]
+    },
+    {
+      "id": "sellPage",
+      "label": "Sell-your-car page",
+      "fields": [
+        { "key": "sellHeroTitle", "label": "Sell hero title", "type": "short", "default": "Sell Your Car", "maxLength": 60 },
+        { "key": "sellHeroLead", "label": "Sell hero lead", "type": "long", "default": "Get a fair, no-obligation valuation in under 24 hours. We buy outright and take part exchanges — paperwork handled, payment same day.", "maxLength": 280 }
+      ]
+    },
+    {
+      "id": "financePage",
+      "label": "Finance / loan calculator page",
+      "fields": [
+        { "key": "financeHeroTitle", "label": "Finance hero title", "type": "short", "default": "Loan Calculator", "maxLength": 60 },
+        { "key": "financeHeroLead", "label": "Finance hero lead", "type": "long", "default": "Estimate your monthly payments before you visit. Adjust the sliders to match your budget — we'll find finance to fit.", "maxLength": 280 },
+        { "key": "financeDisclaimer", "label": "Finance disclaimer", "type": "long", "default": "Illustration only — not a finance offer. Actual rates depend on your circumstances and lender approval. {brandName} works with reputable financial institutions to find terms that fit your budget.", "maxLength": 480 }
+      ]
+    },
+    {
+      "id": "faqsPage",
+      "label": "FAQs page",
+      "fields": [
+        { "key": "faqsHeroTitle", "label": "FAQs hero title", "type": "short", "default": "Frequently Asked Questions", "maxLength": 80 },
+        { "key": "faqsHeroLead", "label": "FAQs hero lead", "type": "long", "default": "Everything buyers and sellers ask us most. Can't find your answer? We're one message away.", "maxLength": 280 }
+      ]
+    },
+    {
+      "id": "usedCarsPage",
+      "label": "Used cars page",
+      "fields": [
+        { "key": "usedCarsHeroTitle", "label": "Used cars hero title", "type": "short", "default": "Used Cars", "maxLength": 40 },
+        { "key": "usedCarsHeroLead", "label": "Used cars hero lead", "type": "long", "default": "Every vehicle is inspected, history-checked, and covered by a free 3-month warranty plus 12 months of AA Breakdown Cover.", "maxLength": 280 }
+      ]
+    }
+  ]
+}

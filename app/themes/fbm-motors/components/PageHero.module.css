@@ -1,0 +1,66 @@
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--fbm-carbon-950);
+  color: #ffffff;
+  background-image:
+    radial-gradient(900px 450px at 80% -10%, color-mix(in srgb, var(--color-primary) 12%, transparent), transparent 60%),
+    radial-gradient(700px 400px at -10% 30%, rgba(56, 130, 246, 0.07), transparent 60%);
+}
+
+.bgImage {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  opacity: 0.25;
+  z-index: 0;
+}
+
+.atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--fbm-carbon-950) 40%, transparent), transparent 50%, color-mix(in srgb, var(--fbm-paper) 10%, transparent));
+}
+
+.inner {
+  position: relative;
+  z-index: 3;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 24px;
+  text-align: center;
+}
+@media (min-width: 768px) {
+  .inner { padding: 112px 24px; }
+}
+
+.title {
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: clamp(2rem, 5vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: #ffffff;
+  text-wrap: balance;
+}
+
+.lead {
+  max-width: 42rem;
+  margin: 20px auto 0;
+  color: var(--fbm-mist);
+  line-height: 1.6;
+}

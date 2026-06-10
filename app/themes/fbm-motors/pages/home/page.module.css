@@ -1,0 +1,343 @@
+/* ─── Hero — dark anchor with full-bleed photo ─── */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--fbm-carbon-950);
+  color: #ffffff;
+  background-image:
+    radial-gradient(900px 450px at 80% -10%, color-mix(in srgb, var(--color-primary) 12%, transparent), transparent 60%),
+    radial-gradient(700px 400px at -10% 30%, rgba(56, 130, 246, 0.07), transparent 60%);
+}
+.heroImage {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  opacity: 0.35;
+  z-index: 0;
+}
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--fbm-carbon-950) 70%, transparent), color-mix(in srgb, var(--fbm-carbon-950) 40%, transparent) 50%, color-mix(in srgb, var(--fbm-carbon-950) 80%, transparent));
+}
+.heroAtmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+}
+
+.heroInner {
+  position: relative;
+  z-index: 3;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 96px 24px;
+  text-align: center;
+}
+@media (min-width: 768px) {
+  .heroInner { padding: 144px 24px; }
+}
+.heroEyebrow {
+  color: var(--fbm-ember-400, var(--color-accent));
+}
+.heroTitle {
+  margin-top: 20px;
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: #ffffff;
+  text-wrap: balance;
+}
+.heroAccent {
+  background: linear-gradient(90deg, var(--fbm-ember-500, var(--color-primary)), var(--fbm-ember-400, var(--color-accent)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.heroLead {
+  max-width: 36rem;
+  margin: 20px auto 0;
+  color: var(--fbm-mist);
+  line-height: 1.6;
+}
+
+/* ─── Section primitive ─── */
+.section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+.sectionHeading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.sectionHeadingTitle {
+  margin-top: 12px;
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.stockGrid {
+  margin-top: 40px;
+  display: grid;
+  gap: 24px;
+}
+@media (min-width: 640px) {
+  .stockGrid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .stockGrid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ─── Showroom strip ─── */
+.showroom {
+  position: relative;
+  overflow: hidden;
+}
+.showroomImage {
+  height: 288px;
+  width: 100%;
+  object-fit: cover;
+}
+@media (min-width: 768px) {
+  .showroomImage { height: 384px; }
+}
+.showroomOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(90deg, color-mix(in srgb, var(--fbm-carbon-950) 80%, transparent), color-mix(in srgb, var(--fbm-carbon-950) 30%, transparent) 50%, transparent);
+}
+.showroomBody {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+}
+.showroomInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+}
+.showroomEyebrow { color: var(--fbm-ember-400, var(--color-accent)); }
+.showroomTitle {
+  margin-top: 8px;
+  max-width: 28rem;
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 700;
+  color: #ffffff;
+  text-wrap: balance;
+}
+.showroomCta { margin-top: 24px; }
+
+/* ─── Why us ─── */
+.whyUsSection {
+  background: #ffffff;
+  padding: 80px 0;
+}
+.whyUsInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.whyGrid {
+  margin-top: 48px;
+  display: grid;
+  gap: 24px;
+}
+@media (min-width: 768px) {
+  .whyGrid { grid-template-columns: repeat(3, 1fr); }
+}
+.whyCard {
+  background: #ffffff;
+  border: 1px solid rgba(14, 20, 32, 0.06);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: var(--fbm-shadow-card);
+  transition: border-color 0.2s;
+}
+.whyCard:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+.whyIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  width: 48px;
+  border-radius: 16px;
+  background: var(--fbm-ember-50);
+  color: var(--fbm-ember-600, var(--color-primary));
+}
+.whyCardTitle {
+  margin-top: 20px;
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.whyCardBody {
+  margin-top: 12px;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--fbm-ink-500);
+}
+
+/* ─── Partners ticker ─── */
+.partners {
+  overflow: hidden;
+  padding: 56px 0;
+  border-top: 1px solid rgba(14, 20, 32, 0.06);
+  border-bottom: 1px solid rgba(14, 20, 32, 0.06);
+}
+.partnersTicker {
+  position: relative;
+  margin-top: 40px;
+}
+.partnersStrip {
+  display: flex;
+  width: max-content;
+  gap: 64px;
+  white-space: nowrap;
+  animation: fbm-ticker 30s linear infinite;
+}
+.partnerName {
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: color-mix(in srgb, var(--fbm-ink-500) 50%, transparent);
+}
+
+/* ─── Testimonials section ─── */
+.testimonialsSection {
+  background: var(--fbm-carbon-950);
+  color: #ffffff;
+  padding: 80px 0;
+  background-image:
+    radial-gradient(900px 450px at 80% -10%, color-mix(in srgb, var(--color-primary) 12%, transparent), transparent 60%),
+    radial-gradient(700px 400px at -10% 30%, rgba(56, 130, 246, 0.07), transparent 60%);
+}
+.testimonialsInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ─── Browse by Make ─── */
+.browseGrid {
+  margin-top: 48px;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 640px) {
+  .browseGrid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1024px) {
+  .browseGrid { grid-template-columns: repeat(4, 1fr); }
+}
+.makeCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid rgba(14, 20, 32, 0.06);
+  box-shadow: var(--fbm-shadow-card);
+  padding: 16px 20px;
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+.makeCard:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+.makeName {
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--fbm-ink-900);
+  margin: 0;
+}
+.makeCount {
+  font-size: 0.75rem;
+  color: var(--fbm-ink-500);
+  margin: 0;
+  margin-top: 2px;
+}
+.makeArrow {
+  color: var(--fbm-ink-500);
+  transition: transform 0.2s, color 0.2s;
+}
+.makeCard:hover .makeArrow {
+  transform: translateX(4px);
+  color: var(--fbm-ember-600, var(--color-primary));
+}
+
+.browseCtaWrap {
+  margin-top: 40px;
+  text-align: center;
+}
+
+/* ─── Visit Us ─── */
+.visitSection {
+  background: #ffffff;
+  padding: 80px 0;
+}
+.visitInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.visitMap {
+  background: #ffffff;
+  margin: 40px auto 0;
+  max-width: 64rem;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid rgba(14, 20, 32, 0.06);
+  box-shadow: var(--fbm-shadow-card);
+}
+.visitMapInner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 7;
+  background: var(--fbm-paper);
+  text-align: center;
+}
+.visitPin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  width: 48px;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: var(--fbm-ember-500, var(--color-primary));
+  box-shadow: var(--fbm-shadow-glow);
+}
+.visitMapHint {
+  margin-top: 16px;
+  font-size: 0.875rem;
+  color: var(--fbm-ink-500);
+}
+.visitMapCta { margin-top: 20px; }

@@ -45,6 +45,12 @@
       "status": "experimental"
     },
     {
+      "id": "fbm-motors",
+      "name": "FBM Motors",
+      "description": "Dual-tier dealer theme — light-dominant surfaces with dark anchor sections (hero, testimonials, footer), ember/orange brand accent, condensed display type, and full-photo section breaks. Ported page-for-page from the First Buy Motors source app and tokenized for brand overrides.",
+      "status": "experimental"
+    },
+    {
       "id": "gilded-drive",
       "name": "Gilded Drive",
       "description": "Futuristic showcase theme adapted for brand tokens.",

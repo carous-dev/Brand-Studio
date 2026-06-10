@@ -1,0 +1,109 @@
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #ffffff;
+  border: 1px solid rgba(14, 20, 32, 0.06);
+  box-shadow: var(--fbm-shadow-card);
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--fbm-shadow-glow);
+  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+
+.media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: rgba(14, 20, 32, 0.05);
+}
+.image {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+.card:hover .image {
+  transform: scale(1.05);
+}
+.mediaOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(0deg, color-mix(in srgb, var(--fbm-carbon-950) 50%, transparent), transparent 50%);
+}
+.warrantyBadge {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 12px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--fbm-ember-600, var(--color-primary));
+  backdrop-filter: blur(8px);
+}
+.priceBadge {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--fbm-carbon-950) 80%, transparent);
+  padding: 6px 16px;
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  backdrop-filter: blur(8px);
+}
+
+.body {
+  padding: 20px;
+}
+.title {
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--fbm-ink-900);
+  margin: 0;
+}
+.specs {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16px;
+  row-gap: 6px;
+  font-size: 0.75rem;
+  color: var(--fbm-ink-500);
+}
+.spec {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 70%, transparent);
+}
+
+.enquire {
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--fbm-ember-600, var(--color-primary));
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.card:hover .enquire {
+  opacity: 1;
+}

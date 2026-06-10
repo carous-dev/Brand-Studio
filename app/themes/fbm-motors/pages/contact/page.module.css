@@ -1,0 +1,115 @@
+.wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  gap: 40px;
+  padding: 56px 24px;
+}
+@media (min-width: 1024px) {
+  .wrap {
+    grid-template-columns: 1fr 1.3fr;
+  }
+}
+
+.detailsCol {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+.detailCard {
+  border-radius: 24px;
+  background: #ffffff;
+  border: 1px solid rgba(14, 20, 32, 0.06);
+  padding: 28px;
+  box-shadow: var(--fbm-shadow-card);
+  transition: border-color 0.2s;
+}
+.detailCard:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+.detailLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--fbm-ember-600, var(--color-primary));
+}
+.detailValue {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--fbm-ink-900);
+  text-decoration: none;
+}
+.detailValueLink:hover {
+  color: var(--fbm-ember-400, var(--color-accent));
+}
+.detailSub {
+  margin-top: 4px;
+  font-size: 0.875rem;
+  color: var(--fbm-ink-500);
+}
+
+.calloutCard {
+  border-radius: 24px;
+  padding: 28px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 40%, transparent);
+  background-image: linear-gradient(135deg, var(--fbm-ember-50), transparent);
+}
+.calloutTitle {
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-weight: 600;
+}
+.calloutBody {
+  margin-top: 4px;
+  font-size: 0.875rem;
+  color: var(--fbm-ink-500);
+}
+
+.formCard {
+  border-radius: 24px;
+  background: #ffffff;
+  border: 1px solid rgba(14, 20, 32, 0.06);
+  padding: 32px;
+  box-shadow: var(--fbm-shadow-card);
+}
+.formGrid {
+  display: grid;
+  gap: 16px;
+}
+.formRow {
+  display: grid;
+  gap: 16px;
+}
+@media (min-width: 640px) {
+  .formRow { grid-template-columns: 1fr 1fr; }
+}
+.formField { display: block; }
+.formLabel {
+  display: block;
+  padding: 0 4px 4px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--fbm-ember-600, var(--color-primary));
+}
+.formSubmit { width: 100%; margin-top: 8px; }
+.formResize { resize: none; min-height: 140px; }
+
+.sent {
+  padding: 80px 0;
+  text-align: center;
+}
+.sentTitle {
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.sentBody {
+  margin-top: 12px;
+  font-size: 0.875rem;
+  color: var(--fbm-ink-500);
+}
