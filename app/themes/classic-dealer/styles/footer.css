@@ -1,4 +1,10 @@
-.site-footer {
+/* Scoped + padding locked to zero because gilded-drive ships an unscoped
+   `@media (min-width:769px) { .site-footer { padding: 56px 0 0 } }` rule
+   that leaks into this theme's bundle. classic-dealer's <footer> has no
+   bg of its own (the red bg lives on .footer-main inside), so that 56px
+   of leaked top padding became 56px of body-white between the ServicesCta
+   and the actual footer. */
+body[data-theme-id="classic-dealer"] .site-footer {
   --footer-font-body: var(--font-ui-family);
   --footer-font-heading: var(--font-brand-family);
   --footer-font-label: var(--font-ui-family);
@@ -20,7 +26,8 @@
   --footer-bottom-link: var(--footer-main-text);
   --footer-bottom-link-hover: var(--footer-main-text);
 
-  margin-top: 0;
+  margin-top: 0 !important;
+  padding: 0 !important;
   color: var(--text-inverse, var(--footer-main-text));
   font-family: var(--footer-font-body);
 }

@@ -3,15 +3,18 @@
 .hero-section {
   position: relative;
   width: 100%;
-  min-height: 100vh;
-  height: 100vh;
-  background-image: var(--classic-hero-image, url('/favicon.svg'));
+  /* Responsive hero height — modest on small screens, generous on large.
+     Now that the gilded-drive 160px padding leak is fixed, extra vertical
+     space simply lets the brand photo breathe; it doesn't become a void
+     between cluster items. */
+  min-height: clamp(460px, 70vh, 780px);
+  background-color: var(--brand-text);
+  background-image: var(--classic-hero-image);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   overflow: hidden;
 }
@@ -19,14 +22,14 @@
 .hero-overlay {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: linear-gradient(
     125deg,
-    rgba(5, 9, 15, 0.62) 0%,
-    rgba(6, 11, 18, 0.5) 34%,
-    rgba(8, 13, 21, 0.34) 64%,
-    rgba(4, 8, 14, 0.58) 100%
+    rgba(var(--brand-text-rgb), 0.62) 0%,
+    rgba(var(--brand-text-rgb), 0.5) 34%,
+    rgba(var(--brand-text-rgb), 0.34) 64%,
+    rgba(var(--brand-text-rgb), 0.58) 100%
   );
-  backdrop-filter: blur(0.5px);
 }
 
 .hero-wrapper {
@@ -35,25 +38,38 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 120px 40px;
+  padding: 56px 40px 48px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* Now safe to center vertically — the cross-theme `.hero-content`
+     padding leak from gilded-drive is fixed (see hero.css :where rule),
+     so the wrapper's empty space is small and centering reads as
+     intentional breathing room rather than a void mid-cluster. */
   justify-content: center;
-  gap: 80px;
+  gap: 18px;
 }
 
-.hero-content {
+/* Specificity raised + padding explicitly zeroed because gilded-drive ships
+   THREE unscoped `.hero-content { padding: 80px 20px; ... }` rules
+   (about-modern.css, contact.css, services.css) that leak into every
+   theme's bundle and tied source order against classic-dealer's plain
+   `.hero-content` rule. 80px top + 80px bottom = 160px of dead space inside
+   the cluster — that was the actual "huge gap" the user kept marking. */
+body[data-theme-id="classic-dealer"] .hero-content {
   text-align: center;
   color: var(--brand-background);
   max-width: 900px;
+  padding: 0 !important;
+  margin: 0 !important;
+  position: static;
 }
 
 .hero-title {
   font-size: clamp(32px, 5vw, 64px);
   font-weight: 900;
   line-height: 1.1;
-  margin: 0 0 24px 0;
+  margin: 0 0 14px 0;
   font-family: var(--font-brand);
   letter-spacing: -1px;
   color: var(--brand-background);
@@ -235,13 +251,12 @@
 
 @media (max-width: 768px) {
   .hero-section {
-    min-height: 90vh;
-    height: 90vh;
+    min-height: clamp(480px, 68vh, 620px);
   }
 
   .hero-wrapper {
-    padding: 80px 20px;
-    gap: 50px;
+    padding: 64px 20px 56px;
+    gap: 32px;
   }
 
   .hero-title {
@@ -266,13 +281,12 @@
 
 @media (max-width: 480px) {
   .hero-section {
-    min-height: 85vh;
-    height: 85vh;
+    min-height: clamp(420px, 62vh, 560px);
   }
 
   .hero-wrapper {
-    padding: 60px 16px;
-    gap: 40px;
+    padding: 56px 16px 44px;
+    gap: 26px;
   }
 
   .hero-title {

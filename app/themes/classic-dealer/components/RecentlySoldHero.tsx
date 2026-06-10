@@ -9,7 +9,7 @@ export default function RecentlySoldHero() {
   const brand = useBrand()
 
   return (
-    <motion.section 
+    <motion.section
       className="recently-sold-hero"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -18,10 +18,10 @@ export default function RecentlySoldHero() {
       <div className="hero-background">
         <div className="hero-overlay"></div>
       </div>
-      
+
       <div className="hero-content">
         <div className="container">
-          <motion.div 
+          <motion.div
             className="hero-text"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -31,16 +31,16 @@ export default function RecentlySoldHero() {
               <CheckCircle size={16} />
               <span>Success Stories</span>
             </div>
-            
+
             <h1 className="hero-title">
               Recently Sold at {brand.name}
             </h1>
-            
+
             <p className="hero-subtitle">
-              Discover the quality vehicles our customers have recently driven home with. 
+              Discover the quality vehicles our customers have recently driven home with.
               Each sale represents our commitment to excellence and customer satisfaction.
             </p>
-            
+
             <div className="hero-stats">
               <div className="stat-item">
                 <TrendingUp size={20} />
@@ -49,7 +49,7 @@ export default function RecentlySoldHero() {
                   <span className="stat-label">Customer Satisfaction</span>
                 </div>
               </div>
-              
+
               <div className="stat-item">
                 <Users size={20} />
                 <div className="stat-content">
@@ -57,7 +57,7 @@ export default function RecentlySoldHero() {
                   <span className="stat-label">Happy Customers</span>
                 </div>
               </div>
-              
+
               <div className="stat-item">
                 <CheckCircle size={20} />
                 <div className="stat-content">

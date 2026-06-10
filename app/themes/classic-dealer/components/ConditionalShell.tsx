@@ -7,12 +7,14 @@ import { Header } from "./Header";
 import ServicesCta from "./ServicesCta";
 import Footer from "./Footer";
 import CookieBanner from "./CookieBanner";
-import SupportWidget from "./SupportWidget";
+import CarousWhatsAppWidget from "@/app/widgets/CarousWhatsAppWidget/CarousWhatsAppWidget";
+import { useBrand } from "../context/BrandClientWrapper";
 import "../styles/header.css";
 import "../styles/footer.css";
 
 export default function ConditionalShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || "";
+  const brand = useBrand();
 
   // Treat dashboard routes and the public login page as areas that provide
   // their own chrome (do not render the global header/footer/support UI)
@@ -33,7 +35,10 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
       <ServicesCta />
       <Footer />
       <CookieBanner />
-      <SupportWidget />
+      {/* CDN-hosted WhatsApp enquiry widget (widgets.carous.co.uk) — replaces
+          the legacy custom SupportWidget. Uses the same dealer-config props
+          as auto-wow-uk-bespoke-02. */}
+      <CarousWhatsAppWidget brand={brand} />
     </div>
   );
 }

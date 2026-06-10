@@ -1,170 +1,263 @@
-.reviews-strip {
-  --reviews-strip-bg-start: rgba(var(--brand-background-rgb), 0.96);
-  --reviews-strip-bg-end: rgba(var(--brand-secondary-rgb), 0.08);
-  --reviews-strip-border: rgba(var(--brand-text-rgb), 0.14);
-  --reviews-strip-item-text: var(--brand-text);
-  --reviews-strip-focus: var(--brand-primary);
-  --reviews-strip-brand-logo: var(--brand-text);
-  --reviews-strip-stars: var(--brand-accent);
-  --reviews-strip-cta-text: var(--brand-text);
-  --reviews-strip-font-body: var(--font-ui-family);
-  --reviews-strip-font-heading: var(--font-brand-family);
+/* ==========================================================================
+   Reviews Strip — modern card design
+   --------------------------------------------------------------------------
+   Three review platforms as proper interactive cards. Each card carries:
+     - Platform identity (logo / wordmark, vertically centred)
+     - Star rating
+     - "Read our reviews" CTA with arrow that slides right on hover
+   All rules scoped to body[data-theme-id="classic-dealer"] to stay immune
+   to cross-theme cascade leaks.
+   ========================================================================== */
 
-  padding: 32px 0;
-  background: linear-gradient(180deg, var(--reviews-strip-bg-start) 0%, var(--reviews-strip-bg-end) 100%);
-  border-top: 1px solid var(--reviews-strip-border);
-  border-bottom: 1px solid var(--reviews-strip-border);
+body[data-theme-id="classic-dealer"] .reviews-strip {
+  padding: clamp(48px, 6vw, 72px) 0;
+  background: linear-gradient(
+    180deg,
+    var(--brand-background) 0%,
+    color-mix(in srgb, var(--brand-primary) 5%, var(--brand-background)) 100%
+  );
+  position: relative;
+  overflow: hidden;
 }
 
-.reviews-strip-shell {
-  max-width: 1200px;
+/* Subtle radial accents in the corners for ambient texture. */
+body[data-theme-id="classic-dealer"] .reviews-strip::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  left: -120px;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--brand-primary-rgb), 0.1) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+
+body[data-theme-id="classic-dealer"] .reviews-strip::after {
+  content: "";
+  position: absolute;
+  bottom: -120px;
+  right: -120px;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--brand-primary-rgb), 0.08) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+
+body[data-theme-id="classic-dealer"] .reviews-strip-shell {
+  max-width: 1280px;
   margin: 0 auto;
   padding: 0 24px;
+  position: relative;
+  z-index: 1;
 }
 
-.reviews-strip-inner {
+body[data-theme-id="classic-dealer"] .reviews-strip-inner {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 22px;
+  gap: 16px;
+}
+
+/* Individual review card */
+body[data-theme-id="classic-dealer"] .reviews-strip-item {
+  position: relative;
+  display: flex !important;
+  flex-direction: column;
   align-items: center;
-}
-
-.reviews-strip-item {
-  display: grid;
-  gap: 10px;
-  justify-items: center;
-  text-decoration: none;
-  color: var(--reviews-strip-item-text);
-}
-
-.reviews-strip-item:focus-visible {
-  outline: 2px solid var(--reviews-strip-focus);
-  outline-offset: 4px;
-  border-radius: 8px;
-}
-
-.reviews-strip-logo {
-  line-height: 1;
-  width: 100%;
-  display: flex;
   justify-content: center;
+  gap: 18px;
+  padding: 32px 28px;
+  background: var(--brand-background);
+  border: 1.5px solid rgba(var(--brand-text-rgb), 0.08);
+  border-radius: 18px;
+  text-decoration: none;
+  color: var(--brand-text);
+  box-shadow: 0 14px 32px -20px rgba(var(--brand-text-rgb), 0.18);
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.25s ease,
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  isolation: isolate;
   text-align: center;
+  min-height: 200px;
 }
 
-.reviews-strip-logo-google {
-  font-family: var(--reviews-strip-font-body);
+/* Top-edge brand-primary accent that scales-X on hover */
+body[data-theme-id="classic-dealer"] .reviews-strip-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--brand-primary),
+    color-mix(in srgb, var(--brand-primary) 60%, transparent)
+  );
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body[data-theme-id="classic-dealer"] .reviews-strip-item:hover,
+body[data-theme-id="classic-dealer"] .reviews-strip-item:focus-visible {
+  transform: translateY(-4px);
+  border-color: rgba(var(--brand-primary-rgb), 0.32);
+  box-shadow: 0 28px 50px -22px rgba(var(--brand-primary-rgb), 0.32);
+  outline: none;
+}
+
+body[data-theme-id="classic-dealer"] .reviews-strip-item:hover::before,
+body[data-theme-id="classic-dealer"] .reviews-strip-item:focus-visible::before {
+  transform: scaleX(1);
+}
+
+/* Logo container — fixed height so all three align horizontally */
+body[data-theme-id="classic-dealer"] .reviews-strip-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  width: 100%;
+  line-height: 1;
+}
+
+/* Google wordmark */
+body[data-theme-id="classic-dealer"] .reviews-strip-logo-google {
+  font-family: var(--font-ui);
   font-weight: 700;
-  font-size: clamp(34px, 10vw, 46px);
-  letter-spacing: -0.03em;
+  font-size: clamp(30px, 3vw, 42px);
+  letter-spacing: -0.02em;
 }
 
-.reviews-strip-logo-google .g-b {
+body[data-theme-id="classic-dealer"] .reviews-strip-logo-google .g-b {
   color: #4285f4;
 }
 
-.reviews-strip-logo-google .g-r {
+body[data-theme-id="classic-dealer"] .reviews-strip-logo-google .g-r {
   color: #ea4335;
 }
 
-.reviews-strip-logo-google .g-y {
+body[data-theme-id="classic-dealer"] .reviews-strip-logo-google .g-y {
   color: #fbbc05;
 }
 
-.reviews-strip-logo-google .g-g {
+body[data-theme-id="classic-dealer"] .reviews-strip-logo-google .g-g {
   color: #34a853;
 }
 
-.reviews-strip-logo-autotrader {
+/* Autotrader SVG */
+body[data-theme-id="classic-dealer"] .reviews-strip-logo-autotrader {
   line-height: 0;
 }
 
-.reviews-strip-logo-autotrader .atds-svg {
+body[data-theme-id="classic-dealer"] .reviews-strip-logo-autotrader .atds-svg {
   display: block;
-  width: min(100%, 210px);
+  width: clamp(160px, 16vw, 220px);
   height: auto;
-  margin-inline: auto;
 }
 
-.reviews-strip-logo-brand {
-  font-family: var(--reviews-strip-font-heading);
-  font-size: clamp(26px, 7vw, 38px);
-  font-weight: 700;
+/* Brand name */
+body[data-theme-id="classic-dealer"] .reviews-strip-logo-brand {
+  font-family: var(--font-brand);
+  font-size: clamp(22px, 2.2vw, 32px);
+  font-weight: 800;
   letter-spacing: 0.01em;
-  color: var(--reviews-strip-brand-logo);
+  color: var(--brand-text);
+  line-height: 1.1;
 }
 
-.reviews-strip-cta {
+/* CTA row — stars + "Read our reviews →" */
+body[data-theme-id="classic-dealer"] .reviews-strip-cta {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  font-family: var(--reviews-strip-font-body);
-  font-size: 24px;
+  gap: 10px;
+  font-family: var(--font-ui);
 }
 
-.reviews-strip-stars {
+/* Star row */
+body[data-theme-id="classic-dealer"] .reviews-strip-stars {
   display: inline-flex;
-  gap: 3px;
-  color: var(--reviews-strip-stars);
-  font-size: 1em;
+  gap: 4px;
+  font-size: 22px;
   line-height: 1;
 }
 
-.reviews-strip-cta > span:last-child {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--reviews-strip-cta-text);
-  text-align: center;
+/* Each star — full gold, not relying on a brand token that may not resolve */
+body[data-theme-id="classic-dealer"] .reviews-strip-stars span {
+  color: #f5a623;
+  filter: drop-shadow(0 1px 1px rgba(245, 166, 35, 0.25));
 }
 
+/* "Read our reviews" CTA with arrow */
+body[data-theme-id="classic-dealer"] .reviews-strip-cta > span:last-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--brand-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  transition: gap 0.25s ease;
+}
+
+body[data-theme-id="classic-dealer"] .reviews-strip-cta > span:last-child::after {
+  content: "→";
+  font-size: 16px;
+  font-weight: 700;
+  transition: transform 0.25s ease;
+}
+
+body[data-theme-id="classic-dealer"] .reviews-strip-item:hover .reviews-strip-cta > span:last-child {
+  gap: 14px;
+}
+
+body[data-theme-id="classic-dealer"] .reviews-strip-item:hover .reviews-strip-cta > span:last-child::after {
+  transform: translateX(2px);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
 @media (min-width: 640px) {
-  .reviews-strip {
-    padding: 38px 0;
+  body[data-theme-id="classic-dealer"] .reviews-strip-inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
   }
 
-  .reviews-strip-inner {
-    gap: 24px;
-  }
-
-  .reviews-strip-logo-autotrader .atds-svg {
-    width: min(100%, 250px);
-  }
-
-  .reviews-strip-cta {
-    flex-direction: row;
-    font-size: 28px;
-    gap: 12px;
-  }
-
-  .reviews-strip-cta > span:last-child {
-    font-size: 16px;
+  body[data-theme-id="classic-dealer"] .reviews-strip-item {
+    padding: 36px 28px;
   }
 }
 
 @media (min-width: 900px) {
-  .reviews-strip-inner {
+  body[data-theme-id="classic-dealer"] .reviews-strip-inner {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 26px;
+    gap: 20px;
   }
 
-  .reviews-strip-logo-google {
-    font-size: clamp(36px, 3.2vw, 56px);
+  body[data-theme-id="classic-dealer"] .reviews-strip-item {
+    padding: 40px 32px;
+    gap: 20px;
+    min-height: 220px;
   }
 
-  .reviews-strip-logo-autotrader .atds-svg {
-    width: clamp(220px, 17vw, 320px);
+  body[data-theme-id="classic-dealer"] .reviews-strip-logo {
+    min-height: 56px;
   }
 
-  .reviews-strip-logo-brand {
-    font-size: clamp(28px, 2.6vw, 42px);
-  }
-
-  .reviews-strip-cta {
-    font-size: clamp(30px, 2.2vw, 40px);
-    gap: 14px;
-  }
-
-  .reviews-strip-cta > span:last-child {
-    font-size: clamp(16px, 1.05vw, 22px);
+  body[data-theme-id="classic-dealer"] .reviews-strip-stars {
+    font-size: 24px;
   }
 }

@@ -84,83 +84,130 @@
   margin-bottom: 0;
 }
 
-/* Service Card */
-.service-card {
-  background: var(--white);
-  border-radius: 20px;
-  padding: 40px 30px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  text-align: center;
+/* ==========================================================================
+   Service Cards — modern refresh
+   --------------------------------------------------------------------------
+   Left-aligned, asymmetric layout (icon top-left, title + description below,
+   "Learn More" anchored to the bottom row). Solid brand-primary icon tile,
+   subtle card border that ramps to brand-primary on hover, soft glass-like
+   surface with a brand-tinted glow accent.
+   ========================================================================== */
+.services-grid {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
 }
 
-.service-card::before {
+body[data-theme-id="classic-dealer"] .service-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 32px 28px 26px !important;
+  background: var(--white);
+  border-radius: 18px;
+  border: 1.5px solid rgba(var(--brand-text-rgb), 0.08);
+  box-shadow: 0 14px 32px -18px rgba(var(--brand-text-rgb), 0.18);
+  text-align: left !important;
+  overflow: hidden;
+  transition:
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s ease,
+    box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.3s ease;
+  isolation: isolate;
+}
+
+/* Bottom-right brand-tinted glow that swells on hover. */
+body[data-theme-id="classic-dealer"] .service-card::after {
+  content: "";
+  position: absolute;
+  bottom: -60px;
+  right: -60px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--brand-primary-rgb), 0.18) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Top accent rail — appears on hover from left to right. */
+body[data-theme-id="classic-dealer"] .service-card::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
+  height: 3px;
   width: 100%;
-  height: 4px;
-  background: var(--primary-red);
+  background: linear-gradient(
+    90deg,
+    var(--primary-red),
+    color-mix(in srgb, var(--primary-red) 55%, transparent)
+  );
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.4s ease;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 2;
 }
 
-.service-card:hover::before {
+body[data-theme-id="classic-dealer"] .service-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+body[data-theme-id="classic-dealer"] .service-card:hover,
+body[data-theme-id="classic-dealer"] .service-card:focus-within {
+  transform: translateY(-6px);
+  border-color: rgba(var(--brand-primary-rgb), 0.35);
+  box-shadow: 0 28px 50px -22px rgba(var(--brand-primary-rgb), 0.4);
+}
+
+body[data-theme-id="classic-dealer"] .service-card:hover::before,
+body[data-theme-id="classic-dealer"] .service-card:focus-within::before {
   transform: scaleX(1);
 }
 
-.service-card:hover {
-  transform: translateY(-15px);
-  box-shadow: 0 25px 60px rgba(var(--brand-primary-rgb), 0.2);
+body[data-theme-id="classic-dealer"] .service-card:hover::after,
+body[data-theme-id="classic-dealer"] .service-card:focus-within::after {
+  opacity: 1;
+  transform: scale(1.15);
 }
 
-/* Service Icon */
-.service-icon {
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
-  background: var(--light-gray);
-  border: 1px solid rgba(var(--brand-primary-rgb), 0.2);
-  display: flex;
+/* Service Icon — solid brand-primary tile, white glyph */
+body[data-theme-id="classic-dealer"] .service-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(
+    135deg,
+    var(--primary-red),
+    color-mix(in srgb, var(--primary-red) 70%, var(--brand-text))
+  );
+  border: none !important;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 30px;
-  transition: all 0.4s ease;
-  position: relative;
+  margin: 0 !important;
+  box-shadow: 0 10px 22px -10px rgba(var(--brand-primary-rgb), 0.5);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.35s ease;
+  flex-shrink: 0;
 }
 
-.service-icon::before {
-  content: "";
-  position: absolute;
-  top: -5px;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
-  border-radius: 50%;
-  background: var(--primary-red);
-  opacity: 0;
-  z-index: -1;
-  transition: opacity 0.4s ease;
+body[data-theme-id="classic-dealer"] .service-icon::before {
+  content: none;
 }
 
-.service-card:hover .service-icon::before {
-  opacity: 0.3;
-}
-
-.service-card:hover .service-icon {
-  transform: scale(1.1) rotate(5deg);
-  box-shadow: 0 15px 35px rgba(var(--brand-primary-rgb), 0.28);
-  background: var(--primary-red);
-  border-color: transparent;
-}
-
-.service-icon:hover {
-  background: var(--primary-red);
-  border-color: transparent;
+body[data-theme-id="classic-dealer"] .service-card:hover .service-icon,
+body[data-theme-id="classic-dealer"] .service-card:focus-within .service-icon {
+  transform: translateY(-3px) rotate(-4deg);
+  box-shadow: 0 16px 30px -10px rgba(var(--brand-primary-rgb), 0.65);
 }
 
 .app-icon {
@@ -170,92 +217,84 @@
   line-height: 1;
 }
 
-.service-icon i,
-.service-icon svg {
-  font-size: 28px;
-  color: var(--primary-red) !important;
-  transition: transform 0.9s ease;
-}
-
-.service-icon svg {
+body[data-theme-id="classic-dealer"] .service-icon i,
+body[data-theme-id="classic-dealer"] .service-icon svg,
+body[data-theme-id="classic-dealer"] .service-card:hover .service-icon i,
+body[data-theme-id="classic-dealer"] .service-card:hover .service-icon svg,
+body[data-theme-id="classic-dealer"] .service-card:focus-within .service-icon i,
+body[data-theme-id="classic-dealer"] .service-card:focus-within .service-icon svg {
+  font-size: 24px;
+  color: var(--white) !important;
+  stroke: var(--white) !important;
   fill: none !important;
-}
-
-.service-card:hover .service-icon i,
-.service-card:hover .service-icon svg {
-  transform: rotate(270deg);
-  color: var(--white) !important;
-}
-
-.service-icon:hover i,
-.service-icon:hover svg {
-  color: var(--white) !important;
+  transform: none;
+  transition: none;
 }
 
 /* Service Content */
-.service-title {
+body[data-theme-id="classic-dealer"] .service-title {
   font-family: var(--font-family-sans);
-  font-size: 24px;
+  font-size: 20px;
   font-weight: var(--font-weight-bold);
   color: var(--dark-gray);
-  margin-bottom: 20px;
+  margin: 0 !important;
+  letter-spacing: 0.3px;
+  line-height: 1.25;
   transition: color 0.3s ease;
 }
 
-.service-card:hover .service-title {
+body[data-theme-id="classic-dealer"] .service-card:hover .service-title,
+body[data-theme-id="classic-dealer"] .service-card:focus-within .service-title {
   color: var(--primary-red);
 }
 
-.service-description {
+body[data-theme-id="classic-dealer"] .service-description {
   font-family: var(--font-family-body);
-  font-size: 16px;
-  line-height: 1.7;
+  font-size: 14.5px;
+  line-height: 1.65;
   color: var(--medium-gray);
-  margin-bottom: 30px;
-  min-height: 100px;
+  margin: 0 !important;
+  min-height: 0;
+  flex: 1;
 }
 
-/* Service Link */
-.service-link {
+/* Service Link — modern, bottom-anchored, animated arrow */
+body[data-theme-id="classic-dealer"] .service-link {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  margin-top: auto;
+  padding-top: 6px;
   font-family: var(--font-family-body);
   color: var(--primary-red);
   text-decoration: none;
-  font-weight: var(--font-weight-medium);
-  font-size: 16px;
-  transition: all 0.3s ease;
-  position: relative;
+  font-weight: 700;
+  font-size: 13.5px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  transition: gap 0.25s ease, color 0.25s ease;
+  align-self: flex-start;
 }
 
-.service-link::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--primary-red);
-  transition: width 0.3s ease;
+body[data-theme-id="classic-dealer"] .service-link::after {
+  content: none;
 }
 
-.service-link:hover::after {
-  width: 100%;
+body[data-theme-id="classic-dealer"] .service-link:hover {
+  color: color-mix(in srgb, var(--primary-red) 80%, var(--brand-text));
+  gap: 14px;
+  transform: none;
 }
 
-.service-link:hover {
-  color: var(--primary-red-dark);
-  transform: translateX(5px);
-}
-
-.service-link i {
-  font-size: 14px;
+body[data-theme-id="classic-dealer"] .service-link i,
+body[data-theme-id="classic-dealer"] .service-link svg {
+  font-size: 12px;
   transition: transform 0.3s ease;
 }
 
-.service-link:hover i {
-  transform: translateX(3px);
+body[data-theme-id="classic-dealer"] .service-link:hover i,
+body[data-theme-id="classic-dealer"] .service-link:hover svg {
+  transform: translateX(2px);
 }
 
 /* Responsive Design */
@@ -267,7 +306,7 @@
 
 @media (max-width: 768px) {
   .services-section {
-    padding: 80px 0;
+    padding: 72px 0;
   }
 
   .services-title {
@@ -279,36 +318,33 @@
   }
 
   .services-grid {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
   }
 
-  .service-card {
-    padding: 30px 20px;
+  body[data-theme-id="classic-dealer"] .service-card {
+    padding: 26px 22px 22px !important;
+    gap: 14px;
   }
 
-  .service-icon {
-    width: 62px;
-    height: 62px;
+  body[data-theme-id="classic-dealer"] .service-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
   }
 
-  .service-icon i {
-    font-size: 24px;
+  body[data-theme-id="classic-dealer"] .service-title {
+    font-size: 18px;
   }
 
-  .service-title {
-    font-size: 20px;
-  }
-
-  .service-description {
-    font-size: 15px;
-    min-height: 80px;
+  body[data-theme-id="classic-dealer"] .service-description {
+    font-size: 14px;
   }
 }
 
 @media (max-width: 480px) {
   .services-section {
-    padding: 60px 0;
+    padding: 56px 0;
   }
 
   .services-container {
@@ -321,28 +357,24 @@
 
   .services-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 14px;
   }
 
-  .service-card {
-    padding: 25px 15px;
+  body[data-theme-id="classic-dealer"] .service-card {
+    padding: 22px 20px 20px !important;
   }
 
-  .service-icon {
-    width: 54px;
-    height: 54px;
+  body[data-theme-id="classic-dealer"] .service-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
   }
 
-  .service-icon i {
-    font-size: 22px;
+  body[data-theme-id="classic-dealer"] .service-title {
+    font-size: 17px;
   }
 
-  .service-title {
-    font-size: 18px;
-  }
-
-  .service-description {
-    font-size: 14px;
-    min-height: 60px;
+  body[data-theme-id="classic-dealer"] .service-description {
+    font-size: 13.5px;
   }
 }

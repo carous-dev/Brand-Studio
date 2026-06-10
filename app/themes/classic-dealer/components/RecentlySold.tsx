@@ -146,7 +146,7 @@ export default function RecentlySold() {
   }
 
   return (
-    <motion.section 
+    <motion.section
       className="recently-sold-section"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
@@ -180,7 +180,7 @@ export default function RecentlySold() {
           </div>
         </div>
 
-        <motion.div 
+        <motion.div
           className="sold-grid"
           initial="hidden"
           whileInView="visible"
@@ -205,8 +205,8 @@ export default function RecentlySold() {
             const colourSwatch = getColorSwatch(vehicle.colour)
 
             return (
-              <motion.article 
-                key={vehicle.vin || vehicle.registration} 
+              <motion.article
+                key={vehicle.vin || vehicle.registration}
                 className="sold-card"
                 variants={{
                   hidden: { opacity: 0, y: 20 },

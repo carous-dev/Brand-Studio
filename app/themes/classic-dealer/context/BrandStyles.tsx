@@ -35,7 +35,10 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     themeAny.fontMono,
     themeAny.monoFont
   ) || "'JetBrains Mono', Consolas, monospace";
-  const heroImage = brand.heroImage || brand.logo || '/favicon.svg';
+  const heroImage =
+    brand.heroImage ||
+    brand.images?.hero ||
+    'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=2400&q=80';
   
   // Convert brand colors to CSS custom properties
   const cssVariables = {

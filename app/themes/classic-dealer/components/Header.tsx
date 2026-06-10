@@ -1,9 +1,8 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react'
-import { Menu, X, Home, Car, Truck, Coins, Info, Phone, Mail, Facebook, Instagram, Linkedin, Youtube, Heart, Twitter, CheckCircle } from 'lucide-react'
+import { Menu, X, Home, Car, Truck, Coins, CheckCircle, Info, Phone, Mail, Facebook, Instagram, Linkedin, Youtube, Heart, Twitter } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useBrand } from '../context/BrandClientWrapper'
 
@@ -14,8 +13,7 @@ const LINKS: NavLink[] = [
     { href: '/used-cars/', label: 'Used Cars' },
     { href: '/recently-sold', label: 'Recently Sold' },
     { href: '/services/', label: 'Services' },
-    { href: '/sell-your-car/', label: 'Sell Your Car' },
-    { href: '/about', label: 'About Us' },
+    { href: '/sell-my-car/', label: 'Sell My Car' },
 ]
 
 const ICONS: Record<string, React.ElementType> = {
@@ -23,7 +21,7 @@ const ICONS: Record<string, React.ElementType> = {
     '/used-cars/': Car,
     '/recently-sold': CheckCircle,
     '/services/': Truck,
-    '/sell-your-car/': Coins,
+    '/sell-my-car/': Coins,
     '/about': Info,
 }
 
@@ -32,10 +30,8 @@ const WISHLIST_STORAGE_PREFIX = 'vp-vehicle-wishlist:'
 function normalizeSavedVehiclePath(path: string): string {
     const withoutQuery = String(path || '').split('?')[0].split('#')[0].trim()
     if (!withoutQuery) return ''
-
     const withLeadingSlash = withoutQuery.startsWith('/') ? withoutQuery : `/${withoutQuery}`
     if (withLeadingSlash === '/') return '/'
-
     return withLeadingSlash.replace(/\/+$/, '')
 }
 
@@ -64,28 +60,51 @@ export const Header: React.FC = () => {
     const pathname = usePathname?.() || '/'
     const router = useRouter()
 
-    const socialLinks = brand?.socialLinks ?? { 
-        facebook: 'https://facebook.com', 
-        instagram: 'https://instagram.com',
-        twitter: 'https://twitter.com', 
-        linkedin: 'https://linkedin.com', 
-        youtube: 'https://youtube.com' 
+    const socialLinks = brand?.socialLinks ?? {
+        facebook: '',
+        instagram: '',
+        twitter: '',
+        linkedin: '',
+        youtube: '',
     }
     const phone = brand?.location?.phone ?? ''
     const email = brand?.location?.email ?? ''
-    const telHref = `tel:${phone.replace(/[^0-9]/g, '')}`
-    const [logoTimestamp, setLogoTimestamp] = useState<string>('')
-    const logoSrc = brand?.logo ? `${brand?.logo}?t=${logoTimestamp}` : '/images/logo.png'
+    const telHref = phone ? `tel:${phone.replace(/[^0-9+]/g, '')}` : ''
     const brandName = brand?.name || 'Dealership'
+    const brandLogo = brand?.logo || ''
     const phoneCta = 'Book Appointment'
-    const phoneCtaShort = 'Book Appointment'
 
-    // Update logo timestamp when brand data changes
+    const [logoError, setLogoError] = useState(false)
+    const [isScrolled, setIsScrolled] = useState(false)
+    const [open, setOpen] = useState(false)
+    const [wishlistCount, setWishlistCount] = useState(0)
+
+    const menuRef = useRef<HTMLDivElement | null>(null)
+    const firstLinkRef = useRef<HTMLAnchorElement | null>(null)
+    const hamburgerRef = useRef<HTMLButtonElement | null>(null)
+    const prevOpenRef = useRef<boolean>(false)
+
+    /* Reset image-error state when the brand logo URL changes so a fresh
+       brand record can re-attempt loading instead of being stuck on wordmark. */
     useEffect(() => {
-        if (brand?.logo) {
-            setLogoTimestamp(Date.now().toString())
+        setLogoError(false)
+    }, [brandLogo])
+
+    /* Sticky-on-scroll affordance: collapses the utility strip and shrinks
+       the logo when the page is scrolled past the threshold. Passive listener
+       to avoid jank.
+       NOTE: We deliberately DON'T call onScroll() on mount. Some preview
+       iframes restore a non-zero scrollTop before mount, which would hide
+       the contact bar on first paint — that confused the user into thinking
+       the bar wasn't rendering at all. We let the user-initiated scroll
+       drive state instead. */
+    useEffect(() => {
+        const onScroll = () => {
+            setIsScrolled(window.scrollY > 96)
         }
-    }, [brand?.logo])
+        window.addEventListener('scroll', onScroll, { passive: true })
+        return () => window.removeEventListener('scroll', onScroll)
+    }, [])
 
     const normalizePath = (p: string | undefined) => {
         if (!p) return '/'
@@ -102,21 +121,12 @@ export const Header: React.FC = () => {
         return normalizedPath === nh || normalizedPath.startsWith(nh + '/')
     }
 
-    const [open, setOpen] = useState(false)
-    const [wishlistCount, setWishlistCount] = useState(0)
-    const menuRef = useRef<HTMLDivElement | null>(null)
-    const firstLinkRef = useRef<HTMLAnchorElement | null>(null)
-    const hamburgerRef = useRef<HTMLButtonElement | null>(null)
-    const prevOpenRef = useRef<boolean>(false)
-
     useEffect(() => {
         function onKey(e: KeyboardEvent) {
             if (e.key === 'Escape' && open) setOpen(false)
         }
         document.addEventListener('keydown', onKey)
-        return () => {
-            document.removeEventListener('keydown', onKey)
-        }
+        return () => document.removeEventListener('keydown', onKey)
     }, [open])
 
     useEffect(() => {
@@ -149,124 +159,135 @@ export const Header: React.FC = () => {
                 document.body.style.paddingRight = scrollBarWidth + 'px'
             }
 
-            try {
-                menuRef.current?.setAttribute('aria-hidden', 'false')
-            } catch (e) { }
+            try { menuRef.current?.setAttribute('aria-hidden', 'false') } catch { }
             setTimeout(() => firstLinkRef.current?.focus(), 50)
         } else {
             document.body.style.paddingRight = ''
-            try {
-                menuRef.current?.setAttribute('aria-hidden', 'true')
-            } catch (e) { }
-            if (prevOpenRef.current) {
-                hamburgerRef.current?.focus()
-            }
+            try { menuRef.current?.setAttribute('aria-hidden', 'true') } catch { }
+            if (prevOpenRef.current) hamburgerRef.current?.focus()
         }
         prevOpenRef.current = open
     }, [open])
 
+    const renderLogo = (mobileVariant?: boolean) => {
+        if (brandLogo && !logoError) {
+            return (
+                <img
+                    src={brandLogo}
+                    alt={brandName}
+                    className={mobileVariant ? 'mobile-logo' : 'logo-img'}
+                    onError={() => setLogoError(true)}
+                />
+            )
+        }
+        return <span className="logo-wordmark">{brandName}</span>
+    }
+
+    const socialItems = [
+        { key: 'facebook', label: 'Facebook', href: socialLinks.facebook, Icon: Facebook },
+        { key: 'instagram', label: 'Instagram', href: socialLinks.instagram, Icon: Instagram },
+        { key: 'twitter', label: 'X (Twitter)', href: (socialLinks as any).twitter || '', Icon: Twitter },
+        { key: 'linkedin', label: 'LinkedIn', href: socialLinks.linkedin, Icon: Linkedin },
+        { key: 'youtube', label: 'YouTube', href: socialLinks.youtube, Icon: Youtube },
+    ]
+
     return (
         <>
-            <header className="modern-header">
-                {/* Top Contact Bar */}
+            <header
+                className="modern-header"
+                data-scrolled={isScrolled ? 'true' : 'false'}
+            >
+                {/* Top utility strip */}
                 <div className="contact-bar">
                     <div className="contact-inner">
                         <div className="contact-left">
-                            <a href={telHref} className="contact-item" aria-label={phoneCta}>
-                                <Phone size={16} strokeWidth={1.5} />
-                                <span>{phoneCta}</span>
-                            </a>
-                            <a href={`mailto:${email}`} className="contact-item">
-                                <Mail size={16} strokeWidth={1.5} />
-                                <span>{email}</span>
-                            </a>
+                            {phone ? (
+                                <a href={telHref} className="contact-item" aria-label={`Call ${brandName}`}>
+                                    <Phone size={14} aria-hidden="true" />
+                                    <span>{phone}</span>
+                                </a>
+                            ) : null}
+                            {email ? (
+                                <a href={`mailto:${email}`} className="contact-item" aria-label={`Email ${brandName}`}>
+                                    <Mail size={14} aria-hidden="true" />
+                                    <span>{email}</span>
+                                </a>
+                            ) : null}
                         </div>
                         <div className="contact-right">
-                            <span className="hours">Mon-Sat: 09:00-18:00, Sunday: Closed</span>
-                            <div className="social-links">
-                                {typeof socialLinks.facebook === 'string' && socialLinks.facebook.trim() ? (
-                                    <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="social-link" aria-label="Facebook">
-                                        <Facebook size={14} strokeWidth={1.5} />
-                                    </a>
-                                ) : (
-                                    <div className="social-link" aria-label="Facebook">
-                                        <Facebook size={14} strokeWidth={1.5} />
-                                    </div>
-                                )}
-                                {typeof socialLinks.instagram === 'string' && socialLinks.instagram.trim() ? (
-                                    <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="social-link" aria-label="Instagram">
-                                        <Instagram size={14} strokeWidth={1.5} />
-                                    </a>
-                                ) : (
-                                    <div className="social-link" aria-label="Instagram">
-                                        <Instagram size={14} strokeWidth={1.5} />
-                                    </div>
-                                )}
-                                {typeof socialLinks.twitter === 'string' && socialLinks.twitter.trim() ? (
-                                    <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="social-link" aria-label="X (Twitter)">
-                                        <Twitter size={14} strokeWidth={1.5} />
-                                    </a>
-                                ) : (
-                                    <div className="social-link" aria-label="X (Twitter)">
-                                        <Twitter size={14} strokeWidth={1.5} />
-                                    </div>
-                                )}
-                                {typeof socialLinks.linkedin === 'string' && socialLinks.linkedin.trim() ? (
-                                    <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="social-link" aria-label="LinkedIn">
-                                        <Linkedin size={14} strokeWidth={1.5} />
-                                    </a>
-                                ) : (
-                                    <div className="social-link" aria-label="LinkedIn">
-                                        <Linkedin size={14} strokeWidth={1.5} />
-                                    </div>
-                                )}
-                                {typeof socialLinks.youtube === 'string' && socialLinks.youtube.trim() ? (
-                                    <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" className="social-link" aria-label="YouTube">
-                                        <Youtube size={14} strokeWidth={1.5} />
-                                    </a>
-                                ) : (
-                                    <div className="social-link" aria-label="YouTube">
-                                        <Youtube size={14} strokeWidth={1.5} />
-                                    </div>
-                                )}
+                            <span className="hours">Mon-Sat: 09:00 - 18:00 · Sunday: Closed</span>
+                            <div className="social-links" aria-label="Social media">
+                                {socialItems.map(({ key, label, href, Icon }) => {
+                                    const safeHref = typeof href === 'string' && href.trim() ? href.trim() : ''
+                                    if (!safeHref) {
+                                        return (
+                                            <span key={key} className="social-link" aria-label={label}>
+                                                <Icon size={13} strokeWidth={1.8} aria-hidden="true" />
+                                            </span>
+                                        )
+                                    }
+                                    return (
+                                        <a
+                                            key={key}
+                                            href={safeHref}
+                                            className="social-link"
+                                            aria-label={label}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            <Icon size={13} strokeWidth={1.8} aria-hidden="true" />
+                                        </a>
+                                    )
+                                })}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Main Navigation */}
+                {/* Main nav */}
                 <div className="main-nav">
                     <div className="nav-inner">
                         <div className="brand">
-                            <a href="/" className="logo-link">
-                                <img src={logoSrc} alt={brandName} className="logo-img" />
-                            </a>
+                            <Link href="/" className="logo-link" aria-label={`${brandName} home`}>
+                                {renderLogo()}
+                            </Link>
                         </div>
 
-                        <nav className="nav-links" role="navigation" aria-label="Main navigation">
-                            {LINKS.map((l) => (
-                                <div key={l.href} className="nav-item-wrapper">
-                                    <a
-                                        href={l.href}
-                                        className={`${isActive(l.href) ? 'active' : ''}`}
-                                    >
-                                        {l.label}
-                                    </a>
-                                </div>
-                            ))}
+                        <nav className="nav-links" role="navigation" aria-label="Primary navigation">
+                            {LINKS.map((link) => {
+                                const active = isActive(link.href)
+                                return (
+                                    <div key={link.href} className="nav-item-wrapper">
+                                        <Link
+                                            href={link.href}
+                                            className={active ? 'active' : ''}
+                                            aria-current={active ? 'page' : undefined}
+                                        >
+                                            {link.label}
+                                        </Link>
+                                    </div>
+                                )
+                            })}
                         </nav>
 
                         <div className="nav-actions">
-                            <Link className="wishlist-btn" aria-label="Wishlist" title="Wishlist" href="/wishlist">
-                                <Heart size={18} strokeWidth={1.6} aria-hidden="true" />
+                            <Link
+                                className="wishlist-btn"
+                                aria-label={wishlistCount > 0 ? `Wishlist · ${wishlistCount} saved` : 'Wishlist'}
+                                title="Wishlist"
+                                href="/wishlist"
+                            >
+                                <Heart size={18} strokeWidth={1.7} aria-hidden="true" />
                                 {wishlistCount > 0 ? (
-                                    <span className="wishlist-count" aria-label={`${wishlistCount} saved vehicles`}>{wishlistCount}</span>
+                                    <span className="wishlist-count" aria-hidden="true">{wishlistCount}</span>
                                 ) : null}
                             </Link>
-                            <a href={telHref} className="btn-call-us" aria-label={phoneCtaShort}>
-                                <Phone size={18} strokeWidth={2} />
-                                <span>{phoneCtaShort}</span>
-                            </a>
+                            {telHref ? (
+                                <a href={telHref} className="btn-call-us" aria-label={phoneCta}>
+                                    <Phone size={17} strokeWidth={2} aria-hidden="true" />
+                                    <span>{phoneCta}</span>
+                                </a>
+                            ) : null}
                             <button
                                 ref={hamburgerRef}
                                 className="mobile-toggle"
@@ -274,16 +295,20 @@ export const Header: React.FC = () => {
                                 aria-expanded={open}
                                 onClick={() => setOpen((v) => !v)}
                             >
-                                <Menu size={20} strokeWidth={1.6} aria-hidden="true" />
+                                <Menu size={20} strokeWidth={1.7} aria-hidden="true" />
                             </button>
                         </div>
                     </div>
                 </div>
             </header>
 
-            <div className={`mobile-overlay ${open ? 'open' : ''}`} onClick={() => setOpen(false)} aria-hidden={!open} />
-
             <div
+                className={`mobile-overlay ${open ? 'open' : ''}`}
+                onClick={() => setOpen(false)}
+                aria-hidden={!open}
+            />
+
+            <aside
                 ref={menuRef}
                 className={`mobile-menu ${open ? 'open' : ''}`}
                 role="dialog"
@@ -291,47 +316,55 @@ export const Header: React.FC = () => {
                 aria-hidden={!open}
             >
                 <div className="mobile-menu-header">
-                    <div className="mobile-brand">
-                        <img src={logoSrc} alt={brandName} className="mobile-logo" />
-                    </div>
+                    <Link href="/" className="mobile-brand" onClick={() => setOpen(false)} aria-label={`${brandName} home`}>
+                        {renderLogo(true)}
+                    </Link>
                     <button className="mobile-close" aria-label="Close menu" onClick={() => setOpen(false)}>
-                        <X size={20} strokeWidth={1.6} aria-hidden="true" />
+                        <X size={20} strokeWidth={1.7} aria-hidden="true" />
                     </button>
                 </div>
 
                 <nav className="mobile-menu-nav" role="navigation" aria-label="Mobile navigation">
-                    {LINKS.map((l, i) => (
-                        <a
-                            key={l.href}
-                            href={l.href}
-                            ref={i === 0 ? firstLinkRef : undefined as any}
-                            className={`menu-item ${isActive(l.href) ? 'active' : ''}`}
-                            onClick={() => setOpen(false)}
-                        >
-                            {(() => {
-                                const Icon = ICONS[l.href]
-                                return Icon ? <Icon className="menu-icon" size={18} strokeWidth={1.6} aria-hidden /> : null
-                            })()}
-                            {l.label}
-                        </a>
-                    ))}
+                    {LINKS.map((link, index) => {
+                        const Icon = ICONS[link.href]
+                        const active = isActive(link.href)
+                        return (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                ref={index === 0 ? firstLinkRef : undefined as any}
+                                className={`menu-item ${active ? 'active' : ''}`}
+                                aria-current={active ? 'page' : undefined}
+                                onClick={() => setOpen(false)}
+                            >
+                                {Icon ? <Icon className="menu-icon" size={18} strokeWidth={1.8} aria-hidden="true" /> : null}
+                                {link.label}
+                            </Link>
+                        )
+                    })}
                 </nav>
 
                 <div className="mobile-menu-footer">
-                    <a href={telHref} className="mobile-contact-item" aria-label={phoneCtaShort}>
-                        <Phone size={16} strokeWidth={1.5} />
-                        <span>{phoneCtaShort}</span>
-                    </a>
-                    <a href={`mailto:${email}`} className="mobile-contact-item">
-                        <Mail size={16} strokeWidth={1.5} />
-                        <span>{email}</span>
-                    </a>
-                    <a href={telHref} className="mobile-cta-btn" aria-label={phoneCtaShort}>
-                        <Phone size={18} strokeWidth={2} />
-                        <span>{phoneCtaShort}</span>
-                    </a>
+                    {phone ? (
+                        <a href={telHref} className="mobile-contact-item">
+                            <Phone size={16} strokeWidth={1.7} aria-hidden="true" />
+                            <span>{phone}</span>
+                        </a>
+                    ) : null}
+                    {email ? (
+                        <a href={`mailto:${email}`} className="mobile-contact-item">
+                            <Mail size={16} strokeWidth={1.7} aria-hidden="true" />
+                            <span>{email}</span>
+                        </a>
+                    ) : null}
+                    {telHref ? (
+                        <a href={telHref} className="mobile-cta-btn" aria-label={phoneCta}>
+                            <Phone size={18} strokeWidth={2} aria-hidden="true" />
+                            <span>{phoneCta}</span>
+                        </a>
+                    ) : null}
                 </div>
-            </div>
+            </aside>
         </>
     )
 }

@@ -26,6 +26,35 @@ const FALLBACK_TESTIMONIALS: Testimonial[] = [
   },
 ]
 
+const PLACEHOLDER_NAME_PATTERNS = [
+  /^john\s+doe$/i,
+  /^jane\s+doe$/i,
+  /^test\s+(user|customer)?$/i,
+  /^lorem(\s+ipsum)?$/i,
+  /^customer\s*\d*$/i,
+  /^placeholder$/i,
+]
+
+const PLACEHOLDER_TEXT_PATTERNS = [
+  /reliable\s+autos\s+ltd/i,
+  /lorem\s+ipsum/i,
+  /sample\s+(review|testimonial)/i,
+]
+
+function isPlaceholderTestimonial(entry: Testimonial, brandName: string): boolean {
+  if (PLACEHOLDER_NAME_PATTERNS.some((pattern) => pattern.test(entry.author))) return true
+  if (PLACEHOLDER_TEXT_PATTERNS.some((pattern) => pattern.test(entry.text))) return true
+
+  const trimmedBrandName = brandName.trim()
+  if (trimmedBrandName.length >= 4) {
+    const escaped = trimmedBrandName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    const foreignDealer = new RegExp(`\\b(?!${escaped}\\b)([A-Z][A-Za-z'&-]+\\s+){0,3}(autos?|motors|cars)\\s+(ltd|limited|inc|llc|gmbh)\\b`, "i")
+    if (foreignDealer.test(entry.text)) return true
+  }
+
+  return false
+}
+
 function normalizeIndex(value: number, count: number): number {
   return (value + count) % count
 }
@@ -51,9 +80,10 @@ const Testimonials = () => {
         }
       })
       .filter((entry): entry is Testimonial => entry !== null)
+      .filter((entry) => !isPlaceholderTestimonial(entry, brand.name || ""))
 
     return mapped.length > 0 ? mapped : FALLBACK_TESTIMONIALS
-  }, [brand.testimonials])
+  }, [brand.testimonials, brand.name])
 
   const slideCount = brandTestimonials.length
   const slides = useMemo(() => {

@@ -36,6 +36,17 @@ type FeaturedResponse = FeaturedVehicle[] | { error?: string; vehicles?: Feature
 
 const tabs = ["Latest Arrivals"]
 
+const PLACEHOLDER_IMAGE_PATTERNS = [
+  /\/images\/placeholder\.(png|jpe?g|webp|svg)$/i,
+  /no[-_ ]image/i,
+  /image[-_ ]not[-_ ]available/i,
+  /\/placeholder\.(png|jpe?g|webp|svg)$/i,
+]
+
+function isPlaceholderUrl(url: string): boolean {
+  return PLACEHOLDER_IMAGE_PATTERNS.some((pattern) => pattern.test(url))
+}
+
 function normalizeImageUrl(url?: string) {
   if (!url) return ""
   try {
@@ -49,7 +60,7 @@ function normalizeImageUrl(url?: string) {
 function buildFeaturedGalleryImages(vehicle: FeaturedVehicle, fallbackImage: string): string[] {
   const candidates = [...(vehicle.images || []), vehicle.image]
     .map((value) => normalizeImageUrl(value))
-    .filter(Boolean)
+    .filter((value) => Boolean(value) && !isPlaceholderUrl(value))
 
   const unique: string[] = []
   for (const imageUrl of candidates) {

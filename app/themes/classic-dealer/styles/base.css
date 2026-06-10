@@ -14,8 +14,8 @@ body {
 body {
   margin: 0;
   font-family: var(--font-base);
-  background: var(--bg);
-  color: #f3f3f3;
+  background: var(--bg, var(--brand-background));
+  color: var(--brand-text);
   -webkit-font-smoothing: antialiased;
 }
 

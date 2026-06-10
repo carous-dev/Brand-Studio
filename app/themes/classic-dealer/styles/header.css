@@ -1,1139 +1,723 @@
-/* Fairfield Cars Ltd - Modern Header Design */
+/* ==========================================================================
+   Classic Dealer — Modern Header
+   --------------------------------------------------------------------------
+   Two-row sticky header:
+     1) Top utility strip — phone, email, hours, socials. Collapses on scroll.
+     2) Main nav         — logo, lean nav, action cluster (wishlist + CTA).
+   --------------------------------------------------------------------------
+   Token discipline:
+     - Every surface pairs a bg token with a fg token explicitly. We do NOT
+       read --bg-elevated alone, because brand records can theme it dark
+       while --brand-text stays dark (Columbus Vehicles) → dark-on-dark.
+     - The dark utility bar pairs --brand-text (bg) + --brand-background (fg).
+     - The light main-nav pairs --brand-background (bg) + --brand-text (fg).
+     - The red CTA pairs --brand-primary (bg) + literal #fff (fg) with an
+       opt-in --btn-primary-fg override hook for pale-primary edge cases.
+   ========================================================================== */
 
-/* Modern Header Container */
-:where(body[data-theme-id="classic-dealer"]) .modern-header {
-  position: relative;
+body[data-theme-id="classic-dealer"] .modern-header {
+  --hdr-fg: var(--brand-text);
+  --hdr-bg: var(--brand-background);
+  --hdr-utility-bg: var(--brand-text);
+  --hdr-utility-fg: var(--brand-background);
+  --hdr-rule: rgba(var(--brand-text-rgb), 0.08);
+  --hdr-rule-strong: rgba(var(--brand-text-rgb), 0.16);
+  --hdr-cta-bg: var(--brand-primary);
+  --hdr-cta-fg: var(--btn-primary-fg, #ffffff);
+
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
   z-index: 1000;
-  background: var(--bg-primary);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-default);
-  box-shadow: none;
-  transition: var(--transition-base);
+  background: var(--hdr-bg);
+  border-bottom: 1px solid var(--hdr-rule);
+  transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+  font-family: var(--font-ui);
 }
 
-/* Contact Bar - text/icons follow --brand-text so they always contrast with the brand's --bg-elevated */
-:where(body[data-theme-id="classic-dealer"]) .contact-bar {
-  background: var(--bg-elevated);
-  border-bottom: 1px solid var(--border-subtle);
-  padding: 6px 0;
-  font-size: 13px;
+body[data-theme-id="classic-dealer"] .modern-header[data-scrolled="true"] {
+  background: rgba(var(--brand-background-rgb), 0.94);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
 }
 
-:where(body[data-theme-id="classic-dealer"]) .contact-inner {
+/* ==========================================================================
+   Top utility strip
+   ========================================================================== */
+body[data-theme-id="classic-dealer"] .contact-bar {
+  background: var(--hdr-utility-bg);
+  color: var(--hdr-utility-fg);
+  font-size: 12.5px;
+  line-height: 1.2;
+  max-height: 100px;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+body[data-theme-id="classic-dealer"] .modern-header[data-scrolled="true"] .contact-bar {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+body[data-theme-id="classic-dealer"] .contact-inner {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 10px 32px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
+  gap: 24px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .contact-left {
-  display: flex;
-  gap: var(--gap-md);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .contact-item {
+body[data-theme-id="classic-dealer"] .contact-left,
+body[data-theme-id="classic-dealer"] .contact-right {
   display: flex;
   align-items: center;
-  gap: var(--gap-sm);
-  color: var(--brand-text);
+  gap: 24px;
+  min-width: 0;
+}
+
+body[data-theme-id="classic-dealer"] .contact-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--hdr-utility-fg);
   text-decoration: none;
-  transition: var(--transition-fast);
-  font-family: var(--font-ui-family);
-  font-weight: 600;
-  font-size: 13px;
-  position: relative;
+  opacity: 0.92;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .contact-item::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--brand-text);
-  transition: var(--transition-base);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .contact-item:hover {
-  color: var(--brand-text);
-  opacity: 0.85;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .contact-item:hover::after {
-  width: 100%;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .contact-item svg {
-  stroke: var(--brand-text);
-  transition: all 0.3s ease;
-  width: 17px;
-  height: 17px;
-  stroke-width: 1.5;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .contact-item:hover svg {
-  transform: scale(1.15);
-  stroke-width: 2;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .contact-right {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-lg);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .contact-right .hours {
-  color: var(--brand-text);
-  opacity: 0.85;
-  font-family: var(--font-ui-family);
-  font-weight: 600;
-  font-size: 13px;
-  letter-spacing: 0.3px;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .social-links {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .social-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: var(--radius-sm);
-  color: var(--brand-text);
-  text-decoration: none;
-  transition: all var(--transition-fast);
-  font-family: var(--font-ui);
-  background: rgba(var(--brand-text-rgb), 0.06);
-  border: 1px solid rgba(var(--brand-text-rgb), 0.18);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .social-link:hover {
-  background: rgba(var(--brand-text-rgb), 0.12);
-  border-color: rgba(var(--brand-text-rgb), 0.32);
+body[data-theme-id="classic-dealer"] .contact-item:hover {
+  opacity: 1;
   transform: translateY(-1px);
 }
 
-:where(body[data-theme-id="classic-dealer"]) .social-link svg {
-  stroke: var(--brand-text);
-  transition: transform 0.3s ease;
+body[data-theme-id="classic-dealer"] .contact-item svg {
   width: 14px;
   height: 14px;
-  stroke-width: 1.6;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .social-link:hover svg {
-  transform: scale(1.15);
-}
-
-/* Main Navigation */
-:where(body[data-theme-id="classic-dealer"]) .main-nav {
-  background: transparent;
-  padding: 0;
-  backdrop-filter: blur(10px);
-  position: relative;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .nav-inner {
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: 0 32px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 48px;
-  min-height: var(--nav-height);
-}
-
-/* Brand Section */
-:where(body[data-theme-id="classic-dealer"]) .brand {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  stroke: currentColor;
+  stroke-width: 1.7;
   flex-shrink: 0;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .logo-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  gap: 16px;
-  max-width: 250px;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .logo-img {
-  height: 80px;
-  width: auto;
-  object-fit: contain;
-  transition: all var(--transition-base);
-  filter: none;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .logo-img:hover {
-  filter: brightness(1.1);
-  transform: scale(1.02);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .brand-name {
-  color: var(--text-primary);
-  font-size: 24px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-family: var(--font-brand);
-  text-shadow: none;
-  transition: all var(--transition-fast);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .brand-name:hover {
-  color: var(--accent-primary);
-  text-shadow: 0 2px 8px rgba(var(--brand-text-rgb), 0.8);
-}
-
-/* Navigation Links */
-:where(body[data-theme-id="classic-dealer"]) .nav-links {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .nav-links a {
-  color: var(--text-primary);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
-  position: relative;
-  font-family: var(--font-ui);
-  border: none;
-  background: transparent;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .nav-links a:hover {
-  color: var(--accent-primary);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .nav-links a {
-  position: relative;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .nav-links a::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: var(--accent-primary);
-  transition: var(--transition-base);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .nav-links a:hover::after {
-  width: 100%;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .nav-links a.active {
-  color: var(--accent-primary);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .nav-links a.active::after {
-  width: 100%;
-}
-
-/* Navigation Item Wrapper */
-:where(body[data-theme-id="classic-dealer"]) .nav-item-wrapper {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .nav-links a {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* Dropdown Arrow */
-:where(body[data-theme-id="classic-dealer"]) .dropdown-arrow {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 0.8;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .dropdown-arrow.open {
-  transform: rotate(180deg);
-}
-
-/* Navigation Actions */
-:where(body[data-theme-id="classic-dealer"]) .nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  justify-content: flex-end;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .wishlist-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-default);
-  background: var(--bg-elevated);
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  position: relative;
-  overflow: visible;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .wishlist-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--accent-primary);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  z-index: -1;
-  border-radius: inherit;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .wishlist-btn:hover {
-  color: var(--text-inverse);
-  border-color: var(--accent-primary);
-  background: var(--accent-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.3);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .wishlist-btn:hover::before {
-  opacity: 1;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .wishlist-btn:hover .wishlist-count {
-  background: var(--brand-background);
-  color: var(--accent-primary);
-  transform: scale(1.05);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .wishlist-count {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 4px;
-  border-radius: 999px;
-  background: var(--accent-primary);
-  color: var(--brand-background);
-  font-size: 11px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid var(--brand-background);
-  line-height: 1;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(var(--brand-text-rgb), 0.1);
-  background: var(--brand-background);
-  color: var(--brand-text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  position: relative;
-  overflow: hidden;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--accent-primary);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  z-index: -1;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-btn:hover {
-  color: var(--text-inverse);
-  border-color: var(--brand-primary);
-  background: var(--brand-primary);
-  box-shadow: 0 4px 12px rgba(var(--brand-primary-rgb), 0.3);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-btn:hover::before {
-  opacity: 1;
-}
-
-/* Advanced search modal */
-:where(body[data-theme-id="classic-dealer"]) .search-overlay {
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity 0.3s ease;
-  z-index:1200;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-overlay.open {
-  opacity:1;
-  pointer-events:auto;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-backdrop {
-  position:absolute;
-  inset:0;
-  background:rgba(var(--brand-text-rgb), 0.35);
-  backdrop-filter:blur(10px);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-modal {
-  position:relative;
-  width:min(880px, 92vw);
-  background:var(--brand-background);
-  border-radius:28px;
-  border:1px solid rgba(var(--brand-text-rgb), 0.08);
-  box-shadow:0 16px 40px rgba(var(--brand-text-rgb), 0.15);
-  padding:32px;
-  z-index:1;
-  font-family:var(--font-ui);
-  color:var(--brand-text);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-header {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:18px;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-title {
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-size:1.05rem;
-  font-weight:700;
-  color:var(--brand-text);
-  letter-spacing:0.25px;
-  text-transform:uppercase;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-close {
-  width:36px;
-  height:36px;
-  border-radius:12px;
-  border:1px solid rgba(var(--brand-text-rgb), 0.1);
-  background:var(--brand-background);
-  color:var(--brand-text);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  transition:all var(--transition-fast);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-close:hover {
-  border-color:var(--accent-primary);
-  color:var(--accent-primary);
-  transform:translateY(-1px);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-form {
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-grid {
-  display:grid;
-  grid-template-columns:repeat(3, minmax(0, 1fr));
-  gap:14px;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-field {
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  font-size:0.9rem;
-  color:var(--brand-text);
-  font-weight:600;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-label {
-  font-size:0.75rem;
-  text-transform:uppercase;
-  letter-spacing:0.16em;
-  color:var(--brand-text);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-field input,
-:where(body[data-theme-id="classic-dealer"]) .search-field select {
-  border:1px solid rgba(var(--brand-text-rgb), 0.15);
-  border-radius:12px;
-  padding:10px 12px;
-  font-size:0.95rem;
-  color:var(--brand-text);
-  background:var(--brand-background);
-  transition:border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-field input:focus,
-:where(body[data-theme-id="classic-dealer"]) .search-field select:focus {
-  outline:none;
-  border-color:var(--brand-primary);
-  box-shadow:0 0 0 3px rgba(var(--brand-primary-rgb), 0.16);
-  background:var(--brand-background);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-actions {
-  display:flex;
-  justify-content:flex-end;
-  align-items:center;
-  gap:12px;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-primary {
-  border:none;
-  background:linear-gradient(135deg, var(--brand-secondary) 0%, var(--brand-primary) 100%);
-  color:var(--brand-background);
-  padding:11px 20px;
-  border-radius:999px;
-  font-weight:700;
-  cursor:pointer;
-  transition:transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow:0 14px 32px rgba(var(--brand-text-rgb), 0.7);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-primary:hover {
-  transform:translateY(-1px);
-  box-shadow:0 18px 34px rgba(var(--brand-text-rgb), 0.7);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-secondary {
-  border:1px solid rgba(var(--brand-text-rgb), 0.2);
-  background:var(--brand-background);
-  color:var(--brand-text);
-  padding:10px 16px;
-  border-radius:999px;
-  font-weight:600;
-  cursor:pointer;
-  transition:all var(--transition-fast);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .search-secondary:hover {
-  border-color:var(--brand-secondary);
-  color:var(--brand-secondary);
-}
-
-@media (max-width: 900px){
-  :where(body[data-theme-id="classic-dealer"]) .search-grid {
-    grid-template-columns:repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 640px){
-  :where(body[data-theme-id="classic-dealer"]) .search-modal {
-    padding:22px;
-  }
-  :where(body[data-theme-id="classic-dealer"]) .search-grid {
-    grid-template-columns:1fr;
-  }
-  :where(body[data-theme-id="classic-dealer"]) .search-actions {
-    flex-direction:column;
-    align-items:stretch;
-  }
-  :where(body[data-theme-id="classic-dealer"]) .search-primary,
-  :where(body[data-theme-id="classic-dealer"]) .search-secondary {
-    width:100%;
-  }
-}
-
-/* Call Button */
-:where(body[data-theme-id="classic-dealer"]) .btn-call-us {
-  display: flex;
+body[data-theme-id="classic-dealer"] .contact-right .hours {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--btn-primary-bg);
-  color: var(--brand-background);
-  border: none;
-  padding: 12px 20px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  font-family: var(--font-ui);
-  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.25);
-  position: relative;
-  overflow: hidden;
+  opacity: 0.82;
   white-space: nowrap;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .btn-call-us::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(var(--brand-background-rgb), 0.1);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
+body[data-theme-id="classic-dealer"] .contact-right .hours::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.18);
 }
 
-:where(body[data-theme-id="classic-dealer"]) .btn-call-us:hover {
-  background: var(--btn-primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(var(--accent-primary-rgb), 0.35);
+body[data-theme-id="classic-dealer"] .social-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 16px;
+  border-left: 1px solid rgba(var(--brand-background-rgb), 0.18);
 }
 
-:where(body[data-theme-id="classic-dealer"]) .btn-call-us:hover::before {
-  opacity: 1;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .btn-call-us:active {
-  transform: translateY(0);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .btn-call-us svg {
-  flex-shrink: 0;
-  transition: transform 0.3s ease;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .btn-call-us:hover svg {
-  transform: scale(1.1);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .btn-call-us span {
-  font-weight: 700;
-  letter-spacing: 0.3px;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .mobile-toggle {
-  display: none;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(var(--brand-text-rgb), 0.1);
-  background: var(--brand-background);
-  color: var(--brand-text);
+body[data-theme-id="classic-dealer"] .social-link {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all var(--transition-fast);
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  color: var(--hdr-utility-fg);
+  background: rgba(var(--brand-background-rgb), 0.08);
+  border: 1px solid rgba(var(--brand-background-rgb), 0.18);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+body[data-theme-id="classic-dealer"] .social-link:hover {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: var(--hdr-cta-fg);
+  transform: translateY(-1px);
+}
+
+body[data-theme-id="classic-dealer"] .social-link svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+/* ==========================================================================
+   Main nav row
+   ========================================================================== */
+body[data-theme-id="classic-dealer"] .main-nav {
+  background: transparent;
+}
+
+body[data-theme-id="classic-dealer"] .nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px 32px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 40px;
+  transition: padding 0.3s ease;
+}
+
+body[data-theme-id="classic-dealer"] .modern-header[data-scrolled="true"] .nav-inner {
+  padding: 10px 32px;
+}
+
+/* Brand / logo */
+body[data-theme-id="classic-dealer"] .brand {
+  display: flex;
+  align-items: center;
+}
+
+body[data-theme-id="classic-dealer"] .logo-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+body[data-theme-id="classic-dealer"] .logo-img {
+  height: 64px;
+  width: auto;
+  max-width: 240px;
+  object-fit: contain;
+  transition: height 0.3s ease, transform 0.2s ease;
+}
+
+body[data-theme-id="classic-dealer"] .modern-header[data-scrolled="true"] .logo-img {
+  height: 48px;
+}
+
+body[data-theme-id="classic-dealer"] .logo-link:hover .logo-img {
+  transform: scale(1.03);
+}
+
+body[data-theme-id="classic-dealer"] .logo-wordmark {
+  font-family: var(--font-brand);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  color: var(--brand-text);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Nav links (centre) */
+body[data-theme-id="classic-dealer"] .nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+body[data-theme-id="classic-dealer"] .nav-item-wrapper {
   position: relative;
-  overflow: hidden;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .mobile-toggle::before {
-  content: '';
+body[data-theme-id="classic-dealer"] .nav-links a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 16px;
+  color: var(--brand-text) !important;
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-radius: 8px;
+  transition: color 0.2s ease;
+}
+
+body[data-theme-id="classic-dealer"] .nav-links a::after {
+  content: "";
   position: absolute;
-  inset: 0;
-  background: var(--accent-primary);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  z-index: -1;
+  left: 16px;
+  right: 16px;
+  bottom: 4px;
+  height: 2px;
+  background: var(--brand-primary);
+  border-radius: 999px;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-:where(body[data-theme-id="classic-dealer"]) .mobile-toggle:hover {
-  color: var(--text-inverse);
-  border-color: var(--accent-primary);
-  background: var(--accent-primary);
-  transform: translateY(-2px);
+body[data-theme-id="classic-dealer"] .nav-links a:hover {
+  color: var(--brand-primary) !important;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .mobile-toggle:hover::before {
-  opacity: 1;
+body[data-theme-id="classic-dealer"] .nav-links a:hover::after,
+body[data-theme-id="classic-dealer"] .nav-links a.active::after,
+body[data-theme-id="classic-dealer"] .nav-links a[aria-current="page"]::after {
+  transform: scaleX(1);
 }
 
-/* Mobile Overlay */
-:where(body[data-theme-id="classic-dealer"]) .mobile-overlay {
+body[data-theme-id="classic-dealer"] .nav-links a.active,
+body[data-theme-id="classic-dealer"] .nav-links a[aria-current="page"] {
+  color: var(--brand-primary) !important;
+}
+
+/* Action cluster (right) */
+body[data-theme-id="classic-dealer"] .nav-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+/* Wishlist button — sized to match the call CTA so the pair reads as
+   a coherent action cluster. Brand-primary heart on white with a soft
+   brand-tinted border, fills to solid brand-primary on hover/active. */
+body[data-theme-id="classic-dealer"] .wishlist-btn,
+body[data-theme-id="classic-dealer"] a.wishlist-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  background: var(--brand-background);
+  border: 1.5px solid rgba(var(--brand-primary-rgb), 0.35);
+  color: var(--brand-primary) !important;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+body[data-theme-id="classic-dealer"] .wishlist-btn:hover,
+body[data-theme-id="classic-dealer"] a.wishlist-btn:hover,
+body[data-theme-id="classic-dealer"] .wishlist-btn:focus-visible {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px -10px rgba(var(--brand-primary-rgb), 0.55);
+}
+
+body[data-theme-id="classic-dealer"] .wishlist-btn:hover svg,
+body[data-theme-id="classic-dealer"] .wishlist-btn:focus-visible svg {
+  stroke: #ffffff !important;
+  fill: rgba(255, 255, 255, 0.18) !important;
+}
+
+body[data-theme-id="classic-dealer"] .wishlist-btn svg {
+  width: 19px;
+  height: 19px;
+  stroke: var(--brand-primary) !important;
+  fill: none !important;
+  stroke-width: 1.9;
+  transition: stroke 0.2s ease, fill 0.2s ease;
+}
+
+body[data-theme-id="classic-dealer"] .wishlist-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--brand-primary);
+  color: #ffffff !important;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--brand-background);
+  box-shadow: 0 2px 6px -2px rgba(var(--brand-primary-rgb), 0.4);
+}
+
+/* Book Appointment / call CTA
+   Locked with !important on color/stroke because earlier rounds of patching
+   left the field of conflicting global-button rules unprovable — and the
+   user reported "still dark text on red" across multiple cache states. The
+   simplest correctness guarantee is to short-circuit all variable indirection
+   and broadcast white explicitly. */
+body[data-theme-id="classic-dealer"] .btn-call-us,
+body[data-theme-id="classic-dealer"] a.btn-call-us {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: var(--brand-primary);
+  color: #ffffff !important;
+  border: 1px solid var(--brand-primary);
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 8px 18px -10px rgba(var(--brand-primary-rgb), 0.6);
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+body[data-theme-id="classic-dealer"] .btn-call-us:hover,
+body[data-theme-id="classic-dealer"] a.btn-call-us:hover,
+body[data-theme-id="classic-dealer"] .btn-call-us:focus,
+body[data-theme-id="classic-dealer"] .btn-call-us:active {
+  background: var(--brand-secondary, var(--brand-primary));
+  border-color: var(--brand-secondary, var(--brand-primary));
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 22px -10px rgba(var(--brand-primary-rgb), 0.7);
+}
+
+body[data-theme-id="classic-dealer"] .btn-call-us *,
+body[data-theme-id="classic-dealer"] .btn-call-us span {
+  color: #ffffff !important;
+}
+
+body[data-theme-id="classic-dealer"] .btn-call-us svg {
+  width: 17px;
+  height: 17px;
+  stroke: #ffffff !important;
+  fill: none !important;
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+/* Mobile hamburger */
+body[data-theme-id="classic-dealer"] .mobile-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(var(--brand-text-rgb), 0.04);
+  border: 1px solid var(--hdr-rule);
+  color: var(--hdr-fg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+body[data-theme-id="classic-dealer"] .mobile-toggle:hover {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: var(--hdr-cta-fg);
+}
+
+/* ==========================================================================
+   Mobile overlay + menu
+   ========================================================================== */
+body[data-theme-id="classic-dealer"] .mobile-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(var(--brand-text-rgb), 0.6);
+  background: rgba(var(--brand-text-rgb), 0.55);
+  backdrop-filter: blur(4px);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 999;
-  backdrop-filter: blur(4px);
+  transition: opacity 0.3s ease;
+  z-index: 1100;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .mobile-overlay.open {
+body[data-theme-id="classic-dealer"] .mobile-overlay.open {
   opacity: 1;
   pointer-events: auto;
 }
 
-/* Mobile Menu */
-:where(body[data-theme-id="classic-dealer"]) .mobile-menu {
-  position: fixed;
-  top: 0;
-  right: 0;
+/* Position properties locked with !important because cnhcars-clone ships
+   an UNSCOPED `.mobile-menu { position: relative; left: 0; transform:
+   translateX(-100%) }` rule that leaks into every other theme via the
+   shared CSS bundle. Specificity is on our side (0,2,1 vs 0,1,0) but
+   we hard-lock anyway to make this rule immune to future cross-theme
+   cascade reshuffles. */
+body[data-theme-id="classic-dealer"] .mobile-menu {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  left: auto !important;
   height: 100vh;
-  width: 380px;
-  max-width: 90vw;
+  height: 100dvh;
+  width: min(380px, 86vw) !important;
   background: var(--brand-background);
-  backdrop-filter: blur(20px);
-  padding: 28px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
-  transform: translateX(100%);
-  transition: transform var(--transition-base);
-  z-index: 1001;
+  gap: 24px;
+  transform: translateX(100%) !important;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1200;
   overflow-y: auto;
-  border-left: 1px solid rgba(var(--brand-text-rgb), 0.1);
-  box-shadow: -8px 0 32px rgba(var(--brand-text-rgb), 0.12);
+  box-shadow: -20px 0 60px -20px rgba(var(--brand-text-rgb), 0.25);
 }
 
-:where(body[data-theme-id="classic-dealer"]) .mobile-menu.open {
-  transform: translateX(0);
+body[data-theme-id="classic-dealer"] .mobile-menu.open {
+  transform: translateX(0) !important;
 }
 
-/* Mobile Menu Header */
-:where(body[data-theme-id="classic-dealer"]) .mobile-menu-header {
+/* Desktop ≥ 769px: the mobile menu must NEVER show. The hamburger that
+   opens it is itself hidden at this breakpoint, but React state could
+   carry an `open` flag in if the user resized down → toggled → resized
+   up. Force-hide so a stale open state can't leak the panel onto desktop. */
+@media (min-width: 769px) {
+  body[data-theme-id="classic-dealer"] .mobile-menu,
+  body[data-theme-id="classic-dealer"] .mobile-overlay {
+    display: none !important;
+  }
+}
+
+body[data-theme-id="classic-dealer"] .mobile-menu-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--hdr-rule);
 }
 
-:where(body[data-theme-id="classic-dealer"]) .mobile-brand {
-  display: flex;
+body[data-theme-id="classic-dealer"] .mobile-brand {
+  display: inline-flex;
+  align-items: center;
+}
+
+body[data-theme-id="classic-dealer"] .mobile-logo {
+  height: 48px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+}
+
+body[data-theme-id="classic-dealer"] .mobile-close {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .mobile-logo {
-  height: 60px;
-  width: auto;
-  object-fit: contain;
-  transition: all 0.3s ease;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .mobile-close {
   width: 40px;
   height: 40px;
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(var(--brand-text-rgb), 0.1);
-  background: var(--brand-background);
-  color: var(--brand-text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 999px;
+  background: rgba(var(--brand-text-rgb), 0.05);
+  border: 1px solid var(--hdr-rule);
+  color: var(--hdr-fg);
   cursor: pointer;
-  transition: all var(--transition-fast);
-  position: relative;
-  overflow: hidden;
+  transition: all 0.2s ease;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .mobile-close::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--accent-primary);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  z-index: -1;
+body[data-theme-id="classic-dealer"] .mobile-close:hover {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: var(--hdr-cta-fg);
 }
 
-:where(body[data-theme-id="classic-dealer"]) .mobile-close:hover {
-  color: var(--text-inverse);
-  border-color: var(--accent-primary);
-  background: var(--accent-primary);
-  transform: translateY(-2px);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .mobile-close:hover::before {
-  opacity: 1;
-}
-
-/* Mobile Menu Navigation */
-:where(body[data-theme-id="classic-dealer"]) .mobile-menu-nav {
+body[data-theme-id="classic-dealer"] .mobile-menu-nav {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .menu-item {
+body[data-theme-id="classic-dealer"] .menu-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   padding: 14px 18px;
-  border-radius: var(--radius-md);
-  color: var(--brand-text);
-  text-decoration: none;
+  color: var(--hdr-fg);
+  font-size: 15px;
   font-weight: 600;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border: 1px solid rgba(var(--brand-text-rgb), 0.1);
-  transition: all var(--transition-fast);
-  font-family: var(--font-ui);
-  background: var(--brand-background);
+  letter-spacing: 0.3px;
+  text-decoration: none;
+  border-radius: 12px;
+  transition: all 0.2s ease;
   position: relative;
-  overflow: hidden;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .menu-item::before {
-  content: '';
+body[data-theme-id="classic-dealer"] .menu-item:hover {
+  background: rgba(var(--brand-primary-rgb), 0.08);
+  color: var(--brand-primary);
+}
+
+body[data-theme-id="classic-dealer"] .menu-item.active {
+  background: rgba(var(--brand-primary-rgb), 0.1);
+  color: var(--brand-primary);
+}
+
+body[data-theme-id="classic-dealer"] .menu-item.active::before {
+  content: "";
   position: absolute;
   left: 0;
-  top: 0;
-  bottom: 0;
+  top: 50%;
+  transform: translateY(-50%);
   width: 3px;
-  background: var(--accent-primary);
-  transform: scaleY(0);
-  transition: transform var(--transition-fast);
+  height: 22px;
+  background: var(--brand-primary);
+  border-radius: 999px;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .menu-item:hover {
-  color: var(--text-inverse);
-  background: var(--accent-primary);
-  border-color: var(--accent-primary);
-  transform: translateX(4px);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .menu-item:hover::before {
-  transform: scaleY(1);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .menu-item.active {
-  color: var(--text-inverse);
-  background: transparent;
-  border: none;
-  text-decoration: underline;
-  text-decoration-color: var(--accent-primary);
-  text-decoration-thickness: 3px;
-  text-underline-offset: 8px;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .menu-item.active::before {
-  display: none;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .menu-icon {
-  stroke: currentColor;
+body[data-theme-id="classic-dealer"] .menu-icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
   flex-shrink: 0;
-  transition: transform 0.3s ease;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .menu-item:hover .menu-icon {
-  transform: scale(1.15);
-}
-
-/* Mobile Menu Footer */
-:where(body[data-theme-id="classic-dealer"]) .mobile-menu-footer {
+body[data-theme-id="classic-dealer"] .mobile-menu-footer {
+  margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: auto;
+  gap: 10px;
   padding-top: 20px;
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--hdr-rule);
 }
 
-:where(body[data-theme-id="classic-dealer"]) .mobile-contact-item {
-  display: flex;
+body[data-theme-id="classic-dealer"] .mobile-contact-item {
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: var(--radius-md);
-  color: var(--brand-text);
-  text-decoration: none;
-  font-size: 13px;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba(var(--brand-text-rgb), 0.04);
+  color: var(--hdr-fg);
+  font-size: 13.5px;
   font-weight: 600;
-  border: 1px solid rgba(var(--brand-text-rgb), 0.1);
-  transition: all var(--transition-fast);
-  font-family: var(--font-ui);
-  background: var(--brand-background);
-  position: relative;
-  overflow: hidden;
+  text-decoration: none;
+  transition: all 0.2s ease;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .mobile-contact-item::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--accent-primary);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  z-index: -1;
+body[data-theme-id="classic-dealer"] .mobile-contact-item:hover {
+  background: rgba(var(--brand-primary-rgb), 0.1);
+  color: var(--brand-primary);
 }
 
-:where(body[data-theme-id="classic-dealer"]) .mobile-contact-item:hover {
-  color: var(--text-inverse);
-  border-color: var(--accent-primary);
-  background: var(--accent-primary);
-  transform: translateY(-2px);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .mobile-contact-item:hover::before {
-  opacity: 1;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .mobile-contact-item svg {
-  stroke: currentColor;
+body[data-theme-id="classic-dealer"] .mobile-contact-item svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.8;
   flex-shrink: 0;
-  transition: transform 0.3s ease;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .mobile-contact-item:hover svg {
-  transform: scale(1.15);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .mobile-cta-btn {
-  display: flex;
+body[data-theme-id="classic-dealer"] .mobile-cta-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  background: var(--btn-primary-bg);
-  color: var(--btn-primary-text);
-  border: none;
-  padding: 14px;
-  border-radius: var(--radius-md);
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  background: var(--hdr-cta-bg);
+  color: var(--hdr-cta-fg);
+  border: 1px solid var(--hdr-cta-bg);
+  border-radius: 999px;
   font-size: 14px;
   font-weight: 700;
   text-decoration: none;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  font-family: var(--font-ui);
-  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.25);
-  position: relative;
-  overflow: hidden;
+  box-shadow: 0 10px 22px -10px rgba(var(--brand-primary-rgb), 0.7);
+  transition: all 0.2s ease;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .mobile-cta-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(var(--brand-background-rgb), 0.1);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
+body[data-theme-id="classic-dealer"] .mobile-cta-btn:hover {
+  background: var(--brand-secondary, var(--brand-primary));
+  border-color: var(--brand-secondary, var(--brand-primary));
+  color: var(--hdr-cta-fg);
+  transform: translateY(-1px);
 }
 
-:where(body[data-theme-id="classic-dealer"]) .mobile-cta-btn:hover {
-  background: var(--btn-primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(var(--accent-primary-rgb), 0.35);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .mobile-cta-btn:hover::before {
-  opacity: 1;
-}
-
-:where(body[data-theme-id="classic-dealer"]) .mobile-cta-btn svg {
+body[data-theme-id="classic-dealer"] .mobile-cta-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
   flex-shrink: 0;
-  transition: transform 0.3s ease;
 }
 
-:where(body[data-theme-id="classic-dealer"]) .mobile-cta-btn:hover svg {
-  transform: scale(1.1);
-}
-
-/* Responsive Design */
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
 @media (max-width: 1024px) {
-  :where(body[data-theme-id="classic-dealer"]) .nav-links {
-    gap: 2px;
-  }
-  
-  :where(body[data-theme-id="classic-dealer"]) .nav-links a {
-    padding: 10px 18px;
-    font-size: 12px;
-  }
-  
-  :where(body[data-theme-id="classic-dealer"]) .social-links {
-    gap: 10px;
-  }
-  
-  :where(body[data-theme-id="classic-dealer"]) .social-link {
-    width: 28px;
-    height: 28px;
-  }
-  
-  :where(body[data-theme-id="classic-dealer"]) .contact-left {
+  body[data-theme-id="classic-dealer"] .nav-inner {
+    padding: 12px 24px;
     gap: 20px;
   }
-  
-  :where(body[data-theme-id="classic-dealer"]) .search-btn {
-    width: 44px;
-    height: 44px;
+
+  body[data-theme-id="classic-dealer"] .nav-links a {
+    padding: 10px 12px;
+    font-size: 13px;
+    letter-spacing: 0.3px;
   }
-  
-  :where(body[data-theme-id="classic-dealer"]) .btn-call-us {
-    padding: 12px 20px;
+
+  body[data-theme-id="classic-dealer"] .btn-call-us {
+    padding: 10px 18px;
     font-size: 13px;
   }
 }
 
+@media (max-width: 900px) {
+  body[data-theme-id="classic-dealer"] .contact-right .hours {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
-  :where(body[data-theme-id="classic-dealer"]) .contact-bar {
+  body[data-theme-id="classic-dealer"] .contact-bar {
     display: none;
   }
-  
-  :where(body[data-theme-id="classic-dealer"]) .nav-links {
-    display: none;
+
+  body[data-theme-id="classic-dealer"] .nav-links,
+  body[data-theme-id="classic-dealer"] .btn-call-us {
+    display: none !important;
   }
-  
-  :where(body[data-theme-id="classic-dealer"]) .btn-call-us {
-    display: none;
+
+  body[data-theme-id="classic-dealer"] .mobile-toggle {
+    display: inline-flex;
   }
-  
-  :where(body[data-theme-id="classic-dealer"]) .search-btn {
-    display: none;
+
+  body[data-theme-id="classic-dealer"] .nav-inner {
+    grid-template-columns: 1fr auto;
+    padding: 14px 20px;
   }
-  
-  :where(body[data-theme-id="classic-dealer"]) .mobile-toggle {
-    display: flex;
+
+  body[data-theme-id="classic-dealer"] .nav-actions {
+    gap: 8px;
   }
-  
-  :where(body[data-theme-id="classic-dealer"]) .nav-inner {
-    padding: 0 20px;
-    gap: 16px;
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  :where(body[data-theme-id="classic-dealer"]) .brand {
-    justify-content: center;
-    flex: 1;
-  }
-  
-  :where(body[data-theme-id="classic-dealer"]) .logo-img {
-    height: 75px;
-  }
-  
-  :where(body[data-theme-id="classic-dealer"]) .main-nav {
-    padding: 0;
+
+  body[data-theme-id="classic-dealer"] .logo-img {
+    height: 54px;
   }
 }
 
 @media (max-width: 480px) {
-  :where(body[data-theme-id="classic-dealer"]) .mobile-menu {
+  body[data-theme-id="classic-dealer"] .mobile-menu {
     width: 100vw;
-    max-width: none;
-    border-left: none;
-    padding: 20px;
+    box-shadow: none;
   }
-  
-  :where(body[data-theme-id="classic-dealer"]) .nav-inner {
-    padding: 0 16px;
+
+  body[data-theme-id="classic-dealer"] .nav-inner {
+    padding: 12px 16px;
   }
-  
-  :where(body[data-theme-id="classic-dealer"]) .logo-img {
-    height: 66px;
+
+  body[data-theme-id="classic-dealer"] .logo-img {
+    height: 48px;
+    max-width: 180px;
   }
-  
-  :where(body[data-theme-id="classic-dealer"]) .mobile-logo {
-    height: 54px;
-  }
-  
-  :where(body[data-theme-id="classic-dealer"]) .search-btn {
+
+  body[data-theme-id="classic-dealer"] .wishlist-btn,
+  body[data-theme-id="classic-dealer"] .mobile-toggle {
     width: 40px;
     height: 40px;
   }
-  
-  :where(body[data-theme-id="classic-dealer"]) .mobile-toggle {
-    width: 40px;
-    height: 40px;
-  }
-  
-  :where(body[data-theme-id="classic-dealer"]) .contact-inner {
-    padding: 0 16px;
-  }
 }
 
-/* Animations */
-@keyframes slideDown {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes glowPulse {
-  0%, 100% {
-    box-shadow: 0 8px 32px rgba(var(--brand-text-rgb), 0.4);
-  }
-  50% {
-    box-shadow: 0 12px 40px rgba(var(--brand-text-rgb), 0.7);
-  }
-}
-
-:where(body[data-theme-id="classic-dealer"]) .modern-header {
-  animation: slideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-:where(body[data-theme-id="classic-dealer"]) .btn-call-us:active {
-  animation: none;
-  transform: translateY(0);
-}
-
-/* Respect users who prefer reduced motion */
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  :where(body[data-theme-id="classic-dealer"]) .modern-header,
-  :where(body[data-theme-id="classic-dealer"]) .mobile-menu,
-  :where(body[data-theme-id="classic-dealer"]) .mobile-overlay,
-  :where(body[data-theme-id="classic-dealer"]) .nav-links a,
-  :where(body[data-theme-id="classic-dealer"]) .social-link,
-  :where(body[data-theme-id="classic-dealer"]) .btn-call-us,
-  :where(body[data-theme-id="classic-dealer"]) .search-btn,
-  :where(body[data-theme-id="classic-dealer"]) .menu-item,
-  :where(body[data-theme-id="classic-dealer"]) .contact-item,
-  :where(body[data-theme-id="classic-dealer"]) .logo-img {
-    animation: none;
-    transition: none;
+  body[data-theme-id="classic-dealer"] .modern-header,
+  body[data-theme-id="classic-dealer"] .modern-header *,
+  body[data-theme-id="classic-dealer"] .mobile-menu,
+  body[data-theme-id="classic-dealer"] .mobile-overlay {
+    transition: none !important;
+    animation: none !important;
   }
-}
-
-/* Theme-wide button hover normalization */
-:where(body[data-theme-id="classic-dealer"]) .classic-theme {
-  --accent-hover: var(--accent-primary);
-  --btn-primary-hover: var(--accent-primary);
-  --classic-footer-bg-start: var(--brand-primary);
-  --classic-footer-bg-end: var(--brand-secondary);
-  --classic-footer-pattern-dot: rgba(var(--brand-background-rgb), 0.12);
-}
-
-.classic-theme :is(
-  :where(body[data-theme-id="classic-dealer"]) button,
-  :where(body[data-theme-id="classic-dealer"]) input[type="button"],
-  :where(body[data-theme-id="classic-dealer"]) input[type="submit"],
-  :where(body[data-theme-id="classic-dealer"]) input[type="reset"],
-  :where(body[data-theme-id="classic-dealer"]) a.btn,
-  :where(body[data-theme-id="classic-dealer"]) button.btn,
-  :where(body[data-theme-id="classic-dealer"]) a[class*="-btn"],
-  :where(body[data-theme-id="classic-dealer"]) button[class*="-btn"],
-  :where(body[data-theme-id="classic-dealer"]) [role="button"]
-:where(body[data-theme-id="classic-dealer"]) ):hover:not(:disabled):not([aria-disabled="true"]) {
-  background: var(--accent-primary) !important;
-  border-color: var(--accent-primary) !important;
-  color: var(--text-inverse, var(--brand-background)) !important;
 }

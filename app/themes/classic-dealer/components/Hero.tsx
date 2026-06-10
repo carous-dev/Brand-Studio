@@ -83,44 +83,40 @@ export const Hero: React.FC = () => {
         : [{ label: 'Any Price', value: '' }]
 
     return (
-        <motion.div 
+        <motion.div
             className="hero-section"
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
         >
             <div className="hero-overlay" />
 
             <div className="hero-wrapper">
                 <div className="hero-content">
-                    <motion.h1 
+                    <motion.h1
                         className="hero-title"
                         initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                        viewport={{ once: true }}
                     >
                         {heroContent.title}
                     </motion.h1>
 
-                    <motion.p 
+                    <motion.p
                         className="hero-description"
                         initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-                        viewport={{ once: true }}
                     >
                         {heroContent.description}
                     </motion.p>
                 </div>
 
-                <motion.div 
+                <motion.div
                     className="hero-search-container"
                     initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-                    viewport={{ once: true }}
                 >
                     <div className="search-form">
                         <div className="search-field">
@@ -183,8 +179,8 @@ export const Hero: React.FC = () => {
                             </select>
                         </div>
 
-                        <motion.button 
-                            className="search-btn" 
+                        <motion.button
+                            className="search-btn"
                             onClick={handleSearch}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.98 }}

@@ -23,8 +23,8 @@ const Services = () => {
     ''
 
   return (
-    <motion.section 
-      className="services-why" 
+    <motion.section
+      className="services-why"
       aria-label="Why choose our services"
       initial={{ opacity: 0, x: -50 }}
       whileInView={{ opacity: 1, x: 0 }}
@@ -47,11 +47,9 @@ const Services = () => {
 
         <div className="services-why-content">
           <h2>Why Buy From {brandName}?</h2>
-          <p>
-            {aboutDescription}
-          </p>
+          <p>{aboutDescription}</p>
 
-          <motion.div 
+          <motion.div
             className="services-why-stats"
             initial="hidden"
             whileInView="visible"
@@ -66,8 +64,8 @@ const Services = () => {
             }}
           >
             {stats.map(({ id, value, label, icon: Icon }) => (
-              <motion.div 
-                key={id} 
+              <motion.div
+                key={id}
                 className="services-stat"
                 variants={{
                   hidden: { opacity: 0, y: 10 },
