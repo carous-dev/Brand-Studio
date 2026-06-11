@@ -105,21 +105,49 @@
     },
     {
       "id": "forecourt",
-      "label": "Home — forecourt photo break",
+      "label": "Home — forecourt proof band",
       "fields": [
         {
           "key": "forecourtEyebrow",
           "label": "Forecourt eyebrow",
           "type": "short",
-          "default": "The forecourt",
+          "default": "How we prepare every car",
           "maxLength": 40
         },
         {
           "key": "forecourtTitle",
           "label": "Forecourt heading",
           "type": "long",
-          "default": "Every car inspected, history-checked, and ready to drive away",
+          "default": "Every car inspected, history-checked, ready to drive away",
           "maxLength": 140
+        },
+        {
+          "key": "forecourtLead",
+          "label": "Forecourt lead paragraph",
+          "type": "long",
+          "default": "Before a car reaches the forecourt it goes through a multi-point mechanical check, full HPI history review and a road test. If it doesn't pass, we don't sell it.",
+          "maxLength": 280
+        },
+        {
+          "key": "forecourtStep1",
+          "label": "Step 1 chip",
+          "type": "short",
+          "default": "Multi-point inspection",
+          "maxLength": 40
+        },
+        {
+          "key": "forecourtStep2",
+          "label": "Step 2 chip",
+          "type": "short",
+          "default": "HPI history verified",
+          "maxLength": 40
+        },
+        {
+          "key": "forecourtStep3",
+          "label": "Step 3 chip",
+          "type": "short",
+          "default": "Warranty + breakdown cover",
+          "maxLength": 40
         },
         {
           "key": "forecourtCtaLabel",
@@ -161,11 +189,25 @@
       "label": "Home — partners ticker",
       "fields": [
         {
+          "key": "partnersEyebrow",
+          "label": "Partners eyebrow",
+          "type": "short",
+          "default": "Trusted Partners",
+          "maxLength": 40
+        },
+        {
           "key": "partnersTitle",
           "label": "Partners heading",
           "type": "short",
-          "default": "Our Partners",
+          "default": "Backed by the industry",
           "maxLength": 40
+        },
+        {
+          "key": "partnersLead",
+          "label": "Partners lead",
+          "type": "long",
+          "default": "Independent checks, finance from regulated lenders and warranties from names you'll recognise.",
+          "maxLength": 200
         }
       ]
     },
@@ -282,21 +324,49 @@
       "id": "aboutPage",
       "label": "About page",
       "fields": [
+        { "key": "aboutHeroEyebrow", "label": "About hero eyebrow", "type": "short", "default": "Our story", "maxLength": 40 },
         { "key": "aboutHeroTitle", "label": "About hero title", "type": "short", "default": "About {brandName}", "maxLength": 80 },
         { "key": "aboutHeroLead", "label": "About hero lead", "type": "long", "default": "A {cityish} dealership built on a simple idea: treat every customer the way we'd want to be treated — before, during, and long after the sale.", "maxLength": 280 },
-        { "key": "aboutStoryEyebrow", "label": "Story eyebrow", "type": "short", "default": "Our story", "maxLength": 40 },
+        { "key": "aboutStoryEyebrow", "label": "Story eyebrow", "type": "short", "default": "How we work", "maxLength": 40 },
         { "key": "aboutStoryTitle", "label": "Story heading", "type": "short", "default": "We don't forget about you after the keys change hands", "maxLength": 120 },
-        { "key": "aboutStoryParagraph1", "label": "Story paragraph 1", "type": "long", "default": "{brandName} started in {cityish} with a frustration every car buyer knows: dealerships that disappear the moment the sale completes. We built the opposite — every car we sell carries a minimum 3-month warranty and a full 12 months of AA Breakdown Cover, included as standard.", "maxLength": 480 },
-        { "key": "aboutStoryParagraph2", "label": "Story paragraph 2", "type": "long", "default": "That commitment to transparency, quality, and customer service has earned the trust of customers across {cityish} and beyond, and won us AutoTrader's highly-rated award multiple times with an overall rating of 4.9 out of 5.", "maxLength": 480 },
-        { "key": "aboutStoryParagraph3", "label": "Story paragraph 3", "type": "long", "default": "Whether you're buying your first car or your fifth, selling, part-exchanging, or arranging finance — you'll deal with real people who answer the phone and stand behind every vehicle on the forecourt.", "maxLength": 480 }
+        { "key": "aboutStoryLead", "label": "Story lead", "type": "long", "default": "Three principles run through everything we do — they're why customers come back, and why they send their friends.", "maxLength": 280 },
+        { "key": "aboutCol1Title", "label": "Story column 1 — title", "type": "short", "default": "Transparency first", "maxLength": 60 },
+        { "key": "aboutStoryParagraph1", "label": "Story column 1 — body", "type": "long", "default": "{brandName} started in {cityish} with a frustration every car buyer knows: dealerships that disappear the moment the sale completes. We built the opposite — every car we sell carries a minimum 3-month warranty and a full 12 months of AA Breakdown Cover, included as standard.", "maxLength": 480 },
+        { "key": "aboutCol2Title", "label": "Story column 2 — title", "type": "short", "default": "Quality over volume", "maxLength": 60 },
+        { "key": "aboutStoryParagraph2", "label": "Story column 2 — body", "type": "long", "default": "That commitment to transparency, quality, and customer service has earned the trust of customers across {cityish} and beyond, and won us AutoTrader's highly-rated award multiple times with an overall rating of 4.9 out of 5.", "maxLength": 480 },
+        { "key": "aboutCol3Title", "label": "Story column 3 — title", "type": "short", "default": "Service that lasts", "maxLength": 60 },
+        { "key": "aboutStoryParagraph3", "label": "Story column 3 — body", "type": "long", "default": "Whether you're buying your first car or your fifth, selling, part-exchanging, or arranging finance — you'll deal with real people who answer the phone and stand behind every vehicle on the forecourt.", "maxLength": 480 },
+        { "key": "aboutStatsEyebrow", "label": "Stats strip eyebrow", "type": "short", "default": "By the numbers", "maxLength": 40 },
+        { "key": "aboutStatsTitle", "label": "Stats strip heading", "type": "short", "default": "A track record you can verify", "maxLength": 80 },
+        { "key": "aboutStat1Value", "label": "Stat 1 — value", "type": "short", "default": "4.9/5", "maxLength": 20 },
+        { "key": "aboutStat1Label", "label": "Stat 1 — label", "type": "short", "default": "AutoTrader rating", "maxLength": 40 },
+        { "key": "aboutStat2Label", "label": "Stat 2 — label", "type": "short", "default": "Cars in stock", "maxLength": 40 },
+        { "key": "aboutStat3Value", "label": "Stat 3 — value", "type": "short", "default": "12+", "maxLength": 20 },
+        { "key": "aboutStat3Label", "label": "Stat 3 — label", "type": "short", "default": "Brands stocked", "maxLength": 40 },
+        { "key": "aboutStat4Value", "label": "Stat 4 — value", "type": "short", "default": "12 mo", "maxLength": 20 },
+        { "key": "aboutStat4Label", "label": "Stat 4 — label", "type": "short", "default": "AA cover on every car", "maxLength": 40 },
+        { "key": "aboutShowroomEyebrow", "label": "Showroom eyebrow", "type": "short", "default": "The forecourt", "maxLength": 40 },
+        { "key": "aboutShowroomTitle", "label": "Showroom heading", "type": "short", "default": "Drop in and take a look", "maxLength": 80 },
+        { "key": "aboutShowroomLead", "label": "Showroom lead", "type": "long", "default": "Every car on our forecourt is detailed, road-tested, and ready to drive away. Come and see them in person.", "maxLength": 280 },
+        { "key": "aboutShowroomCaption", "label": "Showroom photo caption", "type": "short", "default": "Visit the {cityish} showroom", "maxLength": 60 },
+        { "key": "aboutCtaEyebrow", "label": "About CTA eyebrow", "type": "short", "default": "Next step", "maxLength": 40 },
+        { "key": "aboutCtaTitle", "label": "About CTA heading", "type": "short", "default": "Ready to find your next car?", "maxLength": 80 },
+        { "key": "aboutCtaLead", "label": "About CTA lead", "type": "long", "default": "Browse what's on the forecourt right now, or send us a quick message — we'll come back the same working day.", "maxLength": 280 }
       ]
     },
     {
       "id": "contactPage",
       "label": "Contact page",
       "fields": [
+        { "key": "contactHeroEyebrow", "label": "Contact hero eyebrow", "type": "short", "default": "Get in touch", "maxLength": 40 },
         { "key": "contactHeroTitle", "label": "Contact hero title", "type": "short", "default": "Contact Us", "maxLength": 60 },
-        { "key": "contactHeroLead", "label": "Contact hero lead", "type": "long", "default": "Questions about a car, finance, or a part exchange? Call, email, or send a message — we typically reply within the hour during opening times.", "maxLength": 280 }
+        { "key": "contactHeroLead", "label": "Contact hero lead", "type": "long", "default": "Questions about a car, finance, or a part exchange? Call, email, or send a message — we typically reply within the hour during opening times.", "maxLength": 280 },
+        { "key": "contactFormEyebrow", "label": "Form eyebrow", "type": "short", "default": "Send a message", "maxLength": 40 },
+        { "key": "contactFormTitle", "label": "Form heading", "type": "short", "default": "Tell us what you're after", "maxLength": 80 },
+        { "key": "contactFormLead", "label": "Form lead", "type": "long", "default": "Drop your details and we'll get straight back to you. No call-back games, no sales pressure.", "maxLength": 200 },
+        { "key": "contactHoursTitle", "label": "Opening hours title", "type": "short", "default": "Opening hours", "maxLength": 40 },
+        { "key": "contactMapTitle", "label": "Map heading", "type": "short", "default": "Find the showroom", "maxLength": 60 },
+        { "key": "contactMapLead", "label": "Map lead", "type": "long", "default": "Free parking on-site. The forecourt is open six days a week — see you soon.", "maxLength": 200 }
       ]
     },
     {
@@ -311,8 +381,26 @@
       "id": "financePage",
       "label": "Finance / loan calculator page",
       "fields": [
-        { "key": "financeHeroTitle", "label": "Finance hero title", "type": "short", "default": "Loan Calculator", "maxLength": 60 },
+        { "key": "financeHeroEyebrow", "label": "Finance hero eyebrow", "type": "short", "default": "Finance", "maxLength": 40 },
+        { "key": "financeHeroTitle", "label": "Finance hero title", "type": "short", "default": "Drive away on terms that fit", "maxLength": 60 },
         { "key": "financeHeroLead", "label": "Finance hero lead", "type": "long", "default": "Estimate your monthly payments before you visit. Adjust the sliders to match your budget — we'll find finance to fit.", "maxLength": 280 },
+        { "key": "financeCalcEyebrow", "label": "Calculator eyebrow", "type": "short", "default": "Loan calculator", "maxLength": 40 },
+        { "key": "financeCalcTitle", "label": "Calculator heading", "type": "short", "default": "Build your monthly payment", "maxLength": 80 },
+        { "key": "financeCalcLead", "label": "Calculator lead", "type": "long", "default": "Slide the price, deposit, term, and APR to see how the monthly figure moves. When you're ready, we'll find a tailored quote.", "maxLength": 280 },
+        { "key": "financeStat1Value", "label": "Stat 1 — value (APR from)", "type": "short", "default": "9.9%", "maxLength": 20 },
+        { "key": "financeStat1Label", "label": "Stat 1 — label", "type": "short", "default": "APR from", "maxLength": 40 },
+        { "key": "financeStat2Value", "label": "Stat 2 — value (term)", "type": "short", "default": "12–72 mo", "maxLength": 20 },
+        { "key": "financeStat2Label", "label": "Stat 2 — label", "type": "short", "default": "Term flexibility", "maxLength": 40 },
+        { "key": "financeStat3Value", "label": "Stat 3 — value", "type": "short", "default": "Same day", "maxLength": 20 },
+        { "key": "financeStat3Label", "label": "Stat 3 — label", "type": "short", "default": "Decisions in hours", "maxLength": 40 },
+        { "key": "financeStat4Value", "label": "Stat 4 — value", "type": "short", "default": "Soft search", "maxLength": 20 },
+        { "key": "financeStat4Label", "label": "Stat 4 — label", "type": "short", "default": "No impact on credit", "maxLength": 40 },
+        { "key": "financeFaqEyebrow", "label": "FAQ eyebrow", "type": "short", "default": "FAQs", "maxLength": 40 },
+        { "key": "financeFaqTitle", "label": "FAQ heading", "type": "short", "default": "Buyers ask us most", "maxLength": 80 },
+        { "key": "financeFaqLead", "label": "FAQ lead", "type": "long", "default": "Everything about warranties, history checks, finance and reservations. Can't find your answer? We're one message away.", "maxLength": 280 },
+        { "key": "financeCtaEyebrow", "label": "CTA eyebrow", "type": "short", "default": "Ready when you are", "maxLength": 40 },
+        { "key": "financeCtaTitle", "label": "CTA heading", "type": "short", "default": "Ready to drive away today?", "maxLength": 80 },
+        { "key": "financeCtaLead", "label": "CTA lead", "type": "long", "default": "Pick the car, we'll handle the paperwork. Finance arranged, warranty included, breakdown cover on us.", "maxLength": 280 },
         { "key": "financeDisclaimer", "label": "Finance disclaimer", "type": "long", "default": "Illustration only — not a finance offer. Actual rates depend on your circumstances and lender approval. {brandName} works with reputable financial institutions to find terms that fit your budget.", "maxLength": 480 }
       ]
     },

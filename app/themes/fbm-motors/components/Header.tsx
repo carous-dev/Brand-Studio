@@ -17,7 +17,7 @@ const nav: Array<{ label: string; href?: string; children?: Array<{ label: strin
     label: 'Pages',
     children: [
       { label: 'Loan Calculator', href: '/finance' },
-      { label: 'FAQs', href: '/faqs' },
+      { label: 'FAQs', href: '/finance#faqs' },
     ],
   },
   { label: 'About Us', href: '/about' },
@@ -78,7 +78,7 @@ export default function Header() {
         <div className={styles.mainBarInner}>
           <Link href="/" className={styles.brand} aria-label={brandName}>
             {logo ? (
-              <Image src={logo} alt={brandName} width={160} height={36} className={styles.brandLogo} />
+              <Image src={logo} alt={brandName} width={240} height={56} className={styles.brandLogo} />
             ) : (
               <>
                 <span>

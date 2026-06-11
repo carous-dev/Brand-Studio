@@ -1,49 +1,214 @@
-.calc {
-  max-width: 1152px;
+/* ─── Finance — Hero (dark anchor, uniform wash) ───────────────────────── */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--fbm-carbon-950);
+  color: #ffffff;
+  isolation: isolate;
+}
+.heroImage {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 1;
+}
+.heroWash {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(8, 12, 20, 0.78);
+}
+.heroTint {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(900px 480px at 85% 15%, color-mix(in srgb, var(--color-primary) 28%, transparent), transparent 65%);
+}
+.heroInner {
+  position: relative;
+  z-index: 3;
+  max-width: 1280px;
   margin: 0 auto;
+  padding: 112px 24px 96px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+@media (max-width: 640px) {
+  .heroInner { padding: 80px 24px 64px; }
+}
+.heroEyebrow {
+  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 55%, #ffffff);
+}
+.heroTitle {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: clamp(2.25rem, 5.4vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  color: #ffffff;
+  text-wrap: balance;
+}
+.heroLead {
+  margin: 0;
+  font-size: clamp(1rem, 1.6vw, 1.125rem);
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.85);
+  text-wrap: pretty;
+}
+
+/* ─── Calculator band ─── */
+.calcBand {
+  background: var(--fbm-paper);
+  padding: 80px 0;
+}
+@media (max-width: 640px) {
+  .calcBand { padding: 56px 0; }
+}
+.calcInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.calcHeading {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 40px;
+}
+.calcEyebrow { color: var(--fbm-ember-600, var(--color-primary)); }
+.calcTitle {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: clamp(1.9rem, 3.4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--fbm-ink-900);
+  text-wrap: balance;
+}
+.calcLead {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--fbm-ink-500);
+  text-wrap: pretty;
+}
+
+/* Stat strip above the calculator */
+.statStrip {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 40px;
   display: grid;
-  gap: 32px;
-  padding: 56px 24px;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .statStrip { grid-template-columns: repeat(2, 1fr); }
 }
 @media (min-width: 1024px) {
-  .calc { grid-template-columns: 1.2fr 1fr; }
+  .statStrip { grid-template-columns: repeat(4, 1fr); }
 }
-
-.controls {
-  border-radius: 24px;
+.statItem {
   background: #ffffff;
-  border: 1px solid rgba(14, 20, 32, 0.06);
-  padding: 32px;
+  border: 1px solid rgba(14, 20, 32, 0.08);
+  border-radius: 20px;
   box-shadow: var(--fbm-shadow-card);
+  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.statIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  width: 44px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  background: var(--fbm-ember-50);
+  color: var(--fbm-ember-600, var(--color-primary));
+}
+.statValue {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--fbm-ink-900);
+  line-height: 1.1;
+}
+.statLabel {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: var(--fbm-ink-500);
+  line-height: 1.3;
 }
 
+/* ─── Loan calculator card (rebuilt — 2-column inside one card) ─── */
+.calc {
+  background: #ffffff;
+  border: 1px solid rgba(14, 20, 32, 0.08);
+  border-radius: 24px;
+  box-shadow: var(--fbm-shadow-card);
+  padding: 32px;
+  display: grid;
+  gap: 32px;
+}
+@media (min-width: 1024px) {
+  .calc {
+    grid-template-columns: 1.15fr 1fr;
+    gap: 40px;
+    padding: 40px;
+  }
+}
+.controls {
+  display: grid;
+  gap: 28px;
+  align-content: start;
+}
 .results {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
+
 .resultsHero {
-  border-radius: 24px;
-  padding: 32px;
-  border: 1px solid color-mix(in srgb, var(--color-primary) 40%, transparent);
-  background-image: linear-gradient(135deg, var(--fbm-ember-50), transparent);
-  box-shadow: var(--fbm-shadow-glow);
+  border-radius: 20px;
+  padding: 28px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+  background: var(--fbm-ember-50);
 }
 .resultsLabel {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.25em;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--fbm-ember-600, var(--color-primary));
+  margin: 0;
 }
 .resultsMonthly {
-  margin-top: 12px;
+  margin: 12px 0 0;
   font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
-  font-size: 3rem;
+  font-size: clamp(2.4rem, 5vw, 3.25rem);
   font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--fbm-ink-900);
 }
 .resultsMonthlySub {
-  margin-left: 4px;
+  margin-left: 6px;
   font-size: 1rem;
   font-weight: 400;
   color: var(--fbm-ink-500);
@@ -52,98 +217,188 @@
 .statsGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 12px;
+  margin: 0;
 }
 .statBox {
-  border-radius: 16px;
-  background: #ffffff;
+  border-radius: 14px;
+  background: var(--fbm-paper);
   border: 1px solid rgba(14, 20, 32, 0.06);
-  padding: 20px;
-  box-shadow: var(--fbm-shadow-card);
+  padding: 16px 18px;
+  margin: 0;
 }
 .statBoxLabel {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
   color: var(--fbm-ink-500);
+  margin: 0;
 }
 .statBoxValue {
-  margin-top: 4px;
+  margin: 6px 0 0;
   font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--fbm-ink-900);
+  letter-spacing: -0.01em;
 }
 
 .disclaimer {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   line-height: 1.6;
   color: var(--fbm-ink-500);
+  margin: 0;
 }
 
-.slider { margin-bottom: 32px; }
-.slider:last-child { margin-bottom: 0; }
+/* ─── Sliders ─── */
+.slider { display: block; }
 .sliderHead {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
 }
 .sliderLabel {
-  font-size: 0.875rem;
-  color: var(--fbm-ink-500);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--fbm-ink-900, var(--color-text));
 }
 .sliderDisplay {
   font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
-  font-weight: 600;
-  color: var(--fbm-ember-400, var(--color-accent));
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--fbm-ink-900);
+  letter-spacing: -0.01em;
 }
+/* Range slider — `-webkit-appearance: none` strips the OS track AND thumb, so
+ * we have to repaint both. Previously the input had `height: 6px` and only the
+ * thumb was painted, so the slider showed as a floating red dot with no track.
+ * Now: explicit 6px brand-tinted track via the runnable-track pseudo + 22px
+ * thumb centered on it via negative margin-top. */
 .sliderInput {
-  margin-top: 12px;
-  height: 6px;
+  margin-top: 14px;
   width: 100%;
+  height: 22px;
   cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
+  background: transparent;
+  padding: 0;
+}
+.sliderInput::-webkit-slider-runnable-track {
+  height: 6px;
   border-radius: 999px;
-  accent-color: var(--fbm-ember-500, var(--color-primary));
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--fbm-paper, #f7f8fa));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 14%, transparent);
 }
 .sliderInput::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  height: 20px;
-  width: 20px;
+  height: 22px;
+  width: 22px;
   border-radius: 999px;
-  background: var(--fbm-ember-500, var(--color-primary));
-  border: 2px solid #ffffff;
+  background: var(--color-primary);
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary) 45%, transparent);
+  cursor: pointer;
+  /* Center the 22px thumb vertically on the 6px track:
+   * (track height − thumb height) / 2 = (6 − 22) / 2 = −8px */
+  margin-top: -8px;
+}
+.sliderInput::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--fbm-paper, #f7f8fa));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+.sliderInput::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-primary);
+}
+.sliderInput::-moz-range-thumb {
+  height: 22px;
+  width: 22px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  border: 3px solid #ffffff;
   box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary) 45%, transparent);
   cursor: pointer;
 }
-.sliderInput::-moz-range-thumb {
-  height: 20px;
-  width: 20px;
-  border-radius: 999px;
-  background: var(--fbm-ember-500, var(--color-primary));
-  border: 2px solid #ffffff;
-  cursor: pointer;
+.sliderInput:focus-visible {
+  outline: none;
+}
+.sliderInput:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 30%, transparent), 0 4px 12px color-mix(in srgb, var(--color-primary) 45%, transparent);
+}
+.sliderInput:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 30%, transparent), 0 4px 12px color-mix(in srgb, var(--color-primary) 45%, transparent);
 }
 
-/* ─── FAQ accordion section ─── */
-.faqSection {
-  max-width: 768px;
-  margin: 0 auto;
-  padding: 56px 24px;
+.calcCta { margin-top: 4px; }
+
+/* ─── FAQ band ─── */
+.faqBand {
+  background: #ffffff;
+  padding: 96px 0;
+  border-top: 1px solid rgba(14, 20, 32, 0.06);
 }
+@media (max-width: 640px) {
+  .faqBand { padding: 64px 0; }
+}
+.faqInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.faqHeading {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 40px;
+}
+.faqEyebrow { color: var(--fbm-ember-600, var(--color-primary)); }
+.faqTitle {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: clamp(1.9rem, 3.4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--fbm-ink-900);
+  text-wrap: balance;
+}
+.faqLead {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--fbm-ink-500);
+  text-wrap: pretty;
+}
+
+/* Accordion sits in a centred reading column (760px is body-copy reading
+ * width — distinct from the title rule). */
 .faqList {
+  max-width: 760px;
+  margin: 0 auto;
   display: grid;
   gap: 12px;
 }
 .faqItem {
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: 18px;
   background: #ffffff;
-  border: 1px solid rgba(14, 20, 32, 0.06);
+  border: 1px solid rgba(14, 20, 32, 0.08);
   box-shadow: var(--fbm-shadow-card);
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 .faqItemOpen {
-  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
+  box-shadow: 0 10px 30px -18px color-mix(in srgb, var(--color-primary) 40%, transparent), var(--fbm-shadow-card);
 }
 .faqTrigger {
   display: flex;
@@ -151,7 +406,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 20px 24px;
+  padding: 22px 24px;
   text-align: left;
   background: transparent;
   border: 0;
@@ -160,38 +415,86 @@
 }
 .faqQuestion {
   font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: 1.02rem;
   font-weight: 600;
   color: var(--fbm-ink-900);
+  letter-spacing: -0.01em;
 }
 .faqIcon {
-  color: var(--fbm-ember-400, var(--color-accent));
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  border-radius: 999px;
+  background: var(--fbm-ember-50);
+  color: var(--fbm-ember-600, var(--color-primary));
   transition: transform 0.2s;
 }
-.faqIconOpen { transform: rotate(45deg); }
+.faqIconOpen { transform: rotate(180deg); }
 .faqAnswer {
-  padding: 0 24px 24px;
-  font-size: 0.875rem;
-  line-height: 1.6;
+  padding: 0 24px 22px;
+  font-size: 0.95rem;
+  line-height: 1.65;
   color: var(--fbm-ink-500);
+  margin: 0;
 }
 
-.faqFooter {
-  margin-top: 48px;
-  border-radius: 24px;
-  background: #ffffff;
-  border: 1px solid rgba(14, 20, 32, 0.06);
-  padding: 32px;
-  box-shadow: var(--fbm-shadow-card);
+/* ─── CTA tail — brand-tinted dark band ─── */
+.ctaTail {
+  position: relative;
+  overflow: hidden;
+  background: var(--fbm-carbon-950);
+  color: #ffffff;
+  padding: 96px 0;
+}
+@media (max-width: 640px) {
+  .ctaTail { padding: 64px 0; }
+}
+.ctaTint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 480px at 85% 15%, color-mix(in srgb, var(--color-primary) 32%, transparent), transparent 65%),
+    radial-gradient(700px 380px at -10% 100%, color-mix(in srgb, var(--color-accent) 18%, transparent), transparent 70%);
+}
+.ctaInner {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
-.faqFooterTitle {
+.ctaEyebrow {
+  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 55%, #ffffff);
+}
+.ctaTitle {
+  margin: 0;
   font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
-  font-size: 1.25rem;
+  font-size: clamp(2rem, 4vw, 2.75rem);
   font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  color: #ffffff;
+  text-wrap: balance;
 }
-.faqFooterBody {
-  margin-top: 8px;
-  font-size: 0.875rem;
-  color: var(--fbm-ink-500);
+.ctaLead {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
+  text-wrap: pretty;
 }
-.faqFooterCta { margin-top: 24px; }
+.ctaActions {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}

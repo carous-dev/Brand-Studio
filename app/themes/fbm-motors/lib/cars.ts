@@ -26,7 +26,11 @@ const u = (id: string, w = 900) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
 
 export const heroImage = u("photo-1503376780353-7e6692767b70", 2000);
-export const showroomImage = u("photo-1567818735868-e71b99932e29", 1600);
+// Workshop / inspection scene — intentionally a different subject from
+// `heroImage` (forecourt cars) so the forecourt proof band reads as
+// preparation, not as a second hero shot. Same photo is used by
+// `springalls-classic` workshop tile so it's verified to exist on Unsplash.
+export const showroomImage = u("photo-1487754180451-c456f719a1fc", 1600);
 export const aboutImage = u("photo-1560958089-b8a1929cea89", 1200);
 export const sellImage = u("photo-1502877338535-766e1452684a", 1200);
 export const contactImage = u("photo-1486006920555-c77dcf18193c", 1200);
@@ -57,6 +61,35 @@ export const makes = [
   { name: "Kia", count: 4 },
   { name: "Honda", count: 4 },
 ];
+
+/**
+ * Adapter — the seed `Car` shape predates the shared `InventoryVehicle`
+ * contract used by `CarCard`. Map the seed fields onto the inventory shape so
+ * the home / used-cars pages can render the seed list through the same card
+ * component that real API data flows into.
+ */
+import type { InventoryVehicle } from './inventory'
+
+export function carToVehicle(car: Car): InventoryVehicle & { reserved?: boolean } {
+  const mileageNum = Number(String(car.mileage).replace(/[^0-9]/g, '')) || 0
+  return {
+    id: car.id,
+    slug: car.id,
+    title: car.name,
+    year: car.year,
+    price: car.price,
+    mileage: mileageNum,
+    fuel: car.fuel,
+    transmission: car.gearbox,
+    body: 'Car',
+    make: car.make,
+    color: car.colour,
+    doors: 5,
+    location: '',
+    image: car.image,
+    reserved: car.reserved,
+  }
+}
 
 export const seedTestimonials = [
   {

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import type { BrandConfig } from '@/brands/types';
+import { buildGoogleFontsImport } from '@/app/lib/googleFonts';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -75,6 +76,8 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--brand-primary-rgb': hexToRgb(primary),
     '--brand-secondary-rgb': hexToRgb(secondary),
     '--brand-accent-rgb': hexToRgb(accent),
+    '--brand-background-rgb': hexToRgb(background),
+    '--brand-text-rgb': hexToRgb(text),
 
     // FBM-specific ember accent tiers (light → bright → dark). These map the
     // source app's ember-50/100/400/500/600 utility classes to brand tokens
@@ -104,6 +107,7 @@ export function BrandStyles({ brand }: BrandStylesProps) {
 
     // Shadows + glow
     '--fbm-shadow-card': '0 10px 35px -12px rgba(14, 20, 32, 0.12)',
+    '--shadow-soft': '0 10px 35px -12px rgba(14, 20, 32, 0.12)',
     '--fbm-shadow-glow': `0 0 40px -8px color-mix(in srgb, ${primary} 45%, transparent)`,
 
     // Hero/page imagery
@@ -128,14 +132,33 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     // Font family overrides
     '--font-ui-family-override': fontUi,
     '--font-brand-family-override': fontBrand,
+    '--font-ui-family': 'var(--font-ui-family-override)',
+    '--font-brand-family': 'var(--font-brand-family-override)',
+    '--font-ui': 'var(--font-ui-family-override)',
+    '--font-brand': 'var(--font-brand-family-override)',
+
+    // Aliases used by ported inventory-modern / vehicle CSS — point legacy
+    // accent-* tokens at the brand palette so colors track the dashboard
+    // pickers without each component needing per-token plumbing.
+    '--accent-primary': primary,
+    '--accent-primary-rgb': hexToRgb(primary),
+    '--accent-secondary': secondary,
+    '--accent-secondary-rgb': hexToRgb(secondary),
+    '--accent-hover': secondary,
+    '--bg-secondary': background,
+    '--shadow-color': hexToRgb(text),
   };
+
+  // Dynamic Google Fonts import — without this the --font-*-family-override
+  // vars resolve to a font the browser never loaded and headings silently
+  // fall back to system serif/sans. See memory
+  // `feedback_brandstyles_must_load_google_fonts`.
+  const fontImport = buildGoogleFontsImport(fontUi, fontBrand);
 
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: `
-          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-          :root {
+        __html: `${fontImport}:root {
             ${Object.entries(cssVariables)
               .map(([key, value]) => `${key}: ${value};`)
               .join('\n            ')}

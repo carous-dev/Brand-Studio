@@ -7,6 +7,16 @@
   box-shadow: var(--fbm-shadow-card);
   transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
 }
+
+/* Stretched whole-card link overlay — covers the card so any click lands on
+ * /used-cars/<slug>. Interactive children inside the card body (none here)
+ * would need position:relative + z-index:1 to surface above this. */
+.linkOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  text-decoration: none;
+}
 .card:hover {
   transform: translateY(-6px);
   box-shadow: var(--fbm-shadow-glow);
@@ -65,45 +75,53 @@
 }
 .title {
   font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 1.35;
-  color: var(--fbm-ink-900);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--fbm-ink-900, var(--color-text));
   margin: 0;
+  /* Clamp to a single line + ellipsis so card heights stay aligned across
+   * the grid, per the vehicle-card design memo. */
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
+/* Spec rail — icon + label, two columns. Last item spans both columns when
+ * an odd count lands. Icons use brand-primary at 75% so they read as
+ * branded metadata, not decoration. */
 .specs {
-  margin-top: 12px;
+  margin: 14px 0 0;
+  padding: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 16px;
-  row-gap: 6px;
-  font-size: 0.75rem;
-  color: var(--fbm-ink-500);
+  row-gap: 8px;
+  font-size: 0.8125rem;
+  color: var(--fbm-ink-700, color-mix(in srgb, var(--color-text) 78%, transparent));
 }
 .spec {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
 }
-.dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-primary) 70%, transparent);
+.spec dd {
+  margin: 0;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
-.enquire {
-  margin-top: 16px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--fbm-ember-600, var(--color-primary));
-  text-decoration: none;
-  opacity: 0;
-  transition: opacity 0.2s;
+.spec:nth-child(5) {
+  grid-column: span 2;
 }
-.card:hover .enquire {
-  opacity: 1;
+.specIcon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: color-mix(in srgb, var(--color-primary) 75%, var(--color-text));
 }

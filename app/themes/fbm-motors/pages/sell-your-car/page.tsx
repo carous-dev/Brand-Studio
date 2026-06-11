@@ -1,54 +1,51 @@
-import { resolveText } from '../../lib/brand-text'
-import { PageHero } from '../../components/PageHero'
-import { sellImage as defaultSell } from '../../lib/cars'
-import SellFormClient from './SellFormClient'
 import type { ThemePageProps } from '../../../types'
+import { ShieldCheck, Clock, BadgePoundSterling } from 'lucide-react'
+import SellYourCarMount from './SellYourCarMount'
 import styles from './page.module.css'
 
-const stepsCopy: Array<[string, string]> = [
-  ['Tell us about your car', 'Registration, mileage, and a few details about its condition.'],
-  ['Get your valuation', 'A real person reviews it — no algorithm lowballs — and replies within 24 hours.'],
-  ['Same-day payment', 'Accept the offer, we collect or you drop off, and funds clear the same day.'],
-]
-
 export function FbmSellYourCarPage({ brand }: ThemePageProps) {
-  const heroBg = brand.images?.sellYourCar || brand.heroImage || defaultSell
-  const sellPhoto = brand.images?.sellYourCar || defaultSell
-
-  const heroTitle = resolveText(brand, 'sellHeroTitle')
-  const heroLead = resolveText(brand, 'sellHeroLead')
+  const brandName = brand?.name || 'the showroom'
 
   return (
-    <>
-      <PageHero image={heroBg} title={heroTitle} lead={heroLead} />
+    <main>
+      <section className={styles.hero} aria-label="Sell your car hero">
+        <div className={styles.heroOverlay} aria-hidden />
+        <div className={styles.heroInner}>
+          <span className={styles.heroEyebrow}>Sell your car</span>
+          <h1 className={styles.heroTitle}>One quote. No call-back games.</h1>
+          <p className={styles.heroLead}>
+            Three quick steps and {brandName} comes back with a guide price.
+            Decision in 24 hours, no obligation either way.
+          </p>
+        </div>
+      </section>
 
-      <section className={styles.wrap}>
-        <div>
-          <p className={styles.eyebrow}>How it works</p>
-          <ol className={styles.steps}>
-            {stepsCopy.map(([t, b], i) => (
-              <li key={t} className={styles.step}>
-                <span className={styles.stepBadge}>{i + 1}</span>
-                <div>
-                  <h3 className={styles.stepTitle}>{t}</h3>
-                  <p className={styles.stepBody}>{b}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={sellPhoto} alt="" width={600} height={300} className={styles.sellImage} />
-          <div className={styles.ratingCard}>
-            <p className={styles.ratingNumber}>4.9/5</p>
-            <p className={styles.ratingBody}>
-              Average seller rating across AutoTrader and Feefo. Fair offers, zero pressure.
-            </p>
+      <section className={styles.widgetSection}>
+        <div className={styles.widgetInner}>
+          <SellYourCarMount />
+        </div>
+      </section>
+
+      <section className={styles.tailSection}>
+        <div className={styles.tailInner}>
+          <div className={styles.tailCard}>
+            <ShieldCheck size={28} strokeWidth={1.6} />
+            <h3>No obligation</h3>
+            <p>Get the number first. Sell only if you&apos;re happy with it.</p>
+          </div>
+          <div className={styles.tailCard}>
+            <Clock size={28} strokeWidth={1.6} />
+            <h3>24-hour decision</h3>
+            <p>We&apos;ll come back with a firm price within one working day.</p>
+          </div>
+          <div className={styles.tailCard}>
+            <BadgePoundSterling size={28} strokeWidth={1.6} />
+            <h3>Fair guide prices</h3>
+            <p>Real market data, not the low-ball offers that waste your time.</p>
           </div>
         </div>
-
-        <SellFormClient />
       </section>
-    </>
+    </main>
   )
 }
 

@@ -59,7 +59,7 @@ export default function LoanCalculatorClient({ disclaimer }: { disclaimer?: stri
     n.toLocaleString('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 })
 
   return (
-    <section className={styles.calc}>
+    <section className={styles.calc} aria-label="Loan calculator">
       <div className={styles.controls}>
         <Slider label="Vehicle price" value={price} min={1000} max={40000} step={250} onChange={setPrice} display={fmt(price)} />
         <Slider label="Deposit" value={deposit} min={0} max={Math.min(price, 20000)} step={250} onChange={setDeposit} display={fmt(deposit)} />
@@ -88,7 +88,7 @@ export default function LoanCalculatorClient({ disclaimer }: { disclaimer?: stri
             </div>
           ))}
         </dl>
-        <Link href="/contact" className="fbm-btn-primary">Talk to our finance team →</Link>
+        <Link href="/contact" className={`fbm-btn-primary ${styles.calcCta}`}>Talk to our finance team →</Link>
         {disclaimer && <p className={styles.disclaimer}>{disclaimer}</p>}
       </div>
     </section>

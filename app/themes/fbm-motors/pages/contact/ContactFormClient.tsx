@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Mail } from 'lucide-react'
 import styles from './page.module.css'
 
 export default function ContactFormClient() {
@@ -10,6 +11,9 @@ export default function ContactFormClient() {
     return (
       <div className={styles.formCard}>
         <div className={styles.sent}>
+          <span className={styles.sentIcon} aria-hidden>
+            <Mail size={26} strokeWidth={1.6} />
+          </span>
           <h2 className={styles.sentTitle}>Message sent</h2>
           <p className={styles.sentBody}>Thanks — we&apos;ve got it. Expect a reply within one working day.</p>
         </div>

@@ -105,7 +105,10 @@
   justify-content: center;
   gap: 8px;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--fbm-ember-600, var(--color-primary)), var(--fbm-ember-400, var(--color-accent)));
+  /* Solid single colour per Difatha's button rule — no gradients, no
+   * cross-fade between primary and accent. Brand primary fully drives
+   * the button surface so dashboard recolours remain predictable. */
+  background: var(--color-primary, var(--fbm-ember-500));
   padding: 12px 24px;
   font-size: 0.875rem;
   font-weight: 600;
@@ -113,12 +116,13 @@
   text-decoration: none;
   border: 0;
   cursor: pointer;
-  box-shadow: var(--fbm-shadow-glow);
-  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 8px 24px -10px color-mix(in srgb, var(--color-primary) 55%, transparent);
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s;
   font-family: inherit;
 }
 [data-theme-id='fbm-motors'] .fbm-btn-primary:hover {
-  transform: scale(1.03);
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--color-primary) 88%, #000);
 }
 [data-theme-id='fbm-motors'] .fbm-btn-primary:focus-visible {
   outline: 2px solid var(--fbm-ember-500, var(--color-primary));

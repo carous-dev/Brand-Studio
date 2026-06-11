@@ -59,8 +59,8 @@
 }
 
 .lead {
-  max-width: 42rem;
   margin: 20px auto 0;
   color: var(--fbm-mist);
   line-height: 1.6;
+  text-align: center;
 }
