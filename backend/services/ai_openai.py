@@ -1,20 +1,21 @@
 """
-OpenAI wrapper for structured brand generation.
+LLM wrapper for structured brand generation.
 
-Two execution paths:
+Provider selection:
+  * **Groq** (preferred when `GROQ_API_KEY` is set) — OpenAI-compatible
+    chat-completions API at `GROQ_BASE_URL` (default
+    `https://api.groq.com/openai/v1`). Fast, JSON mode supported. No
+    browsing — the new Playwright-based extractor already feeds clean
+    structured context, so the model just formats.
+  * **OpenAI** (fallback when only `OPENAI_API_KEY` is set) — keeps the
+    historical browsing path (`web_search_preview` on the Responses API)
+    available for callers that genuinely have no pre-scraped context, but
+    `/api/ai/brand` now auto-scrapes via the extractor so browsing is rarely
+    needed.
 
-  * **Browsing path** — Responses API + `web_search_preview` tool. Used when a
-    `website` URL is supplied so the model actually reads the dealer's page
-    and grounds the output in real content (real brand voice, services,
-    address, opening hours). Removes the need for a server-side scrape, which
-    avoids Cloudflare blocks on the brandstudio host.
-  * **No-browse path** — Chat Completions with JSON mode. Used when no
-    website is supplied OR the browsing path errors. The model invents
-    plausible content from the seed context only.
-
-`generate_brand()` is the public API. It tries browsing first when possible
-and falls back to no-browse on any failure so the endpoint always returns a
-draft instead of a 502.
+`generate_brand()` is the public API. It picks the provider, tries the
+provider's primary path, and falls back to a plain chat-completions call on
+error so the endpoint always returns a draft instead of a 502.
 """
 
 from __future__ import annotations
@@ -28,26 +29,58 @@ import requests
 
 
 class OpenAIError(RuntimeError):
-    """Simple wrapper for OpenAI-related failures."""
+    """Backwards-compatible name — covers Groq + OpenAI failures."""
+
+
+# ── Provider selection ────────────────────────────────────────────────────────
+
+def _provider() -> str:
+    """Returns 'groq' when GROQ_API_KEY is set (preferred), else 'openai'.
+    Force a provider with `LLM_PROVIDER=groq` or `LLM_PROVIDER=openai`."""
+    forced = (os.environ.get("LLM_PROVIDER") or "").strip().lower()
+    if forced in {"groq", "openai"}:
+        return forced
+    if (os.environ.get("GROQ_API_KEY") or "").strip():
+        return "groq"
+    return "openai"
 
 
 def _get_api_key() -> str:
-    key = os.environ.get("OPENAI_API_KEY", "").strip()
+    prov = _provider()
+    if prov == "groq":
+        key = (os.environ.get("GROQ_API_KEY") or "").strip()
+        if not key:
+            raise OpenAIError("GROQ_API_KEY is not set")
+        return key
+    key = (os.environ.get("OPENAI_API_KEY") or "").strip()
     if not key:
         raise OpenAIError("OPENAI_API_KEY is not set")
     return key
 
 
+def _get_base_url() -> str:
+    if _provider() == "groq":
+        return (os.environ.get("GROQ_BASE_URL") or "https://api.groq.com/openai/v1").rstrip("/")
+    return (os.environ.get("OPENAI_BASE_URL") or "https://api.openai.com/v1").rstrip("/")
+
+
 def _get_model() -> str:
+    if _provider() == "groq":
+        return (os.environ.get("GROQ_MODEL") or "llama-3.3-70b-versatile").strip()
     return (os.environ.get("OPENAI_MODEL") or "gpt-4.1-mini").strip()
 
 
 def _get_browsing_model() -> str:
-    """Model used for the Responses API + web_search_preview path. Override via
-    OPENAI_BROWSING_MODEL. Defaults to OPENAI_MODEL so a single env var can
-    drive both paths unless you explicitly want different models."""
+    """Model used for the Responses API + web_search_preview path. OpenAI only —
+    Groq doesn't ship a browsing tool. Override via OPENAI_BROWSING_MODEL."""
     explicit = (os.environ.get("OPENAI_BROWSING_MODEL") or "").strip()
     return explicit or _get_model()
+
+
+def _supports_browsing() -> bool:
+    """Browsing requires the OpenAI Responses API + web_search_preview tool.
+    Groq's OpenAI-compatible endpoint doesn't implement it."""
+    return _provider() == "openai"
 
 
 def _headers(api_key: str) -> Dict[str, str]:
@@ -348,6 +381,8 @@ def _generate_with_browsing(
         # and parse defensively.
     }
 
+    # Browsing path is OpenAI-only; the base URL is hard-coded to OpenAI
+    # because Groq's compat endpoint doesn't implement Responses + web_search.
     try:
         resp = requests.post(
             "https://api.openai.com/v1/responses",
@@ -383,9 +418,13 @@ def _generate_without_browsing(
     api_key: str,
     user_content: str,
 ) -> Dict[str, Any]:
-    """Original Chat Completions path. No tool use, model invents content from
-    the seed context only. Always reachable as a fallback."""
+    """Chat Completions path — provider-agnostic. Hits whichever base URL
+    `_get_base_url()` returns (Groq or OpenAI). JSON mode is supported by
+    both. With the new Playwright-based scraper feeding clean context, this
+    is the primary path."""
+    provider = _provider()
     model = _get_model()
+    base_url = _get_base_url()
     body = {
         "model": model,
         "messages": [
@@ -398,20 +437,20 @@ def _generate_without_browsing(
 
     try:
         resp = requests.post(
-            "https://api.openai.com/v1/chat/completions",
+            f"{base_url}/chat/completions",
             headers=_headers(api_key),
             json=body,
-            timeout=30,
+            timeout=60,
         )
     except Exception as exc:  # pragma: no cover - network failure path
-        raise OpenAIError(f"Failed to reach OpenAI: {exc}") from exc
+        raise OpenAIError(f"Failed to reach {provider}: {exc}") from exc
 
     if not resp.ok:
         try:
             detail = resp.json()
         except Exception:
             detail = resp.text
-        raise OpenAIError(f"OpenAI error {resp.status_code}: {detail}")
+        raise OpenAIError(f"{provider} error {resp.status_code}: {detail}")
 
     data = resp.json()
     try:
@@ -491,6 +530,7 @@ def generate_brand(
         bool(website)
         and not browsing_disabled
         and (force_browsing or not has_useful_context)
+        and _supports_browsing()  # Groq's compat endpoint doesn't ship web_search
     )
 
     browsing_prompt = _build_user_prompt(
