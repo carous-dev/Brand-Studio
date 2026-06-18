@@ -2664,13 +2664,27 @@ def save_scraper_settings_route():
     """
     payload = request.get_json(silent=True) or {}
     update: dict = {}
+
+    # Scraper fields
     if 'proxy_url' in payload:
         raw = payload.get('proxy_url')
         update['proxy_url'] = (raw or '').strip() if isinstance(raw, str) else ''
     if 'use_browser' in payload:
         update['use_browser'] = bool(payload.get('use_browser'))
+
+    # AI provider fields — pasted from the dashboard so operators don't need
+    # to SSH to the VPS to drop in a Groq key.
+    string_fields = (
+        'llm_provider', 'groq_api_key', 'groq_model',
+        'openai_api_key', 'openai_model',
+    )
+    for key in string_fields:
+        if key in payload:
+            raw = payload.get(key)
+            update[key] = (raw or '').strip() if isinstance(raw, str) else ''
+
     if not update:
-        return jsonify({'error': 'No supported fields supplied (proxy_url, use_browser)'}), 400
+        return jsonify({'error': 'No supported fields supplied'}), 400
 
     _scraper_save(update)
     return jsonify(_scraper_load_redacted())

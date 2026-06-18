@@ -40,8 +40,18 @@ def _path() -> Path:
 
 
 DEFAULTS: dict[str, Any] = {
+    # Scraper
     "proxy_url": "",
     "use_browser": True,
+    # AI provider (added 2026-06-12 so operators can paste the Groq key in
+    # the dashboard without SSHing to the VPS). Empty values fall back to
+    # env vars (GROQ_API_KEY / OPENAI_API_KEY / LLM_PROVIDER / GROQ_MODEL /
+    # OPENAI_MODEL) so the change is backwards-compatible.
+    "llm_provider": "",          # "groq" | "openai" | "" (auto: groq if key present)
+    "groq_api_key": "",
+    "groq_model": "",            # e.g. llama-3.3-70b-versatile
+    "openai_api_key": "",
+    "openai_model": "",          # e.g. gpt-4.1-mini
     "updated_at": None,
 }
 
@@ -95,6 +105,47 @@ def get_use_browser() -> bool:
     return bool(load_scraper_settings().get("use_browser", True))
 
 
+def get_llm_provider() -> str:
+    """Effective LLM provider — dashboard explicit setting, then env var, then
+    auto-detect (groq if its key is present, otherwise openai)."""
+    s = load_scraper_settings()
+    explicit = (s.get("llm_provider") or "").strip().lower()
+    if explicit in {"groq", "openai"}:
+        return explicit
+    env_forced = (os.environ.get("LLM_PROVIDER") or "").strip().lower()
+    if env_forced in {"groq", "openai"}:
+        return env_forced
+    if (s.get("groq_api_key") or os.environ.get("GROQ_API_KEY") or "").strip():
+        return "groq"
+    return "openai"
+
+
+def get_provider_api_key(provider: str) -> str:
+    """Read the API key for the given provider — dashboard first, then env."""
+    s = load_scraper_settings()
+    if provider == "groq":
+        saved = (s.get("groq_api_key") or "").strip()
+        return saved or (os.environ.get("GROQ_API_KEY") or "").strip()
+    saved = (s.get("openai_api_key") or "").strip()
+    return saved or (os.environ.get("OPENAI_API_KEY") or "").strip()
+
+
+def get_provider_model(provider: str) -> str:
+    """Read the model id — dashboard first, then env, then provider default."""
+    s = load_scraper_settings()
+    if provider == "groq":
+        return (
+            (s.get("groq_model") or "").strip()
+            or (os.environ.get("GROQ_MODEL") or "").strip()
+            or "llama-3.3-70b-versatile"
+        )
+    return (
+        (s.get("openai_model") or "").strip()
+        or (os.environ.get("OPENAI_MODEL") or "").strip()
+        or "gpt-4.1-mini"
+    )
+
+
 def redact_proxy(raw: str) -> str:
     """Return a display-safe copy with the password masked."""
     raw = (raw or "").strip()
@@ -118,13 +169,35 @@ def redact_proxy(raw: str) -> str:
         return raw
 
 
+def _mask_secret(raw: str) -> str:
+    """Show the first 8 chars then ••••, so the operator can tell which key
+    is saved without re-pasting it."""
+    raw = (raw or "").strip()
+    if not raw:
+        return ""
+    head = raw[:8]
+    return f"{head}••••"
+
+
 def load_scraper_settings_redacted() -> dict[str, Any]:
-    """Same as `load_scraper_settings` but with the proxy password masked,
-    plus a convenience flag indicating whether a proxy is configured."""
+    """Same as `load_scraper_settings` but with secrets masked, plus
+    convenience flags so the UI can show "configured / not configured"
+    without re-pasting any credential."""
     s = load_scraper_settings()
     return {
+        # Scraper
         "proxy_url_display": redact_proxy(s["proxy_url"]),
         "proxy_configured": bool(s["proxy_url"]),
         "use_browser": s["use_browser"],
+        # AI provider
+        "llm_provider": s.get("llm_provider") or "",
+        "effective_provider": get_llm_provider(),
+        "groq_api_key_display": _mask_secret(s.get("groq_api_key") or ""),
+        "groq_api_key_configured": bool((s.get("groq_api_key") or "").strip()),
+        "groq_model": s.get("groq_model") or "",
+        "openai_api_key_display": _mask_secret(s.get("openai_api_key") or ""),
+        "openai_api_key_configured": bool((s.get("openai_api_key") or "").strip()),
+        "openai_model": s.get("openai_model") or "",
+        # Audit
         "updated_at": s["updated_at"],
     }

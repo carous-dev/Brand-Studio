@@ -199,6 +199,89 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3>AI provider</h3>
+                        <p>Which LLM formats the scraped dealer data into a brand record. Saved here so you don't need to touch the VPS env. Leave blank to use the server's env vars.</p>
+                    </div>
+                    <div class="card-content">
+                        <form id="aiForm" onsubmit="saveAiSettings(event)">
+                            <div class="form-group">
+                                <label for="aiProvider">Provider</label>
+                                <select id="aiProvider" name="llm_provider">
+                                    <option value="">Auto (Groq if key set, else OpenAI)</option>
+                                    <option value="groq">Groq (llama-3.3-70b-versatile)</option>
+                                    <option value="openai">OpenAI (gpt-4.1-mini)</option>
+                                </select>
+                                <small class="form-hint">
+                                    Currently effective: <code id="aiEffectiveProvider">—</code>
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="groqApiKey">Groq API key</label>
+                                <input
+                                    type="password"
+                                    id="groqApiKey"
+                                    name="groq_api_key"
+                                    placeholder="gsk_…"
+                                    autocomplete="off"
+                                    spellcheck="false"
+                                />
+                                <small class="form-hint">
+                                    Get one at <code>console.groq.com/keys</code>.
+                                    Field shows the first 8 chars when a key is saved — re-enter to change, type <code>clear</code> to wipe.
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="groqModel">Groq model (optional)</label>
+                                <input
+                                    type="text"
+                                    id="groqModel"
+                                    name="groq_model"
+                                    placeholder="llama-3.3-70b-versatile"
+                                    autocomplete="off"
+                                    spellcheck="false"
+                                />
+                            </div>
+
+                            <details style="margin-top: 12px;">
+                                <summary style="cursor: pointer; font-size: 13px; color: var(--text-secondary, #6b7280);">OpenAI fallback (optional)</summary>
+                                <div style="margin-top: 12px;">
+                                    <div class="form-group">
+                                        <label for="openaiApiKey">OpenAI API key</label>
+                                        <input
+                                            type="password"
+                                            id="openaiApiKey"
+                                            name="openai_api_key"
+                                            placeholder="sk-…"
+                                            autocomplete="off"
+                                            spellcheck="false"
+                                        />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="openaiModel">OpenAI model</label>
+                                        <input
+                                            type="text"
+                                            id="openaiModel"
+                                            name="openai_model"
+                                            placeholder="gpt-4.1-mini"
+                                            autocomplete="off"
+                                            spellcheck="false"
+                                        />
+                                    </div>
+                                </div>
+                            </details>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary" id="aiSaveBtn">Save AI settings</button>
+                                <span id="aiStatus" class="form-status"></span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -646,8 +729,87 @@ async function loadScraperSettings() {
             proxyInput.placeholder = data.proxy_url_display + ' (saved — re-enter to change)';
         }
         document.getElementById('scraperUseBrowser').checked = !!data.use_browser;
+
+        // AI provider section — share the same redacted payload
+        const provSel = document.getElementById('aiProvider');
+        if (provSel) {
+            provSel.value = data.llm_provider || '';
+            const eff = document.getElementById('aiEffectiveProvider');
+            if (eff) eff.textContent = data.effective_provider || '—';
+            const gk = document.getElementById('groqApiKey');
+            if (gk && data.groq_api_key_configured) {
+                gk.placeholder = (data.groq_api_key_display || '') + ' (saved — re-enter to change)';
+            }
+            const gm = document.getElementById('groqModel');
+            if (gm && data.groq_model) gm.placeholder = data.groq_model + ' (saved)';
+            const ok = document.getElementById('openaiApiKey');
+            if (ok && data.openai_api_key_configured) {
+                ok.placeholder = (data.openai_api_key_display || '') + ' (saved — re-enter to change)';
+            }
+            const om = document.getElementById('openaiModel');
+            if (om && data.openai_model) om.placeholder = data.openai_model + ' (saved)';
+        }
     } catch (err) {
         console.warn('[scraper] failed to load settings', err);
+    }
+}
+
+function setAiStatus(msg, kind) {
+    const el = document.getElementById('aiStatus');
+    if (!el) return;
+    el.textContent = msg || '';
+    el.dataset.kind = kind || '';
+}
+
+async function saveAiSettings(event) {
+    event.preventDefault();
+    const btn = document.getElementById('aiSaveBtn');
+    btn.disabled = true;
+    setAiStatus('Saving…', 'pending');
+
+    const body = {
+        llm_provider: document.getElementById('aiProvider').value,
+    };
+    const fields = [
+        ['groqApiKey', 'groq_api_key'],
+        ['groqModel', 'groq_model'],
+        ['openaiApiKey', 'openai_api_key'],
+        ['openaiModel', 'openai_model'],
+    ];
+    for (const [domId, jsonKey] of fields) {
+        const el = document.getElementById(domId);
+        if (!el) continue;
+        const raw = el.value.trim();
+        if (raw === 'clear') {
+            body[jsonKey] = '';
+        } else if (raw) {
+            body[jsonKey] = raw;
+        }
+    }
+
+    try {
+        const resp = await fetch('/api/settings/scraper', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+        });
+        const data = await resp.json();
+        if (!resp.ok) {
+            setAiStatus('Save failed: ' + (data.error || resp.status), 'error');
+        } else {
+            setAiStatus(`Saved. Effective provider: ${data.effective_provider || '—'}.`, 'success');
+            // Clear value inputs (placeholders now show masked saved values)
+            for (const [domId] of fields) {
+                const el = document.getElementById(domId);
+                if (el) el.value = '';
+            }
+            await loadScraperSettings();
+        }
+    } catch (err) {
+        setAiStatus('Save failed: ' + err.message, 'error');
+    } finally {
+        btn.disabled = false;
     }
 }
 
@@ -752,6 +914,7 @@ window.openDomainModal = openDomainModal;
 window.closeDomainModal = closeDomainModal;
 window.saveScraperSettings = saveScraperSettings;
 window.testScraperConnection = testScraperConnection;
+window.saveAiSettings = saveAiSettings;
 </script>
 
 <style>

@@ -27,6 +27,16 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import requests
 
+# Provider config + secrets live in scraper_settings (dashboard-editable JSON
+# at app/data/scraper-settings.json). Env vars are still honoured as a
+# fallback. Operators on production can paste the Groq key in
+# Settings → Advanced → Scraper without touching the VPS .env.
+from ..scraper_settings import (
+    get_llm_provider as _settings_provider,
+    get_provider_api_key as _settings_api_key,
+    get_provider_model as _settings_model,
+)
+
 
 class OpenAIError(RuntimeError):
     """Backwards-compatible name — covers Groq + OpenAI failures."""
@@ -35,26 +45,21 @@ class OpenAIError(RuntimeError):
 # ── Provider selection ────────────────────────────────────────────────────────
 
 def _provider() -> str:
-    """Returns 'groq' when GROQ_API_KEY is set (preferred), else 'openai'.
-    Force a provider with `LLM_PROVIDER=groq` or `LLM_PROVIDER=openai`."""
-    forced = (os.environ.get("LLM_PROVIDER") or "").strip().lower()
-    if forced in {"groq", "openai"}:
-        return forced
-    if (os.environ.get("GROQ_API_KEY") or "").strip():
-        return "groq"
-    return "openai"
+    """Returns 'groq' or 'openai'. Resolves via dashboard settings first,
+    then env vars (LLM_PROVIDER / GROQ_API_KEY presence), falling back to
+    'openai' for backwards compatibility."""
+    return _settings_provider()
 
 
 def _get_api_key() -> str:
     prov = _provider()
-    if prov == "groq":
-        key = (os.environ.get("GROQ_API_KEY") or "").strip()
-        if not key:
-            raise OpenAIError("GROQ_API_KEY is not set")
-        return key
-    key = (os.environ.get("OPENAI_API_KEY") or "").strip()
+    key = _settings_api_key(prov)
     if not key:
-        raise OpenAIError("OPENAI_API_KEY is not set")
+        env_name = "GROQ_API_KEY" if prov == "groq" else "OPENAI_API_KEY"
+        raise OpenAIError(
+            f"No API key configured for provider '{prov}'. "
+            f"Paste it in Settings → Advanced → Scraper, or set {env_name} env."
+        )
     return key
 
 
@@ -65,9 +70,7 @@ def _get_base_url() -> str:
 
 
 def _get_model() -> str:
-    if _provider() == "groq":
-        return (os.environ.get("GROQ_MODEL") or "llama-3.3-70b-versatile").strip()
-    return (os.environ.get("OPENAI_MODEL") or "gpt-4.1-mini").strip()
+    return _settings_model(_provider())
 
 
 def _get_browsing_model() -> str:
