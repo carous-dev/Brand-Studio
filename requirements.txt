@@ -16,3 +16,14 @@ requests==2.31.0
 PyMySQL==1.1.0
 python-dotenv==1.0.1
 cryptography==42.0.8
+# Playwright — real-browser fetcher used by /api/extract-website and
+# /api/ai/brand for sites that block plain HTTP scrapers (AutoTrader behind
+# Cloudflare, JS-rendered SPAs). After `pip install -r requirements.txt`:
+#     python -m playwright install chromium --no-shell
+#     python -m playwright install-deps chromium    # Linux only
+# IMPORTANT: --no-shell installs the FULL Chromium browser. The default
+# `install chromium` in 1.50+ downloads only chromium-headless-shell, which
+# DOES NOT support HTTP proxy authentication (you'll get
+# ERR_PROXY_AUTH_UNSUPPORTED with iProyal / Bright Data / any authed proxy).
+# Downloads ~150 MB on first install.
+playwright==1.50.0

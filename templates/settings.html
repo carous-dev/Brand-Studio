@@ -138,18 +138,64 @@
             <!-- Advanced Tab -->
             <div class="tab-pane" id="advanced-tab">
                 <div class="tab-header">
-                    <h2>Advanced Settings</h2>
-                    <p class="tab-description">Advanced configuration options for power users.</p>
+                    <h2>Scraper</h2>
+                    <p class="tab-description">
+                        Configure how the AI brand extractor fetches dealer websites.
+                        A real Chromium browser (Playwright) is used by default so JS-rendered
+                        sites and Cloudflare-gated pages (e.g. AutoTrader dealer pages) work.
+                        For sites that block VPS IPs, set a residential proxy below.
+                    </p>
                 </div>
+
                 <div class="settings-card">
+                    <div class="card-header">
+                        <h3>Residential proxy</h3>
+                        <p>iProyal, Smartproxy, Bright Data, ScraperAPI — all supported.</p>
+                    </div>
                     <div class="card-content">
-                        <div class="coming-soon">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                                <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
-                            </svg>
-                            <h4>Coming Soon</h4>
-                            <p>Advanced settings will be available in a future update.</p>
+                        <form id="scraperForm" onsubmit="saveScraperSettings(event)">
+                            <div class="form-group">
+                                <label for="scraperProxyUrl">Proxy URL</label>
+                                <input
+                                    type="text"
+                                    id="scraperProxyUrl"
+                                    name="proxy_url"
+                                    placeholder="geo.iproyal.com:12321:USER:PASS  or  http://USER:PASS@host:port"
+                                    autocomplete="off"
+                                    spellcheck="false"
+                                />
+                                <small class="form-hint">
+                                    Accepts both the iProyal dashboard paste format
+                                    (<code>host:port:user:pass</code>) and full URLs.
+                                    For UK exits append <code>_country-gb</code> to the iProyal username.
+                                    Field shows <code>••••</code> when a password is already saved — re-enter to change.
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="scraperUseBrowser" checked />
+                                    <span>Use real browser (Playwright) — recommended for AutoTrader / Cloudflare-gated sites</span>
+                                </label>
+                                <small class="form-hint">
+                                    When off, falls back to plain HTTP — faster but easily blocked.
+                                </small>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary" id="scraperSaveBtn">
+                                    Save settings
+                                </button>
+                                <button type="button" class="btn-secondary" onclick="testScraperConnection()">
+                                    Test connection
+                                </button>
+                                <span id="scraperStatus" class="form-status"></span>
+                            </div>
+                        </form>
+
+                        <div id="scraperLastResult" style="margin-top: 20px; display: none;">
+                            <h4>Last test result</h4>
+                            <pre id="scraperLastResultBody" style="background: #f5f5f5; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 12px;"></pre>
                         </div>
                     </div>
                 </div>
@@ -586,14 +632,126 @@ class DomainManager {
     }
 }
 
+// ─── Scraper settings (Advanced tab) ───────────────────────────────────────
+
+async function loadScraperSettings() {
+    const form = document.getElementById('scraperForm');
+    if (!form) return;
+    try {
+        const resp = await fetch('/api/settings/scraper', { credentials: 'same-origin' });
+        if (!resp.ok) return;
+        const data = await resp.json();
+        const proxyInput = document.getElementById('scraperProxyUrl');
+        if (data.proxy_configured && data.proxy_url_display) {
+            proxyInput.placeholder = data.proxy_url_display + ' (saved — re-enter to change)';
+        }
+        document.getElementById('scraperUseBrowser').checked = !!data.use_browser;
+    } catch (err) {
+        console.warn('[scraper] failed to load settings', err);
+    }
+}
+
+function setScraperStatus(msg, kind) {
+    const el = document.getElementById('scraperStatus');
+    if (!el) return;
+    el.textContent = msg || '';
+    el.dataset.kind = kind || '';
+}
+
+async function saveScraperSettings(event) {
+    event.preventDefault();
+    const proxyInput = document.getElementById('scraperProxyUrl');
+    const useBrowser = document.getElementById('scraperUseBrowser').checked;
+    const btn = document.getElementById('scraperSaveBtn');
+    btn.disabled = true;
+    setScraperStatus('Saving…', 'pending');
+
+    const body = { use_browser: useBrowser };
+    // Only send proxy_url when operator typed a fresh value. Empty input leaves
+    // the saved value untouched. Use the literal string "clear" to wipe it.
+    const raw = proxyInput.value.trim();
+    if (raw === 'clear') {
+        body.proxy_url = '';
+    } else if (raw) {
+        body.proxy_url = raw;
+    }
+
+    try {
+        const resp = await fetch('/api/settings/scraper', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+        });
+        const data = await resp.json();
+        if (!resp.ok) {
+            setScraperStatus('Save failed: ' + (data.error || resp.status), 'error');
+        } else {
+            setScraperStatus('Saved.', 'success');
+            proxyInput.value = '';
+            await loadScraperSettings();
+        }
+    } catch (err) {
+        setScraperStatus('Save failed: ' + err.message, 'error');
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+async function testScraperConnection() {
+    const proxyInput = document.getElementById('scraperProxyUrl');
+    const useBrowser = document.getElementById('scraperUseBrowser').checked;
+    const out = document.getElementById('scraperLastResult');
+    const body = document.getElementById('scraperLastResultBody');
+    setScraperStatus('Testing…', 'pending');
+    out.style.display = 'none';
+
+    const probeUrl = prompt(
+        'Test URL (defaults to AutoTrader dealer probe):',
+        'https://www.autotrader.co.uk/dealers/midlothian/kirknewton/central-motor-centre-10045551'
+    );
+    if (probeUrl === null) { setScraperStatus('', ''); return; }
+
+    const payload = { url: probeUrl, use_browser: useBrowser };
+    const raw = proxyInput.value.trim();
+    if (raw && raw !== 'clear') {
+        payload.proxy_url = raw;  // test the unsaved value
+    }
+
+    try {
+        const resp = await fetch('/api/settings/scraper/test', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+        const data = await resp.json();
+        body.textContent = JSON.stringify(data, null, 2);
+        out.style.display = 'block';
+        if (data.ok) {
+            setScraperStatus(
+                `OK — fetched ${data.text_chars} chars via ${data.fetch_source}.`,
+                'success',
+            );
+        } else {
+            setScraperStatus('Test failed: ' + (data.error || 'unknown'), 'error');
+        }
+    } catch (err) {
+        setScraperStatus('Test failed: ' + err.message, 'error');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     window.domainManager = new DomainManager();
     await window.domainManager.init();
+    await loadScraperSettings();
 });
 
 window.switchTab = switchTab;
 window.openDomainModal = openDomainModal;
 window.closeDomainModal = closeDomainModal;
+window.saveScraperSettings = saveScraperSettings;
+window.testScraperConnection = testScraperConnection;
 </script>
 
 <style>
@@ -993,6 +1151,66 @@ window.closeDomainModal = closeDomainModal;
 .modal-form {
     max-width: none;
 }
+
+/* Scraper tab — proxy form */
+.checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+.form-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--text-secondary, #6b7280);
+    line-height: 1.5;
+}
+.form-hint code {
+    background: rgba(0,0,0,0.05);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 11.5px;
+}
+.form-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+}
+.form-status {
+    font-size: 13px;
+    margin-left: 8px;
+}
+.form-status[data-kind="success"] { color: #15803d; }
+.form-status[data-kind="error"]   { color: #b91c1c; }
+.form-status[data-kind="pending"] { color: #6b7280; }
+.btn-primary,
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 0;
+    transition: filter 0.15s ease, transform 0.15s ease;
+}
+.btn-primary {
+    background: var(--accent-primary, #b51c24);
+    color: #ffffff;
+}
+.btn-primary:hover { filter: brightness(1.05); }
+.btn-primary:active { transform: translateY(1px); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-secondary {
+    background: rgba(0,0,0,0.06);
+    color: var(--text-primary, #111827);
+}
+.btn-secondary:hover { background: rgba(0,0,0,0.1); }
 
 /* Table Styles */
 .domains-table-container {

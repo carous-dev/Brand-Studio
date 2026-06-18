@@ -76,6 +76,12 @@ from backend.services.theme_catalog import (
     resolve_theme_id,
 )
 from backend.services.extractor import fetch_structured_text
+from backend.scraper_settings import (
+    get_proxy_url as _scraper_get_proxy_url,
+    get_use_browser as _scraper_get_use_browser,
+    load_scraper_settings_redacted as _scraper_load_redacted,
+    save_scraper_settings as _scraper_save,
+)
 
 # Simple in-process lock to prevent concurrent AI generations per user/session
 _ai_lock_map: dict[str, bool] = {}
@@ -108,13 +114,13 @@ def _get_wayback_url(url: str) -> str:
     return f"https://web.archive.org/web/{timestamp}/{url}"
 
 
-def _fetch_from_wayback(url: str) -> dict:
+def _fetch_from_wayback(url: str, proxy_url: str | None = None) -> dict:
     """Fetch and extract content from Wayback Machine."""
     wayback_url = _get_wayback_url(url)
     print(f"[WAYBACK] Attempting to fetch from: {wayback_url}")
-    
+
     try:
-        result = fetch_structured_text(wayback_url)
+        result = fetch_structured_text(wayback_url, proxy_url=proxy_url)
         print(f"[WAYBACK] Successfully extracted content from archive")
         return result
     except Exception as exc:
@@ -2420,6 +2426,27 @@ def generate_brand_via_ai():
         app.logger.exception("Failed to load text recipe for theme=%s", preferred_theme_id)
         text_recipe = None
 
+    # If only a website was supplied (no pre-scraped context from the
+    # /api/extract-website call), scrape it ourselves now via Playwright +
+    # the structured extractor. Keeps OpenAI off the fetch path entirely —
+    # the AI just formats what we hand it.
+    if website and not context:
+        try:
+            scrape = fetch_structured_text(
+                website,
+                proxy_url=_scraper_get_proxy_url() or None,
+                use_browser=_scraper_get_use_browser(),
+            )
+            context = scrape.get('text', '') or ''
+            app.logger.info(
+                "[/api/ai/brand] auto-scraped %s via %s (%d chars)",
+                website, scrape.get('fetch_source', '?'), len(context),
+            )
+        except Exception as exc:
+            app.logger.warning("[/api/ai/brand] auto-scrape failed for %s: %s", website, exc)
+            # Continue without context — the AI handler still has the URL and
+            # can use browsing as a last resort.
+
     try:
         result = generate_brand_via_openai(
             context=context,
@@ -2541,54 +2568,146 @@ def update_preview_page(slug):
 @app.route('/api/extract-website', methods=['POST'])
 @auth_manager.login_required
 def extract_website_content():
-    """Extract structured text from a website URL for AI seeding."""
+    """Extract structured text from a website URL for AI seeding.
+
+    Body params:
+        url (str, required):   Page to scrape (must start with http:// or https://).
+        proxy (str, optional): HTTP/HTTPS proxy URL. Falls back to the server-wide
+                               BRAND_SCRAPE_PROXY_URL env var if unset. Needed for
+                               sites that block VPS IPs (e.g. AutoTrader).
+    """
     payload = request.get_json(silent=True) or {}
     url = (payload.get('url') or '').strip()
+    # Per-request override > dashboard-saved proxy > env var
+    proxy = (payload.get('proxy') or '').strip() or _scraper_get_proxy_url() or None
+    # Per-request browser toggle override; default uses the saved setting
+    use_browser = payload.get('use_browser')
+    if use_browser is None:
+        use_browser = _scraper_get_use_browser()
+    use_browser = bool(use_browser)
 
     if not url:
         return jsonify({'error': 'Website URL is required'}), 400
     if not (url.startswith('http://') or url.startswith('https://')):
         return jsonify({'error': 'Invalid URL format. URL must start with http:// or https://'}), 400
 
-    try:
-        result = fetch_structured_text(url)
-        return jsonify({
+    def _shape(result: dict, source: str, fallback_reason: str = '') -> dict:
+        out = {
             'content': result.get('text', ''),
             'meta': {
+                # Backward-compatible meta
                 'title': result.get('title', ''),
                 'description': result.get('description', ''),
                 'keywords': result.get('keywords', ''),
                 'headings': result.get('headings', []),
+                # Enriched structured fields — frontend can show these inline
+                # in the editor preview without re-parsing the text blob.
+                'name': result.get('name', ''),
+                'phones': result.get('phones', []),
+                'address': result.get('address', ''),
+                'email': result.get('email', ''),
+                'opening_hours': result.get('opening_hours', []),
+                'social_links': result.get('social_links', []),
+                'vehicles': result.get('vehicles', []),
+                'services': result.get('services', []),
+                'site_name': result.get('site_name', ''),
+                'rating': result.get('rating', {}),
+                'logo': result.get('logo', ''),
+                'fetch_source': result.get('fetch_source', ''),
             },
-            'source': 'website'
-        })
+            'source': source,
+        }
+        if fallback_reason:
+            out['fallback_reason'] = fallback_reason
+        return out
+
+    try:
+        result = fetch_structured_text(url, proxy_url=proxy, use_browser=use_browser)
+        return jsonify(_shape(result, 'website'))
     except Exception as exc:
         # Fallback to Wayback Machine when website extraction fails
         print(f"[WEBSITE_EXTRACTION] Failed to extract from {url}: {exc}")
         print(f"[WEBSITE_EXTRACTION] Falling back to Wayback Machine")
-        
+
         try:
-            # Try to fetch from Wayback Machine
-            wayback_result = _fetch_from_wayback(url)
-            
-            return jsonify({
-                'content': wayback_result.get('text', ''),
-                'meta': {
-                    'title': wayback_result.get('title', ''),
-                    'description': wayback_result.get('description', ''),
-                    'keywords': wayback_result.get('keywords', ''),
-                    'headings': wayback_result.get('headings', []),
-                },
-                'source': 'wayback_machine',
-                'fallback_reason': f"Direct website extraction failed: {str(exc)}"
-            })
-            
+            wayback_result = _fetch_from_wayback(url, proxy_url=proxy)
+            return jsonify(_shape(
+                wayback_result,
+                'wayback_machine',
+                fallback_reason=f"Direct website extraction failed: {str(exc)}",
+            ))
         except Exception as wayback_exc:
             print(f"[WEBSITE_EXTRACTION] Wayback Machine fallback also failed: {wayback_exc}")
             return jsonify({
                 'error': f'Website extraction failed and Wayback Machine unavailable: {str(exc)}',
                 'fallback_error': str(wayback_exc)
             }), 502
+
+
+@app.route('/api/settings/scraper', methods=['GET'])
+@auth_manager.login_required
+def get_scraper_settings_route():
+    """Return current scraper settings with the proxy password redacted."""
+    return jsonify(_scraper_load_redacted())
+
+
+@app.route('/api/settings/scraper', methods=['POST'])
+@auth_manager.login_required
+def save_scraper_settings_route():
+    """Save scraper settings from the dashboard.
+
+    Body params:
+        proxy_url (str, optional): Full proxy URL OR iProyal-style
+            host:port:user:pass paste. Send an empty string to clear.
+        use_browser (bool, optional): When true, attempt Playwright fetch
+            first; falls back to plain HTTP. Defaults true.
+    """
+    payload = request.get_json(silent=True) or {}
+    update: dict = {}
+    if 'proxy_url' in payload:
+        raw = payload.get('proxy_url')
+        update['proxy_url'] = (raw or '').strip() if isinstance(raw, str) else ''
+    if 'use_browser' in payload:
+        update['use_browser'] = bool(payload.get('use_browser'))
+    if not update:
+        return jsonify({'error': 'No supported fields supplied (proxy_url, use_browser)'}), 400
+
+    _scraper_save(update)
+    return jsonify(_scraper_load_redacted())
+
+
+@app.route('/api/settings/scraper/test', methods=['POST'])
+@auth_manager.login_required
+def test_scraper_settings_route():
+    """Run a one-off fetch against a probe URL using the current (or
+    payload-overridden) proxy + browser settings. Used by the dashboard
+    Test Connection button. Returns counts only — never echoes the page body
+    or the proxy credentials."""
+    payload = request.get_json(silent=True) or {}
+    probe_url = (payload.get('url') or 'https://www.iplocation.net/find-ip-address').strip()
+    proxy_override = payload.get('proxy_url')
+    use_browser_override = payload.get('use_browser')
+
+    proxy = (proxy_override or '').strip() if isinstance(proxy_override, str) else None
+    if not proxy:
+        proxy = _scraper_get_proxy_url() or None
+    use_browser = bool(use_browser_override) if use_browser_override is not None else _scraper_get_use_browser()
+
+    if not (probe_url.startswith('http://') or probe_url.startswith('https://')):
+        return jsonify({'ok': False, 'error': 'Invalid probe URL'}), 400
+
+    try:
+        result = fetch_structured_text(probe_url, proxy_url=proxy, use_browser=use_browser)
+        return jsonify({
+            'ok': True,
+            'fetch_source': result.get('fetch_source', ''),
+            'title': result.get('title', ''),
+            'text_chars': len(result.get('text', '')),
+            'phones_found': len(result.get('phones', []) or []),
+            'has_address': bool(result.get('address')),
+        })
+    except Exception as exc:
+        return jsonify({'ok': False, 'error': str(exc)}), 200
 
 
 @app.route('/api/previews', methods=['GET'])

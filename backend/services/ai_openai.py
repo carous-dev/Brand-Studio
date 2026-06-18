@@ -474,7 +474,24 @@ def generate_brand(
         "yes",
     }
 
-    use_browsing = bool(website) and not browsing_disabled
+    # If the caller already supplied a structured context (typically built by
+    # POST /api/extract-website, which now extracts JSON-LD + visible text +
+    # site-specific dealer fields cleanly), prefer that over the browsing path.
+    # Browsing was originally a workaround for the old scraper that produced
+    # SVG-contaminated garbage; now redundant and 3× more expensive / slower.
+    # Set OPENAI_FORCE_BROWSING=1 to override and always browse.
+    force_browsing = (os.environ.get("OPENAI_FORCE_BROWSING") or "").strip() in {
+        "1",
+        "true",
+        "yes",
+    }
+    has_useful_context = bool(context) and len(context.strip()) > 200
+
+    use_browsing = (
+        bool(website)
+        and not browsing_disabled
+        and (force_browsing or not has_useful_context)
+    )
 
     browsing_prompt = _build_user_prompt(
         context, website, scopes, preferred_theme_id, text_recipe,
