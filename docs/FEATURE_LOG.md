@@ -2,6 +2,14 @@
 
 Newest entry at the top. One entry per logical change, not per file.
 
+- 2026-06-19: brandstudio — fix uploaded brand assets 404ing on previews + dashboard (Next 16 public/ cache) (owner: Difatha)
+  - Scope:
+    - `app/api/media/[...path]/route.ts` (new) — Node-runtime route (`runtime='nodejs'`, `dynamic='force-dynamic'`) that streams files from `public/images` on every request, with path-traversal guards and content-type by extension. Serves brand-uploaded assets the instant they hit disk — no process restart.
+    - `next.config.js` — converted `rewrites()` to the object form and added an `afterFiles` rewrite `'/images/:path*' -> '/api/media/:path*'`. `afterFiles` keeps the fast static path for files Next already knows about; only the cache-missed uploads fall through to the runtime route.
+    - Prod hotfix (no repo change): `pm2 restart app-brandstudio` on the VPS to re-warm Next's `public/` cache so the 7 assets uploaded since the Jun-18 deploy (blacktreemotoring, autotechcars, showroomshinecars) serve again immediately.
+  - Reason: Next.js 16's production server caches the `public/` directory listing when it warms. Brand Studio deliberately does NOT restart the Next process on each brand save (`PM2_RESTART_ON_BRAND_UPDATE` unset), on the old assumption that Next serves `public/` live. Under Next 16 that assumption is false — every dashboard upload after the last restart 404'd on both the dealer preview sites and the editor's asset cards (which load `/images/*` from the brand's preview origin). Verified on prod: files existed on disk (`/home/brandstudio/public/images/blacktreemotoring-hero.jpg`, mtime Jun 19) but the running Next process (0 restarts since Jun 18 15:29) returned 404 while older files in the same dir served 200.
+  - Notes: `npx tsc --noEmit` clean (0 errors). Functionally verified on `next dev`: `/api/media/<file>` and `/images/<file>` both 200 with correct bytes/content-type, missing file → 404, `..%2f` traversal → 404. The durable fix needs a deploy (push to main → deploy.yml builds + restarts) to take effect on prod; until then the restart hotfix is holding. Brand-asset uploads are gitignored (`.gitignore:48 public/images/*`) so they live only on the serving box — unchanged by this fix, but worth noting they are not backed up.
+
 - 2026-06-11: `fbm-motors` — replace ported SellCarForm with the shared `SellYourCarWidget` CDN mount (owner: Difatha)
   - Scope:
     - `pages/sell-your-car/SellYourCarMount.tsx` — new client island that mounts `SellYourCarWidget` from `@/app/widgets/SellYourCarWidget` with the brand's name + formatted contact info + a DefaultInfoPanel. Mirrors the pattern in `auto-wow-uk-bespoke-02/pages/sell-your-car/SellYourCarMount.tsx`.

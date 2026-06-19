@@ -87,9 +87,21 @@ const nextConfig = {
   turbopack: {},
 
   async rewrites() {
-    return [
-      { source: '/inventory/sync', destination: '/api/inventory/sync' }
-    ]
+    // Object form makes the phase explicit. `afterFiles` runs AFTER the
+    // filesystem/public check, so assets Next already serves statically keep
+    // that fast path; only requests the static handler misses fall through.
+    return {
+      beforeFiles: [],
+      afterFiles: [
+        { source: '/inventory/sync', destination: '/api/inventory/sync' },
+        // Brand-uploaded assets live in public/images but Next 16 caches the
+        // public/ listing at warm time, so files uploaded afterwards 404 from
+        // the static handler. Route those misses to a runtime handler that
+        // reads from disk, so new uploads serve immediately without a restart.
+        { source: '/images/:path*', destination: '/api/media/:path*' },
+      ],
+      fallback: [],
+    }
   }
 };
 
