@@ -2,6 +2,12 @@
 
 Newest entry at the top. One entry per logical change, not per file.
 
+- 2026-06-19: `fbm-motors` — show phone exactly as entered in the dashboard, stop auto-reformatting (owner: Difatha)
+  - Scope:
+    - `app/themes/fbm-motors/lib/contact.ts` — `getBrandContactInfo` now returns `phoneDisplay: phoneRaw` (the verbatim, trimmed `brand.location.phone`) instead of `formatUkPhone(phoneRaw)`. Removed the now-unused `formatUkPhone` helper. `phoneTel` still digit-normalises for the `tel:` href; `digitsOnly` is retained for that.
+  - Reason: the theme was passing the dashboard-entered phone through `formatUkPhone`, which strips non-digits and re-spaces it — so a dealer's `(07457) 401022` rendered as `07457 401022` (brackets dropped). Difatha wants the number shown exactly as typed in the dashboard form; the theme must not reformat the visible text. Only the click-to-call href needs normalising, which `phoneTel` already does.
+  - Notes: `npx tsc --noEmit` clean (0 errors). Only the fbm-motors theme reformatted the phone among brandstudio themes (grep). Header/Footer render `{contact.phoneDisplay}` directly; Vehicle.tsx only uses the phone for the `tel:` href, not as visible text — so the helper change covers every display path. Needs a deploy to reach prod previews.
+
 - 2026-06-19: brandstudio — fix uploaded brand assets 404ing on previews + dashboard (Next 16 public/ cache) (owner: Difatha)
   - Scope:
     - `app/api/media/[...path]/route.ts` (new) — Node-runtime route (`runtime='nodejs'`, `dynamic='force-dynamic'`) that streams files from `public/images` on every request, with path-traversal guards and content-type by extension. Serves brand-uploaded assets the instant they hit disk — no process restart.

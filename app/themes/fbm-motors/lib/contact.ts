@@ -15,48 +15,6 @@ function digitsOnly(value: string): string {
   return String(value || '').replace(/\D/g, '')
 }
 
-/**
- * Format a raw UK phone number for display. Accepts strings like
- * "7723090172", "07723090172", "+44 7723 090172" and emits "07723 090172"
- * (mobile) / "01183 333 444" (landline) / leaves the leading "+44 " when
- * the input is international form.
- */
-function formatUkPhone(input: string): string {
-  const raw = String(input || '').trim()
-  if (!raw) return ''
-  const digits = digitsOnly(raw)
-  if (!digits) return raw
-
-  // International form input — keep the +44 prefix.
-  if (raw.startsWith('+44')) {
-    const local = digits.replace(/^44/, '')
-    if (local.length === 10 && local.startsWith('7')) {
-      return `+44 ${local.slice(0, 4)} ${local.slice(4)}`
-    }
-    if (local.length === 10) {
-      return `+44 ${local.slice(0, 3)} ${local.slice(3, 6)} ${local.slice(6)}`
-    }
-    return raw
-  }
-
-  // Local form. Normalise "7..." (10 digits) to "07..." then space-format.
-  const local = digits.startsWith('0')
-    ? digits
-    : digits.length === 10 && digits.startsWith('7')
-      ? `0${digits}`
-      : digits
-  if (local.length === 11 && local.startsWith('07')) {
-    return `${local.slice(0, 5)} ${local.slice(5)}`
-  }
-  if (local.length === 11) {
-    return `${local.slice(0, 5)} ${local.slice(5, 8)} ${local.slice(8)}`
-  }
-  if (local.length === 10 && local.startsWith('7')) {
-    return `0${local.slice(0, 4)} ${local.slice(4)}`
-  }
-  return raw
-}
-
 function buildAddressLine(brand: BrandConfig | null | undefined): string {
   if (!brand?.location) return ''
   const fullAddress = (brand.location as any).fullAddress
@@ -80,7 +38,10 @@ export function getBrandContactInfo(brand: BrandConfig | null | undefined): Bran
   const whatsappUrl = phoneTel ? `https://wa.me/${phoneTel.replace(/^\+/, '')}` : ''
 
   return {
-    phoneDisplay: formatUkPhone(phoneRaw),
+    // Display the phone exactly as entered in the dashboard (e.g.
+    // "(07457) 401022"). Only phoneTel below is digit-normalised for the
+    // tel: href — the visible text must not be reformatted.
+    phoneDisplay: phoneRaw,
     phoneTel,
     email,
     whatsappUrl,
