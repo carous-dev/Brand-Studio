@@ -39,7 +39,7 @@
   position: absolute;
   inset: 0;
   background-color: var(--surface-card-light);
-  background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.04), transparent 60%);
+  background-image: linear-gradient(135deg, color-mix(in srgb, var(--color-text) 4%, transparent), transparent 60%);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

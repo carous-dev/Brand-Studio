@@ -72,6 +72,13 @@ import type { InventoryVehicle } from './inventory'
 
 export function carToVehicle(car: Car): InventoryVehicle & { reserved?: boolean } {
   const mileageNum = Number(String(car.mileage).replace(/[^0-9]/g, '')) || 0
+  // Seed names bake make + model + derivative into one string
+  // ("Renault Megane 1.6 VVT Extreme 5dr"). Strip the make prefix so the
+  // modern inventory card can compose "make model" cleanly and the Model
+  // filter has values to work with.
+  const model = car.name.startsWith(car.make)
+    ? car.name.slice(car.make.length).trim()
+    : car.name
   return {
     id: car.id,
     slug: car.id,
@@ -83,6 +90,8 @@ export function carToVehicle(car: Car): InventoryVehicle & { reserved?: boolean 
     transmission: car.gearbox,
     body: 'Car',
     make: car.make,
+    model,
+    derivative: '',
     color: car.colour,
     doors: 5,
     location: '',

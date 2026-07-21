@@ -1,0 +1,274 @@
+/* =============================================================================
+ * HEADER — buy4lessuk-bespoke (v4, matches the Buy4Less reference closely)
+ *
+ * The reference is intentionally restrained: white header, simple horizontal
+ * text nav, single red filled-pill Contact CTA on the right. No accent strip,
+ * no glass-on-scroll, no sliding underline. Hover-darken on nav links, hover-
+ * darken on the CTA. That's it.
+ *
+ * Mobile-first.
+ * ============================================================================= */
+
+.header {
+  background: var(--color-header-bg);
+  position: sticky;
+  top: calc(var(--brandstudio-preview-banner-height, 0px) + 36px);
+  z-index: 49;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+}
+
+.inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+}
+
+.brandLink {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  flex: 0 0 auto;
+  min-height: 44px;
+}
+
+/* Primary nav — hidden on mobile */
+.nav {
+  display: none;
+  align-items: center;
+  gap: clamp(6px, 1vw, 14px);
+  margin-left: auto;
+  min-width: 0;
+}
+
+.navLink {
+  position: relative;
+  text-decoration: none;
+  color: var(--b4l-header-text);
+  font-family: var(--font-ui-family-override, 'Inter', sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 12px 10px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  transition: color 0.18s ease;
+}
+.navLink:hover,
+.navLink:focus-visible {
+  color: var(--color-primary);
+}
+.navLinkActive {
+  color: var(--color-primary);
+}
+
+/* Right cluster */
+.actions {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.ctaContact {
+  display: none;
+  align-items: center;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  text-decoration: none;
+  font-family: var(--font-ui-family-override, 'Inter', sans-serif);
+  font-weight: 600;
+  font-size: 13.5px;
+  letter-spacing: 0.02em;
+  padding: 11px 22px;
+  border-radius: 4px;
+  min-height: 42px;
+  transition: background 0.18s ease;
+}
+.ctaContact:hover {
+  background: var(--color-primary-strong, var(--color-primary));
+}
+
+.hamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--b4l-header-text);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+}
+.hamburger:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ------------ Breakpoints (mobile-first) ------------ */
+
+@media (min-width: 480px) {
+  .inner { padding: 14px 20px; }
+}
+
+@media (min-width: 720px) {
+  .inner { padding: 16px 24px; gap: 16px; min-height: 72px; }
+  .ctaContact { display: inline-flex; }
+}
+
+@media (min-width: 1024px) {
+  .nav { display: inline-flex; }
+  .actions { margin-left: 0; }
+  .hamburger { display: none; }
+}
+
+@media (min-width: 1280px) {
+  .inner { padding: 18px 32px; }
+  .nav { gap: 16px; }
+  .navLink { padding: 12px 12px; }
+}
+
+/* ===== Mobile drawer ===== */
+
+.drawerScrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 8, 10, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 55;
+  transition: opacity 0.25s ease;
+  backdrop-filter: blur(2px);
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  display: block;
+}
+.drawerScrim:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -4px;
+}
+.drawerScrim.drawerOpen {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: min(92vw, 380px);
+  background: #ffffff;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: -18px 0 40px rgba(8, 8, 10, 0.18);
+}
+.drawer.drawerOpen { transform: translateX(0); }
+
+.drawerHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.drawerBrand {
+  text-decoration: none;
+  color: inherit;
+  display: inline-flex;
+}
+
+.drawerClose {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--b4l-header-text);
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.drawerClose:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.drawerNav {
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.drawerLink {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  text-decoration: none;
+  color: var(--b4l-header-text);
+  font-family: var(--font-ui-family-override, 'Inter', sans-serif);
+  font-weight: 600;
+  font-size: 16px;
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.drawerLink:hover,
+.drawerLink:focus-visible {
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+  color: var(--color-primary);
+}
+.drawerLinkActive {
+  color: var(--color-primary);
+}
+
+.drawerLinkCta {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-bottom: 0;
+  margin: 12px 20px 0;
+  border-radius: 4px;
+  text-align: center;
+  justify-content: center;
+}
+.drawerLinkCta:hover,
+.drawerLinkCta:focus-visible {
+  background: var(--color-primary-strong, var(--color-primary));
+  color: var(--color-on-primary);
+}
+
+.drawerFooter {
+  padding: 16px 20px 24px;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.drawerContact {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px;
+  text-decoration: none;
+  color: var(--b4l-header-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+.drawerContact:hover { color: var(--color-primary); }

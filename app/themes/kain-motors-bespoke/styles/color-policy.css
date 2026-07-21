@@ -66,9 +66,9 @@
 [data-theme-id='kain-motors-bespoke'] {
   /* Action / CTA */
   --t-action-bg: var(--color-primary);
-  --t-action-bg-hover: color-mix(in srgb, var(--color-primary) 88%, #000);
+  --t-action-bg-hover: color-mix(in srgb, var(--color-primary) 88%, var(--kain-black));
   --t-action-bg-soft: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
-  --t-action-fg: #ffffff;
+  --t-action-fg: var(--color-on-primary);
   --t-action-fg-on-light: var(--color-primary);
   --t-action-ring: color-mix(in srgb, var(--color-primary) 22%, transparent);
 
@@ -93,8 +93,8 @@
 
   /* Hero gradient base — the backdrop SVG and hero rules read these */
   --t-hero-base: var(--color-accent);
-  --t-hero-base-light: color-mix(in srgb, var(--color-accent) 70%, #ffffff);
-  --t-hero-base-dark: color-mix(in srgb, var(--color-accent) 84%, #000000);
+  --t-hero-base-light: color-mix(in srgb, var(--color-accent) 70%, var(--color-bg));
+  --t-hero-base-dark: color-mix(in srgb, var(--color-accent) 84%, var(--kain-black));
 
   /* Section tints (the only proper home for --color-secondary) */
   --t-section-tint: color-mix(in srgb, var(--color-secondary) 6%, var(--color-bg));
@@ -109,7 +109,7 @@
   /* Text */
   --t-text: var(--color-text);
   --t-muted: var(--color-muted);
-  --t-text-on-brand: #ffffff;
+  --t-text-on-brand: var(--color-on-primary);
 
   /* Status (semantic, not brand-tinted) */
   --t-success: #0f5132;
@@ -129,14 +129,14 @@
    *   --t-glow-shadow       brand-tinted drop shadow under floating CTAs
    * ----------------------------------------------------------------------- */
   --t-action-gradient: linear-gradient(135deg,
-    color-mix(in srgb, var(--color-primary) 92%, #fff) 0%,
+    color-mix(in srgb, var(--color-primary) 92%, var(--color-bg)) 0%,
     var(--color-primary) 50%,
-    color-mix(in srgb, var(--color-primary) 80%, #000) 100%);
+    color-mix(in srgb, var(--color-primary) 80%, var(--kain-black)) 100%);
 
   --t-accent-gradient: linear-gradient(135deg,
-    color-mix(in srgb, var(--color-accent) 92%, #fff) 0%,
+    color-mix(in srgb, var(--color-accent) 92%, var(--color-bg)) 0%,
     var(--color-accent) 50%,
-    color-mix(in srgb, var(--color-accent) 80%, #000) 100%);
+    color-mix(in srgb, var(--color-accent) 80%, var(--kain-black)) 100%);
 
   --t-brand-gradient: linear-gradient(135deg,
     var(--color-primary) 0%,
@@ -144,15 +144,15 @@
     var(--color-accent) 100%);
 
   --t-neon-gradient: linear-gradient(135deg,
-    color-mix(in srgb, var(--color-accent) 70%, #fff) 0%,
+    color-mix(in srgb, var(--color-accent) 70%, var(--color-bg)) 0%,
     var(--color-accent) 45%,
-    color-mix(in srgb, var(--color-accent) 84%, #000) 100%);
+    color-mix(in srgb, var(--color-accent) 84%, var(--kain-black)) 100%);
 
   --t-band-gradient: linear-gradient(120deg,
-    color-mix(in srgb, var(--color-primary) 90%, #000) 0%,
+    color-mix(in srgb, var(--color-primary) 90%, var(--kain-black)) 0%,
     var(--color-primary) 35%,
     color-mix(in srgb, var(--color-primary) 65%, var(--color-accent)) 75%,
-    color-mix(in srgb, var(--color-accent) 85%, #000) 100%);
+    color-mix(in srgb, var(--color-accent) 85%, var(--kain-black)) 100%);
 
   --t-glow-shadow: 0 14px 28px color-mix(in srgb, var(--color-primary) 28%, transparent);
   --t-glow-shadow-strong: 0 18px 36px color-mix(in srgb, var(--color-primary) 38%, transparent);

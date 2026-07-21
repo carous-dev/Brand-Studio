@@ -1,7 +1,7 @@
 .section {
   position: relative;
   isolation: isolate;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   padding: clamp(64px, 11vw, 120px) 0;
   overflow: hidden;
 }
@@ -20,7 +20,7 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(120deg, rgba(8,11,17,0.92) 0%, rgba(8,11,17,0.62) 60%, rgba(8,11,17,0.8) 100%);
+  background: linear-gradient(120deg, rgba(8,11,17,0.92) 0%, rgba(8,11,17,0.62) 60%, rgba(8,11,17,0.8) 100%); /* photo-scrim-ok */
   z-index: -1;
 }
 .inner {
@@ -53,7 +53,7 @@
   font-weight: 700;
   letter-spacing: 0.01em;
   text-transform: uppercase;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   line-height: 1.15;
   margin: 0;
   text-shadow: 0 2px 24px rgba(0,0,0,0.4);
@@ -68,7 +68,7 @@
 }
 .lead {
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
-  color: rgba(255, 255, 255, 0.86);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 86%, transparent);
   line-height: 1.65;
   margin: 0;
   font-size: clamp(0.95rem, 1.2vw, 1.05rem);
@@ -85,8 +85,8 @@
   gap: 8px;
   padding: 12px 18px;
   border-radius: 4px;
-  background: #25d366;
-  color: #ffffff;
+  background: var(--kain-whatsapp);
+  color: var(--text-on-dark-strong);
   font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -95,11 +95,11 @@
   text-decoration: none;
   min-height: 48px;
 }
-.whatsappLink:hover { background: #1faa54; }
+.whatsappLink:hover { background: var(--kain-whatsapp-hover); }
 
 .sidecard {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(209, 182, 122, 0.36);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--kain-accent-warm) 36%, transparent);
   padding: 28px 24px;
   border-radius: 6px;
   display: flex;
@@ -126,26 +126,26 @@
   justify-content: space-between;
   gap: 8px;
   padding: 6px 0;
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+  border-bottom: 1px dashed color-mix(in srgb, var(--text-on-dark-strong) 12%, transparent);
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
 }
 .hours dt {
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.86);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 86%, transparent);
 }
 .hours dd {
   margin: 0;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   font-family: var(--font-editorial-family, 'Playfair Display', serif);
   font-style: italic;
   letter-spacing: 0.01em;
 }
-.closed { color: rgba(255, 255, 255, 0.5) !important; }
+.closed { color: color-mix(in srgb, var(--text-on-dark-strong) 50%, transparent) !important; }
 .sideNote {
   margin: 8px 0 0;
   font-family: var(--font-editorial-family, 'Playfair Display', serif);
   font-style: italic;
-  color: rgba(255, 255, 255, 0.78);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 78%, transparent);
   font-size: 0.92rem;
   line-height: 1.6;
 }

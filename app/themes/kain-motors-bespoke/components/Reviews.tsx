@@ -38,7 +38,7 @@ export default function Reviews() {
     },
   ]
   return (
-    <section className={styles.section} aria-labelledby="reviews-heading">
+    <section className={styles.section} aria-labelledby="reviews-heading" data-aos="fade-up">
       <div className={styles.inner}>
         <header className={styles.head} data-aos="fade-up">
           <p className="kain-eyebrow">The Buyer Notes</p>

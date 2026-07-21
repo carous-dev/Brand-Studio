@@ -23,10 +23,10 @@ export default function EditorialIntro() {
     || '/themes/auto-wow-uk-bespoke-02/images/about.jpg'
 
   return (
-    <section className={`auto-section ${styles.section}`} aria-label="About the showroom">
+    <section className={`auto-section ${styles.section}`} aria-label="About the showroom" data-aos="fade-up">
       <span className={styles.cornerMark} aria-hidden="true" />
       <div className={styles.inner}>
-        <div className={styles.media} data-aos="fade-up">
+        <div className={styles.media}>
           <div
             className={styles.mediaFrame}
             style={{ backgroundImage: `url(${heroImage})` }}
@@ -49,7 +49,7 @@ export default function EditorialIntro() {
           </div>
         </div>
 
-        <div className={styles.body} data-aos="fade-up" data-aos-delay="80">
+        <div className={styles.body}>
           <span className={styles.eyebrow}>Who we are</span>
           <h2 className={styles.title}>
             Honest cars,{' '}

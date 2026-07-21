@@ -34,10 +34,10 @@
   inset: 0;
   z-index: 1;
   background:
-    linear-gradient(160deg,
-      rgba(8, 11, 28, 0.88) 0%,
-      rgba(8, 11, 28, 0.72) 50%,
-      rgba(8, 11, 28, 0.62) 100%),
+    linear-gradient(160deg, /* photo-scrim-ok */
+      rgba(8, 11, 28, 0.88) 0%, /* photo-scrim-ok */
+      rgba(8, 11, 28, 0.72) 50%, /* photo-scrim-ok */
+      rgba(8, 11, 28, 0.62) 100%), /* photo-scrim-ok */
     radial-gradient(50% 60% at 50% 35%, color-mix(in srgb, var(--brand-primary) 18%, transparent) 0%, transparent 70%);
   background-blend-mode: multiply, screen;
 }
@@ -83,22 +83,22 @@
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: color-mix(in srgb, var(--brand-primary) 30%, var(--text-on-dark-strong));
+  background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
+  border: 1px solid var(--border-on-dark);
   padding: 7px 16px;
   border-radius: 999px;
   backdrop-filter: blur(8px);
 }
 .eyebrowDot {
-  --mfx-dot-color: #22c55e;
+  --mfx-dot-color: var(--color-status-online);
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: var(--mfx-dot-color);
 }
 .eyebrow strong {
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   font-weight: 800;
 }
 
@@ -109,7 +109,7 @@
   line-height: 1.02;
   letter-spacing: -0.015em;
   margin: 6px 0 0;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   text-wrap: balance;
   text-shadow: 0 2px 28px rgba(0, 0, 0, 0.45);
 }
@@ -117,13 +117,13 @@
   display: none;
 }
 .titleAccent {
-  color: color-mix(in srgb, var(--brand-primary) 35%, #ffffff);
+  color: color-mix(in srgb, var(--brand-primary) 35%, var(--text-on-dark-strong));
   font-style: italic;
 }
 
 .lead {
   font-size: clamp(1.05rem, 1.4vw, 1.2rem);
-  color: rgba(255, 255, 255, 0.88);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 88%, transparent);
   line-height: 1.55;
   margin: 6px 0 0;
   max-width: 56ch;
@@ -150,13 +150,13 @@
   justify-content: center;
   margin-top: 24px;
   padding-top: 22px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid var(--border-on-dark);
   font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.8);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 80%, transparent);
   width: 100%;
   max-width: 560px;
 }
@@ -166,10 +166,10 @@
   gap: 6px;
 }
 .assuranceItem svg {
-  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
+  color: color-mix(in srgb, var(--brand-primary) 30%, var(--text-on-dark-strong));
 }
 .assuranceSep {
-  color: rgba(255, 255, 255, 0.3);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 30%, transparent);
 }
 
 /* ------------------------ Marquee strip ------------------------ */
@@ -178,8 +178,8 @@
   z-index: 3;
   display: flex;
   align-items: center;
-  background: color-mix(in srgb, var(--surface-bg-dark) 92%, #000);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--surface-bg-dark) 92%, var(--shade-deep));
+  border-top: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
   padding: 14px 0;
   overflow: hidden;
 }
@@ -197,12 +197,12 @@
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  color: color-mix(in srgb, var(--brand-primary) 30%, var(--text-on-dark-strong));
+  border-right: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent);
   height: 22px;
 }
 .marqueeLabelDot {
-  --mfx-dot-color: #22c55e;
+  --mfx-dot-color: var(--color-status-online);
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -216,7 +216,7 @@
   right: 0;
   width: 120px;
   z-index: 2;
-  background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--surface-bg-dark) 92%, #000) 90%);
+  background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--surface-bg-dark) 92%, var(--shade-deep)) 90%);
   pointer-events: none;
 }
 
@@ -237,7 +237,7 @@
   font-size: 0.82rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text-on-dark-muted);
 }
 .marqueeDot {
   width: 6px;
@@ -248,11 +248,11 @@
 }
 .marqueeTitle {
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
 }
 .marqueePrice {
   font-weight: 700;
-  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
+  color: color-mix(in srgb, var(--brand-primary) 30%, var(--text-on-dark-strong));
 }
 
 .marqueeLoading {

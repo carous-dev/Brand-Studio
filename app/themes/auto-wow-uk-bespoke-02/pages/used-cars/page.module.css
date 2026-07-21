@@ -67,32 +67,73 @@
   padding: 0 clamp(20px, 4vw, 48px);
 }
 
-.contentGrid {
-  display: grid;
-  gap: clamp(20px, 3vw, 32px);
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 980px) {
-  .contentGrid {
-    grid-template-columns: 260px minmax(0, 1fr);
-    align-items: start;
-  }
+/* Full-width results — filters live in a slide-in drawer, so the grid always
+   gets the whole container width (huntsmotors layout). */
+.inventoryWrap {
+  position: relative;
 }
 
 /* ============================================================================
- * SIDEBAR FILTERS */
-.filters {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 22px;
+ * FILTERS DRAWER — fixed slide-in panel + backdrop, toggled from the toolbar */
+.drawerBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(var(--surface-bg-dark-rgb), 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.drawerBackdropOpen {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.filtersPanel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 201;
+  height: 100vh;
+  height: 100dvh;
+  width: min(340px, 88vw);
+  background: var(--color-bg);
+  border-right: 1px solid var(--color-border);
+  box-shadow: 0 20px 60px rgba(var(--color-text-rgb), 0.22);
+  padding: 20px 22px calc(24px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  position: sticky;
-  top: 100px;
-  box-shadow: 0 1px 2px rgba(var(--color-text-rgb), 0.04);
+  gap: 16px;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.28s cubic-bezier(0.4, 0.1, 0.2, 1);
+}
+.filtersPanelOpen {
+  transform: translateX(0);
+}
+
+.filtersHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.filtersClose {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.14s ease, border-color 0.14s ease;
+}
+.filtersClose:hover {
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
 }
 
 .filtersTitle {
@@ -187,7 +228,7 @@
 }
 
 /* ============================================================================
- * RESULTS TOOLBAR */
+ * RESULTS TOOLBAR — single rounded bar spanning the full width */
 .results {
   display: flex;
   flex-direction: column;
@@ -195,12 +236,67 @@
   min-width: 0;
 }
 
-.resultsBar {
+.toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: 12px 16px;
   flex-wrap: wrap;
+  padding: 12px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(var(--color-text-rgb), 0.04);
+}
+
+.toolbarLead {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+/* Filters trigger — pill button with active-filter count badge. */
+.filtersToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
+}
+.filtersToggle svg {
+  color: var(--brand-primary);
+}
+.filtersToggle:hover {
+  border-color: color-mix(in srgb, var(--brand-primary) 45%, var(--color-border));
+  background: color-mix(in srgb, var(--brand-primary) 6%, var(--color-bg));
+}
+.filtersToggleActive {
+  border-color: var(--brand-primary);
+  background: color-mix(in srgb, var(--brand-primary) 12%, transparent);
+}
+.filtersToggle strong {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary, var(--color-bg));
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
 .resultsStatus {
@@ -213,11 +309,29 @@
   font-weight: 700;
 }
 
-.resultsTools {
+.toolbarControls {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.counterChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text);
+  min-height: 32px;
+}
+.counterChip svg {
+  color: var(--brand-primary);
 }
 
 .counterChip {
@@ -235,6 +349,43 @@
 }
 .counterChip svg {
   color: var(--brand-primary);
+}
+
+/* Grid / list layout switch — segmented pill with text labels. */
+.viewToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  min-height: 38px;
+}
+.viewBtn {
+  height: 30px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+.viewBtn:hover { color: var(--color-text); }
+.viewBtnActive {
+  background: color-mix(in srgb, var(--brand-primary) 14%, transparent);
+  color: var(--brand-primary);
+}
+.viewLabel { display: inline; }
+
+@media (max-width: 900px) {
+  .viewToggle { display: none; }
 }
 
 .sortGroup {
@@ -279,14 +430,21 @@
   display: grid;
   gap: 18px;
   grid-template-columns: 1fr;
+  align-items: start;
 }
 
-@media (min-width: 640px) {
-  .cardGrid { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 600px) {
+  .cardGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-@media (min-width: 1100px) {
-  .cardGrid { grid-template-columns: repeat(3, 1fr); }
+@media (min-width: 1000px) {
+  .cardGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+@media (min-width: 1280px) {
+  .cardGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* List view — single column, cards render as horizontal media|body pairs. */
+.cardGridList { grid-template-columns: 1fr !important; gap: 16px; }
 
 /* ============================================================================
  * CARD — matches the C&S Motors design */
@@ -305,6 +463,40 @@
   transform: translateY(-3px);
   border-color: color-mix(in srgb, var(--brand-primary) 25%, var(--color-border));
   box-shadow: 0 16px 36px rgba(var(--color-text-rgb), 0.1);
+}
+
+/* List-view card — media column beside a wider body column. */
+.cardList {
+  flex-direction: row;
+}
+.cardList:hover {
+  transform: none;
+  box-shadow: 0 10px 28px rgba(var(--color-text-rgb), 0.08);
+}
+.cardList .cardImageWrap {
+  flex: 0 0 clamp(240px, 34%, 380px);
+  aspect-ratio: auto;
+  align-self: stretch;
+  min-height: 210px;
+}
+.cardList .cardBody {
+  padding: 18px 22px;
+  justify-content: center;
+}
+.cardList .cardTitle {
+  font-size: 1.2rem;
+}
+.cardList .cardSpecs {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@media (max-width: 720px) {
+  .cardList { flex-direction: column; }
+  .cardList .cardImageWrap {
+    flex: none;
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+  }
+  .cardList .cardSpecs { grid-template-columns: 1fr 1fr; }
 }
 
 .cardLink {
@@ -332,16 +524,22 @@
   overflow: hidden;
 }
 
+/* Sliding track — one slide per image, translated by the card carousel state. */
+.cardImageTrack {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.42s cubic-bezier(0.4, 0.1, 0.2, 1);
+  will-change: transform;
+}
+
 .cardImage {
-  position: absolute;
-  inset: 0;
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transition: transform 0.4s ease;
-}
-.card:hover .cardImage {
-  transform: scale(1.05);
 }
 
 .imageCount {
@@ -352,8 +550,8 @@
   align-items: center;
   gap: 4px;
   padding: 4px 8px;
-  background: rgba(0, 0, 0, 0.62);
-  color: #fff;
+  background: rgba(var(--surface-bg-dark-rgb), 0.66);
+  color: var(--text-on-dark-strong);
   font-size: 0.7rem;
   font-weight: 600;
   border-radius: 6px;
@@ -362,10 +560,74 @@
   -webkit-backdrop-filter: blur(4px);
 }
 
+/* Prev/next controls — hidden until the card is hovered or focused within. */
+.sliderControls {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.card:hover .sliderControls,
+.card:focus-within .sliderControls {
+  opacity: 1;
+}
+.sliderBtn {
+  pointer-events: auto;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(var(--surface-bg-light-rgb), 0.55);
+  border-radius: 999px;
+  background: rgba(var(--surface-bg-dark-rgb), 0.6);
+  color: var(--text-on-dark-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: background 0.16s ease, transform 0.16s ease;
+}
+.sliderBtn:hover {
+  background: rgba(var(--surface-bg-dark-rgb), 0.82);
+  transform: scale(1.06);
+}
+
+.sliderDots {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.sliderDot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--surface-bg-light-rgb), 0.6);
+  background: rgba(var(--surface-bg-light-rgb), 0.35);
+  cursor: pointer;
+  transition: width 0.2s ease, background 0.2s ease;
+}
+.sliderDotActive {
+  width: 18px;
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+
 .quickActions {
   position: absolute;
   top: 10px;
-  right: 10px;
+  left: 10px;
   display: inline-flex;
   gap: 6px;
   z-index: 4;
@@ -374,7 +636,7 @@
 .iconButton {
   width: 32px;
   height: 32px;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(var(--surface-bg-light-rgb), 0.94);
   color: var(--brand-primary);
   border: 0;
   cursor: pointer;
@@ -398,7 +660,7 @@
 .featured {
   position: absolute;
   top: 10px;
-  left: 10px;
+  right: 10px;
   padding: 4px 10px;
   background: var(--brand-primary);
   color: var(--brand-on-primary, var(--color-bg));
@@ -614,7 +876,7 @@
   position: absolute;
   inset: 0;
   transform: translateX(-120%);
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(var(--color-bg-rgb), 0.5), transparent);
   animation: skeleton-shimmer 1.4s infinite;
 }
 @keyframes skeleton-shimmer {
@@ -643,7 +905,9 @@
 .skeletonChip { height: 14px; }
 
 @media (max-width: 640px) {
-  .resultsBar { flex-direction: column; align-items: flex-start; }
-  .resultsTools { width: 100%; justify-content: space-between; }
-  .filters { position: static; }
+  .toolbar { align-items: stretch; }
+  .toolbarLead { justify-content: space-between; width: 100%; }
+  .toolbarControls { width: 100%; justify-content: space-between; }
+  .sortGroup { flex: 1 1 auto; }
+  .filtersPanel { width: 100vw; }
 }

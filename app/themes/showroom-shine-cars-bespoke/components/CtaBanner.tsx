@@ -12,7 +12,7 @@ export default function CtaBanner() {
   const phoneTel = phoneDisplay.replace(/[^\d+]/g, '')
 
   return (
-    <section className={`shr-section ${styles.section}`}>
+    <section className={`shr-section ${styles.section}`} data-aos="fade-up">
       <div className={styles.bgImage} aria-hidden />
       <div className={styles.overlay} aria-hidden />
       <div className={`mfx-glow-pulse ${styles.glow}`} aria-hidden />

@@ -100,3 +100,16 @@
     transition: none;
   }
 }
+
+/* Mobile (≤720px) — disable scroll-reveal animations entirely. Phone CPUs
+   handle layout-thrashing transforms poorly, and the staggered fades feel
+   sluggish on a small screen anyway. Elements appear immediately at their
+   final state. */
+@media (max-width: 720px) {
+  :where([data-aos]) {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+}

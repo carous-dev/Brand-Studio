@@ -52,7 +52,7 @@ export default function FeaturedStock() {
   }, [brandSlug])
 
   return (
-    <section className={`shr-section ${styles.section}`}>
+    <section className={`shr-section ${styles.section}`} data-aos="fade-up">
       <div className="shr-container">
         <div className={styles.head} data-aos="fade-up">
           <div>

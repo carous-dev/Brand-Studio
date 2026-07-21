@@ -14,7 +14,7 @@
   width: 700px;
   height: 700px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(209, 182, 122, 0.18) 0%, transparent 60%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--kain-accent-warm) 18%, transparent) 0%, transparent 60%);
   z-index: -1;
   filter: blur(20px);
 }
@@ -40,7 +40,7 @@
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   margin: 0 auto 16px;
   line-height: 1.15;
 }
@@ -56,7 +56,7 @@
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
   font-size: clamp(0.95rem, 1.2vw, 1.05rem);
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.78);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 78%, transparent);
   margin: 0 auto;
 }
 
@@ -77,8 +77,8 @@
 
 .card {
   position: relative;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(209, 182, 122, 0.22);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--kain-accent-warm) 22%, transparent);
   padding: 28px 22px 24px;
   border-radius: 6px;
   display: flex;
@@ -87,8 +87,8 @@
   transition: border-color 0.22s ease, transform 0.22s ease, background-color 0.22s ease;
 }
 .card:hover {
-  border-color: rgba(209, 182, 122, 0.6);
-  background: rgba(255, 255, 255, 0.06);
+  border-color: color-mix(in srgb, var(--kain-accent-warm) 60%, transparent);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
   transform: translateY(-3px);
 }
 .cardNum {
@@ -105,12 +105,12 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   margin: 0;
 }
 .cardLead {
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
-  color: rgba(255, 255, 255, 0.76);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 76%, transparent);
   font-size: 0.9rem;
   line-height: 1.6;
   margin: 0 0 6px;
@@ -127,7 +127,7 @@
   position: relative;
   padding-left: 16px;
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
-  color: rgba(255, 255, 255, 0.82);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 82%, transparent);
   font-size: 0.86rem;
   line-height: 1.5;
 }
@@ -153,6 +153,6 @@
   align-items: center;
   gap: 8px;
 }
-.cardLink:hover { color: #ffffff; }
+.cardLink:hover { color: var(--text-on-dark-strong); }
 .cardLink:hover span { transform: translateX(4px); }
 .cardLink span { transition: transform 0.18s ease; }

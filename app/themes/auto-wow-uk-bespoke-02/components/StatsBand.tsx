@@ -19,9 +19,9 @@ export default function StatsBand({ stockCount }: { stockCount?: number }) {
       : STATS
 
   return (
-    <section className={`auto-section ${styles.section}`} aria-label="By the numbers">
+    <section className={`auto-section ${styles.section}`} aria-label="By the numbers" data-aos="fade-up">
       <div className={styles.inner}>
-        <header className={styles.header} data-aos="fade-up">
+        <header className={styles.header}>
           <span className={styles.eyebrow}>By the numbers</span>
           <h2 className={styles.title}>The forecourt in figures</h2>
         </header>
@@ -33,8 +33,6 @@ export default function StatsBand({ stockCount }: { stockCount?: number }) {
               <div
                 key={`stat-${idx}`}
                 className={styles.cell}
-                data-aos="fade-up"
-                data-aos-delay={idx * 80}
               >
                 <span className={styles.iconWrap} aria-hidden="true">
                   <Icon size={22} strokeWidth={2} />

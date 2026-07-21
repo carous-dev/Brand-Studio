@@ -69,7 +69,7 @@ const SERVICES: Service[] = [
 
 export default function ServiceHighlights() {
   return (
-    <section className="qb-section">
+    <section className="qb-section" data-aos="fade-up">
       <div className="qb-container">
         <header className="qb-section-head" data-aos="fade-up">
           <span className="qb-eyebrow">What we do</span>

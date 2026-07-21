@@ -50,6 +50,7 @@ const BrandsPartners = () => {
   return (
     <motion.section
       className="brands-partners-section brand-search"
+      data-aos="fade-up"
       aria-label="Search by brand"
       initial={{ opacity: 0, x: -50 }}
       whileInView={{ opacity: 1, x: 0 }}

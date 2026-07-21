@@ -49,9 +49,9 @@ export const CTAQuestion: React.FC = () => {
     >
       <div className="split-cta-panel split-cta-buy">
         <div className="split-cta-content">
-          <h2 data-aos="fade-right">{buyTitle}</h2>
-          <p data-aos="fade-right" data-aos-delay="80">{buyDescription}</p>
-          <Link href={buyButtonHref} className="split-cta-btn split-cta-btn-red" data-aos="fade-right" data-aos-delay="140">
+          <h2>{buyTitle}</h2>
+          <p>{buyDescription}</p>
+          <Link href={buyButtonHref} className="split-cta-btn split-cta-btn-red">
             {buyButtonText}
           </Link>
         </div>
@@ -59,9 +59,9 @@ export const CTAQuestion: React.FC = () => {
 
       <div className="split-cta-panel split-cta-sell">
         <div className="split-cta-content">
-          <h2 data-aos="fade-left">{sellTitle}</h2>
-          <p data-aos="fade-left" data-aos-delay="80">{sellDescription}</p>
-          <Link href={sellButtonHref} className="split-cta-btn split-cta-btn-white" data-aos="fade-left" data-aos-delay="140">
+          <h2>{sellTitle}</h2>
+          <p>{sellDescription}</p>
+          <Link href={sellButtonHref} className="split-cta-btn split-cta-btn-white">
             {sellButtonText}
           </Link>
         </div>

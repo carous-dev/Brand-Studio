@@ -1,7 +1,7 @@
 .siteHeader {
   background: var(--color-header-bg);
   color: var(--color-header-text);
-  border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
 }
 
 .siteHeaderInner {
@@ -106,7 +106,7 @@
   top: 50%;
   width: 1px;
   height: 16px;
-  background: rgba(17, 24, 39, 0.12);
+  background: color-mix(in srgb, var(--color-text) 12%, transparent);
   transform: translateY(-50%);
 }
 
@@ -261,7 +261,7 @@
   padding: 0 6px;
   border-radius: 999px;
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg);
   font-size: 0.7rem;
   font-weight: 700;
   display: inline-flex;
@@ -301,7 +301,7 @@
 .mobileNavBackdrop {
   position: absolute;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
+  background: color-mix(in srgb, var(--color-text) 45%, transparent);
   border: 0;
   padding: 0;
   margin: 0;
@@ -316,7 +316,7 @@
   background: var(--color-header-bg);
   color: var(--color-header-text);
   border-radius: 0;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.2);
   display: flex;
   flex-direction: column;
@@ -333,7 +333,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 18px;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
 }
 
 .mobileNavTitle {
@@ -372,7 +372,7 @@
   border-radius: 0;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -401,7 +401,7 @@
   border-radius: 0;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
 }
 
 .mobileNavGroupTitle {
@@ -427,7 +427,7 @@
   border-radius: 0;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
 }
 
 .mobileNavInfoIcon {

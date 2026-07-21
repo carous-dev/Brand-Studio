@@ -18,13 +18,13 @@ export default function CtaBand() {
   const brandName = brand?.name || 'Autowow'
 
   return (
-    <section className={`auto-section ${styles.band}`} aria-label="Get in touch">
+    <section className={`auto-section ${styles.band}`} aria-label="Get in touch" data-aos="fade-up">
       <div className={styles.imageLayer} aria-hidden="true" />
       <div className={styles.scrim} aria-hidden="true" />
       <div className={`${styles.glow} mfx-glow-pulse auto-decor-mobile-hide`} aria-hidden="true" />
 
       <div className={styles.inner}>
-        <div className={styles.panel} data-aos="fade-up">
+        <div className={styles.panel}>
           <div className={styles.copy}>
             <span className={styles.eyebrow}>Ready when you are</span>
             <h2 className={styles.title}>

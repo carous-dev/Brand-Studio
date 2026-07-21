@@ -156,7 +156,7 @@
 }
 
 .formSuccess {
-  color: var(--t-success, #0f5132);
+  color: var(--t-success);
   font-weight: 600;
   margin: 0;
 }

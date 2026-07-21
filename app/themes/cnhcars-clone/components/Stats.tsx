@@ -33,7 +33,7 @@ export default function Stats() {
   ];
 
   return (
-    <section className="stats-section" aria-labelledby="trust-signals-title">
+    <section className="stats-section" aria-labelledby="trust-signals-title" data-aos="fade-up">
       <div className="stats-inner">
         <p id="trust-signals-title" className="stats-lead">
           All our stock is privately sourced, checked, and presented clearly so you can buy with confidence from {brandName}.

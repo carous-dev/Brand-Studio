@@ -34,7 +34,7 @@ const SERVICES = [
 
 export default function ServicesPreview() {
   return (
-    <section className={`${styles.section} kain-section--dark`} aria-labelledby="services-preview-heading">
+    <section className={`${styles.section} kain-section--dark`} aria-labelledby="services-preview-heading" data-aos="fade-up">
       <div className={styles.glow} aria-hidden="true" />
       <div className={styles.inner}>
         <header className={styles.head} data-aos="fade-up">

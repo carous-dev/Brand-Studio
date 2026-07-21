@@ -1,8 +1,8 @@
 .hero {
   position: relative;
   isolation: isolate;
-  background-color: #000;
-  color: #ffffff;
+  background-color: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
   padding-block: clamp(72px, 11vw, 140px);
   overflow: hidden;
   min-height: clamp(520px, 70vh, 700px);
@@ -10,23 +10,40 @@
   align-items: center;
 }
 
-/* Layer 1: photo background — multi-layer with theme-default fallback. */
+/* Layer 1: photo background — multi-layer with theme-default fallback.
+   Clean, non-foggy scrim: a centered spotlight keeps the headline block dark
+   enough to read while the photo stays crisp and bright toward the edges, plus
+   a bottom fade that hands off cleanly into the stock strip below. */
 /* Photo-chrome literal — white over dark scrim, brand-agnostic */
 .bgLayer {
   position: absolute;
   inset: 0;
   z-index: -3;
   background-image:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.62) 55%, rgba(0, 0, 0, 0.78) 100%),
+    /* photo-scrim-ok — centered readability spotlight */
+    radial-gradient(
+      ellipse 78% 66% at 50% 46%,
+      rgba(6, 12, 22, 0.82) 0%,
+      rgba(6, 12, 22, 0.5) 46%,
+      rgba(6, 12, 22, 0.22) 100%
+    ),
+    /* photo-scrim-ok — vertical bottom fade into the strip */
+    linear-gradient(
+      180deg,
+      rgba(6, 12, 22, 0.28) 0%,
+      rgba(6, 12, 22, 0.3) 55%,
+      rgba(6, 12, 22, 0.82) 100%
+    ),
     var(--brand-image-hero, none),
     url('/themes/auto-wow-uk-bespoke-02/images/hero.jpg');
-  background-size: cover, cover, cover;
-  background-position: center, center, center;
-  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: cover, cover, cover, cover;
+  background-position: center, center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
 }
 
-/* Layer 2: brand-tinted grid mask — kept for signature dealer-floor character, but
-   light brand-tint only (no surface bg tint) so the photo reads. */
+/* Layer 2: faint brand-tinted grid — signature dealer-floor texture, but now a
+   whisper (not pink fog). A radial mask fades it out over the headline so it
+   never hazes the text; it only reads faintly toward the corners. */
 .gridOverlay {
   position: absolute;
   inset: 0;
@@ -34,34 +51,36 @@
   background:
     linear-gradient(
       to right,
-      color-mix(in srgb, var(--brand-primary) 22%, transparent) 1px,
+      color-mix(in srgb, var(--brand-primary) 10%, transparent) 1px,
       transparent 1px
     ),
     linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--brand-primary) 14%, transparent) 1px,
+      color-mix(in srgb, var(--brand-primary) 7%, transparent) 1px,
       transparent 1px
     );
-  background-size: 8.33% 100%, 100% 8.33%;
+  background-size: 11.11% 100%, 100% 11.11%;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 46%, transparent 0%, rgba(0, 0, 0, 0.6) 60%, #000 100%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 46%, transparent 0%, rgba(0, 0, 0, 0.6) 60%, #000 100%);
   pointer-events: none;
 }
 
-/* Layer 3 (optional decorative): brand glow blob, hides on mobile. */
+/* Layer 3 (optional decorative): brand glow, tucked into a corner as an accent
+   rather than a centered blob, hides on mobile. */
 .glowBlob {
   position: absolute;
-  width: 460px;
-  height: 460px;
-  right: -120px;
-  top: 50%;
-  transform: translateY(-50%);
+  width: 520px;
+  height: 520px;
+  right: -160px;
+  bottom: -180px;
   background: radial-gradient(
     circle at center,
-    color-mix(in srgb, var(--brand-primary) 48%, transparent) 0%,
+    color-mix(in srgb, var(--brand-primary) 42%, transparent) 0%,
     transparent 70%
   );
   z-index: -1;
   pointer-events: none;
-  filter: blur(42px);
+  filter: blur(48px);
 }
 
 .inner {
@@ -86,10 +105,13 @@
   font-size: 0.82rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-on-dark-muted);
+  color: var(--text-on-dark-strong);
   padding: 6px 14px;
-  background: color-mix(in srgb, var(--color-bg) 8%, transparent);
+  background: color-mix(in srgb, var(--surface-bg-dark) 42%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   border-left: 2px solid var(--brand-primary);
+  border-radius: 2px;
   width: max-content;
   max-width: 100%;
   margin-inline: auto;
@@ -112,26 +134,34 @@
 .title {
   font-size: clamp(2.4rem, 5.4vw, 3.6rem);
   line-height: 1;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   letter-spacing: 0.01em;
-  text-shadow: 0 4px 32px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
   text-wrap: balance;
 }
-.titleGlow {
+.titleWord {
   display: inline-block;
 }
-.title :global(.mfx-text-glow) {
-  color: var(--brand-primary);
+
+/* Short brand accent rule under the headline — guarantees a brand cue without
+   staking title legibility on a low-contrast dark-red word over the photo. */
+.accentRule {
+  width: 72px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--brand-primary);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--brand-primary) 60%, transparent);
 }
 
 .lead {
   font-size: clamp(1rem, 1.5vw, 1.125rem);
-  color: #ffffff;
-  opacity: 0.92;
+  color: var(--text-on-dark-strong);
+  opacity: 0.94;
   max-width: 56ch;
   line-height: 1.55;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
   margin-inline: auto;
+  text-wrap: pretty;
 }
 
 .ctaRow {

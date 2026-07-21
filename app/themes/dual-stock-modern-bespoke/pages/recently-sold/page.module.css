@@ -3,8 +3,8 @@
   gap: 4px;
   margin-top: 18px;
   padding: 4px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.4); /* photo-scrim-ok */
+  border: 1px solid color-mix(in srgb, var(--color-on-dark) 14%, transparent);
   border-radius: 10px;
   align-self: flex-start;
   backdrop-filter: blur(10px);
@@ -21,13 +21,13 @@
   font-size: 0.92rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.78);
+  color: color-mix(in srgb, var(--color-on-dark) 78%, transparent);
   min-height: 44px;
 }
-.tab:hover { color: #ffffff; }
+.tab:hover { color: var(--color-on-dark); }
 .tabActive {
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-on-dark);
 }
 
 .grid {

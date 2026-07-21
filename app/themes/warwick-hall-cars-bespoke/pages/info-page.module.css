@@ -11,24 +11,24 @@
   min-height: clamp(360px, 44vw, 520px);
   display: grid;
   align-items: end;
-  background-color: #070b18;
+  background-color: color-mix(in srgb, var(--color-text) 90%, var(--color-primary));
   background:
     linear-gradient(
       90deg,
-      rgba(5, 8, 20, 0.94) 0%,
-      rgba(5, 8, 20, 0.88) 34%,
-      rgba(5, 8, 20, 0.66) 66%,
-      rgba(5, 8, 20, 0.52) 100%
+      rgba(5, 8, 20, 0.94) 0%, /* photo-scrim-ok */
+      rgba(5, 8, 20, 0.88) 34%, /* photo-scrim-ok */
+      rgba(5, 8, 20, 0.66) 66%, /* photo-scrim-ok */
+      rgba(5, 8, 20, 0.52) 100% /* photo-scrim-ok */
     ),
     linear-gradient(
       180deg,
-      rgba(5, 8, 20, 0.38) 0%,
-      rgba(5, 8, 20, 0.62) 100%
+      rgba(5, 8, 20, 0.38) 0%, /* photo-scrim-ok */
+      rgba(5, 8, 20, 0.62) 100% /* photo-scrim-ok */
     ),
     var(--page-hero-image, var(--brand-image-services));
   background-size: cover;
   background-position: center;
-  color: #ffffff;
+  color: var(--color-bg);
   padding: clamp(88px, 12vw, 150px) clamp(20px, 5vw, 64px) clamp(48px, 7vw, 76px);
 }
 
@@ -44,7 +44,7 @@
   align-items: center;
   gap: 10px;
   width: fit-content;
-  color: #ffffff;
+  color: var(--color-bg);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.2em;
@@ -64,7 +64,7 @@
   line-height: 0.98;
   font-weight: 700;
   letter-spacing: 0;
-  color: #ffffff;
+  color: var(--color-bg);
   text-shadow: 0 4px 22px rgba(0, 0, 0, 0.62);
   text-wrap: balance;
 }
@@ -72,7 +72,7 @@
 .heroLead {
   max-width: 62ch;
   margin: 0;
-  color: rgba(255, 255, 255, 0.94);
+  color: color-mix(in srgb, var(--color-bg) 94%, transparent);
   font-size: clamp(16px, 1.4vw, 19px);
   line-height: 1.58;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.52);
@@ -101,12 +101,12 @@
 
 .primaryLink {
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg);
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.26);
 }
 
 .secondaryLink {
-  background: #ffffff;
+  background: var(--color-bg);
   color: var(--color-primary);
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
 }
@@ -369,9 +369,9 @@
     background:
       linear-gradient(
         180deg,
-        rgba(5, 8, 20, 0.9) 0%,
-        rgba(5, 8, 20, 0.84) 48%,
-        rgba(5, 8, 20, 0.74) 100%
+        rgba(5, 8, 20, 0.9) 0%, /* photo-scrim-ok */
+        rgba(5, 8, 20, 0.84) 48%, /* photo-scrim-ok */
+        rgba(5, 8, 20, 0.74) 100% /* photo-scrim-ok */
       ),
       var(--page-hero-image, var(--brand-image-services));
   }

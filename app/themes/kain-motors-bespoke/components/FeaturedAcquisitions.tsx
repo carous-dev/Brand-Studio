@@ -41,7 +41,7 @@ export default function FeaturedAcquisitions() {
   if (!loading && items.length === 0) return null
 
   return (
-    <section className={styles.section} aria-labelledby="featured-acquisitions-heading">
+    <section className={styles.section} aria-labelledby="featured-acquisitions-heading" data-aos="fade-up">
       <div className={styles.head} data-aos="fade-up">
         <div>
           <p className="kain-eyebrow">The Cover Story</p>

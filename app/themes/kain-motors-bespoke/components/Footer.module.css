@@ -1,6 +1,6 @@
 .footer {
-  background: #0a0e14;
-  color: rgba(255, 255, 255, 0.82);
+  background: var(--color-bg-dark);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 82%, transparent);
   padding: clamp(56px, 9vw, 96px) 0 0;
   position: relative;
 }
@@ -9,7 +9,7 @@
   position: absolute;
   inset: 0 0 auto 0;
   height: 1px;
-  background: var(--kain-gold-rule, linear-gradient(90deg, transparent, #d1b67a, transparent));
+  background: var(--kain-gold-rule, linear-gradient(90deg, transparent, var(--kain-accent-warm), transparent));
   opacity: 0.7;
 }
 
@@ -37,7 +37,7 @@
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
   font-size: 0.92rem;
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.72);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 72%, transparent);
   margin: 0;
 }
 .socialRow {
@@ -52,14 +52,14 @@
   width: 40px;
   height: 40px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
   color: var(--kain-accent-warm);
   text-decoration: none;
   transition: background-color 0.18s ease, color 0.18s ease;
 }
 .socialBtn:hover {
-  background: rgba(209, 182, 122, 0.2);
-  color: #ffffff;
+  background: color-mix(in srgb, var(--kain-accent-warm) 20%, transparent);
+  color: var(--text-on-dark-strong);
 }
 .socialMuted { opacity: 0.42; pointer-events: none; }
 
@@ -80,16 +80,16 @@
   text-transform: uppercase;
   margin: 0 0 16px;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(209, 182, 122, 0.24);
+  border-bottom: 1px solid color-mix(in srgb, var(--kain-accent-warm) 24%, transparent);
 }
 .pillarLink {
-  color: rgba(255, 255, 255, 0.78);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 78%, transparent);
   text-decoration: none;
   font-size: 0.92rem;
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
   transition: color 0.18s ease;
 }
-.pillarLink:hover { color: #ffffff; }
+.pillarLink:hover { color: var(--text-on-dark-strong); }
 
 .contactColumn {
   font-style: normal;
@@ -98,7 +98,7 @@
   gap: 12px;
 }
 .addressText {
-  color: rgba(255, 255, 255, 0.78);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 78%, transparent);
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
   font-size: 0.92rem;
   line-height: 1.7;
@@ -109,7 +109,7 @@
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
 }
 .contactRow a {
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   text-decoration: none;
   font-weight: 500;
 }
@@ -125,8 +125,8 @@
 }
 
 .bottom {
-  background: #060a0f;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--kain-surface-deep);
+  border-top: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
 }
 .bottomInner {
   max-width: 1240px;
@@ -139,7 +139,7 @@
   gap: 12px;
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.56);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 56%, transparent);
 }
 .attribution {
   font-style: italic;
@@ -147,15 +147,15 @@
 .attribution a {
   color: var(--kain-accent-warm);
   text-decoration: none;
-  border-bottom: 1px dotted rgba(209, 182, 122, 0.4);
+  border-bottom: 1px dotted color-mix(in srgb, var(--kain-accent-warm) 40%, transparent);
 }
-.attribution a:hover { color: #ffffff; border-color: #ffffff; }
+.attribution a:hover { color: var(--text-on-dark-strong); border-color: var(--text-on-dark-strong); }
 .legalNav {
   display: inline-flex;
   gap: 16px;
 }
 .legalNav a {
-  color: rgba(255, 255, 255, 0.56);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 56%, transparent);
   text-decoration: none;
 }
 .legalNav a:hover { color: var(--kain-accent-warm); }

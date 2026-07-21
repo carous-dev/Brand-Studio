@@ -1,0 +1,83 @@
+/* Services page — modern service-card grid (mirrors the homepage
+   ServiceHighlights). Whole card is a link; hover lifts it, accents the border
+   and fills the icon. Palette-adaptive via dashboard tokens. */
+
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+@media (min-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 100%;
+  padding: clamp(26px, 2.4vw, 34px);
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-hairline);
+  border-radius: 14px;
+  transition: transform 240ms ease, border-color 240ms ease, box-shadow 240ms ease;
+}
+.item:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--brand-primary) 45%, var(--border-on-light));
+  box-shadow: 0 16px 36px color-mix(in srgb, var(--color-text) 9%, transparent);
+}
+
+.iconBox {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 1px solid var(--brand-soft-border);
+  background: var(--brand-soft-bg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand-primary);
+  margin-bottom: 20px;
+  transition: background 240ms ease, color 240ms ease;
+}
+.item:hover .iconBox {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+}
+
+.title {
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: 1.28rem;
+  font-weight: 600;
+  color: var(--text-on-light-strong);
+  letter-spacing: -0.015em;
+  margin-bottom: 10px;
+}
+
+.body {
+  font-size: 0.97rem;
+  color: var(--text-on-light-muted);
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--brand-primary);
+  margin-top: 22px;
+  transition: gap 180ms ease, color 180ms ease;
+}
+.item:hover .cta { gap: 12px; color: var(--brand-primary-strong); }
+
+@media (max-width: 640px) {
+  .title { font-size: 1.18rem; }
+}

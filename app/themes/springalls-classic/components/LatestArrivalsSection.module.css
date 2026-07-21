@@ -152,7 +152,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.42) 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.42) 100%); /* photo-scrim-ok */
   pointer-events: none;
 }
 
@@ -162,7 +162,7 @@
   left: 12px;
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.96);
+  background: color-mix(in srgb, var(--color-surface) 96%, transparent);
   color: var(--color-primary);
   font-size: 0.68rem;
   font-weight: 700;
@@ -179,7 +179,7 @@
   padding: 6px 14px;
   border-radius: 999px;
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg);
   font-weight: 700;
   font-size: 1rem;
   z-index: 1;

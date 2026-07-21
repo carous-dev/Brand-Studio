@@ -35,21 +35,21 @@ export default function ServicesCta() {
   return (
     <section className="services-cta" aria-label="Contact call to action">
       <div className="services-cta-content">
-        <h3 className="cta-title" data-aos="fade-up">
+        <h3 className="cta-title">
           {title}
         </h3>
-        <p className="cta-description" data-aos="fade-up" data-aos-delay="60">
+        <p className="cta-description">
           {description}
         </p>
         <div className="cta-buttons">
           {phone ? (
-            <a href={telHref} className="cta-btn phone-btn" data-aos="fade-right" data-aos-delay="120">
+            <a href={telHref} className="cta-btn phone-btn">
               <Phone size={18} aria-hidden="true" />
               {phoneLabel}
             </a>
           ) : null}
           {email ? (
-            <a href={mailHref} className="cta-btn email-btn" data-aos="fade-left" data-aos-delay="160">
+            <a href={mailHref} className="cta-btn email-btn">
               <Mail size={18} aria-hidden="true" />
               {emailLabel}
             </a>

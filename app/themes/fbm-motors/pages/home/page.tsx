@@ -13,6 +13,7 @@ import { loadHomeData } from '../../lib/home-data.server'
 import { CarCard } from '../../components/CarCard'
 import { SectionHeading } from '../../components/SectionHeading'
 import HeroSearch from '../../components/HeroSearch'
+import { MakeLogo } from '../../components/MakeLogo'
 import Testimonials from '../../components/Testimonials'
 import type { ThemePageProps } from '../../../types'
 import styles from './page.module.css'
@@ -144,7 +145,7 @@ export async function FbmHomePage({ brand }: ThemePageProps) {
         </div>
       </section>
 
-      <section className={styles.section}>
+      <section className={styles.section} data-aos="fade-up">
         <div className={styles.sectionHeading}>
           <div>
             <p className="fbm-eyebrow">{stockEyebrow}</p>
@@ -157,7 +158,7 @@ export async function FbmHomePage({ brand }: ThemePageProps) {
         </div>
       </section>
 
-      <section className={styles.forecourt}>
+      <section className={styles.forecourt} data-aos="fade-up">
         <div className={styles.forecourtInner}>
           <div className={styles.forecourtCopy}>
             <p className={`fbm-eyebrow ${styles.forecourtEyebrow}`}>{forecourtEyebrow}</p>
@@ -194,7 +195,7 @@ export async function FbmHomePage({ brand }: ThemePageProps) {
         </div>
       </section>
 
-      <section className={styles.whyUsSection}>
+      <section className={styles.whyUsSection} data-aos="fade-up">
         <div className={styles.whyUsInner}>
           <SectionHeading eyebrow={whyEyebrow} title={whyTitle} />
           <div className={styles.whyGrid}>
@@ -213,7 +214,7 @@ export async function FbmHomePage({ brand }: ThemePageProps) {
         </div>
       </section>
 
-      <section className={styles.partners} aria-label="Our partners">
+      <section className={styles.partners} aria-label="Our partners" data-aos="fade-up">
         <div className={styles.partnersHeading}>
           <SectionHeading eyebrow={partnersEyebrow} title={partnersTitle} lead={partnersLead} />
         </div>
@@ -244,7 +245,7 @@ export async function FbmHomePage({ brand }: ThemePageProps) {
         </ul>
       </section>
 
-      <section className={styles.testimonialsSection}>
+      <section className={styles.testimonialsSection} data-aos="fade-up">
         {testimonialsBg && (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={testimonialsBg} alt="" className={styles.testimonialsBgImage} />
@@ -257,12 +258,13 @@ export async function FbmHomePage({ brand }: ThemePageProps) {
         </div>
       </section>
 
-      <section className={styles.section}>
+      <section className={styles.section} data-aos="fade-up">
         <SectionHeading eyebrow={browseEyebrow} title={browseTitle} lead={browseLead} />
         <div className={styles.browseGrid}>
           {makes.map((m) => (
             <Link key={m.name} href="/used-cars" className={styles.makeCard}>
-              <div>
+              <span className={styles.makeLogoSlot}><MakeLogo make={m.name} /></span>
+              <div className={styles.makeInfo}>
                 <p className={styles.makeName}>{m.name}</p>
                 <p className={styles.makeCount}>{m.count} cars</p>
               </div>

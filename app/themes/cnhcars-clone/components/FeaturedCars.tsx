@@ -110,7 +110,7 @@ export default function FeaturedCars() {
   }
 
   return (
-    <section className="featured-cars-section">
+    <section className="featured-cars-section" data-aos="fade-up">
       <div className="container">
         <div className="section-header">
           <h2>{sectionTitle}</h2>

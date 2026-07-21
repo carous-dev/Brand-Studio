@@ -54,7 +54,7 @@
   width: 38px;
   height: 38px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.06);
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -65,7 +65,7 @@
 
 [data-theme-id='springalls-classic'] .sps-footer-social-link:hover {
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg);
 }
 
 [data-theme-id='springalls-classic'] .sps-footer-column-title {

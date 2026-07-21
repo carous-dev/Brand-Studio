@@ -17,6 +17,14 @@ THEME_REQUIRED_FILES = (
     "sections/index.tsx",
     "recipes/index.ts",
     "tokens.ts",
+    # Shared theme-contract additions (all 14 themes conform as of the
+    # standardization; see docs/theme-contract.md + tools/check-theme-contract.mjs).
+    # A theme missing any of these is dropped from the catalog, so keep this in
+    # lockstep with the conformance checker — only add a file here once every
+    # shipped theme actually has it.
+    "context/BrandStyles.tsx",
+    "styles/color-policy.css",
+    "lib/contact.ts",
 )
 
 FALLBACK_CATALOG: Dict[str, Any] = {

@@ -1,0 +1,125 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+}
+
+@media (min-width: 960px) {
+  .grid { grid-template-columns: 1fr 1.1fr; gap: clamp(48px, 6vw, 96px); }
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 50ch;
+}
+
+.h2 {
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  color: var(--text-on-light-strong);
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+.stepList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.stepList li {
+  display: flex;
+  gap: 16px;
+  padding: 20px 0;
+  border-top: 1px solid var(--border-hairline);
+}
+.stepList li:last-child { border-bottom: 1px solid var(--border-hairline); }
+
+.stepNum {
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--brand-primary);
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+  min-width: 36px;
+}
+
+.stepList h3 {
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-on-light-strong);
+  margin-bottom: 4px;
+}
+
+.stepList p {
+  font-size: 0.95rem;
+  color: var(--text-on-light-muted);
+}
+
+.tickList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+.tickList li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--text-on-light-strong);
+}
+.tickList li svg {
+  color: var(--brand-primary);
+  flex-shrink: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 32px;
+  background: var(--surface-card-light);
+  border: 1px solid var(--border-hairline);
+  border-radius: 4px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 600px) {
+  .row { grid-template-columns: 1fr 1fr; gap: 18px; }
+}
+
+.formField { display: flex; flex-direction: column; }
+
+.success {
+  padding: 14px 16px;
+  background: var(--brand-soft-bg);
+  border-left: 3px solid var(--brand-primary);
+  color: var(--text-on-light-strong);
+  font-size: 0.95rem;
+}
+
+.error {
+  padding: 14px 16px;
+  background: color-mix(in srgb, var(--state-warning) 12%, transparent);
+  border-left: 3px solid var(--state-warning);
+  color: var(--text-on-light-strong);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 640px) {
+  .form { padding: 24px; }
+}

@@ -1,40 +1,40 @@
 'use client'
 
-import type { ReactNode } from 'react'
-import AnimateOnScroll from '@/app/widgets/AnimateOnScroll/AnimateOnScroll'
-import MotionFX from '@/app/widgets/MotionFX/MotionFX'
-import ScrollProgress from '@/app/widgets/ScrollProgress/ScrollProgress'
-import PreviewBanner from '@/app/widgets/PreviewBanner/PreviewBanner'
-import CookieBanner from '@/app/widgets/CookieBanner/CookieBanner'
-import WhatsAppFab from '@/app/widgets/WhatsAppFab/WhatsAppFab'
 import type { ThemeShellComponent } from '../types'
+import ThemeChrome from '@/app/themes/lib/ThemeChrome'
 import { useBrand } from './context/BrandClientWrapper'
 import Providers from './components/Providers'
 import Header from './components/Header'
 import Footer from './components/Footer'
 
 import './styles/base.css'
+import './styles/color-policy.css'
 
 /**
- * cnhcars-clone theme shell. The context registry mounts BrandClientWrapper +
- * BrandStyles + AuthProvider + DynamicFavicon ABOVE this shell — so here we
- * only compose source-app Providers (WishlistContext) + Header / children /
- * Footer, plus the brandstudio-global widgets.
+ * cnhcars-clone theme shell — thin wrapper over the shared <ThemeChrome>
+ * (route-gating, skip-link, canonical widget stack). Theme-specific bits: its
+ * own Header/Footer and the divergent legal/content routes.
+ *
+ * The source-app WishlistContext lives in `Providers`; it is NOT a
+ * {brandSlug, children} provider, so it wraps <ThemeChrome> EXTERNALLY rather
+ * than being passed via the `provider` prop. The context registry mounts
+ * BrandClientWrapper + BrandStyles + AuthProvider + DynamicFavicon above this
+ * shell.
  */
 export const themeShell: ThemeShellComponent = ({ children }) => {
   const brand = useBrand() as any
 
   return (
     <Providers>
-      <PreviewBanner brand={brand} />
-      <AnimateOnScroll />
-      <MotionFX />
-      <ScrollProgress />
-      <Header />
-      {children as ReactNode}
-      <Footer />
-      <WhatsAppFab brand={brand} />
-      <CookieBanner />
+      <ThemeChrome
+        brand={brand ?? null}
+        classPrefix="cnhcars"
+        extraRoutes={['/cookies', '/privacy', '/disclaimer', '/terms', '/testimonials']}
+        header={<Header />}
+        footer={<Footer />}
+      >
+        {children}
+      </ThemeChrome>
     </Providers>
   )
 }

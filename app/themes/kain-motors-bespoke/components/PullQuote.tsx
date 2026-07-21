@@ -17,7 +17,7 @@ export default function PullQuote({
   const text = getBrandText(brand)
   const finalAttribution = attribution ?? text.founderAttribution
   return (
-    <section className={styles.section} aria-label="Pull quote">
+    <section className={styles.section} aria-label="Pull quote" data-aos="fade-up">
       <div className={styles.inner} data-aos="fade-up">
         <span className="kain-gold-rule kain-gold-rule--center" aria-hidden="true" />
         <p className={styles.quote}>{quote}</p>

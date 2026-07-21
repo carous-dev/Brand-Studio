@@ -11,8 +11,8 @@
        while --brand-text stays dark (Columbus Vehicles) → dark-on-dark.
      - The dark utility bar pairs --brand-text (bg) + --brand-background (fg).
      - The light main-nav pairs --brand-background (bg) + --brand-text (fg).
-     - The red CTA pairs --brand-primary (bg) + literal #fff (fg) with an
-       opt-in --btn-primary-fg override hook for pale-primary edge cases.
+     - The red CTA pairs --brand-primary (bg) + --brand-background (fg) via
+       the --btn-primary-fg override hook for pale-primary edge cases.
    ========================================================================== */
 
 body[data-theme-id="classic-dealer"] .modern-header {
@@ -23,7 +23,7 @@ body[data-theme-id="classic-dealer"] .modern-header {
   --hdr-rule: rgba(var(--brand-text-rgb), 0.08);
   --hdr-rule-strong: rgba(var(--brand-text-rgb), 0.16);
   --hdr-cta-bg: var(--brand-primary);
-  --hdr-cta-fg: var(--btn-primary-fg, #ffffff);
+  --hdr-cta-fg: var(--btn-primary-fg, var(--brand-background));
 
   position: sticky;
   top: 0;
@@ -116,7 +116,7 @@ body[data-theme-id="classic-dealer"] .contact-right .hours::before {
   width: 6px;
   height: 6px;
   border-radius: 999px;
-  background: #4ade80;
+  background: var(--t-success);
   box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.18);
 }
 
@@ -305,15 +305,15 @@ body[data-theme-id="classic-dealer"] a.wishlist-btn:hover,
 body[data-theme-id="classic-dealer"] .wishlist-btn:focus-visible {
   background: var(--brand-primary);
   border-color: var(--brand-primary);
-  color: #ffffff !important;
+  color: var(--hdr-cta-fg) !important;
   transform: translateY(-1px);
   box-shadow: 0 8px 18px -10px rgba(var(--brand-primary-rgb), 0.55);
 }
 
 body[data-theme-id="classic-dealer"] .wishlist-btn:hover svg,
 body[data-theme-id="classic-dealer"] .wishlist-btn:focus-visible svg {
-  stroke: #ffffff !important;
-  fill: rgba(255, 255, 255, 0.18) !important;
+  stroke: var(--hdr-cta-fg) !important;
+  fill: rgba(var(--brand-background-rgb), 0.18) !important;
 }
 
 body[data-theme-id="classic-dealer"] .wishlist-btn svg {
@@ -334,7 +334,7 @@ body[data-theme-id="classic-dealer"] .wishlist-count {
   padding: 0 6px;
   border-radius: 999px;
   background: var(--brand-primary);
-  color: #ffffff !important;
+  color: var(--hdr-cta-fg) !important;
   font-size: 11px;
   font-weight: 700;
   line-height: 1;
@@ -358,7 +358,7 @@ body[data-theme-id="classic-dealer"] a.btn-call-us {
   gap: 8px;
   padding: 12px 22px;
   background: var(--brand-primary);
-  color: #ffffff !important;
+  color: var(--hdr-cta-fg) !important;
   border: 1px solid var(--brand-primary);
   border-radius: 999px;
   font-size: 14px;
@@ -376,20 +376,20 @@ body[data-theme-id="classic-dealer"] .btn-call-us:focus,
 body[data-theme-id="classic-dealer"] .btn-call-us:active {
   background: var(--brand-secondary, var(--brand-primary));
   border-color: var(--brand-secondary, var(--brand-primary));
-  color: #ffffff !important;
+  color: var(--hdr-cta-fg) !important;
   transform: translateY(-1px);
   box-shadow: 0 12px 22px -10px rgba(var(--brand-primary-rgb), 0.7);
 }
 
 body[data-theme-id="classic-dealer"] .btn-call-us *,
 body[data-theme-id="classic-dealer"] .btn-call-us span {
-  color: #ffffff !important;
+  color: var(--hdr-cta-fg) !important;
 }
 
 body[data-theme-id="classic-dealer"] .btn-call-us svg {
   width: 17px;
   height: 17px;
-  stroke: #ffffff !important;
+  stroke: var(--hdr-cta-fg) !important;
   fill: none !important;
   stroke-width: 2;
   flex-shrink: 0;

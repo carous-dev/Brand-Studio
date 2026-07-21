@@ -48,9 +48,9 @@ const SERVICES = [
 
 export default function ServicesSection() {
   return (
-    <section className={`auto-section auto-section--dark ${styles.section}`} aria-labelledby="services-title">
+    <section className={`auto-section auto-section--dark ${styles.section}`} aria-labelledby="services-title" data-aos="fade-up">
       <div className={`auto-container ${styles.inner}`}>
-        <header className={styles.header} data-aos="fade-up">
+        <header className={styles.header}>
           <span className={styles.eyebrow}>
             <span className={styles.eyebrowMark} aria-hidden="true" />
             Our services
@@ -70,12 +70,7 @@ export default function ServicesSection() {
             const { Icon } = service
             const num = String(i + 1).padStart(2, '0')
             return (
-              <li
-                key={service.title}
-                className={styles.card}
-                data-aos="fade-up"
-                data-aos-delay={i * 80}
-              >
+              <li key={service.title} className={styles.card}>
                 <Link href={service.href} className={styles.cardLink}>
                   <span className={styles.cardNum} aria-hidden="true">{num}</span>
                   <span className={styles.iconWrap} aria-hidden="true">

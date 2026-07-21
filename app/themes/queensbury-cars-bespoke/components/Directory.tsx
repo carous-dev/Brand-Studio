@@ -51,7 +51,7 @@ export default function Directory() {
   }, [brand?.slug])
 
   return (
-    <section className={`qb-section ${styles.section}`}>
+    <section className={`qb-section ${styles.section}`} data-aos="fade-up">
       <div className="qb-container">
         <header className="qb-section-head" data-aos="fade-up">
           <span className="qb-eyebrow">Browse by make</span>

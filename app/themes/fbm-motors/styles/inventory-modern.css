@@ -17,9 +17,9 @@ body[data-theme-id="fbm-motors"] .used-page {
 }
 body[data-theme-id="fbm-motors"] .used-page .inventory-modern.container {
   width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: clamp(18px, 2vw, 32px) clamp(8px, 1vw, 16px) clamp(30px, 4vw, 58px);
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: clamp(20px, 2.4vw, 40px) clamp(16px, 2vw, 28px) clamp(32px, 4vw, 64px);
   background: var(--bg-primary-light, var(--inventory-page-bg));
 }
 
@@ -1631,5 +1631,143 @@ body[data-theme-id="fbm-motors"] .used-page .inventory-page-ellipsis {
     width: 9px;
     min-width: 9px;
     max-width: 9px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Huntsmotors-style listing: full-width single-column shell + toolbar Filters
+ * toggle + collapsible filter drawer + 4-col wide grid. Overrides the sibling
+ * sidebar layout above for the /used-cars page.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+/* Single-column: results keep the full container width (no desktop sidebar). */
+body[data-theme-id="fbm-motors"] .used-page .inventory-shell-modern.no-filters {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+/* Toolbar lead group — Filters toggle + result count sit together on the left. */
+body[data-theme-id="fbm-motors"] .used-page .inventory-toolbar-lead {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+body[data-theme-id="fbm-motors"] .used-page .inventory-filters-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.24);
+  border-radius: 999px;
+  background: var(--inventory-surface-soft);
+  color: var(--text-dark);
+  font-family: var(--font-ui);
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+body[data-theme-id="fbm-motors"] .used-page .inventory-filters-toggle svg {
+  color: var(--accent-primary);
+}
+
+body[data-theme-id="fbm-motors"] .used-page .inventory-filters-toggle:hover {
+  border-color: rgba(var(--accent-primary-rgb), 0.44);
+  transform: translateY(-1px);
+}
+
+body[data-theme-id="fbm-motors"] .used-page .inventory-filters-toggle.is-open {
+  background: rgba(var(--accent-primary-rgb), 0.12);
+  border-color: rgba(var(--accent-primary-rgb), 0.5);
+}
+
+body[data-theme-id="fbm-motors"] .used-page .inventory-filters-toggle strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--accent-primary);
+  color: var(--inventory-surface);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+body[data-theme-id="fbm-motors"] .used-page .inventory-filters-toggle:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Collapsible filter drawer — a full-width card of select fields. */
+body[data-theme-id="fbm-motors"] .used-page .inventory-filter-drawer {
+  display: none;
+  margin-bottom: 16px;
+  padding: 20px;
+  background: var(--inventory-surface);
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.18);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(var(--shadow-color), 0.08);
+}
+
+body[data-theme-id="fbm-motors"] .used-page .inventory-filter-drawer.is-open {
+  display: block;
+  animation: fbm-filter-drawer-in 0.22s ease;
+}
+
+@keyframes fbm-filter-drawer-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+body[data-theme-id="fbm-motors"] .used-page .inventory-filter-drawer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px 16px;
+}
+
+body[data-theme-id="fbm-motors"] .used-page .inventory-filter-drawer .inventory-filter-field {
+  margin-bottom: 0;
+}
+
+body[data-theme-id="fbm-motors"] .used-page .inventory-filter-drawer .inventory-filter-field select {
+  height: 46px;
+  border-radius: 10px;
+}
+
+body[data-theme-id="fbm-motors"] .used-page .inventory-filter-drawer-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+body[data-theme-id="fbm-motors"] .used-page .inventory-filter-drawer-foot .inventory-filter-clear-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: auto;
+  padding: 0 18px;
+  height: 44px;
+}
+
+body[data-theme-id="fbm-motors"] .used-page .inventory-filter-drawer-foot .inventory-filter-clear-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Wide 4-column grid on large viewports (huntsmotors parity). */
+@media (min-width: 1440px) {
+  body[data-theme-id="fbm-motors"] .used-page .inventory-results-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  body[data-theme-id="fbm-motors"] .used-page .inventory-results-grid.is-list-view {
+    grid-template-columns: 1fr;
   }
 }

@@ -20,7 +20,7 @@ export default function BrandsSlider() {
   const duplicatedBrands = [...brands, ...brands.slice(0, 5)];
 
   return (
-    <section className="brands-section">
+    <section className="brands-section" data-aos="fade-up">
       <div className="container">
         <div className="brands-slider-container">
           <div className="brands-slider" id="brands-slider">

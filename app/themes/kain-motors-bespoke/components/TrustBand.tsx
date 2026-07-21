@@ -10,7 +10,7 @@ export default function TrustBand() {
   const brand = useBrand()
   const text = getBrandText(brand)
   return (
-    <section className={styles.band} aria-label={`Why buy from ${text.name}`}>
+    <section className={styles.band} aria-label={`Why buy from ${text.name}`} data-aos="fade-up">
       <div className={styles.inner}>
         {SLOTS.map((idx) => {
           const label = resolveText(brand, `trust${idx}Label`)

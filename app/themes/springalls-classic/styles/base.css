@@ -79,7 +79,7 @@
   padding: 12px 22px;
   border-radius: 999px;
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg);
   text-decoration: none;
   font-weight: 600;
 }

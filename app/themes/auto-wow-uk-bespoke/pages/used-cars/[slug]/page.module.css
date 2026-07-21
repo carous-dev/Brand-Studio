@@ -485,13 +485,27 @@
 }
 
 .summaryBtnReserve {
-  background: color-mix(in srgb, #25d366 12%, transparent);
-  color: #1f8b46;
-  border: 1px solid color-mix(in srgb, #25d366 60%, transparent);
+  background: color-mix(in srgb, var(--t-whatsapp) 12%, transparent);
+  color: var(--t-whatsapp-ink);
+  border: 1px solid color-mix(in srgb, var(--t-whatsapp) 60%, transparent);
 }
 
 .summaryBtnReserve:hover {
-  background: color-mix(in srgb, #25d366 22%, transparent);
+  background: color-mix(in srgb, var(--t-whatsapp) 22%, transparent);
+}
+
+/* Reserve-a-car (CDN widget) — brand-primary tinted secondary CTA, distinct
+   from the solid primary enquiry button above it. */
+.summaryBtnReserveCta {
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-bg));
+  color: var(--color-primary);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
+}
+
+.summaryBtnReserveCta:hover {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-bg));
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
 }
 
 /* Trust list */

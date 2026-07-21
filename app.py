@@ -76,6 +76,7 @@ from backend.services.theme_catalog import (
     resolve_theme_id,
 )
 from backend.services.extractor import fetch_structured_text
+from backend.services.color_derive import resolve_colors
 from backend.scraper_settings import (
     get_proxy_url as _scraper_get_proxy_url,
     get_use_browser as _scraper_get_use_browser,
@@ -1276,6 +1277,22 @@ def parse_bool_flag(value: Any) -> bool:
     return False
 
 
+def _normalize_brand_theme_colors(brand):
+    """Normalise a nested BrandConfig's theme.colors through the derivation
+    engine (fills missing derived tokens; re-derives when colorsAuto is set).
+    Payloads without any brand color input pass through untouched so theme
+    defaults keep applying. Mutates and returns `brand`.
+    """
+    theme_obj = brand.get('theme') if isinstance(brand.get('theme'), dict) else None
+    if theme_obj is None:
+        return brand
+    colors_auto = parse_bool_flag(theme_obj.get('colorsAuto'))
+    theme_obj['colors'] = resolve_colors(theme_obj.get('colors'), auto=colors_auto)
+    if theme_obj.get('colorsAuto') is not None:
+        theme_obj['colorsAuto'] = colors_auto
+    return brand
+
+
 def looks_like_brand_config(payload) -> bool:
     if not isinstance(payload, dict):
         return False
@@ -2464,6 +2481,13 @@ def generate_brand_via_ai():
         if not brand.get('slug'):
             brand['slug'] = _slugify_name(brand.get('name', ''))
 
+        # The AI proposes only the 4 brand colors — derive text/surface/border/
+        # muted so the returned draft carries the full 8-color contract (auto:
+        # anything the model did emit for derived keys is not hand-tuned).
+        if isinstance(brand.get('theme'), dict):
+            brand['theme']['colors'] = resolve_colors(brand['theme'].get('colors'), auto=True)
+            brand['theme']['colorsAuto'] = True
+
         # Generate optimized SEO data specifically for car dealerships
         auto_seo = _generate_dealership_seo(brand, website)
         
@@ -3486,6 +3510,7 @@ def create_brand():
                     return jsonify({'error': 'Domain is required for brand creation'}), 400
                 # Production: DNS validation will be done after automation runs
                 pass
+                brand = _normalize_brand_theme_colors(brand)
                 errors = validate_brand(brand)
                 if errors:
                     return jsonify({'error': 'Validation failed', 'details': errors}), 400
@@ -3545,20 +3570,32 @@ def create_brand():
             except:
                 return '0, 0, 0'
 
-        # Get actual user-selected colors from form data
-        user_primary_color = data.get('primaryColor', '#d4af37')
-        user_secondary_color = data.get('secondaryColor', '#c41e3a')
-        user_accent_color = data.get('accentColor', '#e74c3c')
-        user_background_color = data.get('backgroundColor', '#ffffff')
-        user_text_color = data.get('textColor', '#1f2933')
-        
+        # Get user-selected colors from form data; derivation fills
+        # text/surface/border/muted when not explicitly provided.
+        user_colors_auto = parse_bool_flag(data.get('colorsAuto'))
+        user_colors = resolve_colors({
+            'primaryColor': data.get('primaryColor', '#d4af37'),
+            'secondaryColor': data.get('secondaryColor', '#c41e3a'),
+            'accentColor': data.get('accentColor', '#e74c3c'),
+            'backgroundColor': data.get('backgroundColor', '#ffffff'),
+            'textColor': data.get('textColor'),
+            'borderColor': data.get('borderColor'),
+            'mutedColor': data.get('mutedColor'),
+            'surfaceColor': data.get('surfaceColor'),
+        }, auto=user_colors_auto)
+        user_primary_color = user_colors['primaryColor']
+        user_secondary_color = user_colors['secondaryColor']
+        user_accent_color = user_colors['accentColor']
+        user_background_color = user_colors['backgroundColor']
+        user_text_color = user_colors['textColor']
+
         # Calculate RGB values from actual user colors
         user_primary_rgb = hex_to_rgb(user_primary_color)
         user_secondary_rgb = hex_to_rgb(user_secondary_color)
         user_accent_rgb = hex_to_rgb(user_accent_color)
         user_background_rgb = hex_to_rgb(user_background_color)
         user_text_rgb = hex_to_rgb(user_text_color)
-        
+
         # Handle image uploads
         logo_path = f'/images/{slug}-logo.png'  # Default path
         favicon_path = f'/images/{slug}-favicon.png'  # Default path
@@ -3742,13 +3779,17 @@ def create_brand():
                     'country': data.get('country', 'GB'),
                 },
                 'theme': {
+                    'colorsAuto': user_colors_auto,
                     'colors': {
-                        # Core 5 Colors (from Dashboard) - NEW SYSTEM
+                        # Core 8 Colors (from Dashboard + derivation) - NEW SYSTEM
                         'primaryColor': user_primary_color,
                         'secondaryColor': user_secondary_color,
                         'accentColor': user_accent_color,
                         'backgroundColor': user_background_color,
                         'textColor': user_text_color,
+                        'borderColor': user_colors['borderColor'],
+                        'mutedColor': user_colors['mutedColor'],
+                        'surfaceColor': user_colors['surfaceColor'],
 
                         # Background System - LEGACY (derived from 5-color system)
                         'bgPrimary': user_background_color,
@@ -4069,7 +4110,12 @@ def remote_create_preview():
     theme_obj = dict(brand.get('theme') or {})
     theme_obj['id'] = safe_theme_id
     theme_obj['themeId'] = safe_theme_id
+    # Normalise colors to the full 8-color contract. Non-destructive unless
+    # the payload opts into auto mode: explicit values sent by the operator
+    # (/new-theme hand-tuned palettes) are kept; missing derived tokens
+    # (text/surface/border/muted) are computed from the 4 brand inputs.
     brand['theme'] = theme_obj
+    brand = _normalize_brand_theme_colors(brand)
 
     # ---- Optional: run OpenAI with the theme's text recipe to fill brand.text
     ai_meta = payload.get('ai') if isinstance(payload.get('ai'), dict) else {}
@@ -4277,6 +4323,7 @@ def update_brand_put(slug):
 
                 existing = strip_internal_fields(old_existing_full)
                 merged = deep_merge(existing, brand_patch) if existing else brand_patch
+                merged = _normalize_brand_theme_colors(merged)
 
                 errors = validate_brand(merged)
                 if errors:
@@ -4343,13 +4390,25 @@ def update_brand_put(slug):
             except:
                 return '0, 0, 0'
 
-        # Get actual user-selected colors from form data
-        user_primary_color = data.get('primaryColor', '#d4af37')
-        user_secondary_color = data.get('secondaryColor', '#c41e3a')
-        user_accent_color = data.get('accentColor', '#e74c3c')
-        user_background_color = data.get('backgroundColor', '#ffffff')
-        user_text_color = data.get('textColor', '#1f2933')
-        
+        # Get user-selected colors from form data; derivation fills
+        # text/surface/border/muted when not explicitly provided.
+        user_colors_auto = parse_bool_flag(data.get('colorsAuto'))
+        user_colors = resolve_colors({
+            'primaryColor': data.get('primaryColor', '#d4af37'),
+            'secondaryColor': data.get('secondaryColor', '#c41e3a'),
+            'accentColor': data.get('accentColor', '#e74c3c'),
+            'backgroundColor': data.get('backgroundColor', '#ffffff'),
+            'textColor': data.get('textColor'),
+            'borderColor': data.get('borderColor'),
+            'mutedColor': data.get('mutedColor'),
+            'surfaceColor': data.get('surfaceColor'),
+        }, auto=user_colors_auto)
+        user_primary_color = user_colors['primaryColor']
+        user_secondary_color = user_colors['secondaryColor']
+        user_accent_color = user_colors['accentColor']
+        user_background_color = user_colors['backgroundColor']
+        user_text_color = user_colors['textColor']
+
         # Calculate RGB values from actual user colors
         user_primary_rgb = hex_to_rgb(user_primary_color)
         user_secondary_rgb = hex_to_rgb(user_secondary_color)
@@ -4493,13 +4552,17 @@ def update_brand_put(slug):
                     'country': data.get('country', 'GB'),
                 },
                 'theme': {
+                    'colorsAuto': user_colors_auto,
                     'colors': {
-                        # Core 5 Colors (from Dashboard) - NEW SYSTEM
+                        # Core 8 Colors (from Dashboard + derivation) - NEW SYSTEM
                         'primaryColor': user_primary_color,
                         'secondaryColor': user_secondary_color,
                         'accentColor': user_accent_color,
                         'backgroundColor': user_background_color,
                         'textColor': user_text_color,
+                        'borderColor': user_colors['borderColor'],
+                        'mutedColor': user_colors['mutedColor'],
+                        'surfaceColor': user_colors['surfaceColor'],
                     }
                 }
             }
@@ -4625,6 +4688,7 @@ def update_brand(slug):
             brand = deep_merge(existing, brand_patch)
             if existing_name:
                 brand['name'] = existing_name
+            brand = _normalize_brand_theme_colors(brand)
             errors = validate_brand(brand)
             if errors:
                 print(f"[UPDATE] Validation failed for {slug} (full config): {errors}")

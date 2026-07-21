@@ -11,15 +11,10 @@ const STATS = [
 
 export default function SpecsBar() {
   return (
-    <section className={styles.bar} aria-label="Dealer at a glance">
+    <section className={styles.bar} aria-label="Dealer at a glance" data-aos="fade-up">
       <ul className={styles.grid}>
-        {STATS.map((stat, i) => (
-          <li
-            key={stat.label}
-            className={styles.cell}
-            data-aos="fade-up"
-            data-aos-delay={i * 100}
-          >
+        {STATS.map((stat) => (
+          <li key={stat.label} className={styles.cell}>
             <span className={styles.value}>{stat.value}</span>
             <span className={styles.label}>{stat.label}</span>
           </li>

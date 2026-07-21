@@ -3,6 +3,7 @@
 import React from 'react';
 import type { BrandConfig } from '@/brands/types';
 import { buildGoogleFontsImport } from '@/app/lib/googleFonts';
+import { buildThemeTokens, renderThemeStyle, escapeCssUrl, hexToRgb } from '@/app/themes/lib/theme-tokens';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -18,6 +19,11 @@ interface BrandStylesProps {
  * accent is exposed both as the global --color-primary AND as
  * --fbm-ember-* tiers so the source UI's ember-50 / ember-400 / ember-500 /
  * ember-600 utility classes resolve cleanly to brand-driven values.
+ *
+ * The canonical core-8 + --brand-* mirror + rgb + dark tier + status tokens
+ * come from the shared buildThemeTokens emitter; fbm's hybrid legacy aliases
+ * (--accent-*, --bg-secondary, --shadow-color) ride along via `legacyAliases`
+ * and its rich --fbm-* scale + brand-image slots go through `extras` verbatim.
  */
 export function BrandStyles({ brand }: BrandStylesProps) {
   const { theme } = brand;
@@ -52,33 +58,39 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   const background = theme.colors.backgroundColor || '#F7F8FA';
   const text = theme.colors.textColor || '#0E1420';
 
-  const cssVariables: Record<string, string> = {
-    // Dashboard 8 tokens — natural roles, never inverted
-    '--color-primary': primary,
-    '--color-secondary': secondary,
-    '--color-accent': accent,
-    '--color-bg': background,
-    '--color-surface': (theme.colors as any).surfaceColor || '#ffffff',
-    '--color-text': text,
-    '--color-muted': (theme.colors as any).mutedColor || '#5B6B7E',
-    '--color-border': (theme.colors as any).borderColor || 'rgba(14, 20, 32, 0.08)',
-    '--color-header-bg': (theme.colors as any).headerBg || '#ffffff',
-    '--color-header-text': (theme.colors as any).headerText || text,
-    '--color-header-muted': (theme.colors as any).headerMuted || '#5B6B7E',
-    '--color-review-star': (theme.colors as any).reviewStar || '#facc15',
+  // Canonical token block via the shared emitter. FBM's bespoke ember palette
+  // is passed as `defaults`; brand records override any of the 8 via
+  // theme.colors.*. The emitter owns the core-8, --brand-* mirror, rgb triples,
+  // dark tier and status colours (previously hand-rolled here).
+  const vars = buildThemeTokens(theme.colors as any, {
+    defaults: {
+      primaryColor: '#FF6B1A',
+      secondaryColor: '#F25800',
+      accentColor: '#FF8A3D',
+      backgroundColor: '#F7F8FA',
+      surfaceColor: '#ffffff',
+      textColor: '#0E1420',
+      mutedColor: '#5B6B7E',
+      borderColor: 'rgba(14, 20, 32, 0.08)',
+      headerBg: '#ffffff',
+      headerMuted: '#5B6B7E',
+      reviewStar: '#facc15',
+    },
+    // Hybrid legacy aliases used by fbm's ported inventory-modern / vehicle CSS
+    // — point legacy accent-* tokens at the brand palette so colors track the
+    // dashboard pickers without each component needing per-token plumbing.
+    legacyAliases: {
+      '--accent-primary': primary,
+      '--accent-primary-rgb': hexToRgb(primary),
+      '--accent-secondary': secondary,
+      '--accent-secondary-rgb': hexToRgb(secondary),
+      '--accent-hover': secondary,
+      '--bg-secondary': background,
+      '--shadow-color': hexToRgb(text),
+    },
+  });
 
-    // Bridge variables
-    '--brand-primary': primary,
-    '--brand-secondary': secondary,
-    '--brand-accent': accent,
-    '--brand-background': background,
-    '--brand-text': text,
-    '--brand-primary-rgb': hexToRgb(primary),
-    '--brand-secondary-rgb': hexToRgb(secondary),
-    '--brand-accent-rgb': hexToRgb(accent),
-    '--brand-background-rgb': hexToRgb(background),
-    '--brand-text-rgb': hexToRgb(text),
-
+  const extras: Record<string, string> = {
     // FBM-specific ember accent tiers (light → bright → dark). These map the
     // source app's ember-50/100/400/500/600 utility classes to brand tokens
     // so the orange→deep-orange ramp follows whatever primary the dashboard
@@ -136,17 +148,6 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--font-brand-family': 'var(--font-brand-family-override)',
     '--font-ui': 'var(--font-ui-family-override)',
     '--font-brand': 'var(--font-brand-family-override)',
-
-    // Aliases used by ported inventory-modern / vehicle CSS — point legacy
-    // accent-* tokens at the brand palette so colors track the dashboard
-    // pickers without each component needing per-token plumbing.
-    '--accent-primary': primary,
-    '--accent-primary-rgb': hexToRgb(primary),
-    '--accent-secondary': secondary,
-    '--accent-secondary-rgb': hexToRgb(secondary),
-    '--accent-hover': secondary,
-    '--bg-secondary': background,
-    '--shadow-color': hexToRgb(text),
   };
 
   // Dynamic Google Fonts import — without this the --font-*-family-override
@@ -158,25 +159,10 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: `${fontImport}:root {
-            ${Object.entries(cssVariables)
-              .map(([key, value]) => `${key}: ${value};`)
-              .join('\n            ')}
-            font-family: ${fontUi};
-          }
-        `,
+        __html: renderThemeStyle({ vars, extras, fontFamily: fontUi, fontImport }),
       }}
     />
   );
-}
-
-function hexToRgb(hex: string): string {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 0, 0';
-}
-
-function escapeCssUrl(url: string): string {
-  return String(url).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n|\r/g, '');
 }
 
 function resolveFontToken(...candidates: Array<unknown>): string | null {

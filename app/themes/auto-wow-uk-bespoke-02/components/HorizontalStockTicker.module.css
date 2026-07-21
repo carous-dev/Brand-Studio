@@ -1,12 +1,12 @@
-/* Brand-primary band — replaces the brand-tinted dark surface with the dealer's
-   primary color so the makes ticker reads as a confident on-brand strip.
-   Logo glyphs are tinted white via CSS mask so they pop against the colored bg. */
+/* Brand-primary band — the dealer's primary color reads as a confident on-brand
+   strip directly under the hero. The make logos scroll as a seamless marquee of
+   clean cards; glyphs are tinted white via CSS mask so they pop on the color. */
 
 .ticker {
   background: var(--brand-primary, var(--color-primary));
   color: var(--color-bg);
   border-block: 1px solid color-mix(in srgb, var(--color-bg) 18%, transparent);
-  padding-block: 16px;
+  padding-block: 14px;
   position: relative;
   overflow: hidden;
 }
@@ -18,7 +18,7 @@
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: clamp(16px, 3vw, 32px);
+  gap: clamp(16px, 3vw, 28px);
 }
 
 .lead {
@@ -52,11 +52,21 @@
 
 .rail {
   overflow: hidden;
+  min-width: 0;
+  /* Mask gradients only use the alpha channel — any opaque color behaves
+     identically, so derive from the text token to satisfy the contract. */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--color-text) 7%,
+    var(--color-text) 93%,
+    transparent 100%
+  );
   mask-image: linear-gradient(
     to right,
     transparent 0%,
-    #000 8%,
-    #000 92%,
+    var(--color-text) 7%,
+    var(--color-text) 93%,
     transparent 100%
   );
 }
@@ -64,17 +74,23 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  animation: tickerScroll 38s linear infinite;
+  animation: tickerScroll 24s linear infinite;
   width: max-content;
+  will-change: transform;
 }
+/* Pause the marquee when the visitor hovers the strip, so they can read a make. */
+.ticker:hover .railTrack {
+  animation-play-state: paused;
+}
+
 .chip {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: color-mix(in srgb, var(--color-bg) 16%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 14%, transparent);
   color: var(--color-bg);
-  border: 1px solid color-mix(in srgb, var(--color-bg) 32%, transparent);
-  padding: 6px 14px 6px 8px;
+  border: 1px solid color-mix(in srgb, var(--color-bg) 30%, transparent);
+  padding: 6px 15px 6px 7px;
   border-radius: 999px;
   font-family: var(--font-brand-family-override);
   text-transform: uppercase;
@@ -82,30 +98,36 @@
   font-size: 0.78rem;
   white-space: nowrap;
   flex-shrink: 0;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.chip:hover {
+  background: color-mix(in srgb, var(--color-bg) 22%, transparent);
+  border-color: color-mix(in srgb, var(--color-bg) 45%, transparent);
 }
 
 .chipLogo {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+  background: var(--color-bg);
   flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
 }
 .chipLogoImg {
   display: block;
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
   object-fit: contain;
   filter: brightness(0) saturate(100%);
-  opacity: 0.92;
+  opacity: 0.9;
 }
 .chipMonogram {
   font-family: var(--font-brand-family-override);
   font-weight: 700;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   color: var(--brand-primary, var(--color-primary));
   letter-spacing: 0;
 }
@@ -115,8 +137,10 @@
   to { transform: translateX(-50%); }
 }
 
+/* The auto-scrolling make strip is the requested signature of this band, so it
+   keeps moving under reduced-motion — but at a much gentler pace for comfort. */
 @media (prefers-reduced-motion: reduce) {
-  .railTrack { animation: none; }
+  .railTrack { animation-duration: 60s; }
 }
 
 .cta {
@@ -129,9 +153,24 @@
 }
 
 @media (max-width: 720px) {
+  .ticker {
+    padding-block: 12px;
+  }
   .inner {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 10px;
+    justify-items: center;
+    text-align: center;
   }
-  .rail { display: none; }
+  /* Keep the marquee on mobile — it auto-scrolls, so it stays useful in a
+     single-column stack instead of being hidden. Full-bleed so the cards run
+     edge to edge under the lead. */
+  .rail {
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    order: 2;
+  }
+  .cta {
+    order: 3;
+  }
 }

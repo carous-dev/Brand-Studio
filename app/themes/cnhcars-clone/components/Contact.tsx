@@ -41,7 +41,7 @@ export default function Contact() {
   const showErrors = status !== 'idle';
 
   return (
-    <section id="contact" className="contact-section">
+    <section id="contact" className="contact-section" data-aos="fade-up">
       <div className="container">
         <div className="contact-inner">
           <div className="contact-card">

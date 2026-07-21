@@ -6,9 +6,9 @@
   --muted: var(--t-muted);
   --border: var(--t-border);
   --accent: var(--color-primary);
-  --accent-soft: rgba(6, 122, 116, 0.12);
-  --accent-strong: rgba(6, 122, 116, 0.85);
-  --dark: #0f1b1a;
+  --accent-soft: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  --accent-strong: color-mix(in srgb, var(--color-primary) 85%, transparent);
+  --dark: var(--color-text);
   background: var(--t-page);
   color: var(--ink);
 }
@@ -17,13 +17,13 @@
   position: relative;
   padding: clamp(20px, 3.2vw, 44px) 0;
   background:
-    radial-gradient(120% 130% at 80% -25%, color-mix(in srgb, var(--color-accent) 70%, #fff) 0%, transparent 50%),
-    radial-gradient(140% 140% at 12% 110%, color-mix(in srgb, var(--color-accent) 55%, #000) 0%, transparent 55%),
+    radial-gradient(120% 130% at 80% -25%, color-mix(in srgb, var(--color-accent) 70%, var(--color-surface)) 0%, transparent 50%),
+    radial-gradient(140% 140% at 12% 110%, color-mix(in srgb, var(--color-accent) 55%, var(--color-text)) 0%, transparent 55%),
     linear-gradient(135deg,
-      color-mix(in srgb, var(--color-accent) 88%, #000) 0%,
+      color-mix(in srgb, var(--color-accent) 88%, var(--color-text)) 0%,
       var(--color-accent) 50%,
-      color-mix(in srgb, var(--color-accent) 84%, #000) 100%);
-  color: #ffffff;
+      color-mix(in srgb, var(--color-accent) 84%, var(--color-text)) 100%);
+  color: var(--color-bg);
 }
 
 .heroInner {
@@ -49,7 +49,7 @@
   font-size: clamp(1.6rem, 3.4vw, 2.6rem);
   line-height: 1.08;
   letter-spacing: 0.01em;
-  color: #ffffff;
+  color: var(--color-bg);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
@@ -59,7 +59,7 @@
   line-height: 1.45;
   font-weight: 500;
   letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.92);
+  color: color-mix(in srgb, var(--color-bg) 92%, transparent);
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
 }
 
@@ -204,9 +204,9 @@
   border-radius: 12px;
   background: linear-gradient(
     105deg,
-    rgba(212, 219, 228, 0.65) 0%,
-    rgba(232, 236, 242, 0.95) 40%,
-    rgba(212, 219, 228, 0.65) 80%
+    color-mix(in srgb, var(--t-border) 65%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface) 95%, transparent) 40%,
+    color-mix(in srgb, var(--t-border) 65%, transparent) 80%
   );
   background-size: 220% 100%;
   animation: skeletonShimmer 1.2s linear infinite;
@@ -215,9 +215,9 @@
 .hero .skeletonBlock {
   background: linear-gradient(
     105deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.22) 40%,
-    rgba(255, 255, 255, 0.1) 80%
+    color-mix(in srgb, var(--color-bg) 10%, transparent) 0%,
+    color-mix(in srgb, var(--color-bg) 22%, transparent) 40%,
+    color-mix(in srgb, var(--color-bg) 10%, transparent) 80%
   );
   background-size: 220% 100%;
 }
@@ -316,8 +316,8 @@
 }
 
 .priceCard {
-  background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
   border-radius: 18px;
   padding: 20px;
   display: grid;
@@ -343,7 +343,7 @@
   justify-content: center;
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(6, 122, 116, 0.1);
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
   color: var(--accent);
   font-weight: 700;
   text-transform: uppercase;
@@ -385,25 +385,25 @@
 }
 
 .primaryButton {
-  background: #ffffff;
+  background: var(--color-surface);
   color: var(--color-primary);
 }
 
 .primaryButton:hover {
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg);
 }
 
 .secondaryButton {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  color: #ffffff;
+  background: color-mix(in srgb, var(--color-bg) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-bg) 50%, transparent);
+  color: var(--color-bg);
   backdrop-filter: blur(4px);
 }
 
 .secondaryButton:hover {
-  border-color: rgba(255, 255, 255, 0.85);
-  background: rgba(255, 255, 255, 0.22);
+  border-color: color-mix(in srgb, var(--color-bg) 85%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 22%, transparent);
 }
 
 .sideCard .secondaryButton {
@@ -439,7 +439,7 @@
 
 .sectionAlt {
   padding: 36px 0 60px;
-  background: #f0f4f5;
+  background: var(--color-bg);
 }
 
 .sectionInner {
@@ -477,8 +477,8 @@
 }
 
 .summaryCard {
-  background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
   border-radius: 14px;
   padding: 14px;
   display: grid;
@@ -514,9 +514,9 @@
 
 .contentCard {
   margin-top: 24px;
-  background: #ffffff;
+  background: var(--color-surface);
   border-radius: 18px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
   padding: 20px;
   display: grid;
   gap: 18px;
@@ -552,7 +552,7 @@
 .description {
   display: grid;
   gap: 12px;
-  color: #1f2937;
+  color: var(--color-text);
   line-height: 1.6;
 }
 
@@ -565,8 +565,8 @@
   gap: 8px;
   padding: 10px 16px;
   border-radius: 999px;
-  border: 1px solid rgba(15, 23, 42, 0.16);
-  background: #ffffff;
+  border: 1px solid color-mix(in srgb, var(--color-text) 16%, transparent);
+  background: var(--color-surface);
   color: var(--ink);
   font-size: 0.9rem;
   font-weight: 600;
@@ -574,8 +574,8 @@
 }
 
 .readMoreButton:hover {
-  border-color: rgba(6, 122, 116, 0.45);
-  background: rgba(6, 122, 116, 0.08);
+  border-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
   color: var(--accent);
 }
 
@@ -588,7 +588,7 @@
   display: flex;
   gap: 12px;
   align-items: center;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
   border-radius: 12px;
   padding: 12px 14px;
 }
@@ -609,7 +609,7 @@
 }
 
 .specGroup {
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
   border-radius: 12px;
   padding: 14px;
 }
@@ -635,7 +635,7 @@
   gap: 12px;
   padding: 6px 0;
   font-size: 0.9rem;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent);
 }
 
 .specRow:last-child {
@@ -648,8 +648,8 @@
 }
 
 .featureGroup {
-  background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
   border-radius: 12px;
   padding: 0;
 }
@@ -689,12 +689,12 @@
   list-style: none;
   display: grid;
   gap: 8px;
-  color: #1f2937;
+  color: var(--color-text);
 }
 
 .featureList li {
   padding: 6px 0;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent);
 }
 
 .featureList li:last-child {
@@ -711,9 +711,9 @@
 }
 
 .sideCard {
-  background: #ffffff;
+  background: var(--color-surface);
   border-radius: 16px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
   padding: 18px;
   display: grid;
   gap: 12px;
@@ -771,7 +771,7 @@
 .checkList {
   display: grid;
   gap: 10px;
-  color: #1f2937;
+  color: var(--color-text);
 }
 
 .checkList span {
@@ -826,9 +826,9 @@
 }
 
 .historyCard {
-  background: #ffffff;
+  background: var(--color-surface);
   border-radius: 16px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
   padding: 18px;
   display: grid;
   gap: 12px;
@@ -1049,7 +1049,7 @@
   border-radius: 50%;
   border: 0;
   background: rgba(15, 23, 42, 0.55);
-  color: #ffffff;
+  color: var(--color-bg);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1082,7 +1082,7 @@
   border-radius: 999px;
   border: 0;
   background: rgba(15, 23, 42, 0.55);
-  color: #ffffff;
+  color: var(--color-bg);
   font-size: 0.78rem;
   cursor: pointer;
   backdrop-filter: blur(6px);
@@ -1104,7 +1104,7 @@
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.28);
   background: rgba(10, 12, 16, 0.55);
-  color: #ffffff;
+  color: var(--color-bg);
   font-size: 0.78rem;
   z-index: 2;
 }
@@ -1187,7 +1187,7 @@
   border-radius: 999px;
   border: 0;
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg);
   font-weight: 600;
   font-size: 0.85rem;
 }
@@ -1196,7 +1196,7 @@
   padding: 2px 8px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.22);
-  color: #ffffff;
+  color: var(--color-bg);
   font-size: 0.75rem;
   font-weight: 700;
 }
@@ -1229,7 +1229,7 @@
 
 .page :global(.vehicle-gallery-modern-control:hover) {
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg);
 }
 
 @media (min-width: 900px) {
@@ -1271,7 +1271,7 @@
 .page :global(.vehicle-enquiry-dialog) {
   position: relative;
   width: min(680px, 92vw);
-  background: #ffffff;
+  background: var(--color-surface);
   border-radius: 18px;
   padding: 24px;
   z-index: 1;
@@ -1285,8 +1285,8 @@
   height: 34px;
   border-radius: 50%;
   border: none;
-  background: #f3f4f6;
-  color: #111827;
+  background: color-mix(in srgb, var(--color-text) 4%, var(--color-surface));
+  color: var(--color-text);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1345,7 +1345,7 @@
 .page :global(.vehicle-enquiry-field-error) {
   margin: 0;
   font-size: 0.78rem;
-  color: #b42318;
+  color: var(--t-error);
 }
 
 .page :global(.vehicle-enquiry-field input),
@@ -1366,7 +1366,7 @@
 }
 
 .page :global(.vehicle-enquiry-more) {
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
   border-radius: 12px;
   padding: 10px 12px;
 }
@@ -1391,7 +1391,7 @@
 
 .page :global(.vehicle-enquiry-status.is-error) {
   background: rgba(180, 35, 24, 0.08);
-  color: #b42318;
+  color: var(--t-error);
 }
 
 .page :global(.vehicle-enquiry-status.is-success) {
@@ -1409,12 +1409,12 @@
 
 .page :global(.vehicle-enquiry-btn.btn-primary) {
   background: var(--accent);
-  color: #ffffff;
+  color: var(--color-bg);
 }
 
 .page :global(.vehicle-enquiry-btn.btn-secondary) {
-  background: #f3f4f6;
-  color: #111827;
+  background: color-mix(in srgb, var(--color-text) 4%, var(--color-surface));
+  color: var(--color-text);
 }
 
 @media (min-width: 640px) {
@@ -1490,9 +1490,9 @@
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.34);
+  border: 1px solid color-mix(in srgb, var(--color-bg) 34%, transparent);
   background: rgba(10, 12, 16, 0.62);
-  color: #ffffff;
+  color: var(--color-bg);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1510,7 +1510,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #ffffff;
+  color: var(--color-bg);
   font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.2px;
@@ -1610,9 +1610,9 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.34);
+  border: 1px solid color-mix(in srgb, var(--color-bg) 34%, transparent);
   background: rgba(10, 12, 16, 0.6);
-  color: #ffffff;
+  color: var(--color-bg);
   display: inline-flex;
   align-items: center;
   justify-content: center;

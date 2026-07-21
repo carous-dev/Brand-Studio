@@ -206,6 +206,7 @@ const Testimonials = () => {
     <motion.section
       id="testimonials"
       className="testimonials-split testimonials-section"
+      data-aos="fade-up"
       aria-label="Customer testimonials"
       initial={{ opacity: 0, x: -50 }}
       whileInView={{ opacity: 1, x: 0 }}

@@ -9,6 +9,7 @@ export default function CTAHero() {
     return (
         <motion.section
             className="cta-hero-lean"
+            data-aos="fade-up"
             aria-label="Special offer"
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}

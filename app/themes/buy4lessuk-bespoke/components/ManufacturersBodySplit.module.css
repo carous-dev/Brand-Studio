@@ -1,0 +1,124 @@
+.section {
+  padding: clamp(36px, 5vw, 60px) clamp(16px, 3vw, 32px);
+  background: #0f1216;
+  color: #fff;
+  background-image:
+    linear-gradient(rgba(15, 18, 22, 0.86), rgba(15, 18, 22, 0.86)),
+    var(--brand-image-services);
+  background-size: cover;
+  background-position: center;
+}
+
+.inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(20px, 3vw, 36px);
+}
+@media (min-width: 760px) {
+  .inner { grid-template-columns: 1fr 1fr; }
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panelHead {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.dot {
+  width: 8px; height: 8px;
+  background: var(--color-primary);
+  border-radius: 999px;
+}
+.panelTitle {
+  font-family: var(--font-ui-family-override, 'Inter', sans-serif);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.94);
+  margin: 0;
+}
+
+.tileRow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.panel:nth-child(2) .tileRow {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.tile {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #0f1623;
+  height: 84px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 2px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  transition: transform 0.2s ease, background 0.2s ease;
+  padding: 6px;
+}
+.tile:hover {
+  transform: translateY(-2px);
+  background: #fff;
+}
+
+.tileBody {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+.tileBody:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.tileLabel {
+  display: block;
+  text-align: center;
+}
+
+.bodyIcon {
+  display: block;
+  width: 44px;
+  height: 28px;
+  background-color: currentColor;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+.bodyIcon[data-body='hatchback'] {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 32'%3E%3Cpath fill='%23000' d='M6 22c0 4 4 6 8 6h36c4 0 8-2 8-6v-2H6zm12-4l4-8h10l8 8h12c0 0-4-10-12-10H22c-6 0-10 6-12 10z'/%3E%3Ccircle cx='18' cy='24' r='4' fill='%23000'/%3E%3Ccircle cx='46' cy='24' r='4' fill='%23000'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 32'%3E%3Cpath fill='%23000' d='M6 22c0 4 4 6 8 6h36c4 0 8-2 8-6v-2H6zm12-4l4-8h10l8 8h12c0 0-4-10-12-10H22c-6 0-10 6-12 10z'/%3E%3Ccircle cx='18' cy='24' r='4' fill='%23000'/%3E%3Ccircle cx='46' cy='24' r='4' fill='%23000'/%3E%3C/svg%3E");
+}
+.bodyIcon[data-body='mpv'] {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 32'%3E%3Cpath fill='%23000' d='M4 24V14c0-2 2-4 4-4h44c2 0 4 2 6 4l4 6v4H4z'/%3E%3Ccircle cx='16' cy='24' r='4' fill='%23000'/%3E%3Ccircle cx='48' cy='24' r='4' fill='%23000'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 32'%3E%3Cpath fill='%23000' d='M4 24V14c0-2 2-4 4-4h44c2 0 4 2 6 4l4 6v4H4z'/%3E%3Ccircle cx='16' cy='24' r='4' fill='%23000'/%3E%3Ccircle cx='48' cy='24' r='4' fill='%23000'/%3E%3C/svg%3E");
+}
+.bodyIcon[data-body='coupe'] {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 32'%3E%3Cpath fill='%23000' d='M2 24c0 2 2 4 6 4h48c4 0 6-2 6-4v-4l-6-2-6-8H22l-10 8-8 2-2 4z'/%3E%3Ccircle cx='16' cy='24' r='4' fill='%23000'/%3E%3Ccircle cx='48' cy='24' r='4' fill='%23000'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 32'%3E%3Cpath fill='%23000' d='M2 24c0 2 2 4 6 4h48c4 0 6-2 6-4v-4l-6-2-6-8H22l-10 8-8 2-2 4z'/%3E%3Ccircle cx='16' cy='24' r='4' fill='%23000'/%3E%3Ccircle cx='48' cy='24' r='4' fill='%23000'/%3E%3C/svg%3E");
+}
+
+@media (max-width: 559px) {
+  .tileRow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .panel:nth-child(2) .tileRow { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

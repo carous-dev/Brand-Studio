@@ -1,0 +1,428 @@
+/* =============================================================================
+ * BASE STYLES — axis-autos-bespoke (Axis Autos Ltd — Minimalist)
+ *
+ * Minimalist archetype with split-screen-photo-left signature move, hairline-
+ * thin-borderless header, formal voice, sentence-case display titles.
+ * All rules scoped under [data-theme-id='axis-autos-bespoke'] so they cannot
+ * bleed into other themes bundled in the same preview.
+ *
+ * One-big-move: decorative-density-minimum (zero decorative layers). No glow
+ * blobs. No grid overlays. No shimmer strips. Whitespace IS the design.
+ *
+ * Color policy: paired surface + foreground tokens DERIVE from the dashboard
+ * pickers (--color-bg / --color-surface / --color-text / --color-muted /
+ * --color-border) so brand-record changes repaint every surface.
+ * No hardcoded brand-primary RGB literals — use color-mix() against the
+ * brand tokens instead.
+ * ============================================================================= */
+
+[data-theme-id='axis-autos-bespoke'] {
+  /* Light tier — direct from dashboard. */
+  --surface-bg-light: var(--color-bg);
+  --surface-card-light: var(--color-surface);
+  --text-on-light-strong: var(--color-text);
+  --text-on-light-muted: var(--color-muted);
+  --border-on-light: var(--color-border);
+  --border-on-light-strong: color-mix(in srgb, var(--color-text) 18%, transparent);
+  --border-hairline: color-mix(in srgb, var(--color-text) 10%, transparent);
+
+  /* Deep structural panels (vehicle-detail spec strip, assurance card, etc.)
+     — palette-FOLLOWING, not inverted. A subtle elevation off the page surface
+     that reads correctly on BOTH light and dark dashboard palettes. The old
+     inverted-role mapping (text-colour AS surface) flipped these to light on a
+     dark palette; see feedback_dashboard_tokens_drive_all_surfaces. */
+  --surface-bg-dark: color-mix(in srgb, var(--color-text) 7%, var(--color-bg));
+  --surface-card-dark: color-mix(in srgb, var(--color-text) 11%, var(--color-bg));
+  --text-on-dark-strong: var(--color-text);
+  --text-on-dark-muted: var(--color-muted);
+  --border-on-dark: var(--color-border);
+  --border-on-dark-strong: color-mix(in srgb, var(--color-text) 20%, transparent);
+
+  /* Photo-scrim caption tokens — fixed literals for text/chrome laid OVER dark
+     photo overlays (page heroes, lightbox, over-image badges). Media-chrome
+     exception: they sit over photographic content, not a brand surface, so they
+     stay white/dark in any palette. Never use these on a plain brand surface. */
+  --on-scrim: #ffffff;
+  --on-scrim-muted: rgba(255, 255, 255, 0.82);
+  --scrim-deep: #0b1220;
+
+  /* Brand-tinted helpers — derived via color-mix so any brand-record change
+     repaints every accent. Never hard-code literal brand RGB values. */
+  --brand-soft-bg: color-mix(in srgb, var(--brand-primary) 6%, transparent);
+  --brand-soft-bg-strong: color-mix(in srgb, var(--brand-primary) 12%, transparent);
+  --brand-soft-border: color-mix(in srgb, var(--brand-primary) 22%, transparent);
+
+  /* Role tokens consumed by kept springalls-derived inventory CSS. */
+  --t-page: var(--color-bg);
+  --t-card: var(--color-surface);
+  --t-border: var(--color-border);
+  --t-text: var(--color-text);
+  --t-muted: var(--color-muted);
+  --t-icon-bg: color-mix(in srgb, var(--color-text) 5%, transparent);
+  --t-icon-bg-strong: color-mix(in srgb, var(--color-text) 9%, transparent);
+
+  /* Near-zero shadows — minimalist trades shadow weight for hairline borders. */
+  --shadow-card: 0 1px 0 color-mix(in srgb, var(--color-text) 5%, transparent);
+  --shadow-elevated: 0 8px 24px color-mix(in srgb, var(--color-text) 6%, transparent);
+
+  color-scheme: light;
+  font-family: var(--font-ui-family-override, 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif);
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+  margin: 0;
+}
+
+[data-theme-id='axis-autos-bespoke'] *,
+[data-theme-id='axis-autos-bespoke'] *::before,
+[data-theme-id='axis-autos-bespoke'] *::after {
+  box-sizing: border-box;
+}
+
+/* Sentence-case display titles. NO text-transform: uppercase blanket — that
+   produced the "every theme looks samey" complaint (feedback_title_treatment_variance).
+   Per-component CSS modules own font-size + color. */
+[data-theme-id='axis-autos-bespoke'] :where(h1, h2, h3, h4) {
+  font-family: var(--font-brand-family-override, 'Manrope', 'IBM Plex Sans', sans-serif);
+  letter-spacing: -0.015em;
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+[data-theme-id='axis-autos-bespoke'] :where(p) {
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Link reset — per-component CSS modules own anchor color. Setting a blanket
+   :where(a) { color: inherit } would mean header/footer brand <Link>s receive
+   inherited color from arbitrary ancestors. Keep this rule SHAPE-only. */
+[data-theme-id='axis-autos-bespoke'] a {
+  text-decoration: none;
+}
+
+/* Focus ring — accessibility baseline. 3:1 contrast against any surface. */
+[data-theme-id='axis-autos-bespoke'] :where(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip-to-content. */
+[data-theme-id='axis-autos-bespoke'] .axis-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+[data-theme-id='axis-autos-bespoke'] .axis-skip-link:focus {
+  left: 12px;
+  top: 12px;
+  width: auto;
+  height: auto;
+  padding: 12px 16px;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  z-index: 1000;
+}
+
+[data-theme-id='axis-autos-bespoke'] .axis-main {
+  display: block;
+  min-height: calc(100vh - 200px);
+}
+
+/* Section primitives — generic shells composed by pages. */
+[data-theme-id='axis-autos-bespoke'] .axis-section {
+  padding-block: clamp(72px, 9vw, 128px);
+  position: relative;
+}
+[data-theme-id='axis-autos-bespoke'] .axis-section--tight {
+  padding-block: clamp(48px, 6vw, 80px);
+}
+[data-theme-id='axis-autos-bespoke'] .axis-section--dark {
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+}
+/* Full-bleed brand-colour band. Palette-agnostic: the surface is the brand
+   primary and the foreground is the derived on-primary, so it reads as an
+   intentional accent in BOTH light and dark dashboard palettes. This is the
+   theme's single saturated "moment" — replaces the old inverted-role dark
+   band (which flipped to light on dark palettes). See
+   feedback_dashboard_tokens_drive_all_surfaces. */
+[data-theme-id='axis-autos-bespoke'] .axis-section--brand {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+}
+[data-theme-id='axis-autos-bespoke'] .axis-section--card {
+  background: var(--surface-card-light);
+}
+/* Shared content container. Matches the inventory listing width (1680px) so the
+   header, footer and every section box align to the same edges on large screens. */
+[data-theme-id='axis-autos-bespoke'] .axis-shell {
+  max-width: 1680px;
+  margin: 0 auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+}
+[data-theme-id='axis-autos-bespoke'] .axis-shell--wide {
+  max-width: 1680px;
+}
+
+/* Section eyebrow + heading rhythm — reused across home sections. */
+[data-theme-id='axis-autos-bespoke'] .axis-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-on-light-muted);
+  font-weight: 500;
+}
+[data-theme-id='axis-autos-bespoke'] .axis-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: var(--brand-primary);
+}
+[data-theme-id='axis-autos-bespoke'] .axis-section-title {
+  font-size: clamp(2rem, 3.6vw, 2.8rem);
+  color: var(--text-on-light-strong);
+  letter-spacing: -0.02em;
+}
+[data-theme-id='axis-autos-bespoke'] .axis-section-lead {
+  font-size: clamp(1.05rem, 1.4vw, 1.15rem);
+  color: var(--text-on-light-muted);
+  max-width: 60ch;
+}
+
+/* Categorical kicker — the theme's signature typographic thread. A small,
+   brand-tinted, letter-spaced label that names the category of an editorial
+   block (e.g. "Sourcing", "Pricing"). True structure, not decoration — it
+   encodes what the item IS, never a false 01/02/03 sequence. */
+[data-theme-id='axis-autos-bespoke'] .axis-kicker {
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  line-height: 1;
+}
+
+/* Pill icon — shared brand-tinted round icon holder used across pages
+   (services, directory, about values, contact, finance steps). Replaces the
+   old squared brand-soft chips so every page reads with the same chrome. */
+[data-theme-id='axis-autos-bespoke'] .axis-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--brand-soft-border);
+  background: var(--brand-soft-bg);
+  color: var(--brand-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Buttons — flat hairline minimalist primitives. */
+[data-theme-id='axis-autos-bespoke'] .axis-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 22px;
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+  min-height: 48px;
+  text-decoration: none;
+  line-height: 1;
+}
+[data-theme-id='axis-autos-bespoke'] .axis-btn--primary {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-color: var(--brand-primary);
+}
+[data-theme-id='axis-autos-bespoke'] .axis-btn--primary:hover {
+  background: var(--brand-primary-strong);
+  border-color: var(--brand-primary-strong);
+}
+[data-theme-id='axis-autos-bespoke'] .axis-btn--ghost {
+  background: transparent;
+  color: var(--text-on-light-strong);
+  border-color: var(--border-on-light-strong);
+}
+[data-theme-id='axis-autos-bespoke'] .axis-btn--ghost:hover {
+  border-color: var(--text-on-light-strong);
+  background: var(--surface-card-light);
+}
+[data-theme-id='axis-autos-bespoke'] .axis-btn--ghost-light {
+  background: transparent;
+  color: var(--text-on-dark-strong);
+  border-color: var(--border-on-dark);
+}
+[data-theme-id='axis-autos-bespoke'] .axis-btn--ghost-light:hover {
+  border-color: var(--text-on-dark-strong);
+  background: color-mix(in srgb, var(--color-bg) 10%, transparent);
+}
+/* Buttons that sit ON a brand-primary band (.axis-section--brand). The solid
+   variant inverts (on-primary fill, primary text); the ghost outlines in the
+   on-primary colour. Both stay legible on any brand hue. */
+[data-theme-id='axis-autos-bespoke'] .axis-btn--on-brand {
+  background: var(--brand-on-primary);
+  color: var(--brand-primary);
+  border-color: var(--brand-on-primary);
+}
+[data-theme-id='axis-autos-bespoke'] .axis-btn--on-brand:hover {
+  background: color-mix(in srgb, var(--brand-on-primary) 90%, var(--brand-primary));
+  border-color: color-mix(in srgb, var(--brand-on-primary) 90%, var(--brand-primary));
+}
+[data-theme-id='axis-autos-bespoke'] .axis-btn--ghost-on-brand {
+  background: transparent;
+  color: var(--brand-on-primary);
+  border-color: color-mix(in srgb, var(--brand-on-primary) 45%, transparent);
+}
+[data-theme-id='axis-autos-bespoke'] .axis-btn--ghost-on-brand:hover {
+  border-color: var(--brand-on-primary);
+  background: color-mix(in srgb, var(--brand-on-primary) 12%, transparent);
+}
+
+/* Inputs — hairline underline minimalist style. */
+[data-theme-id='axis-autos-bespoke'] .axis-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border-on-light);
+  border-radius: 4px;
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+  font-family: inherit;
+  font-size: 0.95rem;
+  min-height: 48px;
+  transition: border-color 160ms ease;
+}
+[data-theme-id='axis-autos-bespoke'] .axis-input:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 18%, transparent);
+}
+[data-theme-id='axis-autos-bespoke'] .axis-label {
+  display: block;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--text-on-light-muted);
+  margin-bottom: 8px;
+}
+
+/* Inline CTA link — text + arrow, used in headers + similar-vehicles + makes-SEO bands. */
+[data-theme-id='axis-autos-bespoke'] .axis-cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--brand-primary);
+  border-bottom: 1px solid var(--brand-primary);
+  padding-bottom: 2px;
+}
+[data-theme-id='axis-autos-bespoke'] .axis-cta-link:hover {
+  color: var(--brand-primary-strong);
+  border-color: var(--brand-primary-strong);
+}
+
+/* Hairline horizontal rule — used between sections instead of large shadows. */
+[data-theme-id='axis-autos-bespoke'] .axis-rule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--border-on-light);
+  border: 0;
+  margin: 0;
+}
+
+/* Inner-page hero band — flat dark uniform overlay, white captions. Per
+   feedback_hero_overlay_dark_uniform. */
+[data-theme-id='axis-autos-bespoke'] .axis-page-hero {
+  position: relative;
+  isolation: isolate;
+  padding-block: clamp(96px, 12vw, 160px);
+  background-color: var(--scrim-deep);
+  color: var(--on-scrim);
+  overflow: hidden;
+}
+[data-theme-id='axis-autos-bespoke'] .axis-page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(8, 16, 32, 0.86), rgba(8, 16, 32, 0.78)), /* photo-scrim-ok */
+    var(--brand-image-hero);
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+}
+[data-theme-id='axis-autos-bespoke'] .axis-page-hero--about::before { background-image: linear-gradient(rgba(8, 16, 32, 0.86), rgba(8, 16, 32, 0.78)), var(--brand-image-about); } /* photo-scrim-ok */
+[data-theme-id='axis-autos-bespoke'] .axis-page-hero--services::before { background-image: linear-gradient(rgba(8, 16, 32, 0.86), rgba(8, 16, 32, 0.78)), var(--brand-image-services); } /* photo-scrim-ok */
+[data-theme-id='axis-autos-bespoke'] .axis-page-hero--finance::before { background-image: linear-gradient(rgba(8, 16, 32, 0.86), rgba(8, 16, 32, 0.78)), var(--brand-image-finance); } /* photo-scrim-ok */
+[data-theme-id='axis-autos-bespoke'] .axis-page-hero--part-exchange::before { background-image: linear-gradient(rgba(8, 16, 32, 0.86), rgba(8, 16, 32, 0.78)), var(--brand-image-part-exchange); } /* photo-scrim-ok */
+[data-theme-id='axis-autos-bespoke'] .axis-page-hero--sell-your-car::before { background-image: linear-gradient(rgba(8, 16, 32, 0.86), rgba(8, 16, 32, 0.78)), var(--brand-image-sell-your-car); } /* photo-scrim-ok */
+[data-theme-id='axis-autos-bespoke'] .axis-page-hero--recently-sold::before { background-image: linear-gradient(rgba(8, 16, 32, 0.86), rgba(8, 16, 32, 0.78)), var(--brand-image-recently-sold); } /* photo-scrim-ok */
+[data-theme-id='axis-autos-bespoke'] .axis-page-hero-inner {
+  max-width: 1680px;
+  margin: 0 auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+[data-theme-id='axis-autos-bespoke'] .axis-page-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--on-scrim-muted);
+  font-weight: 600;
+}
+[data-theme-id='axis-autos-bespoke'] .axis-page-hero-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: var(--brand-primary);
+}
+[data-theme-id='axis-autos-bespoke'] .axis-page-hero-title {
+  font-size: clamp(2.3rem, 5vw, 3.5rem);
+  color: var(--on-scrim);
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+[data-theme-id='axis-autos-bespoke'] .axis-page-hero-lead {
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+  color: var(--on-scrim-muted);
+  max-width: 64ch;
+  text-wrap: pretty;
+}
+
+/* Mobile adjustments — per feedback_mobile_modest_design. Compress decorative
+   padding aggressively at small viewports. */
+@media (max-width: 640px) {
+  [data-theme-id='axis-autos-bespoke'] .axis-section { padding-block: clamp(40px, 8vw, 64px); }
+  [data-theme-id='axis-autos-bespoke'] .axis-section--tight { padding-block: clamp(28px, 6vw, 48px); }
+  [data-theme-id='axis-autos-bespoke'] .axis-page-hero { padding-block: 56px 48px; }
+}

@@ -35,9 +35,9 @@ export default function ReviewsSection() {
     : FALLBACK_REVIEWS
 
   return (
-    <section className={`auto-section ${styles.section}`} aria-labelledby="reviews-title">
+    <section className={`auto-section ${styles.section}`} aria-labelledby="reviews-title" data-aos="fade-up">
       <div className="auto-container">
-        <header className={styles.header} data-aos="fade-up">
+        <header className={styles.header}>
           <span className={styles.eyebrow}>
             <span className={styles.eyebrowMark} aria-hidden="true" />
             Customer reviews
@@ -51,12 +51,7 @@ export default function ReviewsSection() {
           {reviews.map((r: any, i) => {
             const rating = Number(r.rating) || 5
             return (
-              <li
-                key={`${r.name}-${i}`}
-                className={styles.card}
-                data-aos="fade-up"
-                data-aos-delay={i * 100}
-              >
+              <li key={`${r.name}-${i}`} className={styles.card}>
                 <Quote className={styles.quoteMark} size={28} aria-hidden="true" />
 
                 <div className={styles.stars} aria-label={`${rating} out of 5 stars`}>

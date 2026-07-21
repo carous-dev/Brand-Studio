@@ -49,7 +49,7 @@ export default function ServiceHighlights() {
   const city = (brand as any)?.location?.address?.city || (brand as any)?.location?.city || ''
 
   return (
-    <section className={`shr-section ${styles.section}`} id="services">
+    <section className={`shr-section ${styles.section}`} id="services" data-aos="fade-up">
       <div className="shr-container">
         <div className={`shr-section-head ${styles.head}`} data-aos="fade-up">
           <span className="shr-eyebrow">Our Services</span>

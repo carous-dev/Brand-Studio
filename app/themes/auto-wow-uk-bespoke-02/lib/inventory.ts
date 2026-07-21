@@ -14,6 +14,7 @@ export type InventoryVehicle = {
   doors: number
   location: string
   image: string
+  images: string[]
   featured?: boolean
 }
 
@@ -102,6 +103,7 @@ export function normalizeInventoryItem(item: any): InventoryVehicle | null {
   const uniqueImages = Array.from(new Set(galleryImages.filter(Boolean)))
   const image = toText(uniqueImages[0] ?? vehicle.image ?? item.image)
   const fallbackImage = '/images/image.png'
+  const images = (uniqueImages.length ? uniqueImages : [image || fallbackImage]).slice(0, 12)
 
   const titleParts = [year || undefined, make || undefined, model || undefined, derivative || undefined].filter(Boolean)
   const title = titleParts.length ? titleParts.join(' ') : toText(item.title ?? `${make} ${model}`)
@@ -129,6 +131,7 @@ export function normalizeInventoryItem(item: any): InventoryVehicle | null {
     doors: Number.isFinite(doors) && doors > 0 ? doors : 4,
     location: location || '',
     image: image || fallbackImage,
+    images,
     featured: Boolean(advert.featured ?? item.featured),
   }
 }

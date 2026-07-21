@@ -54,7 +54,7 @@ export default function AcquisitionsRow({
   if (!loading && items.length === 0) return null
 
   return (
-    <section className={styles.section} aria-labelledby="acquisitions-row-heading">
+    <section className={styles.section} aria-labelledby="acquisitions-row-heading" data-aos="fade-up">
       <div className={styles.inner}>
         <div className={styles.head}>
           <div>

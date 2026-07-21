@@ -76,7 +76,7 @@
 .socialLink:hover,
 .socialLink:focus {
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg);
   border-color: var(--color-primary);
 }
 
@@ -150,7 +150,7 @@
   border-radius: 999px;
   padding: 12px 18px;
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg);
   font-weight: 600;
   cursor: pointer;
 }

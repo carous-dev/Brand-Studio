@@ -176,10 +176,10 @@
 }
 
 [data-theme-id='queensbury-cars-bespoke'] .qb-eyebrow--on-dark {
-  color: color-mix(in srgb, var(--brand-primary) 40%, #ffffff);
+  color: color-mix(in srgb, var(--brand-primary) 40%, var(--text-on-dark-strong));
 }
 [data-theme-id='queensbury-cars-bespoke'] .qb-eyebrow--on-dark::before {
-  background: color-mix(in srgb, var(--brand-primary) 40%, #ffffff);
+  background: color-mix(in srgb, var(--brand-primary) 40%, var(--text-on-dark-strong));
 }
 
 [data-theme-id='queensbury-cars-bespoke'] .qb-section-title {
@@ -251,7 +251,7 @@
     var(--brand-primary) 0%,
     var(--brand-primary-strong) 60%,
     color-mix(in srgb, var(--brand-primary-strong) 60%, var(--surface-bg-dark)) 100%);
-  color: #ffffff;
+  color: var(--brand-on-primary);
   border: none;
   box-shadow: 0 12px 26px color-mix(in srgb, var(--brand-primary) 36%, transparent);
 }
@@ -274,12 +274,12 @@
 [data-theme-id='queensbury-cars-bespoke'] .qb-btn--ghost-on-dark {
   background: transparent;
   color: var(--text-on-dark-strong);
-  border-color: rgba(255, 255, 255, 0.32);
+  border-color: color-mix(in srgb, var(--text-on-dark-strong) 32%, transparent);
 }
 [data-theme-id='queensbury-cars-bespoke'] .qb-section--dark .qb-btn--ghost:hover,
 [data-theme-id='queensbury-cars-bespoke'] .qb-btn--ghost-on-dark:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: #ffffff;
+  background: color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
+  border-color: var(--text-on-dark-strong);
 }
 
 [data-theme-id='queensbury-cars-bespoke'] .qb-btn--sm {
@@ -328,7 +328,7 @@
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
+  color: color-mix(in srgb, var(--brand-primary) 30%, var(--text-on-dark-strong));
 }
 [data-theme-id='queensbury-cars-bespoke'] .qb-page-hero__title {
   font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
@@ -336,13 +336,13 @@
   font-weight: 800;
   line-height: 1.05;
   margin-top: 16px;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
   text-wrap: balance;
 }
 [data-theme-id='queensbury-cars-bespoke'] .qb-page-hero__lead {
   font-size: clamp(1.05rem, 1.6vw, 1.25rem);
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--color-hero-text-muted);
   margin-top: 16px;
   max-width: 60ch;
   text-wrap: pretty;
@@ -352,7 +352,7 @@
  * through to the curated theme default. */
 [data-theme-id='queensbury-cars-bespoke'] .qb-page-hero--about {
   background-image:
-    linear-gradient(160deg, rgba(8, 11, 28, 0.82), rgba(8, 11, 28, 0.7)),
+    linear-gradient(160deg, rgba(8, 11, 28, 0.82), rgba(8, 11, 28, 0.7)), /* photo-scrim-ok */
     var(--brand-image-about, none),
     url('/themes/queensbury-cars-bespoke/images/about.jpg');
   background-size: auto, cover, cover;
@@ -361,7 +361,7 @@
 }
 [data-theme-id='queensbury-cars-bespoke'] .qb-page-hero--services {
   background-image:
-    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.7)),
+    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.7)), /* photo-scrim-ok */
     var(--brand-image-services, none),
     url('/themes/queensbury-cars-bespoke/images/services.jpg');
   background-size: auto, cover, cover;
@@ -370,7 +370,7 @@
 }
 [data-theme-id='queensbury-cars-bespoke'] .qb-page-hero--finance {
   background-image:
-    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.66)),
+    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.66)), /* photo-scrim-ok */
     var(--brand-image-finance, none),
     url('/themes/queensbury-cars-bespoke/images/finance.jpg');
   background-size: auto, cover, cover;
@@ -379,7 +379,7 @@
 }
 [data-theme-id='queensbury-cars-bespoke'] .qb-page-hero--part-exchange {
   background-image:
-    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.66)),
+    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.66)), /* photo-scrim-ok */
     var(--brand-image-part-exchange, none),
     url('/themes/queensbury-cars-bespoke/images/partExchange.jpg');
   background-size: auto, cover, cover;
@@ -388,7 +388,7 @@
 }
 [data-theme-id='queensbury-cars-bespoke'] .qb-page-hero--sell {
   background-image:
-    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.66)),
+    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.66)), /* photo-scrim-ok */
     var(--brand-image-sell-your-car, none),
     url('/themes/queensbury-cars-bespoke/images/sellYourCar.jpg');
   background-size: auto, cover, cover;
@@ -397,7 +397,7 @@
 }
 [data-theme-id='queensbury-cars-bespoke'] .qb-page-hero--recently-sold {
   background-image:
-    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.66)),
+    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.66)), /* photo-scrim-ok */
     var(--brand-image-recently-sold, none),
     url('/themes/queensbury-cars-bespoke/images/recentlySold.jpg');
   background-size: auto, cover, cover;
@@ -406,7 +406,7 @@
 }
 [data-theme-id='queensbury-cars-bespoke'] .qb-page-hero--inventory {
   background-image:
-    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.7)),
+    linear-gradient(160deg, rgba(8, 11, 28, 0.84), rgba(8, 11, 28, 0.7)), /* photo-scrim-ok */
     var(--brand-image-hero, none),
     url('/themes/queensbury-cars-bespoke/images/hero.jpg');
   background-size: auto, cover, cover;
@@ -428,7 +428,7 @@
   background: linear-gradient(90deg,
     transparent 0%,
     var(--brand-primary) 30%,
-    color-mix(in srgb, var(--brand-primary) 60%, #ffffff) 50%,
+    color-mix(in srgb, var(--brand-primary) 60%, var(--color-bg)) 50%,
     var(--brand-primary) 70%,
     transparent 100%);
 }

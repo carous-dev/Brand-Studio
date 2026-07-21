@@ -15,7 +15,9 @@ on:
   pull_request:
     paths:
       - 'app/themes/**'
+      - 'app/widgets/**'
       - 'tools/audit-theme.mjs'
+      - 'tools/check-theme-contract.mjs'
       - 'tools/sync-theme-contracts.mjs'
       - '.claude/skills/new-theme/SKILL.md'
       - '.github/workflows/pr-quality.yml'
@@ -82,6 +84,26 @@ jobs:
             if ! node tools/audit-theme.mjs --id "$THEME"; then
               FAIL=1
               echo "::error::theme audit failed for $THEME"
+            fi
+            echo "::endgroup::"
+          done
+          if [ "$FAIL" = "1" ]; then
+            exit 1
+          fi
+
+      - name: Theme contract conformance
+        # Every changed theme must satisfy the shared contract (docs/theme-contract.md):
+        # required files, buildThemeTokens emission, no widget forks, ThemeChrome +
+        # canonical known-routes. Legacy themes are NOT skipped here — all 14 conform.
+        if: steps.changed.outputs.themes != ''
+        run: |
+          set -euo pipefail
+          FAIL=0
+          for THEME in ${{ steps.changed.outputs.themes }}; do
+            echo "::group::check-theme-contract.mjs $THEME"
+            if ! node tools/check-theme-contract.mjs --id "$THEME"; then
+              FAIL=1
+              echo "::error::theme contract check failed for $THEME"
             fi
             echo "::endgroup::"
           done

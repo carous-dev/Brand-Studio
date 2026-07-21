@@ -25,9 +25,10 @@
 .heroOverlay {
   position: absolute;
   inset: 0;
+  /* photo-scrim-ok */
   background:
-    linear-gradient(90deg, rgba(8, 11, 17, 0.92) 0%, rgba(8, 11, 17, 0.72) 52%, rgba(8, 11, 17, 0.58) 100%),
-    linear-gradient(180deg, rgba(8, 11, 17, 0.18) 0%, rgba(8, 11, 17, 0.82) 100%);
+    linear-gradient(90deg, rgba(8, 11, 17, 0.92) 0%, rgba(8, 11, 17, 0.72) 52%, rgba(8, 11, 17, 0.58) 100%), /* photo-scrim-ok */
+    linear-gradient(180deg, rgba(8, 11, 17, 0.18) 0%, rgba(8, 11, 17, 0.82) 100%); /* photo-scrim-ok */
   z-index: -2;
 }
 
@@ -68,7 +69,7 @@
 }
 
 .titleEmph {
-  background: linear-gradient(135deg, #ffffff 0%, #ffe2e2 60%, var(--brand-primary) 100%);
+  background: linear-gradient(135deg, var(--text-on-dark-strong) 0%, var(--hero-title-shine) 60%, var(--brand-primary) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -84,7 +85,7 @@
   color: var(--text-on-dark-strong);
   opacity: 0.86;
   font-size: clamp(0.98rem, 1.25vw, 1.08rem);
-  max-width: 48ch;
+  max-width: 60ch;
   line-height: 1.5;
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.3);
 }
@@ -106,10 +107,11 @@
 
 /* Search card */
 .searchCard {
-  background: rgba(12, 15, 21, 0.76);
+  background: color-mix(in srgb, var(--surface-bg-dark) 76%, transparent);
+  color: var(--text-on-dark-strong);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--border-on-dark);
   border-radius: 8px;
   padding: clamp(16px, 2.4vw, 22px);
   display: grid;
@@ -155,9 +157,9 @@
 }
 .searchField select {
   width: 100%;
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
   color: var(--text-on-dark-strong);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 16%, transparent);
   border-radius: 6px;
   padding: 10px 12px;
   font-size: 0.92rem;
@@ -203,7 +205,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.18) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--text-on-dark-strong) 18%, transparent) 50%, transparent 100%);
   animation: shimmer 3s ease-in-out infinite;
 }
 @keyframes shimmer {
@@ -226,7 +228,7 @@
     background-position: center top, center top;
   }
   .heroOverlay {
-    background: linear-gradient(180deg, rgba(8, 11, 17, 0.92) 0%, rgba(8, 11, 17, 0.8) 54%, rgba(8, 11, 17, 0.94) 100%);
+    background: linear-gradient(180deg, rgba(8, 11, 17, 0.92) 0%, rgba(8, 11, 17, 0.8) 54%, rgba(8, 11, 17, 0.94) 100%); /* photo-scrim-ok */
   }
   .heroInner {
     gap: 18px;

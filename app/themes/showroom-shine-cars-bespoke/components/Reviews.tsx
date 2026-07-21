@@ -86,7 +86,7 @@ export default function Reviews() {
   const density = reviewCount === 1 ? 'compact' : reviewCount === 2 ? 'balanced' : 'full'
 
   return (
-    <section className={`shr-section ${styles.section}`} id="reviews" data-density={density}>
+    <section className={`shr-section ${styles.section}`} id="reviews" data-density={density} data-aos="fade-up">
       <div className="shr-container">
         <div className={styles.head} data-aos="fade-up">
           <span className="shr-eyebrow">Customer Reviews</span>

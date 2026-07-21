@@ -73,3 +73,6 @@ brandstudi*
 
 __pycache__/
 **/__pycache__/
+
+# Working plans / todos (local scratchpad)
+/tasks/

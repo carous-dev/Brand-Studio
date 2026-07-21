@@ -75,7 +75,7 @@
 }
 
 .removeBtn:hover {
-  background: color-mix(in srgb, var(--color-primary) 88%, #000);
+  background: var(--t-action-bg-hover);
 }
 
 .cardLink {

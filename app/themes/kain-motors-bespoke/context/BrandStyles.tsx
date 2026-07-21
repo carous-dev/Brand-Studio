@@ -3,6 +3,7 @@
 import React from 'react';
 import type { BrandConfig } from '@/brands/types';
 import { buildGoogleFontsImport } from '@/app/lib/googleFonts';
+import { buildThemeTokens, renderThemeStyle, escapeCssUrl } from '@/app/themes/lib/theme-tokens';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -19,6 +20,17 @@ function pickString(...candidates: Array<unknown>): string | null {
   return null;
 }
 
+/**
+ * BrandStyles for kain-motors-bespoke — emits the canonical token block via the
+ * shared emitter (buildThemeTokens + renderThemeStyle), then layers Kain's own
+ * extended tokens (dark tier --color-*-dark, the large --kain-* prestige
+ * palette, --font-editorial-family, the 7 image slots and the legacy hero var)
+ * as `extras` since the emitter doesn't produce them. Kain's core 8 + chrome
+ * fallbacks are passed as `defaults` so brand records can override the triad
+ * and neutral pickers and every surface repaints. Kain's base.css consumes the
+ * emitter's fixed light and dark tier tokens (surface, text-on, border-on)
+ * directly, so those are not re-declared here.
+ */
 export function BrandStyles({ brand }: BrandStylesProps) {
   const { theme } = brand;
   const fonts = theme.fonts || {};
@@ -47,77 +59,67 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   const sellYourCarImage = resolveSlot('sellYourCar', 'sellYourCar');
   const recentlySoldImage = resolveSlot('recentlySold', 'recentlySold');
 
-  const primary = theme.colors.primaryColor || '#86744e';
-  const secondary = (theme.colors as any).secondaryColor || '#d1b67a';
-  const accent = (theme.colors as any).accentColor || '#d1b67a';
+  // Canonical token block via the shared emitter. Kain's prestige palette is
+  // passed as `defaults`; brand records override any core token via
+  // theme.colors.*. Kain ships a DARK header + a dark hero scrim, so the
+  // header-*/hero-* tokens are DISTINCT literals (not derived from bg/text/muted)
+  // and are passed as defaults rather than left to the emitter's light defaults.
+  const vars = buildThemeTokens(theme.colors as any, {
+    defaults: {
+      primaryColor: '#86744e',
+      secondaryColor: '#d1b67a',
+      accentColor: '#d1b67a',
+      backgroundColor: '#ffffff',
+      surfaceColor: '#f6f7fb',
+      textColor: '#0f1623',
+      mutedColor: '#5b6573',
+      borderColor: '#e3e6ee',
+      primaryStrong: '#766645',
+      onPrimary: '#ffffff',
+      headerBg: '#0a0e14',
+      headerText: '#ffffff',
+      headerMuted: 'rgba(255,255,255,0.72)',
+      heroOverlayStart: 'rgba(8, 11, 17, 0.86)',
+      heroOverlayEnd: 'rgba(8, 11, 17, 0.55)',
+      heroTextMuted: 'rgba(255, 255, 255, 0.92)',
+      heroReviewMuted: 'rgba(255, 255, 255, 0.85)',
+      reviewStar: '#facc15',
+    },
+  });
 
-  const cssVariables: Record<string, string> = {
-    // Brand triad (brand-record-overridable)
-    '--color-primary': primary,
-    '--color-primary-strong': (theme.colors as any).primaryStrong || '#766645',
-    '--color-secondary': secondary,
-    '--color-accent': accent,
-    '--color-on-primary': '#ffffff',
-
-    // Light tier (theme-locked, never brand-overridden — paired with text-on-light-*)
-    '--color-bg': '#ffffff',
-    '--color-surface': '#f6f7fb',
-    '--color-text': '#0f1623',
-    '--color-muted': '#5b6573',
-    '--color-border': '#e3e6ee',
-
-    // Dark tier (theme-locked)
+  const extras: Record<string, string> = {
+    // Extended dark tier (theme-locked) — the emitter emits the fixed
+    // --surface-*/--text-on-*/--border-on-* paired tier, but Kain's base.css
+    // also consumes these --color-*-dark aliases, so they live here verbatim.
     '--color-bg-dark': '#0a0e14',
     '--color-surface-dark': '#14181f',
     '--color-text-dark': '#ffffff',
     '--color-muted-dark': 'rgba(255,255,255,0.78)',
     '--color-border-dark': 'rgba(255,255,255,0.12)',
 
-    // Paired surface + foreground tokens (canonical names from SKILL color policy)
-    '--surface-bg-light': '#ffffff',
-    '--surface-card-light': '#f6f7fb',
-    '--text-on-light-strong': '#0f1623',
-    '--text-on-light-muted': '#5b6573',
-    '--border-on-light': '#e3e6ee',
-    '--surface-bg-dark': '#0a0e14',
-    '--surface-card-dark': '#14181f',
-    '--text-on-dark-strong': '#ffffff',
-    '--text-on-dark-muted': 'rgba(255,255,255,0.78)',
-    '--border-on-dark': 'rgba(255,255,255,0.12)',
-    '--brand-primary': primary,
-    '--brand-primary-strong': (theme.colors as any).primaryStrong || '#766645',
-    '--brand-on-primary': '#ffffff',
-
     // Prestige editorial extras
     '--kain-accent-warm': '#d1b67a',
     '--kain-accent-warm-soft': 'rgba(209, 182, 122, 0.16)',
+    '--kain-accent-warm-light': '#f4d99c', // hero title-accent highlight (lighter gold)
+    '--kain-accent-warm-hover': '#c9a965', // gold button hover (deeper gold)
+    '--kain-badge-hi': '#ffe169', // featured / offer badge (bright gold)
     '--kain-gold-rule': 'linear-gradient(90deg, transparent 0%, #d1b67a 40%, #d1b67a 60%, transparent 100%)',
     '--kain-hero-overlay': 'linear-gradient(180deg, rgba(8,11,17,0.78) 0%, rgba(8,11,17,0.52) 60%, rgba(8,11,17,0.88) 100%)',
 
-    // Header surfaces — prestige uses dark header on hero, light when scrolled
-    '--color-header-bg': '#0a0e14',
-    '--color-header-text': '#ffffff',
-    '--color-header-muted': 'rgba(255,255,255,0.72)',
+    // Named fixed hues — checker-exempt definitions that preserve the exact
+    // default palette. Components reference these vars instead of raw literals.
+    '--kain-black': '#000000', // pure black for color-mix darken partners + scrims
+    '--kain-surface-deep': '#060a0f', // deepest dark plate (footer bottom bar)
+    '--kain-status-open': '#34d399', // "open now" status dot (semantic green)
+    '--kain-whatsapp': '#25d366', // WhatsApp brand green (fixed)
+    '--kain-whatsapp-hover': '#1faa54', // WhatsApp brand green hover (fixed)
+    '--kain-whatsapp-hover-alt': '#1ebe5b', // WhatsApp brand green hover (alt shade)
+    '--kain-error-text': '#9a3412', // form error text (semantic)
+    '--kain-error-accent': '#c2410c', // form error accent/border (semantic)
 
-    // Hero
-    '--color-hero-overlay-start': 'rgba(8, 11, 17, 0.86)',
-    '--color-hero-overlay-end': 'rgba(8, 11, 17, 0.55)',
-    '--color-hero-text-muted': 'rgba(255, 255, 255, 0.92)',
-    '--color-hero-review-muted': 'rgba(255, 255, 255, 0.85)',
-    '--color-review-star': '#facc15',
-
-    // Bridge variables
-    '--brand-secondary': secondary,
-    '--brand-accent': accent,
-    '--brand-background': '#ffffff',
-    '--brand-text': '#0f1623',
-    '--brand-primary-rgb': hexToRgb(primary),
-    '--brand-secondary-rgb': hexToRgb(secondary),
-    '--brand-accent-rgb': hexToRgb(accent),
-
-    // Per-page image slots — 3-tier fallback chain (SKILL row 38c)
-    // Hero reads brand.heroImage FIRST (authoritative), then brand.images.hero,
-    // then theme default. Other slots: brand.images.<slot> → theme default.
+    // Per-page image slots — 3-tier fallback chain (SKILL row 38c). Hero reads
+    // brand.heroImage FIRST (authoritative), then brand.images.hero, then the
+    // theme default. Other slots: brand.images.<slot> → theme default.
     '--brand-image-hero': `url("${escapeCssUrl(heroImageSlot)}")`,
     '--brand-image-about': `url("${escapeCssUrl(aboutImage)}")`,
     '--brand-image-services': `url("${escapeCssUrl(servicesImage)}")`,
@@ -144,25 +146,10 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: `${fontImport}:root {
-            ${Object.entries(cssVariables)
-              .map(([key, value]) => `${key}: ${value};`)
-              .join('\n            ')}
-            font-family: ${fontUi};
-          }
-        `,
+        __html: renderThemeStyle({ vars, extras, fontFamily: fontUi, fontImport }),
       }}
     />
   );
-}
-
-function hexToRgb(hex: string): string {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 0, 0';
-}
-
-function escapeCssUrl(url: string): string {
-  return String(url).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n|\r/g, '');
 }
 
 function resolveFontToken(...candidates: Array<unknown>): string | null {

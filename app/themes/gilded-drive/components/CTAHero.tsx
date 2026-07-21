@@ -21,7 +21,7 @@ export default function CTAHero() {
     const brandName = brand?.name || 'our dealership'
     const reduce = useReducedMotion()
     return (
-        <section className="cta-futuristic" aria-label="Ready to find your next car">
+        <section className="cta-futuristic" aria-label="Ready to find your next car" data-aos="fade-up">
           <motion.div className="cta-content-futuristic" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} custom={reduce} variants={ctaVariant}>
             <div className="cta-badge-futuristic">
               <Zap size={16} />

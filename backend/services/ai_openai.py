@@ -149,7 +149,7 @@ def _response_structure(scopes: List[str]) -> str:
       "themeId": "classic-dealer",
       "colors": {
         "primaryColor": "#2563eb", "secondaryColor": "#64748b", "accentColor": "#f59e0b",
-        "backgroundColor": "#ffffff", "textColor": "#1f2937"
+        "backgroundColor": "#ffffff"
       },
       "fonts": { "ui": "Inter, system-ui, sans-serif", "brand": "Lora, serif", "mono": "JetBrains Mono, monospace" }
     },
@@ -283,6 +283,11 @@ def _build_user_prompt(
         "- Keep brand.themeId and brand.theme.id aligned.\n"
         "- keywords must be a JSON array of strings.\n"
         "- Hex colors must be valid 6-digit hex codes.\n"
+        "- Colors: choose ONLY the 4 brand colors (primaryColor, secondaryColor, "
+        "accentColor, backgroundColor) — text/surface/border/muted are derived "
+        "automatically by contrast rules, do not include them. Prefer a light "
+        "backgroundColor unless the dealer's site is clearly dark-themed, and pick a "
+        "primaryColor with at least 3:1 contrast against it.\n"
         + recipe_rule
         + scope_hint
     )

@@ -1,9 +1,10 @@
 /* Modern Contact Bar - Clean & Integrated Design */
 .contact-bar {
-  background: linear-gradient(135deg, #1a1f36 0%, #2d3748 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
-  z-index: 100;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-text) 90%, var(--color-primary)) 0%, color-mix(in srgb, var(--color-text) 78%, var(--color-primary)) 100%);
+  border-bottom: 1px solid color-mix(in srgb, var(--white) 10%, transparent);
+  position: sticky;
+  top: calc(var(--brandstudio-preview-banner-height, 0px) - 1px);
+  z-index: 50;
   overflow-x: hidden;
   overflow-x: clip;
 }
@@ -34,21 +35,21 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: color-mix(in srgb, var(--white) 90%, transparent);
   font-size: 0.86rem;
   font-weight: 500;
   transition: all 0.3s ease;
 }
 
 .contact-bar .contact-bar-item:hover {
-  color: #3b82f6;
+  color: var(--color-primary);
   transform: translateY(-1px);
 }
 
 .contact-bar .contact-bar-icon {
   width: 15px;
   height: 15px;
-  color: #3b82f6;
+  color: var(--color-primary);
   flex-shrink: 0;
 }
 
@@ -69,18 +70,18 @@
   justify-content: center;
   width: 28px;
   height: 28px;
-  background: rgba(45, 55, 72, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: color-mix(in srgb, color-mix(in srgb, var(--color-text) 78%, var(--color-primary)) 80%, transparent);
+  border: 1px solid color-mix(in srgb, var(--white) 20%, transparent);
   border-radius: 50%;
-  color: rgba(255, 255, 255, 0.7);
+  color: color-mix(in srgb, var(--white) 70%, transparent);
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
 }
 
 .contact-bar .contact-bar-social-link:hover {
-  background: rgba(59, 130, 246, 0.8);
-  border-color: rgba(255, 255, 255, 0.4);
-  color: rgba(255, 255, 255, 1);
+  background: color-mix(in srgb, var(--color-primary) 80%, transparent);
+  border-color: color-mix(in srgb, var(--white) 40%, transparent);
+  color: var(--white);
   transform: translateY(-2px);
 }
 
@@ -328,13 +329,13 @@
 
 /* Focus states for accessibility */
 .contact-bar .contact-bar-item:focus-within {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
 .contact-bar .contact-bar-social-link:focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 

@@ -31,11 +31,11 @@ export function HeroBackdrop({ className }: { className?: string }) {
         <linearGradient id="hb-base" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="1" />
           <stop offset="55%" stopColor="var(--color-primary)" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="color-mix(in srgb, var(--color-primary) 80%, #000)" stopOpacity="1" />
+          <stop offset="100%" stopColor="color-mix(in srgb, var(--color-primary) 80%, var(--color-text))" stopOpacity="1" />
         </linearGradient>
 
         <radialGradient id="hb-glow-tr" cx="82%" cy="-10%" r="55%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.5" />
+          <stop offset="0%" stopColor="var(--color-on-dark)" stopOpacity="0.5" />
           <stop offset="55%" stopColor="var(--color-primary)" stopOpacity="0.22" />
           <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
         </radialGradient>
@@ -47,14 +47,14 @@ export function HeroBackdrop({ className }: { className?: string }) {
         </radialGradient>
 
         <radialGradient id="hb-orb-1" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.7" />
-          <stop offset="55%" stopColor="#ffffff" stopOpacity="0.18" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="0%" stopColor="var(--color-on-dark)" stopOpacity="0.7" />
+          <stop offset="55%" stopColor="var(--color-on-dark)" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="var(--color-on-dark)" stopOpacity="0" />
         </radialGradient>
 
         <linearGradient id="hb-poly-1" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.18" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="0%" stopColor="var(--color-on-dark)" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="var(--color-on-dark)" stopOpacity="0" />
         </linearGradient>
 
         <linearGradient id="hb-poly-2" x1="100%" y1="0%" x2="0%" y2="100%">
@@ -63,9 +63,9 @@ export function HeroBackdrop({ className }: { className?: string }) {
         </linearGradient>
 
         <linearGradient id="hb-line" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="50%" stopColor="#ffffff" stopOpacity="0.55" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="0%" stopColor="var(--color-on-dark)" stopOpacity="0" />
+          <stop offset="50%" stopColor="var(--color-on-dark)" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="var(--color-on-dark)" stopOpacity="0" />
         </linearGradient>
 
         <filter id="hb-glow" x="-30%" y="-30%" width="160%" height="160%">
@@ -110,14 +110,14 @@ export function HeroBackdrop({ className }: { className?: string }) {
       <polygon
         points="160,180 360,80 540,180 460,360 240,360"
         fill="none"
-        stroke="#ffffff"
+        stroke="var(--color-on-dark)"
         strokeOpacity="0.18"
         strokeWidth="1"
       />
       <polygon
         points="900,460 1080,380 1280,440 1240,580 1020,600"
         fill="none"
-        stroke="#ffffff"
+        stroke="var(--color-on-dark)"
         strokeOpacity="0.16"
         strokeWidth="1"
       />
@@ -136,20 +136,22 @@ export function HeroBackdrop({ className }: { className?: string }) {
       </g>
 
       {/* small geometric accents */}
-      <circle cx="400" cy="120" r="3" fill="#ffffff" opacity="0.7" />
-      <circle cx="1320" cy="540" r="3" fill="#ffffff" opacity="0.6" />
-      <circle cx="980" cy="380" r="2" fill="#ffffff" opacity="0.5" />
-      <rect x="540" y="440" width="6" height="6" fill="#ffffff" opacity="0.45" transform="rotate(45 543 443)" />
-      <rect x="1080" y="240" width="5" height="5" fill="#ffffff" opacity="0.5" transform="rotate(45 1082.5 242.5)" />
+      <circle cx="400" cy="120" r="3" fill="var(--color-on-dark)" opacity="0.7" />
+      <circle cx="1320" cy="540" r="3" fill="var(--color-on-dark)" opacity="0.6" />
+      <circle cx="980" cy="380" r="2" fill="var(--color-on-dark)" opacity="0.5" />
+      <rect x="540" y="440" width="6" height="6" fill="var(--color-on-dark)" opacity="0.45" transform="rotate(45 543 443)" />
+      <rect x="1080" y="240" width="5" height="5" fill="var(--color-on-dark)" opacity="0.5" transform="rotate(45 1082.5 242.5)" />
 
       {/* bottom edge fade so text above is always legible */}
       <linearGradient id="hb-bottom-fade" x1="0%" y1="0%" x2="0%" y2="100%">
+        {/* photo-scrim-ok */}
         <stop offset="0%" stopColor="#000000" stopOpacity="0" />
+        {/* photo-scrim-ok */}
         <stop offset="100%" stopColor="#000000" stopOpacity="0.32" />
       </linearGradient>
       <rect width="1440" height="600" fill="url(#hb-bottom-fade)" />
 
-      {/* uniform darken pass for legibility */}
+      {/* uniform darken pass for legibility — photo-scrim-ok */}
       <rect width="1440" height="600" fill="#000000" opacity="0.22" />
     </svg>
   )

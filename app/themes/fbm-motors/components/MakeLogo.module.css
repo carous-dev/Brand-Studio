@@ -1,0 +1,36 @@
+.logo {
+  display: block;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  background: currentColor;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.monogram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: currentColor;
+}
+
+@media (max-width: 640px) {
+  .logo,
+  .monogram {
+    width: 24px;
+    height: 24px;
+  }
+}

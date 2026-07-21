@@ -136,7 +136,7 @@
   z-index: 2;
 }
 .ratingStars {
-  color: #f5a623;
+  color: var(--color-review-star);
   display: inline-flex;
   gap: 1px;
 }

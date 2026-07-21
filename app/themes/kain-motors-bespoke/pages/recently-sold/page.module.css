@@ -4,7 +4,7 @@
   margin: 0 auto;
   padding: 0 clamp(16px, 4vw, 32px);
 }
-.head { text-align: center; margin-bottom: clamp(32px, 5vw, 56px); max-width: 720px; margin-inline: auto; }
+.head { text-align: center; margin-bottom: clamp(32px, 5vw, 56px); }
 .title {
   font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
   font-size: clamp(1.5rem, 3.2vw, 2.2rem);

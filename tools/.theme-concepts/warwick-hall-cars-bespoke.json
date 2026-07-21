@@ -1,0 +1,15 @@
+{
+  "themeId": "warwick-hall-cars-bespoke",
+  "archetype": "classic-trad",
+  "signatureConcept": "Heritage-led family-run dealer hero featuring a warm team/forecourt photo with a clickable trust-avatar cluster (AA, Autotrader finalist, 944 reviews, 50 yrs combined), then a founder-note narrative and editorial-spotlight inventory in a warm voice",
+  "signatureMove": "warm-team-photo-avatar-cluster",
+  "personalityVoice": "warm",
+  "headerStructure": "tall-symmetrical-centered-logo",
+  "heroPattern": "warm-team-photo-avatar-cluster",
+  "homepageSections": ["hero", "why-choose-us", "featured-stock", "founder-note", "recently-sold-preview", "reviews", "service-highlights", "cta-banner", "directory"],
+  "inventoryListPattern": "editorial-spotlight",
+  "vehicleDetailPattern": "story-driven",
+  "fontHeading": "Cormorant Garamond",
+  "fontBody": "Karla",
+  "oneBigMove": "typography-scale"
+}

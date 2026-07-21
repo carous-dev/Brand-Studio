@@ -205,8 +205,8 @@
 }
 
 [data-theme-id='auto-wow-uk-bespoke'] .auto-btn--primary:hover {
-  background: color-mix(in srgb, var(--color-primary) 80%, #000);
-  border-color: color-mix(in srgb, var(--color-primary) 80%, #000);
+  background: color-mix(in srgb, var(--color-primary) 80%, var(--color-text));
+  border-color: color-mix(in srgb, var(--color-primary) 80%, var(--color-text));
   transform: translateY(-1px);
 }
 
@@ -445,6 +445,7 @@
   min-height: 280px;
   padding: clamp(72px, 12vw, 140px) clamp(20px, 4vw, 48px) clamp(56px, 8vw, 100px);
   background-image:
+    /* photo-scrim-ok */
     linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.72) 100%),
     var(--brand-image-hero, none),
     url('/themes/auto-wow-uk-bespoke/images/hero.jpg');
@@ -452,43 +453,49 @@
   background-position: center, center, center;
   background-repeat: no-repeat, no-repeat, no-repeat;
   /* Photo-chrome literal — white over dark scrim */
-  color: #ffffff;
+  color: #ffffff; /* photo-scrim-ok */
   isolation: isolate;
   overflow: hidden;
 }
 
 [data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero--about {
   background-image:
+    /* photo-scrim-ok */
     linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.72) 100%),
     var(--brand-image-about, none),
     url('/themes/auto-wow-uk-bespoke/images/about.jpg');
 }
 [data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero--services {
   background-image:
+    /* photo-scrim-ok */
     linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.72) 100%),
     var(--brand-image-services, none),
     url('/themes/auto-wow-uk-bespoke/images/services.jpg');
 }
 [data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero--finance {
   background-image:
+    /* photo-scrim-ok */
     linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.72) 100%),
     var(--brand-image-finance, none),
     url('/themes/auto-wow-uk-bespoke/images/finance.jpg');
 }
 [data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero--part-exchange {
   background-image:
+    /* photo-scrim-ok */
     linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.72) 100%),
     var(--brand-image-part-exchange, none),
     url('/themes/auto-wow-uk-bespoke/images/partExchange.jpg');
 }
 [data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero--sell-your-car {
   background-image:
+    /* photo-scrim-ok */
     linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.72) 100%),
     var(--brand-image-sell-your-car, none),
     url('/themes/auto-wow-uk-bespoke/images/sellYourCar.jpg');
 }
 [data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero--recently-sold {
   background-image:
+    /* photo-scrim-ok */
     linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.72) 100%),
     var(--brand-image-recently-sold, none),
     url('/themes/auto-wow-uk-bespoke/images/recentlySold.jpg');
@@ -562,7 +569,7 @@
   letter-spacing: 0.02em;
   text-transform: uppercase;
   font-weight: 700;
-  color: #ffffff;
+  color: #ffffff; /* photo-scrim-ok */
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
   margin: 0 0 14px;
 }
@@ -570,7 +577,7 @@
 [data-theme-id='auto-wow-uk-bespoke'] .auto-page-hero p {
   font-size: 1.05rem;
   line-height: 1.55;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.88); /* photo-scrim-ok */
   max-width: 62ch;
   margin: 0;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
@@ -586,9 +593,9 @@
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff; /* photo-scrim-ok */
+  background: rgba(255, 255, 255, 0.12); /* photo-scrim-ok */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* photo-scrim-ok */
   border-radius: 999px;
   padding: 6px 14px;
   margin: 0 0 18px;

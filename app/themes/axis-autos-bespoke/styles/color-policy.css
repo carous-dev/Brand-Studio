@@ -1,0 +1,161 @@
+/* =============================================================================
+ * THEME COLOR USAGE POLICY  (axis-autos-bespoke)
+ * =============================================================================
+ *
+ * The dashboard exposes three brand colours: primary, secondary, accent.
+ * Without rules, components reach for whichever colour "looks nice", which
+ * means the same component renders inconsistently across brands and a brand
+ * with similar hues (e.g. carmax: primary == accent, secondary clashes)
+ * collapses into mush.
+ *
+ * The rules below define which colour each ROLE consumes. Components must
+ * read the role tokens (--t-*), not the raw --color-primary / secondary /
+ * accent. That way the rules stay enforced everywhere.
+ *
+ * -----------------------------------------------------------------------------
+ * ROLE OF EACH BRAND COLOUR
+ * -----------------------------------------------------------------------------
+ *
+ *  --color-primary   The dominant brand colour. THE colour you'd put on a
+ *                    logo. Used for filled CTAs, eyebrows, primary icons,
+ *                    active states, brand badges, hero gradient bases, focus
+ *                    rings, key emphasis text. If a colour is "brand", it
+ *                    should be primary unless there's a specific reason.
+ *
+ *  --color-accent    The interaction colour. Used for the *moment of action*:
+ *                    link hover, button hover transitions, animated
+ *                    highlights, decorative chevrons, the hero backdrop SVG.
+ *                    May equal primary on some brand palettes (carmax) — the
+ *                    role tokens still resolve correctly because we use accent
+ *                    only where a state-shift is needed.
+ *
+ *  --color-secondary A SUPPORTING tint, never a foreground. Used for very
+ *                    soft section tints (5–12% color-mix), subtle background
+ *                    washes, alternate-row stripes, and the section-divider
+ *                    fade. NEVER for text, NEVER for filled buttons, NEVER as
+ *                    a gradient stop next to primary or accent (those clash
+ *                    when the brand picks similar hues).
+ *
+ * -----------------------------------------------------------------------------
+ * QUICK RULE TABLE
+ * -----------------------------------------------------------------------------
+ *
+ *  Filled button bg                 -> primary                (--t-action-bg)
+ *  Filled button hover bg           -> darken primary 12%     (--t-action-bg-hover)
+ *  Outline button text              -> primary                (--t-action-fg-on-light)
+ *  Link / nav default               -> text                   (--t-link)
+ *  Link / nav hover & active        -> accent                 (--t-link-hover)
+ *  Eyebrow / category label         -> primary                (--t-eyebrow)
+ *  Icon container bg                -> primary 12%            (--t-icon-bg)
+ *  Icon glyph                       -> primary                (--t-icon-fg)
+ *  Decorative chevron / dot         -> accent                 (--t-decoration)
+ *  Hero gradient base               -> accent                 (--t-hero-base)
+ *  Section soft tint background     -> secondary 6–10%        (--t-section-tint)
+ *  Section alt background           -> secondary 12% + bg     (--t-section-alt)
+ *  Card surface                     -> color-surface          (--t-card)
+ *  Border / divider                 -> color-border           (--t-border)
+ *  Body text                        -> color-text             (--t-text)
+ *  Caption / muted text             -> color-muted            (--t-muted)
+ *
+ * -----------------------------------------------------------------------------
+ * Components import these tokens via `var(--t-…)` and inherit theme rules
+ * automatically. Do NOT add new direct references to --color-secondary or
+ * --color-accent in component CSS — extend this policy instead.
+ * ============================================================================= */
+
+[data-theme-id='axis-autos-bespoke'] {
+  /* Action / CTA */
+  --t-action-bg: var(--color-primary);
+  --t-action-bg-hover: color-mix(in srgb, var(--color-primary) 88%, var(--color-text));
+  --t-action-bg-soft: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  --t-action-fg: var(--color-bg);
+  --t-action-fg-on-light: var(--color-primary);
+  --t-action-ring: color-mix(in srgb, var(--color-primary) 22%, transparent);
+
+  /* Links / interactive text */
+  --t-link: var(--color-text);
+  --t-link-muted: var(--color-muted);
+  --t-link-hover: var(--color-accent);
+  --t-link-active: var(--color-accent);
+
+  /* Eyebrows / category labels (small caps above titles) */
+  --t-eyebrow: var(--color-primary);
+
+  /* Icon containers and glyphs */
+  --t-icon-bg: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  --t-icon-bg-strong: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  --t-icon-fg: var(--color-primary);
+  --t-icon-border: color-mix(in srgb, var(--color-primary) 22%, transparent);
+
+  /* Decorative accents (chevrons, dots, micro-flourishes) */
+  --t-decoration: var(--color-accent);
+  --t-decoration-soft: color-mix(in srgb, var(--color-accent) 14%, transparent);
+
+  /* Hero gradient base — the backdrop SVG and hero rules read these */
+  --t-hero-base: var(--color-accent);
+  --t-hero-base-light: color-mix(in srgb, var(--color-accent) 70%, var(--color-bg));
+  --t-hero-base-dark: color-mix(in srgb, var(--color-accent) 84%, var(--color-text));
+
+  /* Section tints (the only proper home for --color-secondary) */
+  --t-section-tint: color-mix(in srgb, var(--color-secondary) 6%, var(--color-bg));
+  --t-section-alt: color-mix(in srgb, var(--color-secondary) 12%, var(--color-bg));
+
+  /* Surfaces / chrome */
+  --t-page: var(--color-bg);
+  --t-card: var(--color-surface);
+  --t-border: var(--color-border);
+  --t-border-strong: color-mix(in srgb, var(--color-text) 16%, transparent);
+
+  /* Text */
+  --t-text: var(--color-text);
+  --t-muted: var(--color-muted);
+  --t-text-on-brand: var(--color-bg);
+
+  /* Status (semantic, not brand-tinted) */
+  --t-success: #0f5132;
+  --t-error: #b42318;
+  --t-warning: #f97316;
+  --t-info: #2563eb;
+
+  /* -----------------------------------------------------------------------
+   * GRADIENT TOKENS — for visual depth on coloured surfaces
+   *
+   * Flat brand fills get monotonous fast. Use these gradient tokens for
+   * badges, pills, banded sections, hero backdrops, and any surface where
+   * you want light-to-dark tonal interest. They follow the same role rules
+   * as flat colours:
+   *   --t-action-gradient   filled CTAs, primary banner backs
+   *   --t-accent-gradient   decorative pills, hover-state surfaces
+   *   --t-brand-gradient    cross-tone (primary -> accent), strong promos
+   *   --t-neon-gradient     hero-style (light -> base -> dark), feature bands
+   *   --t-glow-shadow       brand-tinted drop shadow under floating CTAs
+   * ----------------------------------------------------------------------- */
+  --t-action-gradient: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 92%, var(--color-bg)) 0%,
+    var(--color-primary) 50%,
+    color-mix(in srgb, var(--color-primary) 80%, var(--color-text)) 100%);
+
+  --t-accent-gradient: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-accent) 92%, var(--color-bg)) 0%,
+    var(--color-accent) 50%,
+    color-mix(in srgb, var(--color-accent) 80%, var(--color-text)) 100%);
+
+  --t-brand-gradient: linear-gradient(135deg,
+    var(--color-primary) 0%,
+    color-mix(in srgb, var(--color-primary) 50%, var(--color-accent)) 50%,
+    var(--color-accent) 100%);
+
+  --t-neon-gradient: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-accent) 70%, var(--color-bg)) 0%,
+    var(--color-accent) 45%,
+    color-mix(in srgb, var(--color-accent) 84%, var(--color-text)) 100%);
+
+  --t-band-gradient: linear-gradient(120deg,
+    color-mix(in srgb, var(--color-primary) 90%, var(--color-text)) 0%,
+    var(--color-primary) 35%,
+    color-mix(in srgb, var(--color-primary) 65%, var(--color-accent)) 75%,
+    color-mix(in srgb, var(--color-accent) 85%, var(--color-text)) 100%);
+
+  --t-glow-shadow: 0 14px 28px color-mix(in srgb, var(--color-primary) 28%, transparent);
+  --t-glow-shadow-strong: 0 18px 36px color-mix(in srgb, var(--color-primary) 38%, transparent);
+}

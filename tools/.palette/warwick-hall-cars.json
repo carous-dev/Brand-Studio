@@ -1,0 +1,40 @@
+{
+  "slug": "warwick-hall-cars",
+  "generatedAt": "2026-06-09T13:54:17.208Z",
+  "brand": {
+    "primary": "#31237c",
+    "primaryStrong": "#2b1f6d",
+    "onPrimary": "#ffffff",
+    "darkenAppliedToInput": 0,
+    "inputPrimary": "#31237c"
+  },
+  "neutralsLight": {
+    "surfaceBg": "#ffffff",
+    "surfaceCard": "#f6f7fb",
+    "textStrong": "#0f1623",
+    "textMuted": "#5b6573",
+    "border": "#e3e6ee"
+  },
+  "neutralsDark": {
+    "surfaceBg": "#0a0e14",
+    "surfaceCard": "#14181f",
+    "textStrong": "#ffffff",
+    "textMuted": "rgba(255,255,255,0.78)",
+    "border": "rgba(255,255,255,0.12)"
+  },
+  "cssVariables": {
+    "--surface-bg-light": "#ffffff",
+    "--surface-card-light": "#f6f7fb",
+    "--text-on-light-strong": "#0f1623",
+    "--text-on-light-muted": "#5b6573",
+    "--border-on-light": "#e3e6ee",
+    "--surface-bg-dark": "#0a0e14",
+    "--surface-card-dark": "#14181f",
+    "--text-on-dark-strong": "#ffffff",
+    "--text-on-dark-muted": "rgba(255,255,255,0.78)",
+    "--border-on-dark": "rgba(255,255,255,0.12)",
+    "--brand-primary": "#31237c",
+    "--brand-primary-strong": "#2b1f6d",
+    "--brand-on-primary": "#ffffff"
+  }
+}

@@ -22,40 +22,65 @@
 .topbarInner {
   display: flex;
   align-items: center;
-  gap: clamp(10px, 1.4vw, 18px);
+  gap: clamp(12px, 1.6vw, 22px);
   max-width: 1400px;
   margin: 0 auto;
-  padding: 8px clamp(16px, 3vw, 32px);
+  padding: 9px clamp(16px, 3vw, 32px);
   font-family: 'Oswald', sans-serif;
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 0.76rem;
+  letter-spacing: 0.05em;
+  text-transform: none;
 }
 
 .topChip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: color-mix(in srgb, var(--color-bg) 88%, transparent);
+  gap: 7px;
+  color: color-mix(in srgb, var(--color-bg) 82%, transparent);
   white-space: nowrap;
+  font-weight: 500;
 }
 
 .topChip svg {
-  color: var(--color-bg);
+  color: color-mix(in srgb, var(--color-bg) 72%, transparent);
   flex-shrink: 0;
 }
 
-.liveChip {
-  color: color-mix(in srgb, var(--color-bg) 95%, transparent);
+/* Live open/closed status — a self-contained rounded pill so it reads as a
+   deliberate badge rather than another line of top-bar copy. */
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 11px 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--color-bg) 14%, transparent);
+  color: var(--color-bg);
+  border: 1px solid color-mix(in srgb, var(--color-bg) 22%, transparent);
+}
+
+.statusClosed {
+  background: color-mix(in srgb, var(--color-bg) 8%, transparent);
+  color: color-mix(in srgb, var(--color-bg) 78%, transparent);
+  border-color: color-mix(in srgb, var(--color-bg) 16%, transparent);
 }
 
 .liveDot {
-  --mfx-dot-color: var(--color-accent);
-  width: 8px;
-  height: 8px;
+  --mfx-dot-color: color-mix(in srgb, var(--color-bg) 55%, transparent);
+  width: 7px;
+  height: 7px;
   border-radius: 999px;
   background: var(--mfx-dot-color);
   display: inline-block;
+  flex-shrink: 0;
+}
+
+.statusOpen .liveDot {
+  --mfx-dot-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 30%, transparent);
 }
 
 .hoursChip {
@@ -136,17 +161,21 @@
 }
 
 @media (max-width: 720px) {
-  .topbarInner {
-    gap: 10px;
-    padding: 8px 16px;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .topbarInner::-webkit-scrollbar {
-    display: none;
-  }
-  .socials {
-    display: none;
+  /* Mobile simplification — hide the contact strip entirely. Phone +
+     socials live in the mobile drawer / WhatsApp FAB.
+     Belt-and-braces zero on every dimension property so no sub-pixel
+     leak / cascade quirk reserves layout space. */
+  .topbar {
+    display: none !important;
+    position: static !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    visibility: hidden !important;
+    overflow: hidden !important;
   }
 }
 
@@ -157,19 +186,20 @@
   /* Sits under the sticky topbar (which itself sits under PreviewBanner).
      The 35px offset is the topbar's resting height (8px padding × 2 + ~20px
      content row) minus the 1px gap-closer the topbar uses. Preview banner
-     height tracks the same var the topbar uses. */
-  top: calc(var(--brandstudio-preview-banner-height, 0px) + 35px);
+     height tracks the same var the topbar uses. On mobile the topbar is
+     hidden, so the header sticks directly under the preview banner. */
+  top: calc(var(--brandstudio-preview-banner-height, 0px) + 37px);
   z-index: 49;
   background: var(--color-bg);
   color: var(--color-text);
-  border-bottom: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 9%, transparent);
   box-shadow: none;
-  transition: background 220ms ease;
+  transition: border-color 220ms ease, padding 220ms ease;
 }
 
 .headerScrolled {
   background: var(--color-bg);
-  border-bottom: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
   box-shadow: none;
 }
 
@@ -180,7 +210,13 @@
   gap: 18px;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 12px clamp(16px, 3vw, 32px);
+  padding: 14px clamp(16px, 3vw, 32px);
+  transition: padding 220ms ease;
+}
+
+.headerScrolled .headerInner {
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .brand {
@@ -210,38 +246,46 @@
   display: none;
   grid-column: 2;
   align-items: center;
-  gap: clamp(10px, 1.6vw, 22px);
+  gap: clamp(2px, 0.6vw, 8px);
   justify-self: center;
 }
 
 .navLink {
   position: relative;
   font-family: 'Oswald', sans-serif;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 500;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-text) 86%, transparent);
+  color: color-mix(in srgb, var(--color-text) 72%, transparent);
   text-decoration: none;
-  padding: 12px 4px;
+  padding: 9px 14px;
   min-height: 44px;
+  border-radius: 999px;
   display: inline-flex;
   align-items: center;
-  transition: color 150ms ease;
+  transition: color 150ms ease, background 150ms ease;
 }
 
-.navLink:hover,
-.navLinkActive {
+.navLink:hover {
   color: var(--color-text);
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+}
+
+.navLinkActive,
+.navLinkActive:hover {
+  color: var(--color-primary);
+  background: transparent;
 }
 
 .navLinkActive::after {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 4px;
+  left: 14px;
+  right: 14px;
+  bottom: 3px;
   height: 2px;
+  border-radius: 999px;
   background: var(--color-primary);
 }
 
@@ -255,18 +299,24 @@
 
 .callCta {
   display: none !important;
+  border-radius: 999px !important;
+  padding: 11px 22px !important;
+  min-height: 44px !important;
+  letter-spacing: 0.08em !important;
+  border-width: 0 !important;
 }
 
 .menuToggle {
   width: 44px;
   height: 44px;
   background: transparent;
-  border: 1px solid color-mix(in srgb, var(--color-text) 18%, transparent);
-  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--color-text) 16%, transparent);
+  border-radius: 999px;
   color: var(--color-text);
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: background 150ms ease, border-color 150ms ease;
 }
 
 .menuToggle:hover {
@@ -386,4 +436,16 @@
 .mobileSocials a:hover {
   background: var(--color-primary);
   color: var(--color-bg);
+}
+
+/* ------- Mobile header sticky override (must come AFTER base `.header`
+   rule so source order wins — earlier placement was being overridden
+   by the desktop +35px offset). With the topbar conditionally not
+   rendered on mobile, the header sticks directly at the top of the
+   viewport (or under the PreviewBanner if present). */
+@media (max-width: 720px) {
+  .header {
+    top: 0 !important;
+    margin: 0;
+  }
 }

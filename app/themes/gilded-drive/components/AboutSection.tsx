@@ -46,7 +46,7 @@ const AboutSection = () => {
     ];
 
     return (
-        <section className="about-futuristic" aria-label={`About ${brandName}`}>
+        <section className="about-futuristic" aria-label={`About ${brandName}`} data-aos="fade-up">
           <div className="about-content-futuristic">
             <motion.div className="about-text-futuristic" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={aboutVariant}>
               <h2 className="about-title-futuristic">

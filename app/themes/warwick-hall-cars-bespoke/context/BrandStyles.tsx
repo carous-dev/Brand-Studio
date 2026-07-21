@@ -3,6 +3,7 @@
 import React from 'react';
 import type { BrandConfig } from '@/brands/types';
 import { buildGoogleFontsImport } from '@/app/lib/googleFonts';
+import { buildThemeTokens, renderThemeStyle, escapeCssUrl } from '@/app/themes/lib/theme-tokens';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -64,41 +65,32 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   const sellYourCarImage = resolveSlot('sellYourCar', 'sellYourCar');
   const recentlySoldImage = resolveSlot('recentlySold', 'recentlySold');
 
-  const cssVariables: Record<string, string> = {
-    // Dashboard's 8 natural-role tokens. Theme defaults below are
-    // Warwick Hall Cars' bespoke palette; brand records may override any
-    // of the 8 via theme.colors.*
-    '--color-primary':   theme.colors.primaryColor   || '#31237c',
-    '--color-secondary': theme.colors.secondaryColor || '#31237c',
-    '--color-accent':    theme.colors.accentColor    || '#3da9fc',
-    '--color-bg':        theme.colors.backgroundColor          || '#ffffff',
-    '--color-surface':   (theme.colors as any).surfaceColor    || '#f6f7fb',
-    '--color-text':      theme.colors.textColor                || '#0f1623',
-    '--color-muted':     (theme.colors as any).mutedColor      || '#5b6573',
-    '--color-border':    (theme.colors as any).borderColor     || '#e3e6ee',
-    '--color-header-bg':    (theme.colors as any).headerBg    || '#ffffff',
-    '--color-header-text':  (theme.colors as any).headerText  || theme.colors.textColor || '#0f1623',
-    '--color-header-muted': (theme.colors as any).headerMuted || '#5b6573',
-    '--color-hero-overlay-start': (theme.colors as any).heroOverlayStart || 'rgba(15, 10, 37, 0.30)',
-    '--color-hero-overlay-end':   (theme.colors as any).heroOverlayEnd   || 'rgba(15, 10, 37, 0.65)',
-    '--color-hero-text-muted':    (theme.colors as any).heroTextMuted    || 'rgba(255, 255, 255, 0.92)',
-    '--color-hero-review-muted': (theme.colors as any).heroReviewMuted || 'rgba(255, 255, 255, 0.85)',
-    '--color-review-star': (theme.colors as any).reviewStar || '#facc15',
+  // Canonical token block via the shared emitter. Warwick Hall Cars' bespoke
+  // palette is passed as `defaults`; brand records override any of the 8 via
+  // theme.colors.*. header-*/hero-* tokens that Warwick derived from text/muted
+  // are omitted so the emitter derives them (brand-aware) identically.
+  const vars = buildThemeTokens(theme.colors as any, {
+    defaults: {
+      primaryColor: '#31237c',
+      secondaryColor: '#31237c',
+      accentColor: '#3da9fc',
+      backgroundColor: '#ffffff',
+      surfaceColor: '#f6f7fb',
+      textColor: '#0f1623',
+      mutedColor: '#5b6573',
+      borderColor: '#e3e6ee',
+      heroOverlayStart: 'rgba(15, 10, 37, 0.30)',
+      heroOverlayEnd: 'rgba(15, 10, 37, 0.65)',
+      heroTextMuted: 'rgba(255, 255, 255, 0.92)',
+      heroReviewMuted: 'rgba(255, 255, 255, 0.85)',
+      reviewStar: '#facc15',
+    },
+  });
 
-    // Bridge variables for shared chrome / carous-platform style references
-    '--brand-primary':       theme.colors.primaryColor   || '#31237c',
-    '--brand-secondary':     theme.colors.secondaryColor || '#31237c',
-    '--brand-accent':        theme.colors.accentColor    || '#3da9fc',
-    '--brand-background':    theme.colors.backgroundColor || '#ffffff',
-    '--brand-text':          theme.colors.textColor       || '#0f1623',
-    '--brand-primary-rgb':   hexToRgb(theme.colors.primaryColor   || '#31237c'),
-    '--brand-secondary-rgb': hexToRgb(theme.colors.secondaryColor || '#31237c'),
-    '--brand-accent-rgb':    hexToRgb(theme.colors.accentColor    || '#3da9fc'),
-
+  const extras: Record<string, string> = {
     // Hero background image (resolves to brand.heroImage if set in dashboard)
     '--warwick-hero-image': `url("${escapeCssUrl(heroImage)}")`,
-
-    // Per-page image slots — every theme references these via var(--brand-image-*)
+    // Per-page image slots — theme references these via var(--brand-image-*)
     // so dashboard edits to brand.images.* propagate without code changes.
     // Hero var resolves to `none` when no brand image is set so Hero.module.css
     // can fall back to background-color instead of a generic stock photo.
@@ -109,7 +101,6 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--brand-image-part-exchange': `url("${escapeCssUrl(partExchangeImage)}")`,
     '--brand-image-sell-your-car': `url("${escapeCssUrl(sellYourCarImage)}")`,
     '--brand-image-recently-sold': `url("${escapeCssUrl(recentlySoldImage)}")`,
-
     // Font family overrides
     '--font-ui-family-override': fontUi,
     '--font-brand-family-override': fontBrand,
@@ -123,25 +114,10 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: `${fontImport}:root {
-            ${Object.entries(cssVariables)
-              .map(([key, value]) => `${key}: ${value};`)
-              .join('\n            ')}
-            font-family: ${fontUi};
-          }
-        `,
+        __html: renderThemeStyle({ vars, extras, fontFamily: fontUi, fontImport }),
       }}
     />
   );
-}
-
-function hexToRgb(hex: string): string {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 0, 0';
-}
-
-function escapeCssUrl(url: string): string {
-  return String(url).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n|\r/g, '');
 }
 
 function resolveFontToken(...candidates: Array<unknown>): string | null {

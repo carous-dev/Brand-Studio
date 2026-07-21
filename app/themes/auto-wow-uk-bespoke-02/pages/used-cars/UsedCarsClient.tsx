@@ -1,21 +1,19 @@
 "use client"
 
 import { useMemo, useState, useEffect, useRef } from 'react'
-import Link from 'next/link'
 import {
   ChevronLeft,
   ChevronRight,
   CarFront,
-  Camera,
-  Calendar,
-  Fuel,
-  Gauge,
   GitCompare,
   Heart,
-  Settings2,
+  LayoutGrid,
+  Rows3,
+  SlidersHorizontal,
   X
 } from 'lucide-react'
 import styles from './page.module.css'
+import InventoryCard from './InventoryCard'
 import { useGarage, type SavedVehicle } from '../../context/GarageContext'
 import { useBrand } from '../../context/BrandClientWrapper'
 import { apiUrl } from '../../lib/api'
@@ -184,6 +182,7 @@ export default function UsedCarsClient({
   const [maxYear, setMaxYear] = useState(yearBounds.max)
   const [maxMileage, setMaxMileage] = useState('')
   const [sort, setSort] = useState(initialSort)
+  const [view, setView] = useState<'grid' | 'list'>('grid')
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [hasInitializedFilters, setHasInitializedFilters] = useState(false)
   const [page, setPage] = useState(1)
@@ -727,9 +726,27 @@ export default function UsedCarsClient({
               <p>Please check back soon or contact us for upcoming stock.</p>
             </div>
           ) : (
-            <div className={styles.contentGrid}>
-              <aside className={styles.filters}>
-                <h2 className={styles.filtersTitle}>Filters</h2>
+            <div className={styles.inventoryWrap}>
+              <div
+                className={`${styles.drawerBackdrop} ${filtersOpen ? styles.drawerBackdropOpen : ''}`}
+                onClick={() => setFiltersOpen(false)}
+                aria-hidden="true"
+              />
+              <aside
+                className={`${styles.filtersPanel} ${filtersOpen ? styles.filtersPanelOpen : ''}`}
+                aria-hidden={!filtersOpen}
+              >
+                <div className={styles.filtersHeader}>
+                  <h2 className={styles.filtersTitle}>Filters</h2>
+                  <button
+                    type="button"
+                    className={styles.filtersClose}
+                    onClick={() => setFiltersOpen(false)}
+                    aria-label="Close filters"
+                  >
+                    <X size={18} strokeWidth={2} />
+                  </button>
+                </div>
 
                 <div className={styles.filterGroup}>
                   <label htmlFor="filter-make">Make</label>
@@ -813,6 +830,7 @@ export default function UsedCarsClient({
                     type="button"
                     className={styles.applyBtn}
                     onClick={() => {
+                      setFiltersOpen(false)
                       if (typeof window !== 'undefined') {
                         window.scrollTo({ top: 0, behavior: 'smooth' })
                       }
@@ -824,12 +842,44 @@ export default function UsedCarsClient({
               </aside>
 
               <div className={styles.results}>
-                <div className={styles.resultsBar}>
-                  <p className={styles.resultsStatus}>
-                    Showing <strong>{visibleVehicles.length}</strong> of{' '}
-                    <strong>{resultsCount}</strong> quality used cars
-                  </p>
-                  <div className={styles.resultsTools}>
+                <div className={styles.toolbar}>
+                  <div className={styles.toolbarLead}>
+                    <button
+                      type="button"
+                      className={`${styles.filtersToggle} ${filtersOpen ? styles.filtersToggleActive : ''}`}
+                      onClick={() => setFiltersOpen((v) => !v)}
+                      aria-expanded={filtersOpen}
+                    >
+                      <SlidersHorizontal size={16} strokeWidth={2} />
+                      Filters
+                      {activeFilters.length ? <strong>{activeFilters.length}</strong> : null}
+                    </button>
+                    <p className={styles.resultsStatus}>
+                      Showing <strong>{visibleVehicles.length}</strong> of{' '}
+                      <strong>{resultsCount}</strong> quality used cars
+                    </p>
+                  </div>
+                  <div className={styles.toolbarControls}>
+                    <div className={styles.viewToggle} role="group" aria-label="Layout">
+                      <button
+                        type="button"
+                        className={`${styles.viewBtn} ${view === 'grid' ? styles.viewBtnActive : ''}`}
+                        onClick={() => setView('grid')}
+                        aria-pressed={view === 'grid'}
+                      >
+                        <LayoutGrid size={15} strokeWidth={2} />
+                        <span className={styles.viewLabel}>Grid</span>
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.viewBtn} ${view === 'list' ? styles.viewBtnActive : ''}`}
+                        onClick={() => setView('list')}
+                        aria-pressed={view === 'list'}
+                      >
+                        <Rows3 size={15} strokeWidth={2} />
+                        <span className={styles.viewLabel}>List</span>
+                      </button>
+                    </div>
                     <span className={styles.counterChip} aria-label={`${wishlistCount} saved`}>
                       <Heart size={14} strokeWidth={2} />
                       {wishlistCount}
@@ -850,7 +900,7 @@ export default function UsedCarsClient({
                   </div>
                 </div>
 
-                <div className={styles.cardGrid}>
+                <div className={`${styles.cardGrid} ${view === 'list' ? styles.cardGridList : ''}`}>
                   {showFilterEmpty ? (
                     <div className={styles.emptyState}>
                       <div className={styles.emptyStateIcon} aria-hidden="true">
@@ -884,90 +934,23 @@ export default function UsedCarsClient({
                       ))
                     : visibleVehicles.map((vehicle) => {
                         const savedVehicle = toSavedVehicle(vehicle)
-                        const wishlisted = isWishlisted(vehicle.id)
-                        const compared = isCompared(vehicle.id)
                         const detailHref = buildVehiclePermalink(
                           { slug: vehicle.slug || toSlug(vehicle.title), reg: vehicle.reg },
                           '/used-cars'
                         )
-                        const subtitle = [vehicle.make, vehicle.body].filter(Boolean).join(' · ')
-                        const monthly = vehicle.price > 0 ? Math.max(15, Math.round(vehicle.price / 60)) : null
 
                         return (
-                          <article key={vehicle.id} className={styles.card}>
-                            <Link
-                              href={detailHref}
-                              className={styles.cardLink}
-                              aria-label={`View ${vehicle.title}`}
-                            >
-                              <span className={styles.srOnly}>View details</span>
-                            </Link>
-
-                            <div className={styles.cardImageWrap}>
-                              <div
-                                className={styles.cardImage}
-                                style={{ backgroundImage: `url(${vehicle.image})` }}
-                                role="img"
-                                aria-label={vehicle.title}
-                              />
-                              <span className={styles.imageCount} aria-hidden="true">
-                                <Camera size={11} strokeWidth={2} />
-                                1/1
-                              </span>
-                              <div className={styles.quickActions}>
-                                <button
-                                  type="button"
-                                  className={styles.iconButton}
-                                  data-active={wishlisted}
-                                  aria-pressed={wishlisted}
-                                  aria-label={wishlisted ? 'Saved to wishlist' : 'Save to wishlist'}
-                                  onClick={(e) => {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    toggleWishlist(savedVehicle)
-                                  }}
-                                >
-                                  <Heart size={14} strokeWidth={2} fill={wishlisted ? 'currentColor' : 'none'} />
-                                </button>
-                                <button
-                                  type="button"
-                                  className={styles.iconButton}
-                                  data-active={compared}
-                                  aria-pressed={compared}
-                                  aria-label={compared ? 'Remove from compare' : 'Add to compare'}
-                                  onClick={(e) => {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    toggleCompare(savedVehicle)
-                                  }}
-                                >
-                                  <GitCompare size={14} strokeWidth={2} />
-                                </button>
-                              </div>
-                              {vehicle.featured ? <span className={styles.featured}>Featured</span> : null}
-                            </div>
-
-                            <div className={styles.cardBody}>
-                              <h3 className={styles.cardTitle} title={vehicle.title}>
-                                {vehicle.title}
-                              </h3>
-                              {subtitle ? <p className={styles.cardSubtitle}>{subtitle}</p> : null}
-
-                              <div className={styles.cardSpecs}>
-                                <span><Calendar size={13} strokeWidth={2} />{vehicle.year || '—'}</span>
-                                <span><Gauge size={13} strokeWidth={2} />{vehicle.mileage.toLocaleString()} miles</span>
-                                <span><Fuel size={13} strokeWidth={2} />{vehicle.fuel}</span>
-                                <span><Settings2 size={13} strokeWidth={2} />{vehicle.transmission}</span>
-                              </div>
-
-                              <div className={styles.cardFooter}>
-                                {monthly ? (
-                                  <span className={styles.fromMonthly}>From £{monthly}/mo</span>
-                                ) : <span />}
-                                <span className={styles.cardPrice}>{formatPrice(vehicle.price)}</span>
-                              </div>
-                            </div>
-                          </article>
+                          <InventoryCard
+                            key={vehicle.id}
+                            vehicle={vehicle}
+                            detailHref={detailHref}
+                            view={view}
+                            wishlisted={isWishlisted(vehicle.id)}
+                            compared={isCompared(vehicle.id)}
+                            onToggleWishlist={() => toggleWishlist(savedVehicle)}
+                            onToggleCompare={() => toggleCompare(savedVehicle)}
+                            formatPrice={formatPrice}
+                          />
                         )
                       })}
                 </div>

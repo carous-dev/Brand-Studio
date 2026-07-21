@@ -92,7 +92,7 @@
   opacity: 0.6;
 }
 .stars {
-  color: #facc15;
+  color: var(--color-review-star);
   display: inline-flex;
   gap: 1px;
 }

@@ -146,7 +146,7 @@ export default function Testimonials() {
   );
 
   return (
-    <section className="testimonials">
+    <section className="testimonials" data-aos="fade-up">
       <div className="testimonials-inner">
         <p className="testimonials-eyebrow">Verified customer feedback</p>
         <h2 className="testimonials-title">Customer Reviews</h2>

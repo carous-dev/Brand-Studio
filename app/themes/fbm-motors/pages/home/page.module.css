@@ -487,7 +487,7 @@
 .makeCard {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 14px;
   border-radius: 16px;
   background: #ffffff;
   border: 1px solid rgba(14, 20, 32, 0.06);
@@ -498,6 +498,19 @@
 }
 .makeCard:hover {
   border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+.makeLogoSlot {
+  display: block;
+  flex: 0 0 auto;
+  color: var(--fbm-ink-900);
+  transition: color 0.2s;
+}
+.makeCard:hover .makeLogoSlot {
+  color: var(--fbm-ember-600, var(--color-primary));
+}
+.makeInfo {
+  flex: 1;
+  min-width: 0;
 }
 .makeName {
   font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);

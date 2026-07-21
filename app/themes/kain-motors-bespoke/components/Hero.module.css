@@ -2,8 +2,8 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  color: #ffffff;
-  background: #0a0e14;
+  color: var(--text-on-dark-strong);
+  background: var(--color-bg-dark);
   min-height: clamp(560px, 88vh, 760px);
   display: flex;
   align-items: stretch;
@@ -25,8 +25,8 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(120% 90% at 70% 20%, rgba(209, 182, 122, 0.22) 0%, transparent 55%),
+  background: /* photo-scrim-ok */
+    radial-gradient(120% 90% at 70% 20%, rgba(209, 182, 122, 0.22) 0%, transparent 55%), /* photo-scrim-ok */
     linear-gradient(180deg, rgba(8, 11, 17, 0.88) 0%, rgba(8, 11, 17, 0.5) 55%, rgba(8, 11, 17, 0.92) 100%);
   z-index: -2;
 }
@@ -38,7 +38,7 @@
   width: 420px;
   height: 420px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(209, 182, 122, 0.32) 0%, transparent 65%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--kain-accent-warm) 32%, transparent) 0%, transparent 65%);
   z-index: -1;
   filter: blur(6px);
   pointer-events: none;
@@ -56,11 +56,11 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent) 1px, transparent 1px);
   background-size: 56px 56px;
   z-index: -1;
-  mask-image: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.7) 0%, transparent 75%);
+  mask-image: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--kain-black) 70%, transparent) 0%, transparent 75%);
   pointer-events: none;
   opacity: 0.5;
 }
@@ -118,7 +118,7 @@
   letter-spacing: 0.01em;
   text-transform: uppercase;
   line-height: 1.08;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   margin: 0;
   text-shadow: 0 2px 24px rgba(0,0,0,0.5);
 }
@@ -126,7 +126,7 @@
   font-family: var(--font-editorial-family, 'Playfair Display', serif);
   font-weight: 400;
   font-style: italic;
-  background: linear-gradient(120deg, #d1b67a 0%, #f4d99c 50%, #d1b67a 100%);
+  background: linear-gradient(120deg, var(--kain-accent-warm) 0%, var(--kain-accent-warm-light) 50%, var(--kain-accent-warm) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -143,7 +143,7 @@
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
   font-size: clamp(0.95rem, 1.4vw, 1.08rem);
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.92);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 92%, transparent);
   margin: 0;
   text-shadow: 0 1px 12px rgba(0,0,0,0.35);
 }
@@ -152,9 +152,9 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(209, 182, 122, 0.42);
+  border: 1px solid color-mix(in srgb, var(--kain-accent-warm) 42%, transparent);
   padding: 12px;
   border-radius: 6px;
   margin-top: 4px;
@@ -177,9 +177,9 @@
   appearance: none;
   -webkit-appearance: none;
   border: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 25%, transparent);
   background: transparent;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
   font-size: 0.95rem;
   padding: 10px 4px;
@@ -298,7 +298,7 @@
   font-family: var(--font-editorial-family, 'Playfair Display', serif);
   font-style: italic;
   font-size: clamp(2.2rem, 4.4vw, 3rem);
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   line-height: 1;
   letter-spacing: -0.02em;
 }

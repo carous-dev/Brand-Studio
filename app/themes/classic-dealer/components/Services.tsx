@@ -25,6 +25,7 @@ const Services = () => {
   return (
     <motion.section
       className="services-why"
+      data-aos="fade-up"
       aria-label="Why choose our services"
       initial={{ opacity: 0, x: -50 }}
       whileInView={{ opacity: 1, x: 0 }}

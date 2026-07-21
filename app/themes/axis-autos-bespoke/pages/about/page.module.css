@@ -1,0 +1,83 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+}
+
+@media (min-width: 960px) {
+  .grid {
+    grid-template-columns: 1.4fr 1fr;
+    gap: clamp(48px, 6vw, 96px);
+  }
+}
+
+.story {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 60ch;
+}
+
+.story p {
+  font-size: 1.05rem;
+  color: var(--text-on-light-muted);
+  line-height: 1.7;
+}
+
+.h2 {
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: clamp(1.85rem, 3.4vw, 2.5rem);
+  color: var(--text-on-light-strong);
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+.values ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.values li {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px 0;
+  border-top: 1px solid var(--border-hairline);
+}
+.values li:last-child {
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.iconBox {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--brand-soft-border);
+  background: var(--brand-soft-bg);
+  color: var(--brand-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.values h3 {
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: 1.1rem;
+  color: var(--text-on-light-strong);
+  font-weight: 600;
+}
+
+.values p {
+  font-size: 0.95rem;
+  color: var(--text-on-light-muted);
+}
+
+.ctaBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-start;
+}

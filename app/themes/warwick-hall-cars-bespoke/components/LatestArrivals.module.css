@@ -167,15 +167,15 @@
   mask-image: linear-gradient(
     90deg,
     transparent 0,
-    #000 28px,
-    #000 calc(100% - 28px),
+    var(--color-text) 28px,
+    var(--color-text) calc(100% - 28px),
     transparent 100%
   );
   -webkit-mask-image: linear-gradient(
     90deg,
     transparent 0,
-    #000 28px,
-    #000 calc(100% - 28px),
+    var(--color-text) 28px,
+    var(--color-text) calc(100% - 28px),
     transparent 100%
   );
 }

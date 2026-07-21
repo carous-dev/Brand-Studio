@@ -2,6 +2,36 @@
    Keep that file as the single source of theme variables (colors, fonts, sizes).
    This stylesheet uses those variables via var(--name). */
 
+/* ===========================================================================
+   Semantic status colours — fixed hues that must NOT flow with the brand
+   palette (a delete stays red, info stays blue, an "open" dot stays green,
+   regardless of the dealer's colours). The four base --t-* tokens are the
+   sanctioned home for status literals; every derived shade mixes the base
+   hue over --brand-background (lighten) or --brand-text (darken) so it still
+   respects the record's light/dark surfaces. Consumed across the used-cars,
+   saved-vehicles, cookie and header UI.
+   =========================================================================== */
+body[data-theme-id="classic-dealer"] {
+  --t-error: #b91c1c;
+  --t-info: #1d4ed8;
+  --t-success: #4ade80;
+  --t-warning: #ca8a04;
+
+  --t-error-strong: color-mix(in srgb, var(--t-error) 82%, var(--brand-text));
+  --t-error-border: color-mix(in srgb, var(--t-error) 30%, var(--brand-background));
+  --t-error-border-soft: color-mix(in srgb, var(--t-error) 22%, var(--brand-background));
+  --t-error-bg: color-mix(in srgb, var(--t-error) 4%, var(--brand-background));
+
+  --t-info-strong: color-mix(in srgb, var(--t-info) 80%, var(--brand-text));
+  --t-info-border: color-mix(in srgb, var(--t-info) 30%, var(--brand-background));
+  --t-info-bg: color-mix(in srgb, var(--t-info) 4%, var(--brand-background));
+
+  --t-success-fg: color-mix(in srgb, var(--t-success) 40%, var(--brand-text));
+  --t-success-bg: color-mix(in srgb, var(--t-success) 18%, var(--brand-background));
+
+  --t-reserved: color-mix(in srgb, var(--t-warning) 50%, var(--t-error));
+}
+
 * {
   box-sizing: border-box
 }

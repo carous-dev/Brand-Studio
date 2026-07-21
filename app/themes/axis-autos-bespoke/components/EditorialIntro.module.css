@@ -1,0 +1,108 @@
+/* Editorial intro — a calm two-column band. Left: statement headline + copy.
+   Right: a numbered editorial list (01 / 02 / 03) using the theme's index
+   thread. All tokens derive from the dashboard palette. */
+
+.intro {
+  background: var(--surface-bg-light);
+  color: var(--text-on-light-strong);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 44px;
+  align-items: start;
+}
+
+@media (min-width: 960px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: clamp(56px, 7vw, 112px);
+  }
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 46ch;
+}
+
+@media (min-width: 960px) {
+  .left { position: sticky; top: 96px; }
+}
+
+.title {
+  font-size: clamp(1.9rem, 3.4vw, 2.7rem);
+  color: var(--text-on-light-strong);
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.body {
+  font-size: 1.06rem;
+  color: var(--text-on-light-muted);
+  line-height: 1.62;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--brand-primary);
+  width: max-content;
+  border-bottom: 1px solid color-mix(in srgb, var(--brand-primary) 40%, transparent);
+  padding-bottom: 3px;
+  transition: gap 180ms ease, border-color 180ms ease;
+}
+.link:hover {
+  gap: 12px;
+  border-color: var(--brand-primary);
+}
+
+/* ---- Numbered editorial list ---- */
+.points {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.points li {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: clamp(24px, 3vw, 34px) 0;
+  border-top: 1px solid var(--border-hairline);
+}
+.points li:last-child { border-bottom: 1px solid var(--border-hairline); }
+
+.kicker {
+  margin-bottom: 2px;
+}
+
+.points strong {
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text-on-light-strong);
+}
+
+.pointBody {
+  font-size: 0.99rem;
+  color: var(--text-on-light-muted);
+  line-height: 1.6;
+  max-width: 46ch;
+}
+
+@media (max-width: 640px) {
+  .grid { gap: 32px; }
+  .points li { padding: 20px 0; }
+  .points strong { font-size: 1.12rem; }
+}

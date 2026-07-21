@@ -52,6 +52,7 @@ export default function ReviewsStrip() {
   return (
     <motion.section
       className="reviews-strip"
+      data-aos="fade-up"
       aria-label="Review platforms"
       initial={{ opacity: 0, x: -50 }}
       whileInView={{ opacity: 1, x: 0 }}

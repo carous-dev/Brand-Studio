@@ -98,5 +98,56 @@ export default function AnimateOnScroll() {
     }
   }, [])
 
-  return null
+  // Render the reveal CSS inline rather than relying on the `import './aos.css'`
+  // side-effect in index.ts — that import is tree-shaken in some theme bundles,
+  // which silently kills every animation (see memory feedback_aos_css_inline).
+  // Emitting the stylesheet from the driver guarantees the CSS exists exactly
+  // where (and only where) the driver is mounted: no orphaned `opacity: 0`
+  // content if a theme forgets the import, and no 14 duplicated base.css copies.
+  // SSR'd with the initial hidden state, so there's no flash-then-hide.
+  return <style dangerouslySetInnerHTML={{ __html: AOS_CSS }} />
 }
+
+const AOS_CSS = `
+:where([data-aos]) {
+  opacity: 0;
+  will-change: transform, opacity;
+  transition:
+    opacity var(--aos-duration, 720ms) var(--aos-easing, cubic-bezier(0.22, 1, 0.36, 1)) var(--aos-delay, 0ms),
+    transform var(--aos-duration, 760ms) var(--aos-easing, cubic-bezier(0.22, 1, 0.36, 1)) var(--aos-delay, 0ms),
+    filter var(--aos-duration, 760ms) var(--aos-easing, cubic-bezier(0.22, 1, 0.36, 1)) var(--aos-delay, 0ms);
+  transform-origin: center;
+  backface-visibility: hidden;
+}
+:where([data-aos='fade'])            { transform: none; }
+:where([data-aos='fade-up'])         { transform: translate3d(0, 28px, 0); }
+:where([data-aos='fade-down'])       { transform: translate3d(0, -28px, 0); }
+:where([data-aos='fade-left'])       { transform: translate3d(28px, 0, 0); }
+:where([data-aos='fade-right'])      { transform: translate3d(-28px, 0, 0); }
+:where([data-aos='fade-up-right'])   { transform: translate3d(-22px, 22px, 0); }
+:where([data-aos='fade-up-left'])    { transform: translate3d(22px, 22px, 0); }
+:where([data-aos='fade-down-right']) { transform: translate3d(-22px, -22px, 0); }
+:where([data-aos='fade-down-left'])  { transform: translate3d(22px, -22px, 0); }
+:where([data-aos='zoom-in'])       { transform: scale(0.92); }
+:where([data-aos='zoom-out'])      { transform: scale(1.06); }
+:where([data-aos='zoom-in-up'])    { transform: scale(0.92) translate3d(0, 28px, 0); }
+:where([data-aos='zoom-out-down']) { transform: scale(1.06) translate3d(0, -28px, 0); }
+:where([data-aos='flip-up'])    { transform: perspective(800px) rotateX(-60deg); }
+:where([data-aos='flip-down'])  { transform: perspective(800px) rotateX(60deg); }
+:where([data-aos='flip-left'])  { transform: perspective(800px) rotateY(60deg); }
+:where([data-aos='flip-right']) { transform: perspective(800px) rotateY(-60deg); }
+:where([data-aos='slide-up'])   { transform: translate3d(0, 60px, 0); }
+:where([data-aos='slide-down']) { transform: translate3d(0, -60px, 0); }
+:where([data-aos='blur-in']) { filter: blur(12px); transform: scale(1.02); }
+:where([data-aos][data-aos-animate='true']) {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1) perspective(800px) rotate(0deg);
+  filter: blur(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  :where([data-aos]) { opacity: 1; transform: none; filter: none; transition: none; }
+}
+@media (max-width: 720px) {
+  :where([data-aos]) { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
+}
+`.trim()

@@ -11,7 +11,7 @@ export default function CtaBanner() {
   const contact = getBrandContactInfo(brand)
 
   return (
-    <section className={styles.section} aria-label="Get in touch">
+    <section className={styles.section} aria-label="Get in touch" data-aos="fade-up">
       <div className={styles.media} aria-hidden="true" />
       <div className={styles.overlay} aria-hidden="true" />
       <div className={styles.inner}>

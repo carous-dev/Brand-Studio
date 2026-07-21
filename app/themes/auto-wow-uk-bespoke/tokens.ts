@@ -27,7 +27,7 @@ export const themeTokens: ThemeTokenMap = {
     overlayEnd: "rgba(8, 11, 17, 0.86)",
     searchRadius: "6px",
   },
-  reviewStar: '#facc15',
+  reviewStar: '#f0b400',
   borders: {
     soft: 'rgba(15, 23, 42, 0.08)',
     softer: 'rgba(17, 24, 39, 0.12)',

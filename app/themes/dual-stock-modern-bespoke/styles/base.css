@@ -63,8 +63,8 @@
 
 /* Selection colour reads as brand accent without aggressive primary saturation */
 [data-theme-id='dual-stock-modern-bespoke'] ::selection {
-  background: color-mix(in srgb, var(--color-primary) 80%, #000);
-  color: #ffffff;
+  background: color-mix(in srgb, var(--color-primary) 80%, var(--color-text));
+  color: var(--color-on-dark);
 }
 
 /* -----------------------------------------------------------------------------
@@ -86,7 +86,7 @@
   height: auto;
   padding: 12px 16px;
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-on-dark);
   font-weight: 600;
   letter-spacing: 0.02em;
   z-index: 1000;
@@ -114,14 +114,14 @@
 }
 
 [data-theme-id='dual-stock-modern-bespoke'] .dual-section--dark {
-  background: var(--color-header-bg, #0a0e14);
-  color: var(--color-header-text, #ffffff);
+  background: var(--color-surface-dark);
+  color: var(--color-on-dark);
 }
 
 [data-theme-id='dual-stock-modern-bespoke'] .dual-section--dark h1,
 [data-theme-id='dual-stock-modern-bespoke'] .dual-section--dark h2,
 [data-theme-id='dual-stock-modern-bespoke'] .dual-section--dark h3 {
-  color: #ffffff;
+  color: var(--color-on-dark);
 }
 
 [data-theme-id='dual-stock-modern-bespoke'] .dual-container {
@@ -184,22 +184,22 @@
 
 [data-theme-id='dual-stock-modern-bespoke'] .dual-btn--primary {
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-on-dark);
   box-shadow: 0 8px 22px rgba(40, 162, 230, 0.22);
 }
 [data-theme-id='dual-stock-modern-bespoke'] .dual-btn--primary:hover {
-  background: color-mix(in srgb, var(--color-primary) 88%, #000);
+  background: color-mix(in srgb, var(--color-primary) 88%, var(--color-text));
   transform: translateY(-1px);
 }
 
 [data-theme-id='dual-stock-modern-bespoke'] .dual-btn--ghost {
   background: transparent;
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.5);
+  color: var(--color-on-dark);
+  border-color: color-mix(in srgb, var(--color-on-dark) 50%, transparent);
 }
 [data-theme-id='dual-stock-modern-bespoke'] .dual-btn--ghost:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #ffffff;
+  background: color-mix(in srgb, var(--color-on-dark) 10%, transparent);
+  border-color: var(--color-on-dark);
 }
 
 [data-theme-id='dual-stock-modern-bespoke'] .dual-btn--outline {
@@ -209,7 +209,7 @@
 }
 [data-theme-id='dual-stock-modern-bespoke'] .dual-btn--outline:hover {
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-on-dark);
 }
 
 [data-theme-id='dual-stock-modern-bespoke'] .dual-btn:focus-visible {
@@ -234,7 +234,7 @@
   position: relative;
   padding: clamp(2rem, 4.5vw, 3.5rem) clamp(1rem, 3vw, 2rem) clamp(1.75rem, 4vw, 3rem);
   isolation: isolate;
-  color: #ffffff;
+  color: var(--color-on-dark);
   overflow: hidden;
 }
 
@@ -244,7 +244,7 @@
   inset: 0;
   background-image: linear-gradient(
     180deg,
-    rgba(8, 16, 32, 0.86) 0%,
+    rgba(8, 16, 32, 0.86) 0%, /* photo-scrim-ok */
     rgba(8, 16, 32, 0.78) 100%
   );
   z-index: -2;
@@ -258,7 +258,7 @@
   background-position: center, center;
   background-size: cover, cover;
   background-repeat: no-repeat, no-repeat;
-  background-color: #0b1c3a;
+  background-color: var(--color-surface-dark);
 }
 
 [data-theme-id='dual-stock-modern-bespoke'] .dual-page-hero--about::after {
@@ -306,24 +306,24 @@
   font-size: 0.72rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
+  color: color-mix(in srgb, var(--color-on-dark) 72%, transparent);
 }
 [data-theme-id='dual-stock-modern-bespoke'] .dual-page-hero__breadcrumb a {
-  color: rgba(255, 255, 255, 0.72);
+  color: color-mix(in srgb, var(--color-on-dark) 72%, transparent);
   text-decoration: none;
   transition: color 0.15s ease;
 }
 [data-theme-id='dual-stock-modern-bespoke'] .dual-page-hero__breadcrumb a:hover {
-  color: #ffffff;
+  color: var(--color-on-dark);
 }
 [data-theme-id='dual-stock-modern-bespoke'] .dual-page-hero__breadcrumb [aria-current='page'] {
-  color: #ffffff;
+  color: var(--color-on-dark);
 }
 
 [data-theme-id='dual-stock-modern-bespoke'] .dual-page-hero__title {
   font-size: clamp(1.5rem, 3vw, 2.25rem);
   line-height: 1.1;
-  color: #ffffff;
+  color: var(--color-on-dark);
   text-shadow: 0 1px 14px rgba(11, 28, 58, 0.35);
   margin: 0;
 }
@@ -332,7 +332,7 @@
   font-size: clamp(0.92rem, 1.2vw, 1.05rem);
   line-height: 1.5;
   max-width: 60ch;
-  color: rgba(255, 255, 255, 0.9);
+  color: color-mix(in srgb, var(--color-on-dark) 90%, transparent);
   margin: 0;
 }
 
@@ -349,7 +349,7 @@
   padding: 12px 14px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-input, 6px);
-  background: #ffffff;
+  background: var(--color-surface);
   color: var(--color-text);
   font-size: 0.95rem;
   font-family: inherit;
@@ -365,7 +365,7 @@
 [data-theme-id='dual-stock-modern-bespoke'] .dual-input[aria-invalid='true'],
 [data-theme-id='dual-stock-modern-bespoke'] .dual-textarea[aria-invalid='true'],
 [data-theme-id='dual-stock-modern-bespoke'] .dual-select[aria-invalid='true'] {
-  border-color: #b42318;
+  border-color: var(--t-error);
   box-shadow: 0 0 0 3px rgba(180, 35, 24, 0.18);
 }
 
@@ -468,14 +468,14 @@
  * --------------------------------------------------------------------------- */
 
 [data-theme-id='dual-stock-modern-bespoke'] .dual-header {
-  background: #ffffff;
-  color: #0b1c3a;
-  border-bottom: 1px solid #e3e7f0;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
 }
 
 [data-theme-id='dual-stock-modern-bespoke'] .dual-footer {
-  background: #f5f8ff;
-  color: #52688c;
+  background: var(--color-bg);
+  color: var(--color-muted);
   margin-top: clamp(3rem, 6vw, 5rem);
 }
 

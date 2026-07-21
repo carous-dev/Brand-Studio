@@ -1,0 +1,86 @@
+.lead {
+  color: var(--color-muted);
+  margin: 0 0 24px;
+  font-size: 14px;
+  line-height: 1.65;
+  max-width: 60ch;
+}
+
+.empty {
+  color: var(--color-muted);
+  text-align: center;
+  padding: 40px 12px;
+}
+
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+.media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #ececef;
+  overflow: hidden;
+}
+.media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.placeholder { width: 100%; height: 100%; background: #ececef; }
+
+.soldBadge {
+  position: absolute;
+  inset: auto 12px 12px auto;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.body { padding: 12px 14px; }
+.body h3 {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 700;
+  font-size: 15px;
+  margin: 0 0 6px;
+  line-height: 1.25;
+}
+.price {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+
+.cta {
+  margin-top: 28px;
+  text-align: center;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 28px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 13px;
+  min-height: 44px;
+}
+.btn:hover { background: var(--color-primary-strong); }

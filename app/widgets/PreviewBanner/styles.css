@@ -117,3 +117,13 @@
     line-height: 1.4;
   }
 }
+
+/* Mobile (≤720px) — banner is NOT sticky. On a phone the wrapped preview
+   text takes ~150px of vertical space; pinning that to the top buries the
+   actual content. Let the banner scroll away naturally so the dealer's
+   sticky header can take over the top slot once scrolled past it. */
+@media (max-width: 720px) {
+  .brandstudio-preview-banner {
+    position: static;
+  }
+}

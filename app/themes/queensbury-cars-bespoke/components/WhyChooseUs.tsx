@@ -63,7 +63,7 @@ const PILLARS: Pillar[] = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="qb-section qb-section--dark">
+    <section className="qb-section qb-section--dark" data-aos="fade-up">
       <div className="qb-container">
         <header className="qb-section-head" data-aos="fade-up">
           <span className="qb-eyebrow qb-eyebrow--on-dark">Why Queensbury</span>

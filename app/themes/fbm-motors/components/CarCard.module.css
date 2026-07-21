@@ -2,8 +2,9 @@
   position: relative;
   overflow: hidden;
   border-radius: 24px;
-  background: #ffffff;
-  border: 1px solid rgba(14, 20, 32, 0.06);
+  background: var(--color-surface);
+  color: var(--fbm-ink-900, var(--color-text));
+  border: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent);
   box-shadow: var(--fbm-shadow-card);
   transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
 }
@@ -27,7 +28,7 @@
   position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  background: rgba(14, 20, 32, 0.05);
+  background: color-mix(in srgb, var(--color-text) 5%, transparent);
 }
 .image {
   height: 100%;
@@ -48,7 +49,7 @@
   left: 12px;
   top: 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.9); /* photo-scrim-ok */
   padding: 4px 12px;
   font-size: 0.625rem;
   font-weight: 700;
@@ -66,7 +67,7 @@
   font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
   font-size: 1rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-surface);
   backdrop-filter: blur(8px);
 }
 

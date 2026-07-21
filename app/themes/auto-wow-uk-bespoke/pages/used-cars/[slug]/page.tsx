@@ -1,9 +1,11 @@
+import Script from 'next/script'
 import { notFound } from 'next/navigation'
 import type { ThemePageProps } from '../../../../types'
 import { apiUrl } from '../../../lib/api'
 import { normalizeInventoryItem, type InventoryVehicle } from '../../../lib/inventory'
 import { getBrandSlugFromRequest } from '../../../lib/brand-slug.server'
 import { getVehicleLookupCandidates } from '../../../lib/vehicle-links'
+import { RESERVE_WIDGET_SRC, VEHICLE_ENQUIRY_WIDGET_SRC } from '../../../lib/external-widgets'
 import VehicleDetailIsland, { type DetailVehicle, type DetailSimilarVehicle, type DetailMakeTally } from './VehicleDetailIsland'
 
 type DetailRuntimeProps = ThemePageProps & {
@@ -188,7 +190,21 @@ export async function AutoVehicleDetailPage(props: DetailRuntimeProps) {
     specs,
   }
 
-  return <VehicleDetailIsland vehicle={detailVehicle} similar={similar} makes={makes} />
+  return (
+    <>
+      <Script
+        id="carous-vehicle-enquiry-widget"
+        src={VEHICLE_ENQUIRY_WIDGET_SRC}
+        strategy="afterInteractive"
+      />
+      <Script
+        id="carous-reserve-a-car-widget"
+        src={RESERVE_WIDGET_SRC}
+        strategy="afterInteractive"
+      />
+      <VehicleDetailIsland vehicle={detailVehicle} similar={similar} makes={makes} />
+    </>
+  )
 }
 
 export default AutoVehicleDetailPage

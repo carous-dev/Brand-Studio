@@ -432,7 +432,6 @@ html:has([data-theme-id='showroom-shine-cars-bespoke']),
   [data-theme-id='showroom-shine-cars-bespoke'] .shr-page-hero__lead {
     font-size: 0.9rem;
     line-height: 1.45;
-    max-width: 38ch;
   }
 }
 @media (max-width: 480px) {

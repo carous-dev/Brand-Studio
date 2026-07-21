@@ -3,6 +3,7 @@
 import React from 'react';
 import type { BrandConfig } from '@/brands/types';
 import { buildGoogleFontsImport } from '@/app/lib/googleFonts';
+import { buildThemeTokens, renderThemeStyle, escapeCssUrl } from '@/app/themes/lib/theme-tokens';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -19,6 +20,15 @@ const pickString = (...candidates: Array<unknown>): string | null => {
   return null;
 };
 
+/**
+ * BrandStyles for showroom-shine-cars-bespoke — emits the canonical token block
+ * via the shared emitter (buildThemeTokens + renderThemeStyle), plus the theme's
+ * own image-slot / font-override extras. Showroom's bespoke palette is passed as
+ * `defaults`; brand records override any of the 8 core colours via theme.colors.*
+ * and every surface repaints. header-* tokens are OMITTED — showroom derived them
+ * straight from bg/text/muted, exactly what the emitter does. The dark tier and
+ * the --brand-* alias mirror (+ rgb triples) are emitter-supplied.
+ */
 export function BrandStyles({ brand }: BrandStylesProps) {
   const { theme } = brand;
   const fonts = theme.fonts || {};
@@ -52,69 +62,36 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   const sellYourCarImage = resolveSlot('sellYourCar', 'sellYourCar');
   const recentlySoldImage = resolveSlot('recentlySold', 'recentlySold');
 
-  // Brand triad — overridable from brand.theme.colors. Neutrals stay theme-locked.
-  const brandPrimary = theme.colors.primaryColor || '#ad0b1b';
-  const brandPrimaryStrong = (theme.colors as any).primaryStrong || '#980a18';
-  const brandSecondary = theme.colors.secondaryColor || '#0a0e14';
-  const brandAccent = theme.colors.accentColor || brandPrimary;
-  const brandOnPrimary = (theme.colors as any).onPrimaryColor || '#ffffff';
+  // Canonical token block via the shared emitter. Showroom Shine's bespoke
+  // palette is passed as `defaults`; brand records override any of the 8 via
+  // theme.colors.*. The hero overlay is a deep warm-to-night scrim (distinct
+  // literals) so it's passed; hero text/review muted + review-star match the
+  // emitter defaults but are passed for explicitness.
+  const vars = buildThemeTokens(theme.colors as any, {
+    defaults: {
+      primaryColor: '#ad0b1b',
+      secondaryColor: '#0a0e14',
+      accentColor: '#ad0b1b',
+      backgroundColor: '#ffffff',
+      surfaceColor: '#f6f7fb',
+      textColor: '#0f1623',
+      mutedColor: '#5b6573',
+      borderColor: '#e3e6ee',
+      primaryStrong: '#980a18',
+      onPrimary: '#ffffff',
+      heroOverlayStart: 'rgba(20, 4, 8, 0.32)',
+      heroOverlayEnd: 'rgba(8, 11, 17, 0.78)',
+      heroTextMuted: 'rgba(255, 255, 255, 0.92)',
+      heroReviewMuted: 'rgba(255, 255, 255, 0.85)',
+      reviewStar: '#facc15',
+    },
+  });
 
-  const cssVariables: Record<string, string> = {
-    // Brand triad (overridable by brand record)
-    '--color-primary': brandPrimary,
-    '--color-primary-strong': brandPrimaryStrong,
-    '--color-on-primary': brandOnPrimary,
-    '--color-secondary': brandSecondary,
-    '--color-accent': brandAccent,
-
-    // Fixed neutral tiers — NEVER overridable. Brand records cannot
-    // break contrast because the surface↔foreground pairing is locked here.
-    '--surface-bg-light': '#ffffff',
-    '--surface-card-light': '#f6f7fb',
-    '--text-on-light-strong': '#0f1623',
-    '--text-on-light-muted': '#5b6573',
-    '--border-on-light': '#e3e6ee',
-    '--surface-bg-dark': '#0a0e14',
-    '--surface-card-dark': '#14181f',
-    '--text-on-dark-strong': '#ffffff',
-    '--text-on-dark-muted': 'rgba(255,255,255,0.78)',
-    '--border-on-dark': 'rgba(255,255,255,0.12)',
-
-    // Brand triad (canonical names — paired with surfaces)
-    '--brand-primary': brandPrimary,
-    '--brand-primary-strong': brandPrimaryStrong,
-    '--brand-on-primary': brandOnPrimary,
-
-    // Legacy aliases (light tier). Components on dark surfaces use the
-    // *-dark tokens directly — do NOT depend on these for dark sections.
-    '--color-bg': '#ffffff',
-    '--color-surface': '#f6f7fb',
-    '--color-text': '#0f1623',
-    '--color-muted': '#5b6573',
-    '--color-border': '#e3e6ee',
-    '--color-header-bg': '#ffffff',
-    '--color-header-text': '#0f1623',
-    '--color-header-muted': '#5b6573',
-    '--color-hero-overlay-start': 'rgba(20, 4, 8, 0.32)',
-    '--color-hero-overlay-end': 'rgba(8, 11, 17, 0.78)',
-    '--color-hero-text-muted': 'rgba(255, 255, 255, 0.92)',
-    '--color-review-star': '#facc15',
-
-    // Carous-platform bridge tokens
-    '--brand-secondary': brandSecondary,
-    '--brand-accent': brandAccent,
-    '--brand-background': '#ffffff',
-    '--brand-text': '#0f1623',
-    '--brand-primary-rgb': hexToRgb(brandPrimary),
-    '--brand-secondary-rgb': hexToRgb(brandSecondary),
-    '--brand-accent-rgb': hexToRgb(brandAccent),
-
-    // 7-slot per-page image vars. Pair with multi-layer CSS background-image
-    // patterns in base.css so a 404 on the brand URL still reveals the theme
-    // default underneath. NEVER use a generic placeholder like
-    // /images/hero-placeholder.jpg here — that 404s on most deploys and
-    // CSS-level var(name, fallback) won't fire when the var is set to
-    // a broken URL string.
+  const extras: Record<string, string> = {
+    // 7 image slots — the theme references these via var(--brand-image-*) so
+    // dashboard edits to brand.images.* propagate without code changes. Pair
+    // with multi-layer CSS background-image patterns in base.css so a 404 on
+    // the brand URL still reveals the theme default underneath.
     '--brand-image-hero': `url("${escapeCssUrl(heroImageSlot)}")`,
     '--brand-image-about': `url("${escapeCssUrl(aboutImage)}")`,
     '--brand-image-services': `url("${escapeCssUrl(servicesImage)}")`,
@@ -128,34 +105,19 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--font-brand-family-override': fontBrand,
   };
 
-  // Pull whichever Google Fonts the brand record asks for. Without this,
-  // a brand picking e.g. Roboto in /update sets --font-ui-family-override
-  // to "Roboto, ..." but the browser has no @font-face for it, so the
-  // page silently falls back to system-ui.
+  // Pull whichever Google Fonts the brand record asks for. Without this @import,
+  // --font-ui-family-override resolves to a font the browser never loaded and
+  // the page silently falls back to system-ui / a system serif for headings.
+  // See memory feedback_brandstyles_must_load_google_fonts.
   const fontImport = buildGoogleFontsImport(fontUi, fontBrand);
 
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: `${fontImport}:root {
-            ${Object.entries(cssVariables)
-              .map(([key, value]) => `${key}: ${value};`)
-              .join('\n            ')}
-            font-family: ${fontUi};
-          }
-        `,
+        __html: renderThemeStyle({ vars, extras, fontFamily: fontUi, fontImport }),
       }}
     />
   );
-}
-
-function hexToRgb(hex: string): string {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 0, 0';
-}
-
-function escapeCssUrl(url: string): string {
-  return String(url).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n|\r/g, '');
 }
 
 function resolveFontToken(...candidates: Array<unknown>): string | null {

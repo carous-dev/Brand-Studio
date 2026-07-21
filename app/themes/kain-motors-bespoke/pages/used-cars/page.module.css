@@ -14,10 +14,10 @@
 .hero {
   position: relative;
   isolation: isolate;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   background-color: var(--surface-bg-dark);
   background-image:
-    linear-gradient(180deg, rgba(8,11,17,0.88) 0%, rgba(8,11,17,0.6) 100%),
+    linear-gradient(180deg, rgba(8,11,17,0.88) 0%, rgba(8,11,17,0.6) 100%), /* photo-scrim-ok */
     var(--brand-image-hero, none),
     url('/themes/kain-motors-bespoke/images/hero.jpg');
   background-size: auto, cover, cover;
@@ -34,7 +34,7 @@
   width: 360px;
   height: 360px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(209,182,122,0.32) 0%, transparent 65%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--kain-accent-warm) 32%, transparent) 0%, transparent 65%);
   z-index: -1;
   filter: blur(6px);
 }
@@ -62,7 +62,7 @@
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   margin: 0;
   text-shadow: 0 2px 24px rgba(0,0,0,0.4);
 }
@@ -70,7 +70,7 @@
   font-family: var(--font-editorial-family, 'Playfair Display', serif);
   font-style: italic;
   font-size: clamp(1rem, 1.6vw, 1.15rem);
-  color: rgba(255,255,255,0.92);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 92%, transparent);
   margin: 0;
   line-height: 1.5;
 }
@@ -84,8 +84,8 @@
   display: flex;
   flex-direction: column;
   padding: 10px 16px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(209,182,122,0.32);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--kain-accent-warm) 32%, transparent);
   border-radius: 4px;
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
   min-width: 140px;
@@ -101,7 +101,7 @@
   font-size: 0.78rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.7);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 70%, transparent);
   font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
   font-weight: 500;
 }
@@ -465,7 +465,7 @@
 }
 .card:hover {
   transform: translateY(-3px);
-  border-color: rgba(209,182,122,0.55);
+  border-color: color-mix(in srgb, var(--kain-accent-warm) 55%, transparent);
   box-shadow: 0 18px 40px rgba(15,23,42,0.18);
 }
 .cardLink {
@@ -502,7 +502,7 @@
   position: absolute;
   inset: auto 0 0 0;
   height: 32%;
-  background: linear-gradient(180deg, transparent 0%, rgba(10,14,20,0.4) 100%);
+  background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--color-bg-dark) 40%, transparent) 100%);
   pointer-events: none;
 }
 .featured {
@@ -531,8 +531,8 @@
 }
 .iconButton {
   appearance: none;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  background: rgba(10, 14, 20, 0.58);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 28%, transparent);
+  background: color-mix(in srgb, var(--color-bg-dark) 58%, transparent);
   color: var(--kain-accent-warm);
   width: 30px;
   height: 30px;
@@ -552,11 +552,11 @@
   backdrop-filter: blur(3px);
 }
 .iconButton[data-active='true'] {
-  background: rgba(209, 182, 122, 0.92);
+  background: color-mix(in srgb, var(--kain-accent-warm) 92%, transparent);
   border-color: transparent;
-  color: #0a0e14;
+  color: var(--color-bg-dark);
 }
-.iconButton:hover { color: #ffffff; }
+.iconButton:hover { color: var(--text-on-dark-strong); }
 .iconButton svg {
   width: 15px;
   height: 15px;
@@ -583,9 +583,9 @@
 .overlayButton {
   position: absolute;
   inset: auto 12px 12px 12px;
-  background: rgba(10,14,20,0.86);
-  color: #ffffff;
-  border: 1px solid rgba(255,255,255,0.16);
+  background: color-mix(in srgb, var(--color-bg-dark) 86%, transparent);
+  color: var(--text-on-dark-strong);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 16%, transparent);
   font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
   font-size: 0.78rem;
   letter-spacing: 0.16em;
@@ -665,7 +665,7 @@
   gap: 6px;
   margin-top: 2px;
   padding-top: 10px;
-  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  border-top: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
 }
 .cardSpecs span {
   display: inline-flex;
@@ -674,8 +674,8 @@
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
   font-size: 0.78rem;
   color: var(--text-on-light-muted);
-  background: rgba(15, 23, 42, 0.04);
-  border: 1px solid rgba(15, 23, 42, 0.06);
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent);
   padding: 5px 10px;
   border-radius: 4px;
   min-width: 0;
@@ -761,7 +761,7 @@
 .skeletonMedia,
 .skeletonSpecRow,
 .skeletonPill {
-  background: linear-gradient(120deg, var(--surface-card-light) 0%, rgba(209,182,122,0.12) 50%, var(--surface-card-light) 100%);
+  background: linear-gradient(120deg, var(--surface-card-light) 0%, color-mix(in srgb, var(--kain-accent-warm) 12%, transparent) 50%, var(--surface-card-light) 100%);
   background-size: 200% 100%;
   animation: kainSkel 2s linear infinite;
   border-radius: 4px;

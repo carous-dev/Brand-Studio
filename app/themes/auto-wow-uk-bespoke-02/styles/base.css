@@ -50,7 +50,7 @@
      signage feel; nothing exceeds 8px. */
   --shadow-tight: 0 1px 0 rgba(var(--color-text-rgb), 0.04), 0 8px 24px rgba(var(--color-text-rgb), 0.06);
   --shadow-press: 0 12px 32px rgba(var(--color-text-rgb), 0.12);
-  --shadow-dark-press: 0 12px 32px rgba(0, 0, 0, 0.4);
+  --shadow-dark-press: 0 12px 32px rgba(var(--color-text-rgb), 0.4);
 
   color-scheme: light;
   font-family: var(--font-ui-family-override, 'Inter', 'Segoe UI', sans-serif);
@@ -139,7 +139,7 @@
 }
 
 /* Page-hero variants — multi-layer background-image so brand-uploaded
-   images that 404 fall through to the theme default. Per SKILL pitfall #38c. */
+   images that 404 fall through to the theme default. Per SKILL pitfall 38c. */
 [data-theme-id='auto-wow-uk-bespoke-02'] .auto-page-hero {
   position: relative;
   isolation: isolate;
@@ -230,7 +230,7 @@
   color: var(--brand-primary);
   margin-bottom: 12px;
   display: inline-block;
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
   padding: 6px 12px;
   border-left: 2px solid var(--brand-primary);
 }
@@ -281,7 +281,7 @@
 }
 [data-theme-id='auto-wow-uk-bespoke-02'] .auto-btn--ghost-light:hover {
   border-color: var(--text-on-dark-strong);
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
 }
 [data-theme-id='auto-wow-uk-bespoke-02'] .auto-btn--ghost-dark {
   background: transparent;

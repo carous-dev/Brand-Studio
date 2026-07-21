@@ -1,0 +1,186 @@
+.footer {
+  background: var(--surface-bg-light);
+  border-top: 1px solid var(--border-hairline);
+  /* Footer butts against last section — no top margin. Internal padding
+     gives the visual breathing room above the brand block. */
+  padding: clamp(72px, 9vw, 112px) 0 32px;
+  color: var(--text-on-light-strong);
+}
+
+.shell {
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 48px);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+}
+
+@media (min-width: 720px) {
+  .grid { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1024px) {
+  .grid { grid-template-columns: 1.4fr 0.8fr 0.8fr 1.2fr; gap: 48px; }
+}
+
+.brandCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.brandLink {
+  display: inline-flex;
+  align-items: center;
+}
+
+.brandLogo {
+  height: 38px;
+  width: auto;
+  max-width: 240px;
+  object-fit: contain;
+}
+
+.brandTagline {
+  font-size: 0.95rem;
+  color: var(--text-on-light-muted);
+  max-width: 36ch;
+}
+
+.socials {
+  display: inline-flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.socials a,
+.socialPlaceholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  border: 1px solid var(--border-on-light);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-on-light-strong);
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.socials a:hover {
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+.colTitle {
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-on-light-muted);
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.linkList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.linkList a {
+  font-size: 0.95rem;
+  color: var(--text-on-light-strong);
+}
+.linkList a:hover {
+  color: var(--brand-primary);
+}
+
+.contact {
+  font-style: normal;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.contactRow {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--text-on-light-strong);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.contactRow svg {
+  margin-top: 3px;
+  color: var(--brand-primary);
+  flex-shrink: 0;
+}
+.contactRow:hover { color: var(--brand-primary); }
+
+.hours {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-hairline);
+}
+.hoursRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 0.85rem;
+  color: var(--text-on-light-muted);
+}
+.hoursRow dt {
+  font-weight: 500;
+  color: var(--text-on-light-strong);
+}
+.hoursRow dd { margin: 0; }
+
+.divider {
+  border: 0;
+  height: 1px;
+  background: var(--border-hairline);
+  margin: clamp(40px, 5vw, 56px) 0 24px;
+}
+
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 0.82rem;
+  color: var(--text-on-light-muted);
+}
+
+.copy { margin: 0; }
+
+.legal {
+  display: inline-flex;
+  gap: 18px;
+}
+.legal a {
+  color: var(--text-on-light-muted);
+}
+.legal a:hover { color: var(--brand-primary); }
+
+.designedBy { margin: 0; }
+.designedBy a {
+  color: var(--text-on-light-strong);
+  font-weight: 500;
+}
+.designedBy a:hover { color: var(--brand-primary); }
+
+@media (max-width: 640px) {
+  .footer { padding: 48px 0 24px; }
+  .grid { gap: 32px; }
+  .brandLogo { height: 32px; }
+  .bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
+}

@@ -1,0 +1,28 @@
+{
+  "themeId": "axis-autos-bespoke",
+  "archetype": "minimalist",
+  "signatureConcept": "Calm minimalist dealer with a left-anchored single hero photo against generous whitespace, hairline-borderless chrome, and sentence-case display titles in a formal voice",
+  "signatureMove": "split-screen-photo-left",
+  "personalityVoice": "formal",
+  "headerStructure": "hairline-thin-borderless",
+  "heroPattern": "split-screen-photo-left",
+  "homepageSections": ["hero", "editorial-intro", "featured-stock", "service-highlights", "recently-sold-preview", "cta-band", "directory"],
+  "inventoryListPattern": "compact-list",
+  "vehicleDetailPattern": "story-driven",
+  "fontHeading": "Manrope",
+  "fontBody": "IBM Plex Sans",
+  "titleTreatment": "sentence-case-display",
+  "oneBigMove": "decorative-density-minimum",
+  "designerNotes": [
+    "Minimalist archetype is currently empty in the fingerprint registry — first theme of its kind.",
+    "Sentence-case display headlines (per feedback_title_treatment_variance). NO UPPERCASE blanket on h1-h4.",
+    "Zero decorative layers — no glow blobs, no grid overlays, no shimmer strips. Whitespace IS the design.",
+    "Compact-list inventory: horizontal rows with thumb left, specs middle, price+CTA right. Distinct from every showroom-grid sibling.",
+    "Story-driven vehicle detail: full-bleed lead photo, sentence-case headline, narrative-flow content blocks, sidebar facts.",
+    "Hairline chrome: 52px header, 1px hairline border-bottom, no top contact bar (contact lives in footer).",
+    "All paired tokens derive from dashboard --color-* pickers (per feedback_dashboard_tokens_drive_all_surfaces).",
+    "No hardcoded brand-primary RGB literals — use color-mix(in srgb, var(--brand-primary) X%, transparent) (per feedback_hardcoded_colors_in_themes).",
+    "Hero caps: 1 eyebrow, 1 headline, 1 lead, 1 primary CTA + 1 secondary (phone), 0 chip rows, 0 search forms (per feedback_hero_simplicity_balance)."
+  ],
+  "createdAt": "2026-05-25"
+}

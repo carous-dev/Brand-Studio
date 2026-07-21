@@ -1,0 +1,40 @@
+{
+  "_comment": "DNA for buy4lessuk-bespoke — bold dealer-signage archetype modelled on the Buy4Less UK landing page reference (red diamond mark, twin-car hero, finance+sell split panel, big stock carousel with yellow safe-hands strip, image-trio CTA cards, finance-partner row, sticky Car Finance in 60s CTA bar). Primary red #e11d2a (auto-passes AA white-on-primary, no darken needed).",
+  "radii": {
+    "pill": "999px",
+    "card": "6px",
+    "input": "4px",
+    "button": "4px"
+  },
+  "spacing": {
+    "sectionInset": "clamp(20px, 4vw, 40px)",
+    "sectionGap": "clamp(56px, 7vw, 96px)",
+    "containerMax": "1240px",
+    "headerMax": "1440px"
+  },
+  "fonts": {
+    "heading": "Oswald",
+    "body": "Inter",
+    "headingWeight": 700,
+    "bodyWeight": 400
+  },
+  "hero": {
+    "minHeight": "440px",
+    "minHeightLg": "560px",
+    "minHeightSm": "360px",
+    "overlayStart": "rgba(8, 8, 10, 0.10)",
+    "overlayEnd": "rgba(8, 8, 10, 0.62)",
+    "searchRadius": "4px"
+  },
+  "shadows": {
+    "card": "0 14px 32px rgba(15, 23, 42, 0.16)",
+    "floating": "0 20px 44px rgba(0, 0, 0, 0.28)",
+    "button": "0 6px 18px rgba(225, 29, 42, 0.28)"
+  },
+  "colors": {
+    "_note": "Brand triad — paired surface/foreground tokens are theme-locked in BrandStyles. Brand records can override only the triad.",
+    "brandPrimary": "#e11d2a",
+    "brandPrimaryStrong": "#b71623",
+    "brandOnPrimary": "#ffffff"
+  }
+}

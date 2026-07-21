@@ -41,6 +41,7 @@ export const CTAQuestion: React.FC = () => {
   return (
     <motion.section
       className="cta-question-section split-cta-section"
+      data-aos="fade-up"
       style={sectionStyle}
       initial={{ opacity: 0, x: -50 }}
       whileInView={{ opacity: 1, x: 0 }}

@@ -12,13 +12,13 @@ export default function CtaBanner() {
   const contact = getBrandContactInfo(brand)
 
   return (
-    <section className={styles.banner} aria-labelledby="cta-title">
+    <section className={styles.banner} aria-labelledby="cta-title" data-aos="fade-up">
       <div className={styles.media} aria-hidden="true" />
       <div className={styles.overlay} aria-hidden="true" />
       <div className={`mfx-glow-pulse ${styles.glow}`} aria-hidden="true" />
 
       <div className={styles.inner}>
-        <div className={styles.copy} data-aos="fade-up">
+        <div className={styles.copy}>
           <p className={styles.eyebrow}>Looking for a used car?</p>
           <h2 id="cta-title" className={styles.title}>
             Browse the forecourt or talk to a real person.
@@ -29,7 +29,7 @@ export default function CtaBanner() {
           </p>
         </div>
 
-        <div className={styles.actions} data-aos="fade-up" data-aos-delay="120">
+        <div className={styles.actions}>
           <Link href="/used-cars" className={`auto-btn auto-btn--primary mfx-shimmer ${styles.cta}`}>
             <Car size={16} aria-hidden="true" />
             Browse stock

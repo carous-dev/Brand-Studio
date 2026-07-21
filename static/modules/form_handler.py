@@ -5,6 +5,15 @@ This replicates the JavaScript FormHandler logic in Python
 
 from datetime import datetime
 import os
+import sys
+
+try:
+    from backend.services.color_derive import resolve_colors
+except ImportError:
+    # This module is imported with static/modules on sys.path; make the
+    # project root importable so backend.services resolves.
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    from backend.services.color_derive import resolve_colors
 
 
 def parse_bool_flag(value):
@@ -236,15 +245,28 @@ def create_brand_config(data, slug, keywords):
         data.get('aaApprovedDealer', data.get('aa_approved_dealer'))
     )
 
-    # Get colors from form data
-    primary_color = data.get('primaryColor') or theme_colors.get('primaryColor') or '#c41e3a'
-    secondary_color = data.get('secondaryColor') or theme_colors.get('secondaryColor') or '#666666'
-    accent_color = data.get('accentColor') or theme_colors.get('accentColor') or '#c41e3a'
-    background_color = data.get('backgroundColor') or theme_colors.get('backgroundColor') or '#ffffff'
-    text_color = data.get('textColor') or theme_colors.get('textColor') or '#1f2933'
-    border_color = data.get('borderColor') or theme_colors.get('borderColor') or '#e5e7eb'
-    muted_color = data.get('mutedColor') or theme_colors.get('mutedColor') or '#6b7280'
-    surface_color = data.get('surfaceColor') or theme_colors.get('surfaceColor') or background_color
+    # Get colors from form data. In Auto mode the derivation engine recomputes
+    # text/surface/border/muted from the 4 brand inputs; otherwise explicit
+    # values are kept and only missing ones are filled.
+    colors_auto = parse_bool_flag(data.get('colorsAuto', theme.get('colorsAuto')))
+    resolved_colors = resolve_colors({
+        'primaryColor': data.get('primaryColor') or theme_colors.get('primaryColor') or '#c41e3a',
+        'secondaryColor': data.get('secondaryColor') or theme_colors.get('secondaryColor') or '#666666',
+        'accentColor': data.get('accentColor') or theme_colors.get('accentColor') or '#c41e3a',
+        'backgroundColor': data.get('backgroundColor') or theme_colors.get('backgroundColor') or '#ffffff',
+        'textColor': data.get('textColor') or theme_colors.get('textColor'),
+        'borderColor': data.get('borderColor') or theme_colors.get('borderColor'),
+        'mutedColor': data.get('mutedColor') or theme_colors.get('mutedColor'),
+        'surfaceColor': data.get('surfaceColor') or theme_colors.get('surfaceColor'),
+    }, auto=colors_auto)
+    primary_color = resolved_colors['primaryColor']
+    secondary_color = resolved_colors['secondaryColor']
+    accent_color = resolved_colors['accentColor']
+    background_color = resolved_colors['backgroundColor']
+    text_color = resolved_colors['textColor']
+    border_color = resolved_colors['borderColor']
+    muted_color = resolved_colors['mutedColor']
+    surface_color = resolved_colors['surfaceColor']
 
     # Fonts (allow override from form fields or existing theme.fonts)
     theme_fonts = theme.get('fonts') if isinstance(theme.get('fonts'), dict) else {}
@@ -359,6 +381,7 @@ def create_brand_config(data, slug, keywords):
         'theme': {
             'id': theme_id,
             'themeId': theme_id,
+            'colorsAuto': colors_auto,
             'colors': {
                 # Core 8 Colors (from Dashboard) - NEW SYSTEM
                 'primaryColor': primary_color,

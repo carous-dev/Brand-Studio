@@ -3,7 +3,7 @@
   min-height: 340px;
   display: flex;
   align-items: center;
-  /* Photo-chrome literal — white over dark scrim, brand-agnostic */
+  /* photo-scrim-ok — white text over the hero photo + dark scrim, brand-agnostic */
   color: #ffffff;
   isolation: isolate;
   overflow: hidden;
@@ -30,7 +30,9 @@
   inset: 0;
   z-index: -1;
   background:
+    /* photo-scrim-ok */
     linear-gradient(110deg, rgba(0, 0, 0, 0.66) 0%, rgba(0, 0, 0, 0.46) 55%, rgba(0, 0, 0, 0.3) 100%),
+    /* photo-scrim-ok */
     linear-gradient(180deg, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.32) 100%);
 }
 
@@ -67,7 +69,7 @@
   font-size: 0.82rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  /* Photo-chrome literal — white over dark scrim */
+  /* photo-scrim-ok — white over the hero photo + dark scrim */
   color: #ffffff;
   margin: 0 0 12px;
   display: inline-flex;
@@ -89,7 +91,7 @@
   letter-spacing: 0.01em;
   text-transform: uppercase;
   font-weight: 700;
-  /* Photo-chrome literal — white on dark scrim */
+  /* photo-scrim-ok — white on the hero photo + dark scrim */
   color: #ffffff;
   margin: 0 0 16px;
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
@@ -98,7 +100,7 @@
 .lead {
   font-size: 1rem;
   line-height: 1.6;
-  /* Photo-chrome literal — white-alpha on dark scrim */
+  /* photo-scrim-ok — white-alpha on the hero photo + dark scrim */
   color: rgba(255, 255, 255, 0.88);
   margin: 0;
   max-width: 62ch;
@@ -119,16 +121,16 @@
 /* Photo-chrome literals — frosted white-on-dark ghost buttons over the
    banner's dark scrim, brand-agnostic. */
 .cta:global(.auto-btn--ghost) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.5);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1); /* photo-scrim-ok */
+  border-color: rgba(255, 255, 255, 0.5); /* photo-scrim-ok */
+  color: #ffffff; /* photo-scrim-ok */
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 
 .cta:global(.auto-btn--ghost):hover {
-  background: #ffffff;
-  border-color: #ffffff;
+  background: #ffffff; /* photo-scrim-ok */
+  border-color: #ffffff; /* photo-scrim-ok */
   color: var(--color-primary);
 }
 

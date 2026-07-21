@@ -71,7 +71,7 @@
 
 .skeletonCard {
   aspect-ratio: 16 / 19;
-  background: linear-gradient(110deg, var(--surface-bg-light) 8%, rgba(229,232,238,0.4) 18%, var(--surface-bg-light) 33%);
+  background: linear-gradient(110deg, var(--surface-bg-light) 8%, color-mix(in srgb, var(--color-border) 40%, transparent) 18%, var(--surface-bg-light) 33%);
   background-size: 200% 100%;
   animation: shimmer 1.4s linear infinite;
   border: 1px solid var(--border-on-light);

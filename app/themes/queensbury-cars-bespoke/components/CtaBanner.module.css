@@ -5,19 +5,18 @@
   overflow: hidden;
   isolation: isolate;
   padding: clamp(48px, 7vw, 96px) clamp(20px, 5vw, 48px);
-  color: #ffffff;
+  /* Photo-chrome literal — white over dark scrim, brand-agnostic.
+     Brand-token-tinted overlays either bury the photo (when --surface-bg-dark
+     is heavy) or merge into it (when light); literal dark scrim guarantees
+     the image stays visible AND white text reads at every brand permutation. */
+  color: var(--text-on-dark-strong);
   background-image:
-    linear-gradient(120deg,
-      var(--surface-bg-dark) 0%,
-      color-mix(in srgb, var(--brand-primary) 25%, var(--surface-bg-dark)) 45%,
-      color-mix(in srgb, var(--brand-primary) 60%, var(--surface-bg-dark)) 75%,
-      color-mix(in srgb, var(--brand-primary) 35%, var(--surface-bg-dark)) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.72) 100%), /* photo-scrim-ok */
     var(--brand-image-finance, none),
     url('/themes/queensbury-cars-bespoke/images/finance.jpg');
   background-size: auto, cover, cover;
   background-position: center, center, center;
   background-repeat: no-repeat, no-repeat, no-repeat;
-  background-blend-mode: normal, multiply, multiply;
 }
 
 .glow {
@@ -37,11 +36,11 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    linear-gradient(color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent) 1px, transparent 1px);
   background-size: 36px 36px, 36px 36px;
-  mask-image: radial-gradient(70% 80% at 50% 50%, #000 0%, transparent 80%);
-  -webkit-mask-image: radial-gradient(70% 80% at 50% 50%, #000 0%, transparent 80%);
+  mask-image: radial-gradient(70% 80% at 50% 50%, var(--shade-deep) 0%, transparent 80%);
+  -webkit-mask-image: radial-gradient(70% 80% at 50% 50%, var(--shade-deep) 0%, transparent 80%);
   z-index: 0;
   pointer-events: none;
 }

@@ -5,7 +5,7 @@ import styles from './CtaBanner.module.css'
 
 export default function CtaBanner() {
   return (
-    <section className={styles.cta} data-aos="zoom-in">
+    <section className={styles.cta} data-aos="fade-up">
       <div className={`${styles.glow} mfx-glow-pulse`} aria-hidden="true" />
       <div className={styles.gridPattern} aria-hidden="true" />
       <div className={styles.inner}>

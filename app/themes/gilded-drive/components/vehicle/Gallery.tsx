@@ -55,8 +55,8 @@ export default function Gallery(props: any) {
                 .lb-spinner {
                     width: 50px;
                     height: 50px;
-                    border: 4px solid rgba(255,255,255,0.3);
-                    border-top: 4px solid #3498db;
+                    border: 4px solid rgba(255,255,255,0.3); /* photo-scrim-ok */
+                    border-top: 4px solid var(--accent);
                     border-radius: 50%;
                     animation: spin 1s linear infinite;
                     position: absolute;
@@ -85,19 +85,19 @@ export default function Gallery(props: any) {
                     justify-content: center;
                     height: 100%;
                     width: 100%;
-                    background: #000; /* prevent white flash while lightbox image loads */
+                    background: #000; /* photo-scrim-ok — prevent white flash while lightbox image loads */
                 }
                 .lb-image-container img {
                     max-width: 100%;
                     max-height: 100%;
                     object-fit: contain;
-                    background: #000;
+                    background: #000; /* photo-scrim-ok */
                 }
                 .lb-counter {
                     position: absolute;
                     top: 10px;
                     right: 10px;
-                    background: rgba(0,0,0,0.7);
+                    background: rgba(0,0,0,0.7); /* photo-scrim-ok */
                     color: white;
                     padding: 5px 10px;
                     border-radius: 4px;
@@ -111,7 +111,7 @@ export default function Gallery(props: any) {
                     transform: translateX(-50%);
                     display: flex;
                     gap: 10px;
-                    background: rgba(0,0,0,0.7);
+                    background: rgba(0,0,0,0.7); /* photo-scrim-ok */
                     padding: 10px;
                     border-radius: 8px;
                 }
@@ -125,7 +125,7 @@ export default function Gallery(props: any) {
                     flex-shrink: 0;
                 }
                 .lb-thumbs img.active {
-                    border-color: #3498db;
+                    border-color: var(--accent);
                 }
                 .lb-nav {
                     z-index: 10;

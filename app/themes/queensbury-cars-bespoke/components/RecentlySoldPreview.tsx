@@ -38,7 +38,7 @@ export default function RecentlySoldPreview() {
   if (state === 'empty') return null
 
   return (
-    <section className={`qb-section ${styles.section}`}>
+    <section className={`qb-section ${styles.section}`} data-aos="fade-up">
       <div className="qb-container">
         <header className={styles.head}>
           <div>

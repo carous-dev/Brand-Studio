@@ -162,8 +162,8 @@
 .regChip {
   display: inline-block;
   padding: 4px 12px;
-  background: #ffe169;
-  color: #0a0e14;
+  background: var(--kain-badge-hi);
+  color: var(--color-bg-dark);
   font-family: 'Charles Wright', var(--font-brand-family-override, 'Oswald', sans-serif);
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -174,8 +174,8 @@
   display: inline-flex;
   align-items: center;
   padding: 4px 10px;
-  background: rgba(15, 23, 42, 0.04);
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
   border-radius: 999px;
   font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
   font-size: 0.7rem;
@@ -188,8 +188,8 @@
   align-items: center;
   gap: 6px;
   padding: 4px 12px 4px 10px;
-  background: rgba(209, 182, 122, 0.12);
-  border: 1px solid rgba(209, 182, 122, 0.36);
+  background: color-mix(in srgb, var(--kain-accent-warm) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--kain-accent-warm) 36%, transparent);
   border-radius: 999px;
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
   font-size: 0.78rem;
@@ -225,7 +225,7 @@
 }
 .iconActionOn {
   border-color: var(--kain-accent-warm);
-  background: rgba(209, 182, 122, 0.12);
+  background: color-mix(in srgb, var(--kain-accent-warm) 12%, transparent);
   color: var(--brand-primary);
 }
 
@@ -303,8 +303,8 @@
   bottom: 14px;
   left: 14px;
   padding: 6px 12px;
-  background: rgba(10, 14, 20, 0.78);
-  color: #ffffff;
+  background: color-mix(in srgb, var(--color-bg-dark) 78%, transparent);
+  color: var(--text-on-dark-strong);
   font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
   font-size: 0.78rem;
   letter-spacing: 0.16em;
@@ -319,9 +319,9 @@
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
-  background: rgba(10, 14, 20, 0.78);
+  background: color-mix(in srgb, var(--color-bg-dark) 78%, transparent);
   color: var(--kain-accent-warm);
-  border: 1px solid rgba(209, 182, 122, 0.5);
+  border: 1px solid color-mix(in srgb, var(--kain-accent-warm) 50%, transparent);
   border-radius: 999px;
   font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
   font-size: 0.74rem;
@@ -330,7 +330,7 @@
   font-weight: 600;
   backdrop-filter: blur(4px);
 }
-.galleryMain:hover .galleryExpand { background: rgba(10, 14, 20, 0.92); }
+.galleryMain:hover .galleryExpand { background: color-mix(in srgb, var(--color-bg-dark) 92%, transparent); }
 .galleryMobileNav {
   display: none;
 }
@@ -357,8 +357,8 @@
     height: 36px;
     border: 0;
     border-radius: 999px;
-    background: rgba(10, 14, 20, 0.78);
-    color: #ffffff;
+    background: color-mix(in srgb, var(--color-bg-dark) 78%, transparent);
+    color: var(--text-on-dark-strong);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -390,7 +390,7 @@
   padding-bottom: 4px;
 }
 .galleryThumbs::-webkit-scrollbar { height: 4px; }
-.galleryThumbs::-webkit-scrollbar-thumb { background: rgba(209, 182, 122, 0.5); border-radius: 999px; }
+.galleryThumbs::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--kain-accent-warm) 50%, transparent); border-radius: 999px; }
 @media (max-width: 899px) {
   .galleryThumbs {
     display: none;
@@ -454,8 +454,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: rgba(10, 14, 20, 0.82);
-  color: #ffffff;
+  background: color-mix(in srgb, var(--color-bg-dark) 82%, transparent);
+  color: var(--text-on-dark-strong);
   font-family: var(--font-editorial-family, 'Playfair Display', serif);
   font-style: italic;
   font-weight: 700;
@@ -491,7 +491,7 @@
   flex-direction: column;
   gap: 4px;
   padding: 0 0 0 12px;
-  border-left: 2px solid rgba(209, 182, 122, 0.36);
+  border-left: 2px solid color-mix(in srgb, var(--kain-accent-warm) 36%, transparent);
   min-width: 0;
 }
 .qsIcon {

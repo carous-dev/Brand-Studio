@@ -285,7 +285,7 @@
 
 /* ─── Container helper (used by source for max-w-7xl mx-auto px-6 pattern) ─── */
 [data-theme-id='fbm-motors'] .fbm-container {
-  max-width: 1280px;
+  max-width: 1400px;
   margin-left: auto;
   margin-right: auto;
   padding-left: 24px;

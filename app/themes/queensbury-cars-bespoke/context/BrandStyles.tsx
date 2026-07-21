@@ -2,6 +2,7 @@
 
 import React from 'react';
 import type { BrandConfig } from '@/brands/types';
+import { buildThemeTokens, renderThemeStyle, escapeCssUrl } from '@/app/themes/lib/theme-tokens';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -18,10 +19,22 @@ const pickString = (...candidates: Array<unknown>): string | null => {
   return null;
 };
 
+/**
+ * BrandStyles for queensbury-cars-bespoke — emits the canonical token block via
+ * the shared emitter (buildThemeTokens + renderThemeStyle), plus the theme's own
+ * chrome extras (topbar/reserve/shade), image slots and font overrides.
+ *
+ * Queensbury runs a DARK header + heavy hero scrim, so header-* and hero-overlay-*
+ * are passed as `defaults` (they are distinct dark literals, not derived from
+ * bg/text/muted). --color-status-online/-offline match the emitter's values so
+ * they are dropped. --color-topbar-bg, --shade-deep and --color-reserve-teal are
+ * extended tokens the emitter lacks, so they live in `extras` verbatim.
+ */
 export function BrandStyles({ brand }: BrandStylesProps) {
   const { theme } = brand;
   const fonts = theme.fonts || {};
   const themeAny = theme as any;
+  const c = theme.colors as any;
 
   const fontUi =
     resolveFontToken(fonts.ui, (fonts as any).body, themeAny.fontUi, themeAny.uiFont, themeAny.fontBody) ||
@@ -47,57 +60,47 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   const sellYourCarImage = resolveSlot('sellYourCar', 'sellYourCar');
   const recentlySoldImage = resolveSlot('recentlySold', 'recentlySold');
 
-  const primary = theme.colors.primaryColor || '#0f6beb';
-  const secondary = theme.colors.secondaryColor || '#0d5ecf';
-  const accent = theme.colors.accentColor || '#38a3ff';
+  // --brand-primary-strong historically tracked the SECONDARY picker, so
+  // primaryStrong defaults to the resolved secondary (byte-identical under the
+  // default palette, and still repaints when a brand overrides secondaryColor).
+  const secondary = c.secondaryColor || '#0d5ecf';
 
-  const cssVariables: Record<string, string> = {
-    // Brand triad — the ONLY tokens brand records may override.
-    '--color-primary': primary,
-    '--color-secondary': secondary,
-    '--color-accent': accent,
+  // Canonical token block via the shared emitter. Queensbury's bespoke palette
+  // is passed as `defaults`; brand records override any core token via
+  // theme.colors.*. The dark header + hero scrim tokens are distinct literals
+  // (not derived from bg/text/muted) so they're passed through too.
+  const vars = buildThemeTokens(theme.colors as any, {
+    defaults: {
+      primaryColor: '#0f6beb',
+      secondaryColor: '#0d5ecf',
+      accentColor: '#38a3ff',
+      backgroundColor: '#ffffff',
+      surfaceColor: '#f6f7fb',
+      textColor: '#0f1623',
+      mutedColor: '#5b6573',
+      borderColor: '#e3e6ee',
+      primaryStrong: secondary,
+      onPrimary: '#ffffff',
+      headerBg: '#0a0e14',
+      headerText: '#ffffff',
+      headerMuted: 'rgba(255,255,255,0.78)',
+      heroOverlayStart: 'rgba(8, 11, 28, 0.86)',
+      heroOverlayEnd: 'rgba(8, 11, 28, 0.55)',
+      heroTextMuted: 'rgba(255, 255, 255, 0.92)',
+      heroReviewMuted: 'rgba(255, 255, 255, 0.86)',
+      reviewStar: '#facc15',
+    },
+  });
 
-    // Surface + foreground tokens (LIGHT tier — paired, theme-locked).
-    '--color-bg': theme.colors.backgroundColor || '#ffffff',
-    '--color-surface': (theme.colors as any).surfaceColor || '#f6f7fb',
-    '--color-text': theme.colors.textColor || '#0f1623',
-    '--color-muted': (theme.colors as any).mutedColor || '#5b6573',
-    '--color-border': (theme.colors as any).borderColor || '#e3e6ee',
+  const extras: Record<string, string> = {
+    // Fixed chrome / decorative hues (theme-locked — emitter lacks these).
+    '--color-topbar-bg': c.topbarBg || '#050810',
+    '--shade-deep': '#000',
+    '--color-reserve-teal': '#067a74',
 
-    // Paired tokens — NEVER overridable by brand records.
-    '--surface-bg-light': '#ffffff',
-    '--surface-card-light': '#f6f7fb',
-    '--text-on-light-strong': '#0f1623',
-    '--text-on-light-muted': '#5b6573',
-    '--border-on-light': '#e3e6ee',
-    '--surface-bg-dark': '#0a0e14',
-    '--surface-card-dark': '#14181f',
-    '--text-on-dark-strong': '#ffffff',
-    '--text-on-dark-muted': 'rgba(255,255,255,0.78)',
-    '--border-on-dark': 'rgba(255,255,255,0.12)',
-    '--brand-primary': primary,
-    '--brand-primary-strong': secondary,
-    '--brand-on-primary': '#ffffff',
-
-    // Header / hero text bridges
-    '--color-header-bg': (theme.colors as any).headerBg || '#0a0e14',
-    '--color-header-text': (theme.colors as any).headerText || '#ffffff',
-    '--color-header-muted': (theme.colors as any).headerMuted || 'rgba(255,255,255,0.78)',
-    '--color-hero-overlay-start': (theme.colors as any).heroOverlayStart || 'rgba(8, 11, 28, 0.86)',
-    '--color-hero-overlay-end': (theme.colors as any).heroOverlayEnd || 'rgba(8, 11, 28, 0.55)',
-    '--color-hero-text-muted': (theme.colors as any).heroTextMuted || 'rgba(255, 255, 255, 0.92)',
-    '--color-hero-review-muted': (theme.colors as any).heroReviewMuted || 'rgba(255, 255, 255, 0.86)',
-    '--color-review-star': (theme.colors as any).reviewStar || '#facc15',
-
-    // RGB bridges for color-mix shims
-    '--brand-primary-rgb': hexToRgb(primary),
-    '--brand-secondary-rgb': hexToRgb(secondary),
-    '--brand-accent-rgb': hexToRgb(accent),
-
-    // Per-page imagery — emitted unconditionally, ALWAYS resolves to either
-    // an operator upload or this theme's curated default. Components consume
-    // via var(--brand-image-<slot>, none) layered above the theme default,
-    // so 404s reveal the theme default underneath.
+    // Per-page imagery — emitted unconditionally, ALWAYS resolves to either an
+    // operator upload or this theme's curated default. Components consume via
+    // var(--brand-image-<slot>) layered above the theme default.
     '--brand-image-hero': `url("${escapeCssUrl(heroImageSlot)}")`,
     '--brand-image-about': `url("${escapeCssUrl(aboutImage)}")`,
     '--brand-image-services': `url("${escapeCssUrl(servicesImage)}")`,
@@ -114,26 +117,10 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: `
-          :root {
-            ${Object.entries(cssVariables)
-              .map(([key, value]) => `${key}: ${value};`)
-              .join('\n            ')}
-            font-family: ${fontUi};
-          }
-        `,
+        __html: renderThemeStyle({ vars, extras, fontFamily: fontUi }),
       }}
     />
   );
-}
-
-function hexToRgb(hex: string): string {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '15, 107, 235';
-}
-
-function escapeCssUrl(url: string): string {
-  return String(url).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n|\r/g, '');
 }
 
 function resolveFontToken(...candidates: Array<unknown>): string | null {

@@ -47,9 +47,9 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #ffffff;
+  color: var(--color-on-dark);
 }
-.badgeCar { background: #52688c; }
+.badgeCar { background: var(--color-muted); }
 .badgeBike { background: var(--color-primary); }
 .card h3 {
   font-family: 'Roboto Condensed', sans-serif;

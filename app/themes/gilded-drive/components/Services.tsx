@@ -60,7 +60,7 @@ const Services: React.FC = () => {
     ];
 
     return (
-    <section className="services-futuristic">
+    <section className="services-futuristic" data-aos="fade-up">
       <div className="services-header-futuristic">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={servicesVariant}>
           <h2 className="services-title-futuristic">Our Services</h2>

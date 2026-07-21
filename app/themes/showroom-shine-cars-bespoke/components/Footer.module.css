@@ -3,7 +3,6 @@
   color: var(--text-on-dark-strong);
   position: relative;
   padding-top: 0;
-  margin-top: clamp(64px, 10vw, 120px);
   overflow: hidden;
 }
 
@@ -15,7 +14,7 @@
 .inner {
   max-width: 1240px;
   margin: 0 auto;
-  padding: clamp(48px, 7vw, 88px) clamp(20px, 4vw, 32px) clamp(32px, 4vw, 48px);
+  padding: clamp(64px, 10vw, 120px) clamp(20px, 4vw, 32px) clamp(32px, 4vw, 48px);
   display: grid;
   grid-template-columns: 1fr;
   gap: clamp(32px, 5vw, 56px);
@@ -76,8 +75,8 @@
   display: grid;
   gap: 2px;
   padding: 14px 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
   border-radius: 4px;
 }
 .statNum {
@@ -182,8 +181,8 @@
   width: 36px;
   height: 36px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
+  border: 1px solid var(--border-on-dark);
   color: var(--text-on-dark-strong);
   text-decoration: none;
   transition: background 0.15s ease, transform 0.15s ease;
@@ -222,8 +221,8 @@
 }
 
 .bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
+  background: color-mix(in srgb, var(--color-scrim) 20%, transparent);
 }
 .bottomInner {
   max-width: 1240px;

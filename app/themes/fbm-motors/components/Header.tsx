@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useBrand } from '../context/BrandClientWrapper'
 import { getBrandContactInfo } from '../lib/contact'
 import { resolveText } from '../lib/brand-text'
@@ -24,11 +24,29 @@ const nav: Array<{ label: string; href?: string; children?: Array<{ label: strin
   { label: 'Contact', href: '/contact' },
 ]
 
+function PhoneIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M5 4h4l2 5-3 2a14 14 0 005 5l2-3 5 2v4a2 2 0 01-2 2A17 17 0 013 6a2 2 0 012-2z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 export default function Header() {
   const brand = useBrand()
   const pathname = usePathname() || '/'
   const [open, setOpen] = useState(false)
   const [pagesOpen, setPagesOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  // Condense the bar + drop a shadow once the page scrolls — a modern
+  // sticky-header cue. Passive listener, cleaned up on unmount.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   const contact = getBrandContactInfo(brand)
   const brandName = brand?.name || 'FBM Motors'
@@ -50,26 +68,45 @@ export default function Header() {
   }
 
   return (
-    <header className={styles.header}>
+    <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
       {/* Top utility bar — dark accent strip */}
       <div className={styles.topBar}>
         <div className={styles.topBarInner}>
           <div className={styles.topBarLeft}>
             {contact.phoneDisplay && (
               <a href={`tel:${contact.phoneTel || contact.phoneDisplay}`} className={styles.topBarLink}>
+                <PhoneIcon className={styles.topIcon} />
                 {contact.phoneDisplay}
               </a>
             )}
             {contact.email && (
               <a href={`mailto:${contact.email}`} className={styles.topBarLink}>
+                <svg className={styles.topIcon} width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.6" />
+                  <path d="M4 7l8 6 8-6" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+                </svg>
                 {contact.email}
               </a>
             )}
             {locationLabel && locationLabel !== 'the showroom' && (
-              <span className={styles.topBarCity}>{locationLabel}</span>
+              <span className={styles.topBarCity}>
+                <svg className={styles.topIcon} width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 21s7-5.5 7-11a7 7 0 10-14 0c0 5.5 7 11 7 11z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+                  <circle cx="12" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.6" />
+                </svg>
+                {locationLabel}
+              </span>
             )}
           </div>
-          <span className={styles.topBarRight}>{openingLine}</span>
+          {openingLine && (
+            <span className={styles.topBarRight}>
+              <svg className={styles.topIcon} width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
+                <path d="M12 7v5l3 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {openingLine}
+            </span>
+          )}
         </div>
       </div>
 
@@ -80,12 +117,10 @@ export default function Header() {
             {logo ? (
               <Image src={logo} alt={brandName} width={240} height={56} className={styles.brandLogo} />
             ) : (
-              <>
-                <span>
-                  {wordmarkLead}
-                  {wordmarkTrail && <span style={{ color: 'var(--fbm-ember-500, var(--color-primary))' }}>{wordmarkTrail}</span>}
-                </span>
-              </>
+              <span className={styles.wordmark}>
+                {wordmarkLead}
+                {wordmarkTrail && <span className={styles.wordmarkTrail}>{wordmarkTrail}</span>}
+              </span>
             )}
           </Link>
 
@@ -100,13 +135,13 @@ export default function Header() {
                 >
                   <button
                     type="button"
-                    className={styles.dropdownTrigger}
+                    className={`${styles.dropdownTrigger} ${pagesOpen ? styles.dropdownTriggerOpen : ''}`}
                     aria-expanded={pagesOpen}
                     onClick={() => setPagesOpen((v) => !v)}
                   >
                     {item.label}
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-                      <path d="M2 4l3 3 3-3" stroke="currentColor" strokeWidth="1.5" />
+                    <svg className={styles.chevron} width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                      <path d="M2 4l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </button>
                   {pagesOpen && (
@@ -140,25 +175,25 @@ export default function Header() {
 
           <div className={styles.actions}>
             {contact.phoneDisplay && (
-              <a href={`tel:${contact.phoneTel || contact.phoneDisplay}`} className={`fbm-btn-primary ${styles.callCta}`}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path
-                    d="M5 4h4l2 5-3 2a14 14 0 005 5l2-3 5 2v4a2 2 0 01-2 2A17 17 0 013 6a2 2 0 012-2z"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                  />
-                </svg>
-                {contact.phoneDisplay}
+              <a href={`tel:${contact.phoneTel || contact.phoneDisplay}`} className={styles.callCta}>
+                <span className={styles.callIcon}>
+                  <PhoneIcon />
+                </span>
+                <span className={styles.callText}>{contact.phoneDisplay}</span>
               </a>
             )}
             <button
               type="button"
-              className={`fbm-btn-ghost ${styles.menuToggle}`}
+              className={styles.menuToggle}
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
               aria-label="Toggle menu"
             >
-              Menu
+              <span className={`${styles.burger} ${open ? styles.burgerOpen : ''}`} aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </span>
             </button>
           </div>
         </div>
@@ -176,6 +211,12 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
+            {contact.phoneDisplay && (
+              <a href={`tel:${contact.phoneTel || contact.phoneDisplay}`} className={styles.mobileCall} onClick={() => setOpen(false)}>
+                <PhoneIcon />
+                {contact.phoneDisplay}
+              </a>
+            )}
           </nav>
         )}
       </div>

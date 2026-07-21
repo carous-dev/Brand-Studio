@@ -4,7 +4,7 @@ import styles from './CtaSection.module.css'
 
 export default function CtaSection() {
   return (
-    <section className={styles.section} aria-labelledby="cta-title" data-aos="zoom-in">
+    <section className={styles.section} aria-labelledby="cta-title" data-aos="fade-up">
       <div className={styles.sectionInner}>
         <div className={styles.sectionHeader}>
           <p className={styles.eyebrow}>Next Steps</p>

@@ -1,64 +1,37 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { usePathname } from 'next/navigation'
 import { useBrand } from '../context/BrandClientWrapper'
 import { GarageProvider } from '../context/GarageContext'
 import Header from './Header'
 import Footer from './Footer'
-import AutoWowCookieBanner from './AutoWowCookieBanner'
-
-import AnimateOnScroll from '@/app/widgets/AnimateOnScroll'
-import { MotionFX } from '@/app/widgets/MotionFX'
-import ScrollProgress from '@/app/widgets/ScrollProgress'
-import PreviewBanner from '@/app/widgets/PreviewBanner'
-import CarousWhatsAppWidget from '@/app/widgets/CarousWhatsAppWidget'
+import ThemeChrome from '@/app/themes/lib/ThemeChrome'
 
 import '../styles/base.css'
 import '../styles/color-policy.css'
 
-// audit-ignore-file: lib-missing-cookie-banner — per-theme AutoWowCookieBanner replaces the shared widget.
-
-const KNOWN_ROUTES = new Set([
-  '/', '/about', '/about-us', '/contact', '/contact-us',
-  '/cookie-policy', '/privacy-policy', '/services',
-  '/sell-your-car', '/sell-my-car', '/finance', '/part-exchange',
-  '/used-cars', '/recently-sold', '/wishlist', '/compare',
-])
-
+/**
+ * Auto Wow shell — thin wrapper over the shared <ThemeChrome> (route-gating,
+ * skip-link, canonical widget stack, GarageProvider, shared CookieBanner).
+ * Theme-specific bits: its own Header/Footer and the cookie-banner voice.
+ */
 export function AutoShell({ children }: { children: ReactNode }) {
   const brand = useBrand()
-  const pathname = usePathname() || ''
-  const isKnownRoute =
-    KNOWN_ROUTES.has(pathname) ||
-    pathname.startsWith('/used-cars/') ||
-    pathname.startsWith('/dashboard') ||
-    pathname === '/login'
-  const isSpecialArea = pathname.startsWith('/dashboard') || pathname === '/login' || !isKnownRoute
-
-  if (isSpecialArea) {
-    return (
-      <main id="content" role="main" className="auto-main main-dashboard">
-        {children}
-      </main>
-    )
-  }
-
   return (
-    <GarageProvider brandSlug={brand?.slug || 'default'}>
-      <a href="#content" className="auto-skip-link">Skip to content</a>
-      <AnimateOnScroll />
-      <MotionFX />
-      <ScrollProgress />
-      <PreviewBanner brand={brand} />
-      <Header />
-      <main id="content" role="main" className="auto-main">
-        {children}
-      </main>
-      <Footer />
-      <CarousWhatsAppWidget brand={brand} />
-      <AutoWowCookieBanner />
-    </GarageProvider>
+    <ThemeChrome
+      brand={brand ?? null}
+      classPrefix="auto"
+      provider={GarageProvider}
+      header={<Header />}
+      footer={<Footer />}
+      cookie={{
+        title: 'We use cookies to keep this site running',
+        summary:
+          'Essential cookies are always on to keep the site working. Choose which of the rest to allow, or accept all.',
+      }}
+    >
+      {children}
+    </ThemeChrome>
   )
 }
 

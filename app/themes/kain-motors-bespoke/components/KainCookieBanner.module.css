@@ -7,14 +7,14 @@
   right: 0;
   bottom: 0;
   z-index: 100;
-  background: #0a0e14;
-  color: rgba(255, 255, 255, 0.92);
-  border-top: 1px solid rgba(209, 182, 122, 0.36);
+  background: var(--color-bg-dark);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 92%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--kain-accent-warm) 36%, transparent);
   box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
 }
 .rule {
   height: 2px;
-  background: linear-gradient(90deg, transparent, #d1b67a, transparent);
+  background: linear-gradient(90deg, transparent, var(--kain-accent-warm), transparent);
 }
 .inner {
   margin: 0 auto;
@@ -37,7 +37,7 @@
   font-size: 0.66rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #0a0e14;
+  color: var(--color-bg-dark);
   background: var(--kain-accent-warm);
   padding: 3px 8px;
   border-radius: 3px;
@@ -47,7 +47,7 @@
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
   font-size: 0.88rem;
   line-height: 1.4;
-  color: rgba(255, 255, 255, 0.82);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 82%, transparent);
   margin: 0;
 }
 .lead a {
@@ -55,7 +55,7 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-.lead a:hover { color: #ffffff; }
+.lead a:hover { color: var(--text-on-dark-strong); }
 
 .toggleGroup {
   display: flex;
@@ -63,8 +63,8 @@
   gap: 8px 14px;
   flex: 1 1 100%;
   padding: 8px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
 }
 .toggleRow {
   display: inline-flex;
@@ -78,7 +78,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   font-size: 0.74rem;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
 }
 .fixedPill {
   font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
@@ -87,7 +87,7 @@
   text-transform: uppercase;
   color: var(--kain-accent-warm);
   padding: 2px 8px;
-  border: 1px solid rgba(209, 182, 122, 0.42);
+  border: 1px solid color-mix(in srgb, var(--kain-accent-warm) 42%, transparent);
   border-radius: 999px;
 }
 .toggleInput {
@@ -95,7 +95,7 @@
   width: 32px;
   height: 18px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 16%, transparent);
   position: relative;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -108,14 +108,14 @@
   left: 2px;
   width: 14px;
   height: 14px;
-  background: #ffffff;
+  background: var(--color-bg);
   border-radius: 999px;
   transition: transform 0.2s ease;
 }
 .toggleInput:checked { background: var(--kain-accent-warm); }
 .toggleInput:checked::after {
   transform: translateX(14px);
-  background: #0a0e14;
+  background: var(--color-bg-dark);
 }
 
 .actions {
@@ -156,15 +156,15 @@
 }
 .btnGhost {
   background: transparent;
-  color: rgba(255, 255, 255, 0.86);
-  border-color: rgba(255, 255, 255, 0.28);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 86%, transparent);
+  border-color: color-mix(in srgb, var(--text-on-dark-strong) 28%, transparent);
 }
 .btnGhost:hover { border-color: var(--kain-accent-warm); color: var(--kain-accent-warm); }
 .btnGold {
   background: var(--kain-accent-warm);
-  color: #0a0e14;
+  color: var(--color-bg-dark);
 }
-.btnGold:hover { background: #c9a965; }
+.btnGold:hover { background: var(--kain-accent-warm-hover); }
 
 @media (max-width: 640px) {
   .inner { padding: 10px 14px; gap: 8px; }

@@ -66,7 +66,7 @@ function Stars({ count }: { count: number }) {
 
 export default function Reviews() {
   return (
-    <section className="qb-section">
+    <section className="qb-section" data-aos="fade-up">
       <div className="qb-container">
         <header className="qb-section-head" data-aos="fade-up">
           <span className="qb-eyebrow">Verified reviews</span>

@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { useBrand } from '../context/BrandClientWrapper'
 import { apiUrl } from '../lib/api'
+import { resolveLogoSlug, simpleIconsLogoUrl } from '../lib/make-logos'
 import styles from './DirectorySection.module.css'
 
 type MakeTally = { name: string; count: number }
@@ -62,9 +63,9 @@ export default function DirectorySection() {
   const list = makes.length ? makes : FALLBACK_MAKES
 
   return (
-    <section className={`auto-section auto-section--dark ${styles.section}`} aria-labelledby="directory-title">
+    <section className={`auto-section auto-section--dark ${styles.section}`} aria-labelledby="directory-title" data-aos="fade-up">
       <div className="auto-container">
-        <header className={styles.header} data-aos="fade-up">
+        <header className={styles.header}>
           <div className={styles.headerCopy}>
             <span className={styles.eyebrow}>
               <span className={styles.eyebrowMark} aria-hidden="true" />
@@ -80,20 +81,40 @@ export default function DirectorySection() {
           </Link>
         </header>
 
-        <ul className={styles.grid}>
-          {list.map((make, i) => (
-            <li key={make.name} data-aos="fade-up" data-aos-delay={i * 40}>
-              <Link
-                href={`/used-cars?make=${encodeURIComponent(make.name)}`}
-                className={styles.chip}
-              >
-                <span className={styles.chipName}>{make.name}</span>
-                {make.count > 0 && (
-                  <span className={styles.chipCount}>{make.count}</span>
-                )}
-              </Link>
-            </li>
-          ))}
+        <ul className={styles.grid} role="list">
+          {list.map((make) => {
+            const logoSlug = resolveLogoSlug(make.name)
+            return (
+              <li key={make.name}>
+                <Link
+                  href={`/used-cars?make=${encodeURIComponent(make.name)}`}
+                  className={styles.chip}
+                  aria-label={`Browse ${make.count > 0 ? `${make.count} ` : ''}${make.name} ${make.count === 1 ? 'vehicle' : 'vehicles'} in stock`}
+                >
+                  <span className={styles.chipLogo} aria-hidden="true">
+                    {logoSlug ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={simpleIconsLogoUrl(logoSlug)}
+                        alt=""
+                        width={22}
+                        height={22}
+                        loading="lazy"
+                        decoding="async"
+                        className={styles.chipLogoImg}
+                      />
+                    ) : (
+                      <span className={styles.chipLogoMono}>{make.name.charAt(0)}</span>
+                    )}
+                  </span>
+                  <span className={styles.chipName}>{make.name}</span>
+                  {make.count > 0 && (
+                    <span className={styles.chipCount}>{make.count}</span>
+                  )}
+                </Link>
+              </li>
+            )
+          })}
         </ul>
       </div>
     </section>

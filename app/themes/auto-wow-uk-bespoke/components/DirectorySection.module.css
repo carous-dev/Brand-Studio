@@ -4,14 +4,16 @@
 }
 
 .header {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   gap: 18px;
-  margin: 0 0 clamp(28px, 4vw, 44px);
+  margin: 0;
+  padding: 0 0 clamp(48px, 6vw, 80px);
   background: transparent !important;
   box-shadow: none !important;
   border: 0;
-  padding: 0;
 }
 
 .headerCopy {
@@ -73,76 +75,116 @@
   gap: 12px;
 }
 
+/* Compact make-list grid — ported from kainmotors pattern. Logo badge +
+   name + count pill in a dense responsive grid (2 → 6 cols by viewport). */
+
 .grid {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .chip {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 14px 18px;
-  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+  gap: 10px;
+  padding: 8px 12px 8px 8px;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-card, 8px);
+  border-radius: 10px;
   text-decoration: none;
-  transition: border-color 200ms ease, background 200ms ease, transform 200ms ease;
-  min-height: 56px;
-}
-
-.chip::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: var(--color-primary);
-  opacity: 0;
-  transition: opacity 200ms ease;
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+  min-height: 48px;
 }
 
 .chip:hover {
-  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface));
   border-color: var(--color-primary);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
-.chip:hover::before {
+.chipLogo {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+  transition: background 180ms ease, border-color 180ms ease;
+}
+
+.chipLogoImg {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  /* simple-icons SVGs render in their official brand colours (Ford blue,
+     Audi black, etc) — recognisable without filter tinting. The wrapper
+     badge handles framing + contrast. */
+  opacity: 0.85;
+  transition: opacity 180ms ease;
+}
+
+.chipLogoMono {
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.chip:hover .chipLogo {
+  background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+
+.chip:hover .chipLogoImg {
   opacity: 1;
 }
 
 .chipName {
+  flex: 1 1 auto;
+  min-width: 0;
   font-family: 'Oswald', sans-serif;
-  font-size: 0.92rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .chipCount {
+  flex-shrink: 0;
   font-family: 'Oswald', sans-serif;
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: var(--color-muted);
-  background: color-mix(in srgb, var(--color-text) 6%, transparent);
-  padding: 2px 8px;
-  border-radius: 4px;
-  min-width: 28px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  padding: 3px 8px;
+  border-radius: 999px;
+  min-width: 24px;
   text-align: center;
+  font-variant-numeric: tabular-nums;
 }
 
-@media (min-width: 540px) {
+.chip:hover .chipCount {
+  background: color-mix(in srgb, var(--color-primary) 22%, transparent);
+}
+
+@media (min-width: 520px) {
   .grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
   }
   .header {
     flex-direction: row;
@@ -151,14 +193,20 @@
   }
 }
 
-@media (min-width: 720px) {
+@media (min-width: 768px) {
   .grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1024px) {
   .grid {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }

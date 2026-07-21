@@ -388,6 +388,158 @@ export const ColorUtils = {
     };
   },
 
+  // --- Palette derivation (mirror of backend/services/color_derive.py) ---
+  // The dashboard collects Primary/Secondary/Accent/Background; Text, Surface,
+  // Border, Muted are derived. This mirror powers the live derived swatches;
+  // Python is canonical at persist time. Both must stay in lockstep: same
+  // constants, same integer step loops, same half-up rounding.
+
+  DERIVE_DEFAULTS: {
+    primaryColor: '#2563eb',
+    secondaryColor: '#64748b',
+    accentColor: '#f59e0b',
+    backgroundColor: '#ffffff'
+  },
+  LIGHT_INK: '#0f1623',
+  TEXT_TARGET: 7.0,
+  MUTED_TARGET: 4.5,
+  UI_TARGET: 3.0,
+  PRIMARY_TINT: 0.08,
+  SURFACE_LIFT_DARK: 0.07,
+  SURFACE_DIP_LIGHT: 0.03,
+  BORDER_MIX: 0.12,
+  MUTED_MIX_START: 60,
+
+  normalizeHex(value) {
+    if (typeof value !== 'string') return null;
+    let raw = value.trim().toLowerCase();
+    if (raw.startsWith('#')) raw = raw.slice(1);
+    if (/^[0-9a-f]{3}$/.test(raw)) raw = raw.split('').map(c => c + c).join('');
+    if (!/^[0-9a-f]{6}$/.test(raw)) return null;
+    return '#' + raw;
+  },
+
+  hexToRgbTriplet(hex) {
+    const h = hex.replace('#', '');
+    return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+  },
+
+  rgbTripletToHex(rgb) {
+    return '#' + rgb.map(c => Math.max(0, Math.min(255, c)).toString(16).padStart(2, '0')).join('');
+  },
+
+  mixHex(a, b, weightOfA) {
+    const ra = this.hexToRgbTriplet(a);
+    const rb = this.hexToRgbTriplet(b);
+    const w = weightOfA;
+    // Math.round is half-up for non-negative values, matching Python's int(x + 0.5)
+    return this.rgbTripletToHex([
+      Math.round(ra[0] * w + rb[0] * (1 - w)),
+      Math.round(ra[1] * w + rb[1] * (1 - w)),
+      Math.round(ra[2] * w + rb[2] * (1 - w))
+    ]);
+  },
+
+  relativeLuminance(hex) {
+    const lin = c => {
+      const x = c / 255;
+      return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+    };
+    const [r, g, b] = this.hexToRgbTriplet(hex);
+    return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  },
+
+  contrastRatio(a, b) {
+    const la = this.relativeLuminance(a);
+    const lb = this.relativeLuminance(b);
+    const bright = Math.max(la, lb);
+    const dim = Math.min(la, lb);
+    return (bright + 0.05) / (dim + 0.05);
+  },
+
+  isLightBackground(bg) {
+    return this.contrastRatio(bg, '#000000') >= this.contrastRatio(bg, '#ffffff');
+  },
+
+  deriveText(primary, bg, light) {
+    const base = light ? this.LIGHT_INK : '#ffffff';
+    const extreme = light ? '#000000' : '#ffffff';
+    const tinted = this.mixHex(primary, base, this.PRIMARY_TINT);
+    for (let step = 0; step <= 10; step++) {
+      const candidate = this.mixHex(extreme, tinted, step / 10);
+      if (this.contrastRatio(candidate, bg) >= this.TEXT_TARGET) return candidate;
+    }
+    return extreme;
+  },
+
+  deriveSurface(bg, text, light) {
+    if (light) {
+      if (this.contrastRatio(bg, '#ffffff') < 1.05) {
+        return this.mixHex(text, bg, this.SURFACE_DIP_LIGHT);
+      }
+      return '#ffffff';
+    }
+    return this.mixHex('#ffffff', bg, this.SURFACE_LIFT_DARK);
+  },
+
+  deriveMuted(text, bg) {
+    for (let pct = this.MUTED_MIX_START; pct <= 100; pct += 5) {
+      const candidate = this.mixHex(text, bg, pct / 100);
+      if (this.contrastRatio(candidate, bg) >= this.MUTED_TARGET) return candidate;
+    }
+    return text;
+  },
+
+  /**
+   * Full 8-color set from up to 4 inputs. Invalid/missing inputs fall back
+   * to DERIVE_DEFAULTS. Returns form-field-named keys.
+   */
+  derivePalette(primary, secondary, accent, background) {
+    const p = this.normalizeHex(primary) || this.DERIVE_DEFAULTS.primaryColor;
+    const s = this.normalizeHex(secondary) || this.DERIVE_DEFAULTS.secondaryColor;
+    const a = this.normalizeHex(accent) || this.DERIVE_DEFAULTS.accentColor;
+    const bg = this.normalizeHex(background) || this.DERIVE_DEFAULTS.backgroundColor;
+
+    const light = this.isLightBackground(bg);
+    const text = this.deriveText(p, bg, light);
+
+    return {
+      primaryColor: p,
+      secondaryColor: s,
+      accentColor: a,
+      backgroundColor: bg,
+      textColor: text,
+      surfaceColor: this.deriveSurface(bg, text, light),
+      borderColor: this.mixHex(text, bg, this.BORDER_MIX),
+      mutedColor: this.deriveMuted(text, bg)
+    };
+  },
+
+  /**
+   * Advisories for brand colors that read poorly on the background.
+   * Returns [{role, color, ratio, message}]; never mutates colors.
+   */
+  contrastWarnings(colors) {
+    const bg = this.normalizeHex(colors?.backgroundColor) || this.DERIVE_DEFAULTS.backgroundColor;
+    const warnings = [];
+    const roles = [['primary', 'primaryColor'], ['secondary', 'secondaryColor'], ['accent', 'accentColor']];
+    for (const [role, key] of roles) {
+      const value = this.normalizeHex(colors?.[key]);
+      if (!value) continue;
+      const ratio = this.contrastRatio(value, bg);
+      if (ratio < this.UI_TARGET) {
+        const label = role.charAt(0).toUpperCase() + role.slice(1);
+        warnings.push({
+          role,
+          color: value,
+          ratio: Math.round(ratio * 100) / 100,
+          message: `${label} color ${value} has ${ratio.toFixed(2)}:1 contrast on the background (below 3:1) — it may be hard to see when used for buttons or links.`
+        });
+      }
+    }
+    return warnings;
+  },
+
   /**
    * Validate color format
    */

@@ -60,9 +60,9 @@
   z-index: 1;
   background: linear-gradient(
     180deg,
-    rgba(8, 16, 32, 0.62) 0%,
-    rgba(8, 16, 32, 0.72) 55%,
-    rgba(8, 16, 32, 0.82) 100%
+    rgba(8, 16, 32, 0.62) 0%, /* photo-scrim-ok */
+    rgba(8, 16, 32, 0.72) 55%, /* photo-scrim-ok */
+    rgba(8, 16, 32, 0.82) 100% /* photo-scrim-ok */
   );
   pointer-events: none;
 }
@@ -94,7 +94,7 @@
   line-height: 1.02;
   letter-spacing: 0.01em;
   text-transform: uppercase;
-  color: #ffffff;
+  color: var(--color-bg);
   text-wrap: balance;
   text-shadow: 0 3px 20px rgba(0, 0, 0, 0.5);
 }
@@ -106,7 +106,7 @@
   width: clamp(160px, 26vw, 320px);
   height: clamp(10px, 1.4vw, 18px);
   margin: clamp(10px, 1.4vw, 18px) auto 0;
-  color: var(--color-primary, #1f7ad6);
+  color: var(--color-primary);
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
 }
 
@@ -123,8 +123,8 @@
   gap: 12px;
   min-height: 52px;
   padding: 14px 28px;
-  background: #ffffff;
-  color: #0b1320;
+  background: var(--color-bg);
+  color: var(--color-text);
   font-family: var(--font-ui-family-override, 'Montserrat'), 'Segoe UI', sans-serif;
   font-weight: 600;
   font-size: 1rem;
@@ -140,11 +140,11 @@
 .ctaPrimary:focus-visible {
   transform: translateY(-1px);
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34);
-  background: #f6f8fb;
+  background: var(--color-surface);
 }
 
 .ctaPrimary:focus-visible {
-  outline: 2px solid #ffffff;
+  outline: 2px solid var(--color-bg);
   outline-offset: 3px;
 }
 
@@ -170,9 +170,9 @@
   .heroOverlay {
     background: linear-gradient(
       180deg,
-      rgba(8, 16, 32, 0.68) 0%,
-      rgba(8, 16, 32, 0.78) 55%,
-      rgba(8, 16, 32, 0.88) 100%
+      rgba(8, 16, 32, 0.68) 0%, /* photo-scrim-ok */
+      rgba(8, 16, 32, 0.78) 55%, /* photo-scrim-ok */
+      rgba(8, 16, 32, 0.88) 100% /* photo-scrim-ok */
     );
   }
 

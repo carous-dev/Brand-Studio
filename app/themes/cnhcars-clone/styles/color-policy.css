@@ -1,0 +1,84 @@
+/* =============================================================================
+ * THEME COLOR USAGE POLICY  (cnhcars-clone)
+ * =============================================================================
+ *
+ * The standard --t-* role-token layer every theme ships (see
+ * docs/theme-contract.md). Maps the dashboard --color-* palette onto semantic
+ * ROLES so components read intent (--t-action-bg, --t-eyebrow, …) rather than
+ * reaching for raw --color-primary / -secondary / -accent.
+ *
+ * cnhcars-clone's components historically painted from --color-primary + a
+ * hardcoded royal-blue/carbon scale directly; this layer is the standard role
+ * abstraction (safe to adopt incrementally — Phase 6). Roles follow the
+ * platform convention: primary = dominant brand fill, accent = interaction/
+ * hover, secondary = soft supporting tint only.
+ * ============================================================================= */
+
+[data-theme-id='cnhcars-clone'] {
+  /* Action / CTA */
+  --t-action-bg: var(--color-primary);
+  --t-action-bg-hover: color-mix(in srgb, var(--color-primary) 88%, var(--color-text));
+  --t-action-bg-soft: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  --t-action-fg: var(--color-bg);
+  --t-action-fg-on-light: var(--color-primary);
+  --t-action-ring: color-mix(in srgb, var(--color-primary) 22%, transparent);
+
+  /* Links / interactive text */
+  --t-link: var(--color-text);
+  --t-link-muted: var(--color-muted);
+  --t-link-hover: var(--color-accent);
+  --t-link-active: var(--color-accent);
+
+  /* Eyebrows / category labels */
+  --t-eyebrow: var(--color-primary);
+
+  /* Icon containers and glyphs */
+  --t-icon-bg: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  --t-icon-bg-strong: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  --t-icon-fg: var(--color-primary);
+  --t-icon-border: color-mix(in srgb, var(--color-primary) 22%, transparent);
+
+  /* Decorative accents */
+  --t-decoration: var(--color-accent);
+  --t-decoration-soft: color-mix(in srgb, var(--color-accent) 14%, transparent);
+
+  /* Hero gradient base */
+  --t-hero-base: var(--color-accent);
+  --t-hero-base-light: color-mix(in srgb, var(--color-accent) 70%, var(--color-bg));
+  --t-hero-base-dark: color-mix(in srgb, var(--color-accent) 84%, var(--color-text));
+
+  /* Section tints (the only proper home for --color-secondary) */
+  --t-section-tint: color-mix(in srgb, var(--color-secondary) 6%, var(--color-bg));
+  --t-section-alt: color-mix(in srgb, var(--color-secondary) 12%, var(--color-bg));
+
+  /* Surfaces / chrome */
+  --t-page: var(--color-bg);
+  --t-card: var(--color-surface);
+  --t-border: var(--color-border);
+  --t-border-strong: color-mix(in srgb, var(--color-text) 16%, transparent);
+
+  /* Text */
+  --t-text: var(--color-text);
+  --t-muted: var(--color-muted);
+  --t-text-on-brand: var(--color-bg);
+
+  /* Status (semantic, not brand-tinted) */
+  --t-success: #0f5132;
+  --t-error: #b42318;
+
+  /* Gradient tokens — tonal depth on coloured surfaces */
+  --t-action-gradient: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 92%, var(--color-bg)) 0%,
+    var(--color-primary) 50%,
+    color-mix(in srgb, var(--color-primary) 80%, var(--color-text)) 100%);
+  --t-accent-gradient: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-accent) 92%, var(--color-bg)) 0%,
+    var(--color-accent) 50%,
+    color-mix(in srgb, var(--color-accent) 80%, var(--color-text)) 100%);
+  --t-brand-gradient: linear-gradient(135deg,
+    var(--color-primary) 0%,
+    color-mix(in srgb, var(--color-primary) 50%, var(--color-accent)) 50%,
+    var(--color-accent) 100%);
+  --t-glow-shadow: 0 14px 28px color-mix(in srgb, var(--color-primary) 28%, transparent);
+  --t-glow-shadow-strong: 0 18px 36px color-mix(in srgb, var(--color-primary) 38%, transparent);
+}

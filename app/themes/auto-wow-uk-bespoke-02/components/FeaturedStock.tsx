@@ -86,15 +86,15 @@ export default function FeaturedStock({ vehicles }: { vehicles?: any[] }) {
   }
 
   return (
-    <section className={`auto-section ${styles.section}`} aria-label="Recent stock">
+    <section className={`auto-section ${styles.section}`} aria-label="Recent stock" data-aos="fade-up">
       <div className={styles.inner}>
         <header className={styles.header}>
-          <div className={styles.headerText} data-aos="fade-up">
+          <div className={styles.headerText}>
             <span className={styles.eyebrow}>Recent stock</span>
             <h2 className={styles.title}>Just landed</h2>
           </div>
 
-          <div className={styles.headerActions} data-aos="fade-left">
+          <div className={styles.headerActions}>
             <div className={styles.navBtns}>
               <button
                 type="button"

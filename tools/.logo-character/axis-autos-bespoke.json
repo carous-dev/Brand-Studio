@@ -1,0 +1,17 @@
+{
+  "themeId": "axis-autos-bespoke",
+  "logoStyle": "stencil-wordmark",
+  "logoLetterforms": "bold stencil-cut sans serif — letters have geometric cuts (industrial/military stencil DNA) but balanced with broad strokes",
+  "logoColorBlocking": "split — first word 'AXIS' green, second + third words 'AUTOS LTD' black",
+  "logoTagline": "USED CARS SPECIALISTS — thin condensed sans below wordmark, full-width centered",
+  "logoMood": "bold, distinctive, slightly utilitarian — but the stencil character demands restraint elsewhere so it stays the focal point",
+  "fontPick": {
+    "heading": "Manrope",
+    "body": "IBM Plex Sans",
+    "rationale": "Manrope (clean geometric sans, neutral) won't compete with the stencil character of the logo. IBM Plex Sans body is a modern grotesque pairing — distinct from Inter/Open Sans/Source Sans 3 already used in registry. Brand new pair across the catalogue.",
+    "headingWeight": 600,
+    "bodyWeight": 400,
+    "titleCase": "sentence-case-display"
+  },
+  "designNote": "Stencil wordmark is loud; the layout must be calm. Minimalist whitespace + sentence-case lets the logo be the loudest thing on the page. Going UPPERCASE on h1-h4 would double the stencil energy and turn shouty — explicitly avoided."
+}

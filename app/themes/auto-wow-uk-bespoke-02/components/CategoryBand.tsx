@@ -33,9 +33,9 @@ export default function CategoryBand({ availableBodies }: { availableBodies?: st
   const tiles = fromInventory.length === 3 ? fromInventory : DEFAULT_TILES
 
   return (
-    <section className={`auto-section ${styles.section}`} aria-label="Shop by category">
+    <section className={`auto-section ${styles.section}`} aria-label="Shop by category" data-aos="fade-up">
       <div className={styles.inner}>
-        <header className={styles.header} data-aos="fade-up">
+        <header className={styles.header}>
           <span className={styles.eyebrow}>[ Pick your shape ]</span>
           <h2 className={styles.title}>Browse by body type</h2>
           <p className={styles.lead}>
@@ -50,8 +50,6 @@ export default function CategoryBand({ availableBodies }: { availableBodies?: st
               key={tile.label}
               href={tile.href}
               className={styles.tile}
-              data-aos="fade-up"
-              data-aos-delay={idx * 80}
             >
               <span className={styles.tileIcon} aria-hidden="true">{tile.icon}</span>
               <span className={styles.tileLabel}>{tile.label}</span>

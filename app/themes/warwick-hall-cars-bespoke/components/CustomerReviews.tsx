@@ -59,7 +59,7 @@ export default function CustomerReviews() {
   const visibleCount = Math.min(reviews.length, 3)
 
   return (
-    <section className={styles.section} id="reviews" aria-labelledby="warwick-reviews-heading">
+    <section className={styles.section} id="reviews" aria-labelledby="warwick-reviews-heading" data-aos="fade-up">
       <div className={styles.inner}>
         <header className={styles.header} data-aos="fade-up">
           <div className={styles.headerCopy}>

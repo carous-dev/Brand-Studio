@@ -36,9 +36,9 @@ const REVIEWS: Review[] = [
 
 export default function Reviews() {
   return (
-    <section className={`auto-section ${styles.section}`} aria-label="Customer reviews">
+    <section className={`auto-section ${styles.section}`} aria-label="Customer reviews" data-aos="fade-up">
       <div className={styles.inner}>
-        <header className={styles.header} data-aos="fade-up">
+        <header className={styles.header}>
           <span className={styles.eyebrow}>[ What buyers say ]</span>
           <h2 className={styles.title}>5-star service. Verified.</h2>
           <p className={styles.lead}>
@@ -52,8 +52,6 @@ export default function Reviews() {
             <article
               key={`review-${idx}`}
               className={styles.card}
-              data-aos="fade-up"
-              data-aos-delay={idx * 80}
             >
               <Quote size={22} strokeWidth={2} className={styles.quoteIcon} aria-hidden="true" />
               <div className={styles.stars} aria-label={`${review.stars} of 5 stars`}>

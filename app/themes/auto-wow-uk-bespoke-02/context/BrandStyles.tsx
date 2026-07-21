@@ -2,6 +2,8 @@
 
 import React from 'react';
 import type { BrandConfig } from '@/brands/types';
+import { buildGoogleFontsImport } from '@/app/lib/googleFonts';
+import { buildThemeTokens, renderThemeStyle, escapeCssUrl, hexToRgb } from '@/app/themes/lib/theme-tokens';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -17,9 +19,14 @@ const pickString = (...candidates: Array<unknown>): string | null => {
 };
 
 /**
- * BrandStyles for auto-wow-uk-bespoke-02 — emits brand triad + 7 image-slot
- * variables. Neutrals are theme-locked in base.css (paired surface/foreground
- * tokens) so brand records cannot break contrast.
+ * BrandStyles for auto-wow-uk-bespoke-02 — emits the canonical token block via
+ * the shared emitter (buildThemeTokens + renderThemeStyle), plus the theme's own
+ * image-slot / state / placeholder / font-override extras. Paired surface/
+ * foreground tokens live in base.css and DERIVE from the dashboard pickers
+ * (--color-bg, --color-surface, --color-text, --color-muted, --color-border)
+ * set here. Brand records may override the brand triad AND the neutral pickers;
+ * every surface repaints automatically. See
+ * feedback_dashboard_tokens_drive_all_surfaces.md.
  *
  * Image slots use the 3-tier fallback chain per SKILL §"Brand-uploaded images
  * must render". Hero slot reads brand.heroImage FIRST (dashboard's
@@ -44,7 +51,6 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   const brandImages: Record<string, unknown> = (brand as any)?.images || {};
 
   // HERO: brand.heroImage (authoritative) → brand.images.hero (may be stale) → theme default.
-  // See SKILL pitfall #38c for the priority rationale.
   const heroImageSlot =
     pickString((brand as any).heroImage, brandImages['hero']) || themeDefault('hero');
 
@@ -59,70 +65,53 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   const sellYourCarImage = resolveSlot('sellYourCar', 'sellYourCar');
   const recentlySoldImage = resolveSlot('recentlySold', 'recentlySold');
 
-  const primary = theme.colors.primaryColor || '#b51c24';
-  const primaryStrong = (theme.colors as any).primaryStrong || '#9f1920';
-  const onPrimary = (theme.colors as any).onPrimary || '#ffffff';
-
-  // Dashboard-driven neutrals. Themes consume these as the source of truth —
-  // dark sections derive from textColor (inverted role), light sections
-  // derive from backgroundColor / surfaceColor / borderColor / mutedColor.
-  // See feedback_dashboard_tokens_drive_all_surfaces.md for the policy.
+  // Background + text drive auto-wow's dark tier (roles inverted — see base.css).
+  // Kept here so the surface-bg-*-rgb overrides below track brand overrides.
   const bgColor = theme.colors.backgroundColor || '#ffffff';
-  const surfaceColor = (theme.colors as any).surfaceColor || '#f6f7fb';
   const textColor = theme.colors.textColor || '#0f1623';
-  const mutedColor = (theme.colors as any).mutedColor || '#5b6573';
-  const borderColor = (theme.colors as any).borderColor || '#e3e6ee';
 
-  const cssVariables: Record<string, string> = {
-    // Brand triad — the ONLY colors brand records may override at runtime.
-    '--color-primary': primary,
-    '--color-primary-strong': primaryStrong,
-    '--color-on-primary': onPrimary,
-    '--brand-primary': primary,
-    '--brand-primary-strong': primaryStrong,
-    '--brand-on-primary': onPrimary,
-    '--brand-primary-rgb': hexToRgb(primary),
-    // RGB triples derived from the SAME dashboard pickers so gradient stops
-    // and alpha overlays inherit brand-record changes automatically.
-    '--color-bg-rgb': hexToRgb(bgColor),
-    '--color-text-rgb': hexToRgb(textColor),
-    '--color-surface-rgb': hexToRgb(surfaceColor),
-    // Surface aliases — kept for backwards-compat with component CSS that
-    // still references the paired-token names. They resolve through the
-    // dashboard, not through hardcoded literals.
+  // Canonical token block via the shared emitter. Auto Wow's bespoke palette is
+  // passed as `defaults`; brand records override any core token via
+  // theme.colors.*. primaryStrong/secondary/accent literals differ from the
+  // emitter's generic fallbacks, so they're passed. onPrimary (#ffffff) matches
+  // the emitter default, so it's omitted. header-* and hero-* tokens are OMITTED
+  // — nothing in this theme's CSS consumes them, and --color-review-star equals
+  // the emitter default (#facc15), which IS consumed and emitted identically.
+  const vars = buildThemeTokens(theme.colors as any, {
+    defaults: {
+      primaryColor: '#b51c24',
+      secondaryColor: '#9f1920',
+      accentColor: '#b51c24',
+      backgroundColor: '#ffffff',
+      surfaceColor: '#f6f7fb',
+      textColor: '#0f1623',
+      mutedColor: '#5b6573',
+      borderColor: '#e3e6ee',
+      primaryStrong: '#9f1920',
+    },
+  });
+
+  const extras: Record<string, string> = {
+    // Dark/light-surface rgb kept brand-reactive: base.css, used-cars, wishlist
+    // consume rgba(var(--surface-bg-dark-rgb), X) / rgba(var(--surface-bg-light-rgb), X),
+    // and auto-wow derives its dark tier from --color-text and its light tier
+    // from --color-bg. Override the emitter's FIXED #0a0e14 / #ffffff so these
+    // track brand overrides exactly as before.
     '--surface-bg-dark-rgb': hexToRgb(textColor),
     '--surface-bg-light-rgb': hexToRgb(bgColor),
-    // Semantic state + utility tokens — theme-locked so they read consistently
-    // across brand records (success/warning live in the same hue family).
+
+    // Semantic state tokens — theme-locked bespoke hues (success/warning read in
+    // the theme's own palette family, distinct from the emitter's generic
+    // #16a34a/#d97706). Consumed by Hero + HorizontalStockTicker.
     '--state-success': '#67ffa3',
     '--state-success-strong': '#3fe88f',
     '--state-warning': '#d18a3d',
     '--state-warning-strong': '#b56c1f',
+
+    // Missing-image placeholder fill.
     '--image-placeholder-bg': '#d8d8dc',
 
-    // Dashboard-set neutrals — flow into every surface in the theme.
-    // See feedback_dashboard_tokens_drive_all_surfaces.md.
-    '--color-bg': bgColor,
-    '--color-surface': surfaceColor,
-    '--color-text': textColor,
-    '--color-muted': mutedColor,
-    '--color-border': borderColor,
-    '--color-secondary': (theme.colors as any).secondaryColor || primaryStrong,
-    '--color-accent': (theme.colors as any).accentColor || primary,
-
-    // Header chrome — dark sections re-use --color-text as bg, --color-bg as fg.
-    '--color-header-bg': textColor,
-    '--color-header-text': bgColor,
-    '--color-header-muted': `color-mix(in srgb, ${bgColor} 78%, transparent)`,
-    '--color-hero-overlay-start': 'rgba(var(--color-text-rgb), 0.62)',
-    '--color-hero-overlay-end': 'rgba(var(--color-text-rgb), 0.88)',
-    '--color-hero-text-muted': `color-mix(in srgb, ${bgColor} 92%, transparent)`,
-    '--color-hero-review-muted': `color-mix(in srgb, ${bgColor} 85%, transparent)`,
-    '--color-review-star': '#facc15',
-
-    // 7 image slots — every theme references these via var(--brand-image-*).
-    // CSS modules MUST also include a theme-default layer underneath as a
-    // multi-layer background-image (see base.css .auto-page-hero--*).
+    // 7 image slots — themes reference these via var(--brand-image-*).
     '--brand-image-hero': `url("${escapeCssUrl(heroImageSlot)}")`,
     '--brand-image-about': `url("${escapeCssUrl(aboutImage)}")`,
     '--brand-image-services': `url("${escapeCssUrl(servicesImage)}")`,
@@ -131,7 +120,7 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--brand-image-sell-your-car': `url("${escapeCssUrl(sellYourCarImage)}")`,
     '--brand-image-recently-sold': `url("${escapeCssUrl(recentlySoldImage)}")`,
 
-    // Compatibility aliases consumed by legacy widgets.
+    // Compat alias consumed by legacy widgets.
     '--auto-hero-image': `url("${escapeCssUrl(heroImageSlot)}")`,
 
     // Font overrides.
@@ -139,29 +128,19 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--font-brand-family-override': fontBrand,
   };
 
+  // Pull whichever Google Fonts the theme + brand record asks for. Without this
+  // @import, --font-brand-family-override resolves to a font the browser never
+  // loaded and headings silently fall back. See
+  // feedback_brandstyles_must_load_google_fonts.
+  const fontImport = buildGoogleFontsImport(fontUi, fontBrand);
+
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: `
-          :root {
-            ${Object.entries(cssVariables)
-              .map(([key, value]) => `${key}: ${value};`)
-              .join('\n            ')}
-            font-family: ${fontUi};
-          }
-        `,
+        __html: renderThemeStyle({ vars, extras, fontFamily: fontUi, fontImport }),
       }}
     />
   );
-}
-
-function hexToRgb(hex: string): string {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 0, 0';
-}
-
-function escapeCssUrl(url: string): string {
-  return String(url).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n|\r/g, '');
 }
 
 function resolveFontToken(...candidates: Array<unknown>): string | null {

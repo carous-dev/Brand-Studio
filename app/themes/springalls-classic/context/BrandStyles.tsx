@@ -2,6 +2,8 @@
 
 import React from 'react';
 import type { BrandConfig } from '@/brands/types';
+import { buildGoogleFontsImport } from '@/app/lib/googleFonts';
+import { buildThemeTokens, renderThemeStyle, escapeCssUrl } from '@/app/themes/lib/theme-tokens';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -43,34 +45,43 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   const sellYourCarImage = imageOr('sellYourCar', heroImageSlot);
   const recentlySoldImage = imageOr('recentlySold', heroImageSlot);
 
-  const cssVariables: Record<string, string> = {
-    // Spring core palette mapped to brand tokens
-    '--color-primary': theme.colors.primaryColor || '#067a74',
-    '--color-secondary': theme.colors.secondaryColor || '#08a49d',
-    '--color-accent': theme.colors.accentColor || '#16b3a8',
-    '--color-bg': theme.colors.backgroundColor || '#f7f7f9',
-    '--color-surface': (theme.colors as any).surfaceColor || '#ffffff',
-    '--color-text': theme.colors.textColor || '#111827',
-    '--color-muted': (theme.colors as any).mutedColor || '#4b5563',
-    '--color-border': (theme.colors as any).borderColor || '#d3d7dc',
-    '--color-header-bg': (theme.colors as any).headerBg || '#ffffff',
-    '--color-header-text': (theme.colors as any).headerText || theme.colors.textColor || '#111827',
-    '--color-header-muted': (theme.colors as any).headerMuted || '#6b7280',
-    '--color-hero-overlay-start': (theme.colors as any).heroOverlayStart || 'rgba(11, 18, 17, 0.5)',
-    '--color-hero-overlay-end': (theme.colors as any).heroOverlayEnd || 'rgba(11, 18, 17, 0.55)',
-    '--color-hero-text-muted': (theme.colors as any).heroTextMuted || 'rgba(255, 255, 255, 0.9)',
-    '--color-hero-review-muted': (theme.colors as any).heroReviewMuted || 'rgba(255, 255, 255, 0.85)',
-    '--color-review-star': (theme.colors as any).reviewStar || '#facc15',
+  // Canonical token block via the shared emitter. Springalls' bespoke spring
+  // palette is passed as `defaults`; brand records override any of the 8 via
+  // theme.colors.*. header-text / hero-review-muted / review-star are OMITTED
+  // because the emitter derives them identically (headerText = text, and the
+  // hero-review/review-star defaults match). The header-bg / header-muted and
+  // the darker spring hero overlays differ from the emitter's derived values,
+  // so they stay as defaults to preserve visual parity.
+  const vars = buildThemeTokens(theme.colors as any, {
+    defaults: {
+      primaryColor: '#067a74',
+      secondaryColor: '#08a49d',
+      accentColor: '#16b3a8',
+      backgroundColor: '#f7f7f9',
+      surfaceColor: '#ffffff',
+      textColor: '#111827',
+      mutedColor: '#4b5563',
+      borderColor: '#d3d7dc',
+      headerBg: '#ffffff',
+      headerMuted: '#6b7280',
+      heroOverlayStart: 'rgba(11, 18, 17, 0.5)',
+      heroOverlayEnd: 'rgba(11, 18, 17, 0.55)',
+      heroTextMuted: 'rgba(255, 255, 255, 0.9)',
+    },
+  });
 
-    // Bridge variables for shared chrome / carous-platform style references
-    '--brand-primary': theme.colors.primaryColor || '#067a74',
-    '--brand-secondary': theme.colors.secondaryColor || '#08a49d',
-    '--brand-accent': theme.colors.accentColor || '#16b3a8',
-    '--brand-background': theme.colors.backgroundColor || '#f7f7f9',
-    '--brand-text': theme.colors.textColor || '#111827',
-    '--brand-primary-rgb': hexToRgb(theme.colors.primaryColor || '#067a74'),
-    '--brand-secondary-rgb': hexToRgb(theme.colors.secondaryColor || '#08a49d'),
-    '--brand-accent-rgb': hexToRgb(theme.colors.accentColor || '#16b3a8'),
+  const extras: Record<string, string> = {
+    // Fixed brand-identity hues that must NOT retint with the palette.
+    // WhatsApp's green is a recognised third-party brand mark; the vehicle
+    // spec-icon hues are a deliberate multi-colour set that would collapse
+    // into one colour if mapped to a single brand token.
+    '--color-whatsapp': '#25D366',
+    '--color-whatsapp-online': '#22c55e',
+    '--color-whatsapp-offline': '#9aa1a8',
+    '--spec-hue-blue': '#2563eb',
+    '--spec-hue-orange': '#f97316',
+    '--spec-hue-green': '#16a34a',
+    '--spec-hue-sky': '#0ea5e9',
 
     // Hero background image (resolves to brand.heroImage if set in dashboard)
     '--springalls-hero-image': `url("${escapeCssUrl(heroImage)}")`,
@@ -90,29 +101,18 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--font-brand-family-override': fontBrand,
   };
 
+  // Dynamic Google Fonts import — without this the --font-brand-family-override
+  // var resolves to a font the browser never loaded and headings silently fall
+  // back to a system serif. See memory `feedback_brandstyles_must_load_google_fonts`.
+  const fontImport = buildGoogleFontsImport(fontUi, fontBrand);
+
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: `
-          :root {
-            ${Object.entries(cssVariables)
-              .map(([key, value]) => `${key}: ${value};`)
-              .join('\n            ')}
-            font-family: ${fontUi};
-          }
-        `,
+        __html: renderThemeStyle({ vars, extras, fontFamily: fontUi, fontImport }),
       }}
     />
   );
-}
-
-function hexToRgb(hex: string): string {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 0, 0';
-}
-
-function escapeCssUrl(url: string): string {
-  return String(url).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n|\r/g, '');
 }
 
 function resolveFontToken(...candidates: Array<unknown>): string | null {

@@ -3,12 +3,15 @@
 }
 
 .header {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
   gap: 18px;
-  margin: 0 0 clamp(32px, 4vw, 48px);
+  margin: 0;
+  padding: 0 0 clamp(48px, 6vw, 80px);
   background: transparent !important;
   box-shadow: none !important;
   border: 0;
@@ -217,7 +220,7 @@
 
 .skeleton {
   min-height: 380px;
-  background: linear-gradient(110deg, var(--color-surface) 8%, rgba(0, 0, 0, 0.04) 18%, var(--color-surface) 33%);
+  background: linear-gradient(110deg, var(--color-surface) 8%, color-mix(in srgb, var(--color-text) 4%, transparent) 18%, var(--color-surface) 33%);
   background-size: 200% 100%;
   animation: skeleton 1.5s linear infinite;
   border-style: dashed;
@@ -241,5 +244,59 @@
 @media (min-width: 1024px) {
   .grid {
     grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Mobile (≤640px) refinements — the title was dominating, viewAll was
+   cramped against the first card, and the card had too little visual
+   presence on a white-on-white brand. */
+@media (max-width: 640px) {
+  .header {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .headerCopy {
+    gap: 8px;
+  }
+  .eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+  }
+  .eyebrowMark {
+    width: 22px;
+  }
+  .title {
+    font-size: clamp(1.4rem, 6.8vw, 1.85rem);
+    line-height: 1.12;
+  }
+  .viewAll {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    align-self: flex-start;
+    padding: 8px 14px;
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    border-radius: 999px;
+    border-bottom: 0;
+  }
+  .viewAll:hover {
+    background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+    border-bottom: 0;
+  }
+  /* Mobile cards — stronger border so the white card pops against a
+     white page bg, and a tighter image aspect so the "Image not available"
+     placeholder doesn't dominate the screen. */
+  .card {
+    border-color: color-mix(in srgb, var(--color-text) 14%, transparent);
+    border-width: 1px;
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--color-text) 6%, transparent);
+  }
+  .media {
+    aspect-ratio: 4 / 3;
+  }
+  .stockChip {
+    background: color-mix(in srgb, var(--color-text) 92%, transparent);
+    color: var(--color-bg);
+    font-size: 0.62rem;
+    padding: 3px 8px;
   }
 }

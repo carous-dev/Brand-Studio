@@ -10,6 +10,8 @@ export type InventoryVehicle = {
   transmission: string
   body: string
   make: string
+  model: string
+  derivative: string
   color: string
   doors: number
   location: string
@@ -105,6 +107,8 @@ export function normalizeInventoryItem(item: any): InventoryVehicle | null {
     transmission: transmission || 'Manual',
     body: body || 'Car',
     make: make || 'Vehicle',
+    model: model || '',
+    derivative: derivative || '',
     color: color || 'Colour',
     doors: Number.isFinite(doors) && doors > 0 ? doors : 4,
     location: location || '',

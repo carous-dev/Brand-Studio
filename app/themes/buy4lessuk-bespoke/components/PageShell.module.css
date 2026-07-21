@@ -1,0 +1,15 @@
+.section {
+  padding: clamp(36px, 6vw, 72px) clamp(16px, 3vw, 32px);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.inner {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.innerNarrow {
+  max-width: 820px;
+  margin: 0 auto;
+}

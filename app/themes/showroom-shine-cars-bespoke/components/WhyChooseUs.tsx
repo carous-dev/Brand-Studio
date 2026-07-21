@@ -43,7 +43,7 @@ export default function WhyChooseUs() {
   ]
 
   return (
-    <section className={`shr-section ${styles.section}`}>
+    <section className={`shr-section ${styles.section}`} data-aos="fade-up">
       <div className={`shr-grid-pattern ${styles.gridDecor}`} aria-hidden />
       <div className={`shr-stripe-accent ${styles.stripeTopLeft}`} aria-hidden />
       <div className={`shr-stripe-accent ${styles.stripeBottomRight}`} aria-hidden />

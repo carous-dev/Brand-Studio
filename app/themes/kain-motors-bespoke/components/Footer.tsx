@@ -7,6 +7,15 @@ import { getBrandText } from '../lib/brand-text'
 import BrandLogo from './BrandLogo'
 import styles from './Footer.module.css'
 
+const DAY_KEYS = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday']
+function getTodayHours(brand: any): string {
+  const hours = brand?.openingHours
+  if (!hours || typeof hours !== 'object') return 'Open by appointment — please call ahead'
+  const today = hours[DAY_KEYS[new Date().getDay()]]
+  if (!today || /closed/i.test(String(today))) return 'Closed today — message us anytime'
+  return `Today: ${String(today).trim()}`
+}
+
 const PILLARS: Array<{ title: string; links: Array<{ label: string; href: string }> }> = [
   {
     title: 'Browse',
@@ -115,7 +124,7 @@ export default function Footer() {
             </p>
           )}
           <p className={styles.appointmentNote}>
-            By appointment only · Mon–Sat 09:30 – 17:30
+            {getTodayHours(brand)}
           </p>
         </address>
       </div>

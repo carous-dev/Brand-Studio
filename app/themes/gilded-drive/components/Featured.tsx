@@ -74,7 +74,7 @@ export default function Featured() {
 
   if (loading) {
     return (
-      <section className="featured-futuristic">
+      <section className="featured-futuristic" data-aos="fade-up">
         <div className="featured-header-futuristic">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={featuredVariant}>
             <h2 className="featured-title-futuristic">Featured Vehicles</h2>

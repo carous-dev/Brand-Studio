@@ -59,10 +59,12 @@ export default function Hero({
         </div>
 
         <h1 className={styles.title} data-aos="fade-up" data-aos-delay="80">
-          <span className={`${styles.titleGlow} mfx-text-glow`}>Stock.</span>{' '}
-          <span className={styles.titleGlow}>Finance.</span>{' '}
-          <span className={styles.titleGlow}>Drive.</span>
+          <span className={styles.titleWord}>Stock.</span>{' '}
+          <span className={styles.titleWord}>Finance.</span>{' '}
+          <span className={styles.titleWord}>Drive.</span>
         </h1>
+
+        <span className={styles.accentRule} data-aos="fade-up" data-aos-delay="120" aria-hidden="true" />
 
         <p className={styles.lead} data-aos="fade-up" data-aos-delay="160">
           Independent. Honest. Ready. Used cars sold straight from the showroom

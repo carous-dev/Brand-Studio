@@ -667,7 +667,8 @@
                 <!-- Colors Tab -->
                 <div class="tab-pane" id="colors-tab">
                     <div class="form-section">
-                        <h3>🎨 Theme Colors</h3>
+                        <h3>🎨 Brand Colors</h3>
+                        <p class="form-section-hint">Pick your 4 brand colors. Text, border, muted and surface are auto-tuned from these for contrast — no need to set them by hand.</p>
                         <div class="color-swatch-grid">
                             <!-- Primary Color Swatch -->
                             <div class="color-swatch-card" data-color="primaryColor">
@@ -776,9 +777,25 @@
                                 <input type="hidden" id="backgroundColor" name="backgroundColor" value="{{ brand_data.theme.colors.backgroundColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.backgroundColor else '#ffffff' }}">
                                 <input type="color" class="color-picker-hidden" id="backgroundColorPicker" value="{{ brand_data.theme.colors.backgroundColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.backgroundColor else '#ffffff' }}">
                             </div>
+                        </div>
+                        <div id="contrastWarnings" class="contrast-warnings"></div>
+                    </div>
 
+                    <div class="form-section">
+                        <div class="derived-colors-header">
+                            <h3>✨ Auto-tuned Colors</h3>
+                            <label class="auto-tune-toggle" for="colorsAutoToggle">
+                                <input type="checkbox" id="colorsAutoToggle" {{ 'checked' if brand_data.theme and brand_data.theme.colorsAuto }}>
+                                <span class="auto-tune-track"><span class="auto-tune-thumb"></span></span>
+                                <span class="auto-tune-label">Auto-tune from brand colors</span>
+                            </label>
+                        </div>
+                        <p class="form-section-hint">When auto-tune is on, these four update automatically as you change the brand colors above. Switch it off to customise them by hand.</p>
+                        <input type="hidden" id="colorsAuto" name="colorsAuto" value="{{ 'true' if brand_data.theme and brand_data.theme.colorsAuto else 'false' }}">
+                        <div class="color-swatch-grid">
                             <!-- Text Color Swatch -->
-                            <div class="color-swatch-card" data-color="textColor">
+                            <div class="color-swatch-card derived-swatch" data-color="textColor">
+                                <span class="auto-badge">Auto</span>
                                 <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.textColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.textColor else '#1f2937' }}">
                                     <div class="swatch-overlay">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -805,7 +822,8 @@
                             </div>
 
                             <!-- Border Color Swatch -->
-                            <div class="color-swatch-card" data-color="borderColor">
+                            <div class="color-swatch-card derived-swatch" data-color="borderColor">
+                                <span class="auto-badge">Auto</span>
                                 <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.borderColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.borderColor else '#e5e7eb' }}">
                                     <div class="swatch-overlay">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -832,7 +850,8 @@
                             </div>
 
                             <!-- Muted Color Swatch -->
-                            <div class="color-swatch-card" data-color="mutedColor">
+                            <div class="color-swatch-card derived-swatch" data-color="mutedColor">
+                                <span class="auto-badge">Auto</span>
                                 <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.mutedColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.mutedColor else '#6b7280' }}">
                                     <div class="swatch-overlay">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -859,7 +878,8 @@
                             </div>
 
                             <!-- Surface Color Swatch -->
-                            <div class="color-swatch-card" data-color="surfaceColor">
+                            <div class="color-swatch-card derived-swatch" data-color="surfaceColor">
+                                <span class="auto-badge">Auto</span>
                                 <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.surfaceColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.surfaceColor else '#ffffff' }}">
                                     <div class="swatch-overlay">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1523,7 +1543,7 @@
 
 .color-swatch-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
     margin-top: 1rem;
 }
@@ -1549,6 +1569,126 @@
 .color-swatch-card.selected {
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Auto-tuned (derived) color cards */
+.derived-swatch .auto-badge {
+    display: none;
+    position: absolute;
+    top: 1.35rem;
+    right: 1.35rem;
+    z-index: 2;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    background: var(--primary);
+    color: #ffffff;
+}
+
+.derived-swatch.auto-locked .auto-badge {
+    display: inline-flex;
+}
+
+.derived-swatch.auto-locked {
+    cursor: default;
+}
+
+.derived-swatch.auto-locked:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--border-primary);
+}
+
+.derived-swatch.auto-locked .swatch-overlay {
+    display: none;
+}
+
+.derived-swatch.auto-locked:hover .swatch-preview {
+    border-color: var(--border-primary);
+    transform: none;
+}
+
+/* Auto-tune toggle */
+.derived-colors-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.auto-tune-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.auto-tune-toggle input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.auto-tune-track {
+    width: 38px;
+    height: 22px;
+    border-radius: 999px;
+    background: var(--bg-tertiary, #334155);
+    border: 1px solid var(--border-primary);
+    position: relative;
+    transition: background var(--transition-normal);
+    flex: 0 0 auto;
+}
+
+.auto-tune-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    transition: transform var(--transition-normal);
+}
+
+.auto-tune-toggle input:checked + .auto-tune-track {
+    background: var(--primary);
+}
+
+.auto-tune-toggle input:checked + .auto-tune-track .auto-tune-thumb {
+    transform: translateX(16px);
+}
+
+.auto-tune-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Contrast warning chips */
+.contrast-warnings {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.contrast-warnings:empty {
+    display: none;
+}
+
+.contrast-warning-chip {
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-md);
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    color: var(--text-primary, #f8fafc);
+    font-size: 0.8rem;
+    line-height: 1.4;
 }
 
 .swatch-preview {
@@ -2058,6 +2198,14 @@
     }
 }
 </style>
+
+<script type="module">
+    // Expose the palette derivation mirror (backend/services/color_derive.py
+    // is canonical at persist time) to the classic inline script below.
+    import { ColorUtils } from '/static/modules/color-utils.js';
+    window.ColorUtils = ColorUtils;
+    document.dispatchEvent(new Event('colorutils-ready'));
+</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -3203,20 +3351,17 @@ function populateFormFields(brand) {
         }
     }
     
-    // Theme Colors
+    // Theme Colors — all 8, then re-apply the auto-tune state (auto mode
+    // re-derives text/surface/border/muted from the 4 brand inputs)
     if (brand.theme && brand.theme.colors) {
-        setFieldValue('primaryColor', brand.theme.colors.primaryColor);
-        setFieldValue('secondaryColor', brand.theme.colors.secondaryColor);
-        setFieldValue('accentColor', brand.theme.colors.accentColor);
-        setFieldValue('backgroundColor', brand.theme.colors.backgroundColor);
-        setFieldValue('textColor', brand.theme.colors.textColor);
-        
-        // Sync color text inputs
-        syncColorInputs('primaryColor', brand.theme.colors.primaryColor);
-        syncColorInputs('secondaryColor', brand.theme.colors.secondaryColor);
-        syncColorInputs('accentColor', brand.theme.colors.accentColor);
-        syncColorInputs('backgroundColor', brand.theme.colors.backgroundColor);
-        syncColorInputs('textColor', brand.theme.colors.textColor);
+        BRAND_COLOR_INPUTS.concat(DERIVED_COLOR_KEYS).forEach(key => {
+            if (brand.theme.colors[key]) {
+                setFieldValue(key, brand.theme.colors[key]);
+                syncColorInputs(key, brand.theme.colors[key]);
+            }
+        });
+        setColorsAutoState(brand.theme.colorsAuto === true || brand.theme.colorsAuto === 'true');
+        updateContrastWarnings();
     }
 
     // Theme Fonts
@@ -3430,29 +3575,39 @@ function initializeColorSwatches() {
         const preview = card.querySelector('.swatch-preview');
         const colorValue = card.querySelector('.color-value');
         
-        // Click on swatch card to open color picker (but not on copy button)
+        // Click on swatch card to open color picker (but not on copy button,
+        // and not while the card is auto-tuned)
         card.addEventListener('click', (e) => {
+            if (card.classList.contains('auto-locked')) return;
             if (!e.target.closest('.copy-icon-btn') && !e.target.closest('.color-value')) {
                 if (colorPicker) {
                     colorPicker.click();
                 }
             }
         });
-        
+
         // Color picker change handler
         if (colorPicker) {
             colorPicker.addEventListener('input', (e) => {
                 const newColor = e.target.value;
                 updateSwatchColor(card, newColor);
-                
+
                 // Update hidden input
                 if (hiddenInput) {
                     hiddenInput.value = newColor;
                 }
-                
+
                 // Update color value display
                 if (colorValue) {
                     colorValue.textContent = newColor;
+                }
+
+                // Brand color changed: refresh auto-tuned colors + warnings
+                if (BRAND_COLOR_INPUTS.includes(colorName)) {
+                    if (isColorsAutoOn()) {
+                        applyDerivedColors();
+                    }
+                    updateContrastWarnings();
                 }
             });
         }
@@ -3465,6 +3620,14 @@ function initializeColorSwatches() {
             });
         }
     });
+
+    // Auto-tune toggle for derived colors
+    const autoToggle = document.getElementById('colorsAutoToggle');
+    if (autoToggle) {
+        autoToggle.addEventListener('change', () => setColorsAutoState(autoToggle.checked));
+    }
+    setColorsAutoState(isColorsAutoOn());
+    updateContrastWarnings();
 }
 
 function updateSwatchColor(card, color) {
@@ -3473,6 +3636,78 @@ function updateSwatchColor(card, color) {
         preview.style.backgroundColor = color;
     }
 }
+
+// ---- Auto-tuned palette (mirror of backend/services/color_derive.py) ----
+
+const BRAND_COLOR_INPUTS = ['primaryColor', 'secondaryColor', 'accentColor', 'backgroundColor'];
+const DERIVED_COLOR_KEYS = ['textColor', 'surfaceColor', 'borderColor', 'mutedColor'];
+
+function isColorsAutoOn() {
+    const hidden = document.getElementById('colorsAuto');
+    return !!hidden && hidden.value === 'true';
+}
+
+function getBrandColorValue(id) {
+    const el = document.getElementById(id);
+    return el ? el.value : '';
+}
+
+function applyDerivedColors() {
+    if (!window.ColorUtils) return;
+    const derived = window.ColorUtils.derivePalette(
+        getBrandColorValue('primaryColor'),
+        getBrandColorValue('secondaryColor'),
+        getBrandColorValue('accentColor'),
+        getBrandColorValue('backgroundColor')
+    );
+    DERIVED_COLOR_KEYS.forEach(key => {
+        const hex = derived[key];
+        const hidden = document.getElementById(key);
+        if (hidden) hidden.value = hex;
+        const picker = document.getElementById(key + 'Picker');
+        if (picker) picker.value = hex;
+        const card = document.querySelector(`.color-swatch-card[data-color="${key}"]`);
+        if (card) {
+            updateSwatchColor(card, hex);
+            const colorValue = card.querySelector('.color-value');
+            if (colorValue) colorValue.textContent = hex;
+        }
+    });
+}
+
+function updateContrastWarnings() {
+    const box = document.getElementById('contrastWarnings');
+    if (!box || !window.ColorUtils) return;
+    const warnings = window.ColorUtils.contrastWarnings({
+        primaryColor: getBrandColorValue('primaryColor'),
+        secondaryColor: getBrandColorValue('secondaryColor'),
+        accentColor: getBrandColorValue('accentColor'),
+        backgroundColor: getBrandColorValue('backgroundColor'),
+    });
+    box.innerHTML = warnings.map(w =>
+        `<div class="contrast-warning-chip">⚠️ ${w.message}</div>`
+    ).join('');
+}
+
+function setColorsAutoState(on) {
+    const hidden = document.getElementById('colorsAuto');
+    if (hidden) hidden.value = on ? 'true' : 'false';
+    const toggle = document.getElementById('colorsAutoToggle');
+    if (toggle) toggle.checked = on;
+    document.querySelectorAll('.derived-swatch').forEach(card => {
+        card.classList.toggle('auto-locked', on);
+    });
+    if (on) applyDerivedColors();
+}
+window.setColorsAutoState = setColorsAutoState;
+
+// Safety net: if the ColorUtils module loads after init, re-apply once ready
+document.addEventListener('colorutils-ready', () => {
+    if (document.readyState !== 'loading' && document.getElementById('colorsAuto')) {
+        setColorsAutoState(isColorsAutoOn());
+        updateContrastWarnings();
+    }
+});
 
 function copySwatchColor(colorName) {
     const hiddenInput = document.getElementById(colorName);

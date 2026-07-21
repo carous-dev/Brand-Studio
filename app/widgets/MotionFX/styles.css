@@ -300,3 +300,36 @@
     --mfx-progress: 0 !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * MOBILE — freeze every loop on small screens (matches AOS aos.css policy).
+ * Phone GPUs handle infinite transform/filter loops poorly and the effects
+ * add visual noise on a small viewport.
+ * ------------------------------------------------------------------------- */
+
+@media (max-width: 720px) {
+  :where(.mfx-pulse-dot)::before,
+  :where(.mfx-glow-pulse),
+  :where(.mfx-glow-orbit),
+  :where(.mfx-shimmer-loop)::after,
+  :where(.mfx-scan)::after,
+  :where(.mfx-text-glow),
+  :where(.mfx-border-glow),
+  :where(.mfx-float),
+  :where(.mfx-float-large),
+  :where(.mfx-tilt),
+  :where(.mfx-grid-drift),
+  :where(.mfx-rotate-slow),
+  :where(.mfx-fade-loop) {
+    animation: none !important;
+  }
+
+  :where(.mfx-shimmer:hover)::after,
+  :where(.mfx-shimmer.is-active)::after {
+    animation: none !important;
+  }
+
+  :where([data-mfx-scroll]) {
+    --mfx-progress: 0 !important;
+  }
+}

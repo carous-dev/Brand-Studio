@@ -14,12 +14,19 @@ export default function HorizontalStockTicker({
 }) {
   const count = typeof stockCount === 'number' && stockCount > 0 ? stockCount : null
   const makes = (sampleMakes || []).filter(Boolean).slice(0, 12)
-  const rail = makes.length ? [...makes, ...makes] : []
+  // Pad short make lists so a single marquee half is always wide enough to fill
+  // the rail — otherwise a 5-make list leaves a gap and the loop looks static.
+  let base = makes
+  if (makes.length) {
+    while (base.length < 10) base = [...base, ...makes]
+  }
+  // Two identical halves; the track animates by -50% for a seamless loop.
+  const rail = base.length ? [...base, ...base] : []
 
   return (
-    <section className={styles.ticker} aria-label="Live stock">
+    <section className={styles.ticker} aria-label="Live stock" data-aos="fade-up">
       <div className={styles.inner}>
-        <div className={styles.lead} data-aos="fade-right">
+        <div className={styles.lead}>
           <span className={`mfx-pulse-dot ${styles.dot}`} aria-hidden="true" />
           <span className={styles.label}>In stock now</span>
           <span className={styles.count}>

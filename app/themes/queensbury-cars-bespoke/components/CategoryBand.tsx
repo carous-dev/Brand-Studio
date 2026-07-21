@@ -54,7 +54,7 @@ const CATEGORIES: Category[] = [
 
 export default function CategoryBand() {
   return (
-    <section className="qb-section qb-section--tint">
+    <section className="qb-section qb-section--tint" data-aos="fade-up">
       <div className="qb-container">
         <header className="qb-section-head">
           <span className="qb-eyebrow">Explore the floor</span>

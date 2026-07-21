@@ -1,0 +1,54 @@
+.prose {
+  max-width: 72ch;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.prose h2 {
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-on-light-strong);
+  letter-spacing: -0.01em;
+  margin-top: 12px;
+}
+
+.prose p,
+.prose li {
+  font-size: 1rem;
+  color: var(--text-on-light-muted);
+  line-height: 1.65;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border-hairline);
+  font-size: 0.92rem;
+}
+.table th,
+.table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-hairline);
+  text-align: left;
+  vertical-align: top;
+  color: var(--text-on-light-strong);
+}
+.table thead th {
+  background: var(--surface-card-light);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-on-light-muted);
+}
+.table tbody tr:last-child td { border-bottom: 0; }
+
+.updated {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-hairline);
+  font-size: 0.85rem;
+  color: var(--text-on-light-muted);
+}

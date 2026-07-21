@@ -1,0 +1,61 @@
+.hero {
+  position: relative;
+  min-height: clamp(220px, 26vw, 340px);
+  background: #1a1d22;
+  color: #fff;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+.bg[data-slot='hero'] { background-image: var(--brand-image-hero); }
+.bg[data-slot='about'] { background-image: var(--brand-image-about); }
+.bg[data-slot='services'] { background-image: var(--brand-image-services); }
+.bg[data-slot='finance'] { background-image: var(--brand-image-finance); }
+.bg[data-slot='part-exchange'] { background-image: var(--brand-image-part-exchange); }
+.bg[data-slot='sell-your-car'] { background-image: var(--brand-image-sell-your-car); }
+.bg[data-slot='recently-sold'] { background-image: var(--brand-image-recently-sold); }
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(8, 8, 10, 0.30) 0%,
+    rgba(8, 8, 10, 0.72) 100%
+  );
+}
+
+.inner {
+  position: relative;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(32px, 6vw, 64px) clamp(20px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: flex-end;
+  min-height: inherit;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.title {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 700;
+  font-size: clamp(28px, 4.4vw, 48px);
+  line-height: 1.05;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}

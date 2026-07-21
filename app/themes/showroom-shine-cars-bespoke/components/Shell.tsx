@@ -1,64 +1,40 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { usePathname } from 'next/navigation'
 import { useBrand } from '../context/BrandClientWrapper'
 import { GarageProvider } from '../context/GarageContext'
 import Header from './Header'
 import Footer from './Footer'
 import BrowseByMake from './BrowseByMake'
-import ShowroomCookieBanner from './ShowroomCookieBanner'
-import AnimateOnScroll from '@/app/widgets/AnimateOnScroll'
-import '@/app/widgets/AnimateOnScroll/aos.css'
-import { MotionFX } from '@/app/widgets/MotionFX'
-import ScrollProgress from '@/app/widgets/ScrollProgress'
-import PreviewBanner from '@/app/widgets/PreviewBanner'
-import CarousWhatsAppWidget from '@/app/widgets/CarousWhatsAppWidget'
+import ThemeChrome from '@/app/themes/lib/ThemeChrome'
 
 import '../styles/base.css'
 import '../styles/color-policy.css'
 
-const KNOWN_ROUTES = new Set([
-  '/', '/about', '/about-us', '/contact', '/contact-us',
-  '/cookie-policy', '/privacy-policy', '/services',
-  '/sell-your-car', '/sell-my-car', '/finance', '/part-exchange',
-  '/used-cars', '/recently-sold', '/wishlist', '/compare',
-])
-
+/**
+ * Showroom shell — thin wrapper over the shared <ThemeChrome> (route-gating,
+ * skip-link, canonical widget stack, GarageProvider). Theme-specific bits: its
+ * own Header/Footer, the BrowseByMake band mounted site-wide below <main>, and
+ * its "Garage cookies" consent voice. CSS namespace is `shr-`.
+ */
 export function ShowroomShell({ children }: { children: ReactNode }) {
   const brand = useBrand()
-  const pathname = usePathname() || ''
-  const isKnownRoute =
-    KNOWN_ROUTES.has(pathname) ||
-    pathname.startsWith('/used-cars/') ||
-    pathname.startsWith('/dashboard') ||
-    pathname === '/login'
-  const isSpecialArea = pathname.startsWith('/dashboard') || pathname === '/login' || !isKnownRoute
-
-  if (isSpecialArea) {
-    return (
-      <main id="content" role="main" className="shr-main main-dashboard">
-        {children}
-      </main>
-    )
-  }
-
   return (
-    <GarageProvider brandSlug={brand?.slug || 'default'}>
-      <a href="#content" className="shr-skip-link">Skip to content</a>
-      <AnimateOnScroll />
-      <MotionFX />
-      <ScrollProgress />
-      <PreviewBanner brand={brand} />
-      <Header />
-      <main id="content" role="main" className="shr-main">
-        {children}
-      </main>
-      <BrowseByMake />
-      <Footer />
-      <CarousWhatsAppWidget brand={brand} />
-      <ShowroomCookieBanner />
-    </GarageProvider>
+    <ThemeChrome
+      brand={brand ?? null}
+      classPrefix="shr"
+      provider={GarageProvider}
+      header={<Header />}
+      footer={<Footer />}
+      belowMain={<BrowseByMake />}
+      cookie={{
+        title: 'Garage cookies',
+        summary:
+          'We use essential cookies to run the site. Analytics and marketing cookies help us improve your visit — pick what you’re happy with.',
+      }}
+    >
+      {children}
+    </ThemeChrome>
   )
 }
 

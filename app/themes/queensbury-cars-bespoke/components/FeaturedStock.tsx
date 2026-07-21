@@ -36,7 +36,7 @@ export default function FeaturedStock() {
   }, [brand?.slug])
 
   return (
-    <section className="qb-section qb-section--gradient">
+    <section className="qb-section qb-section--gradient" data-aos="fade-up">
       <div className="qb-container">
         <header className={styles.head}>
           <div>

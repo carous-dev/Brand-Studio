@@ -35,7 +35,7 @@ export default function BrowseByMake() {
   if (makes.length === 0) return null
 
   return (
-    <section className={styles.section} aria-labelledby="browse-by-make-heading">
+    <section className={styles.section} aria-labelledby="browse-by-make-heading" data-aos="fade-up">
       <div className={styles.inner}>
         <header className={styles.head}>
           <p className="kain-eyebrow">Browse by make</p>

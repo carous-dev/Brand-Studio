@@ -1,0 +1,137 @@
+.empty {
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--color-muted);
+}
+.empty h2 {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 700;
+  font-size: 22px;
+  margin: 14px 0 6px;
+  color: var(--color-text);
+}
+.empty p { margin: 0 0 22px; font-size: 14px; }
+
+.ctaPrimary {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 28px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 13px;
+  min-height: 44px;
+}
+.ctaPrimary:hover { background: var(--color-primary-strong); }
+
+.actionsHead {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 14px;
+}
+.clear {
+  background: transparent;
+  border: 0;
+  color: var(--color-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+}
+.clear:hover { color: var(--color-primary); }
+
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  font-size: 13px;
+}
+
+.table th[scope='col'] {
+  background: var(--color-bg);
+  text-align: left;
+  font-weight: 700;
+  vertical-align: top;
+  padding: 12px;
+  border-bottom: 1px solid var(--color-border);
+  min-width: 200px;
+}
+
+.table th[scope='row'] {
+  text-align: left;
+  font-weight: 600;
+  padding: 12px;
+  background: var(--color-bg);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+  border-bottom: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  width: 140px;
+}
+
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.headerCell {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  padding-right: 28px;
+}
+.headerCell a {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-decoration: none;
+  color: var(--color-text);
+}
+.headerCell img {
+  width: 100%;
+  max-width: 200px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.headerTitle {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.removeHead {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: transparent;
+  border: 0;
+  color: var(--color-muted);
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.removeHead:hover { color: var(--color-primary); }

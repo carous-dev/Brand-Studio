@@ -6,19 +6,27 @@
 }
 
 .header {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: 14px;
-  margin: 0 0 clamp(28px, 4vw, 44px);
+  /* padding-bottom (not margin-bottom) so spacing is part of header's
+     box and can't collapse with the grid's top margin. */
+  margin: 0 auto;
+  padding: 0 0 clamp(56px, 7vw, 96px);
+  max-width: 720px;
   background: transparent !important;
   box-shadow: none !important;
   border: 0;
-  padding: 0;
 }
 
 .eyebrow {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   font-family: 'Oswald', sans-serif;
   font-size: 0.78rem;
@@ -27,6 +35,14 @@
   font-weight: 500;
   color: var(--color-primary);
   margin: 0;
+}
+
+.eyebrow::after {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 2px;
+  background: var(--color-primary);
 }
 
 .eyebrowMark {
@@ -50,15 +66,20 @@
 
 .grid {
   list-style: none;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 18px;
+  justify-content: center;
+  justify-items: stretch;
 }
 
 .card {
   position: relative;
+  width: 100%;
+  max-width: 460px;
+  justify-self: center;
   background: var(--color-surface);
   border: 2px solid var(--color-border);
   color: var(--color-text);
@@ -86,7 +107,7 @@
 .stars {
   display: inline-flex;
   gap: 2px;
-  color: #f0b400;
+  color: var(--color-review-star);
 }
 
 .review {
@@ -124,6 +145,8 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
+  text-align: center;
   gap: 18px;
   color: var(--color-muted);
   font-size: 0.86rem;
@@ -144,6 +167,50 @@
 
 @media (min-width: 720px) {
   .grid {
-    grid-template-columns: repeat(3, 1fr);
+    /* Spread outwards from center: cards size to content within a min/max
+       bound and the grid centers them as a group regardless of count.
+       With 2 reviews they sit centered as a pair; with 3 they fan out
+       across the row. */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 380px));
+    gap: 22px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 420px));
+    gap: 26px;
+  }
+}
+
+/* Mobile (≤640px) — title was too large + overlapping the first card.
+   Tighten the title, give the grid extra breathing room, and force
+   header above grid via stacking. */
+@media (max-width: 640px) {
+  .header {
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .eyebrow {
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+  }
+  .eyebrow::after,
+  .eyebrowMark {
+    width: 22px;
+  }
+  .title {
+    font-size: clamp(1.3rem, 6.6vw, 1.7rem);
+    line-height: 1.14;
+  }
+  .grid {
+    /* Explicit block-formatting context separation from the centered
+       header above it. */
+    position: relative;
+    z-index: 1;
+    margin-top: 4px;
+  }
+  .card {
+    padding: 22px 18px 20px;
   }
 }

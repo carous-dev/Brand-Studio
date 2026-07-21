@@ -70,6 +70,7 @@
   inset: 0;
   z-index: 2;
   background:
+    /* photo-scrim-ok */
     linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.72) 100%);
   pointer-events: none;
 }
@@ -95,7 +96,7 @@
     linear-gradient(color-mix(in srgb, var(--color-text) 5%, transparent) 1px, transparent 1px),
     linear-gradient(90deg, color-mix(in srgb, var(--color-text) 5%, transparent) 1px, transparent 1px);
   background-size: 56px 56px;
-  mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.4) 30%, rgba(0, 0, 0, 0.4) 70%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--color-text) 40%, transparent) 30%, color-mix(in srgb, var(--color-text) 40%, transparent) 70%, transparent 100%);
   opacity: 0.4;
 }
 
@@ -125,9 +126,9 @@
   letter-spacing: 0.22em;
   text-transform: uppercase;
   font-weight: 500;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff; /* photo-scrim-ok */
+  background: rgba(255, 255, 255, 0.12); /* photo-scrim-ok */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* photo-scrim-ok */
   border-radius: 999px;
   padding: 6px 14px;
   margin: 0;
@@ -147,14 +148,14 @@
   letter-spacing: 0.01em;
   text-transform: uppercase;
   /* Photo-chrome literal — white over dark scrim, brand-agnostic */
-  color: #ffffff;
+  color: #ffffff; /* photo-scrim-ok */
   margin: 0;
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
   max-width: min(980px, 100%);
 }
 
 .titleAccent {
-  background: linear-gradient(90deg, var(--color-primary) 0%, color-mix(in srgb, var(--color-primary) 70%, #ffffff) 60%, var(--color-primary) 100%);
+  background: linear-gradient(90deg, var(--color-primary) 0%, color-mix(in srgb, var(--color-primary) 70%, var(--color-surface)) 60%, var(--color-primary) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -165,7 +166,7 @@
   font-size: clamp(0.98rem, 1.05vw, 1.08rem);
   line-height: 1.6;
   /* Photo-chrome literal — white-alpha over dark scrim */
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.88); /* photo-scrim-ok */
   margin: 0;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
   max-width: 62ch;
@@ -186,9 +187,9 @@
 .ctaGhost {
   min-width: 160px;
   /* Photo-chrome: ghost CTA sits over the dark hero scrim — literal white. */
-  color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.42) !important;
-  background: rgba(255, 255, 255, 0.06) !important;
+  color: #ffffff !important; /* photo-scrim-ok */
+  border-color: rgba(255, 255, 255, 0.42) !important; /* photo-scrim-ok */
+  background: rgba(255, 255, 255, 0.06) !important; /* photo-scrim-ok */
   backdrop-filter: blur(6px);
 }
 
@@ -199,7 +200,7 @@
 }
 
 .ctaGhost svg {
-  color: #ffffff;
+  color: #ffffff; /* photo-scrim-ok */
 }
 
 .trustRow {
@@ -212,7 +213,7 @@
   padding: 0;
   font-size: 0.86rem;
   /* Photo-chrome literal — white-alpha over dark hero scrim */
-  color: rgba(255, 255, 255, 0.84);
+  color: rgba(255, 255, 255, 0.84); /* photo-scrim-ok */
 }
 
 .trustRow li {
@@ -241,6 +242,7 @@
   }
   .heroOverlay {
     /* Mobile keeps the same dark-scrim approach as desktop */
+    /* photo-scrim-ok */
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.36) 0%, rgba(0, 0, 0, 0.56) 56%, rgba(0, 0, 0, 0.78) 100%);
   }
   .heroGrid {

@@ -1,0 +1,85 @@
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.logoImg {
+  display: block;
+  max-height: 56px;
+  width: auto;
+  object-fit: contain;
+}
+
+.diamond {
+  width: 44px;
+  height: 44px;
+  background: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(45deg);
+  box-shadow: 0 6px 18px rgba(225, 29, 42, 0.28);
+  flex: 0 0 auto;
+}
+
+.diamondInner {
+  width: 14px;
+  height: 14px;
+  background: var(--color-on-primary);
+  display: block;
+  transform: rotate(-45deg);
+}
+
+.lockup {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1;
+  gap: 4px;
+}
+
+.wordmark {
+  /* Logo wordmark stays sans even when brand display font is serif */
+  font-family: var(--font-ui-family-override, 'Inter', sans-serif);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-size: clamp(18px, 2.4vw, 24px);
+  text-transform: uppercase;
+  color: var(--b4l-header-text);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35ch;
+}
+
+.word {
+  color: inherit;
+}
+
+.wordEmph {
+  color: var(--color-primary);
+}
+
+.tagline {
+  font-family: var(--font-ui-family-override, 'Inter', sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.mobile .diamond {
+  width: 38px;
+  height: 38px;
+}
+.mobile .wordmark { font-size: 18px; }
+.mobile .tagline { font-size: 10px; }
+
+.footer .wordmark {
+  color: var(--color-on-dark-strong);
+}
+.footer .tagline {
+  color: var(--color-on-dark-muted);
+}

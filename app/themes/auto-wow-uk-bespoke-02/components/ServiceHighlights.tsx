@@ -37,9 +37,9 @@ const SERVICES = [
 
 export default function ServiceHighlights() {
   return (
-    <section className={`auto-section ${styles.section}`} aria-label="Services">
+    <section className={`auto-section ${styles.section}`} aria-label="Services" data-aos="fade-up">
       <div className={styles.inner}>
-        <header className={styles.header} data-aos="fade-up">
+        <header className={styles.header}>
           <span className={styles.eyebrow}>[ Services ]</span>
           <h2 className={styles.title}>Everything you need, under one roof</h2>
           <p className={styles.lead}>
@@ -54,8 +54,6 @@ export default function ServiceHighlights() {
               key={title}
               href={href}
               className={styles.card}
-              data-aos="fade-up"
-              data-aos-delay={idx * 70}
             >
               <span className={styles.iconWrap} aria-hidden="true">
                 <Icon size={28} strokeWidth={1.6} />

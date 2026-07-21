@@ -6,15 +6,21 @@ import {
   Calendar, Gauge, Fuel, Cog, Car, Palette,
   Phone, Mail, Share2, Heart, GitCompare, Printer,
   ChevronRight as ChevronRightIcon, ChevronDown, ChevronUp,
-  Check, FileText, Search, Wrench, ShieldCheck, Home,
+  Check, FileText, Search, Wrench, ShieldCheck, Home, BadgeCheck,
 } from 'lucide-react'
 import { useBrand } from '../../../context/BrandClientWrapper'
 import { useGarage } from '../../../context/GarageContext'
 import { getBrandContactInfo } from '../../../lib/contact'
 import { buildVehiclePermalink } from '../../../lib/vehicle-links'
+import {
+  isExternalEnquiryReady,
+  isExternalReserveReady,
+  openExternalReservation,
+  openExternalVehicleEnquiry,
+  type ExternalVehicleEnquirySummary,
+} from '../../../lib/external-widgets'
 import { EnquiryModal, useEnquiryModal } from '@/app/widgets/EnquiryModal'
 import VehicleGallery from '@/app/widgets/VehicleGallery'
-import { WhatsAppIcon } from '@/app/widgets/WhatsAppFab'
 import styles from './page.module.css'
 
 export type DetailVehicle = {
@@ -196,6 +202,46 @@ export default function VehicleDetailIsland({
   const monthlyFrom = formatPrice(computeMonthly(vehicle.price))
   const locationLabel = vehicle.location || contact.showroomAddress || 'our showroom'
 
+  // Resolve the canonical page URL client-side so the CDN widget can deep-link
+  // back to this vehicle in the lead payload.
+  const [pageUrl, setPageUrl] = useState('')
+  useEffect(() => {
+    if (typeof window !== 'undefined') setPageUrl(window.location.href)
+  }, [vehicle.id])
+
+  // Payload handed to the CDN vehicle-enquiry / reserve-a-car widgets.
+  const enquirySummary = useMemo<ExternalVehicleEnquirySummary>(() => {
+    const engineSpec = vehicle.specs.find((s) => /engine/i.test(s.label))
+    return {
+      title: vehicle.title,
+      registration: vehicle.reg || undefined,
+      make: vehicle.make || undefined,
+      year: vehicle.year || undefined,
+      price: vehicle.price || undefined,
+      priceText: vehicle.price ? formatPrice(vehicle.price) : undefined,
+      mileage: vehicle.mileage || undefined,
+      transmission: vehicle.transmission || undefined,
+      fuel: vehicle.fuel || undefined,
+      engineSize: engineSpec?.value || undefined,
+      image: vehicle.gallery[0] || undefined,
+      url: pageUrl || undefined,
+    }
+  }, [vehicle, pageUrl])
+
+  // CDN-first: open the hosted Carous widget when its bundle has loaded, and
+  // gracefully fall back to the theme's own EnquiryModal (which still captures
+  // the lead) if the script hasn't arrived yet.
+  const handleEnquiry = useCallback(() => {
+    if (isExternalEnquiryReady()) openExternalVehicleEnquiry(enquirySummary)
+    else openEnquiry()
+  }, [enquirySummary, openEnquiry])
+
+  const handleReserve = useCallback(() => {
+    if (isExternalReserveReady()) openExternalReservation(enquirySummary)
+    else if (isExternalEnquiryReady()) openExternalVehicleEnquiry(enquirySummary)
+    else openEnquiry()
+  }, [enquirySummary, openEnquiry])
+
   return (
     <article className={styles.page}>
       {/* Breadcrumb + utility actions */}
@@ -356,26 +402,23 @@ export default function VehicleDetailIsland({
                   <button
                     type="button"
                     className={`${styles.summaryBtn} ${styles.summaryBtnEnquire}`}
-                    onClick={openEnquiry}
+                    onClick={handleEnquiry}
                   >
                     <Mail size={15} aria-hidden="true" />
                     <span>Make an enquiry</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.summaryBtn} ${styles.summaryBtnReserveCta}`}
+                    onClick={handleReserve}
+                  >
+                    <BadgeCheck size={15} aria-hidden="true" />
+                    <span>Reserve this car</span>
                   </button>
                   {contact.phoneTel ? (
                     <a href={`tel:${contact.phoneTel}`} className={`${styles.summaryBtn} ${styles.summaryBtnCall}`}>
                       <Phone size={15} aria-hidden="true" />
                       <span>Call {contact.phoneDisplay || 'dealer'}</span>
-                    </a>
-                  ) : null}
-                  {contact.whatsappUrl ? (
-                    <a
-                      href={contact.whatsappUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`${styles.summaryBtn} ${styles.summaryBtnReserve}`}
-                    >
-                      <WhatsAppIcon size={15} />
-                      <span>Message on WhatsApp</span>
                     </a>
                   ) : null}
                 </div>
@@ -401,7 +444,7 @@ export default function VehicleDetailIsland({
         <button
           type="button"
           className={`auto-btn auto-btn--primary ${styles.mobileBarCta}`}
-          onClick={openEnquiry}
+          onClick={handleEnquiry}
         >
           Enquire
         </button>

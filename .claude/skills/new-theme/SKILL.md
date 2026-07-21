@@ -1,6 +1,6 @@
 ---
 name: new-theme
-description: Generate a fully bespoke brandstudio theme for a real dealer from their logo and website URL — vision-extracts dominant colors and typography character from the logo, scrapes the dealer site for brand context (name, services, location, hours), picks a paired Google Font, scaffolds the entire theme contract, adapts hero/header/footer to the dealer's content, and ships a previewable theme. Also supports an advanced "port from carous-platform sibling app" mode for internal use. Designed for prospect-customer preview generation with three required inputs (logo + URL + primary hex) plus an optional free-text context hint (e.g. "dealer sells bikes AND cars", "EV-only", "classic cars only") that biases scrape, copy, and inventory chips.
+description: Generate a fully bespoke brandstudio theme for a real dealer from their logo and website URL — vision-extracts typography character from the logo, scrapes the dealer site for brand context (name, services, location, hours), picks a paired Google Font, scaffolds the entire theme contract, adapts hero/header/footer to the dealer's content, and ships a previewable theme. Also supports an advanced "port from carous-platform sibling app" mode for internal use. Designed for prospect-customer preview generation with three required inputs (logo + URL + primary hex) plus an optional free-text context hint (e.g. "dealer sells bikes AND cars", "EV-only", "classic cars only") that biases scrape, copy, and inventory chips.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, WebFetch, AskUserQuestion
 ---
 
@@ -217,6 +217,17 @@ keeping the others restrained.
 > Surface) in their **natural semantic roles**. `--color-bg` is ALWAYS
 > the surface. `--color-text` is ALWAYS the foreground. NO inversion,
 > NO `--t-feature-*` locked tokens, NO hex literals.
+
+**Dashboard-side derivation (added 2026-07-20):** the dashboard now collects
+only the 4 brand colors (Primary, Secondary, Accent, Background); Text,
+Surface, Border, Muted are auto-derived by contrast rules in
+`backend/services/color_derive.py` (JS mirror in
+`static/modules/color-utils.js`) unless the operator switches off the
+"Auto-tune" toggle (`theme.colorsAuto`). This changes NOTHING for themes —
+brand records still carry all 8 colors and `BrandStyles.tsx` still emits all
+8 `--color-*` tokens. Theme payloads sent to `/api/v1/preview/create` may
+include all 8 (hand-tuned values are kept verbatim) or just the 4 brand
+colors (the endpoint derives the rest).
 
 ## How to use the 8 tokens
 
@@ -2856,6 +2867,24 @@ Exit codes (both passes):
 
 Compare against a specific theme (instead of the skeleton or auto-
 picked peers) with `--baseline <theme-id>`.
+
+## Phase 10e — Theme contract conformance
+
+```
+node tools/check-theme-contract.mjs --id <theme-id>
+```
+
+Must print `<theme-id>: PASS` (exit 0). Enforces the shared theme contract
+(`docs/theme-contract.md`): required files present (incl. `context/BrandStyles.tsx`,
+`styles/color-policy.css`, `lib/contact.ts`), `BrandStyles.tsx` emits tokens via the
+shared `buildThemeTokens` (`@/app/themes/lib/theme-tokens`), NO per-theme widget forks
+(`*CookieBanner`, `AosProvider`, `WhatsAppFab`/`SupportWidget`/`WhatsAppEnquiry`, local
+`PreviewBanner`), and the shell renders `<ThemeChrome>` (`@/app/themes/lib/ThemeChrome`)
+importing the canonical `KNOWN_ROUTES` from `@/app/themes/lib/known-routes` rather than a
+hand-rolled literal. Runs in CI (`.github/workflows/pr-quality.yml`) for every changed
+theme, and `backend/services/theme_catalog.py` drops any theme missing the required files
+from the catalog — so a non-conforming theme won't even load. A scaffolded theme satisfies
+this by construction; if it fails, you diverged from the skeleton.
 
 ## Phase 11 — Log to FEATURE_LOG + append fingerprint
 

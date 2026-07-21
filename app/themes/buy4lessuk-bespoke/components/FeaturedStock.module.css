@@ -1,0 +1,145 @@
+.section {
+  padding: clamp(20px, 4vw, 40px) 0 clamp(24px, 4vw, 48px);
+  background: var(--color-bg);
+  overflow: hidden;
+}
+
+.inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 3vw, 32px);
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+.title {
+  font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
+  font-size: clamp(22px, 2.8vw, 30px);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 6px 0 0;
+}
+
+.controls {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.navBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.navBtn:hover {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+
+/* Mobile-first: 1.2 cards visible by default so user sees there's more to scroll */
+.track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc(82% - 8px);
+  gap: 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  padding: 6px 2px 16px;
+  margin: 0;
+  scrollbar-width: thin;
+  scroll-padding-inline: 2px;
+  max-width: 100%;
+  scroll-behavior: smooth;
+}
+.track::-webkit-scrollbar { height: 6px; }
+.track::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 999px;
+}
+.track::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
+
+/* 2-up at small-tablet */
+@media (min-width: 560px) {
+  .track { grid-auto-columns: calc(50% - 7px); }
+}
+/* 3-up at tablet */
+@media (min-width: 900px) {
+  .track { grid-auto-columns: calc(33.333% - 10px); }
+}
+/* 4-up at desktop — fixed width, NOT minmax, so overflow triggers scroll */
+@media (min-width: 1200px) {
+  .track { grid-auto-columns: calc(25% - 11px); }
+}
+
+.cell {
+  scroll-snap-align: start;
+  min-width: 0;
+  display: flex;
+}
+.cell > * {
+  width: 100%;
+  min-width: 0;
+}
+
+.skeleton {
+  scroll-snap-align: start;
+  height: 360px;
+  background: linear-gradient(120deg, #ececef 30%, #f7f7f9 50%, #ececef 70%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.viewAllRow {
+  display: flex;
+  justify-content: center;
+  margin-top: 18px;
+}
+.viewAll {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 26px;
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 13px;
+  min-height: 44px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.viewAll:hover {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}

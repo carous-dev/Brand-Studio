@@ -2,6 +2,8 @@
 
 import React from 'react';
 import type { BrandConfig } from '@/brands/types';
+import { buildGoogleFontsImport } from '@/app/lib/googleFonts';
+import { buildThemeTokens, renderThemeStyle, escapeCssUrl } from '@/app/themes/lib/theme-tokens';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -21,6 +23,14 @@ const pickString = (...candidates: Array<unknown>): string | null => {
 
 /**
  * Injects brand-specific CSS variables for dual-stock-modern-bespoke.
+ *
+ * Emits the canonical token block via the shared emitter (buildThemeTokens +
+ * renderThemeStyle). The theme's bespoke electric-sky-blue-on-deep-navy palette
+ * is passed as `defaults` — including its DISTINCT dark-header literals so the
+ * emitter's --color-header-bg/-text/-muted resolve to the theme's dark chrome
+ * rather than the light-theme fallback. Dark-surface extras (--color-surface-dark
+ * etc.), the third-party WhatsApp colors, and the legacy --dual-hero-image alias
+ * live in `extras` since the emitter does not produce them.
  *
  * Image-slot policy (per SKILL.md Pitfall row 38c):
  *  - Hero: brand.heroImage FIRST (operator-uploaded — authoritative) →
@@ -60,42 +70,45 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   const sellYourCarImage = resolveSlot('sellYourCar', 'sellYourCar');
   const recentlySoldImage = resolveSlot('recentlySold', 'recentlySold');
 
-  // Brand triad defaults — electric sky blue on deep navy (scottishvancenter-inspired).
-  // Operators override per-brand via /update; these are the theme-shipped defaults.
-  const primary = theme.colors.primaryColor || '#28a2e6';
-  const secondary = theme.colors.secondaryColor || '#10254a';
-  const accent = theme.colors.accentColor || '#2fb4ff';
+  // Canonical token block via the shared emitter. Dual Stock Modern's bespoke
+  // triad — electric sky blue on deep navy (scottishvancenter-inspired) — is
+  // passed as `defaults`; brand records override any of the 8 via theme.colors.*.
+  // The header-* / hero-overlay-* tokens ARE distinct dark literals (dark header
+  // chrome + a heavy navy hero scrim), so they're passed as defaults rather than
+  // left to the emitter's light-theme derivations.
+  const vars = buildThemeTokens(theme.colors as any, {
+    defaults: {
+      primaryColor: '#28a2e6',
+      secondaryColor: '#10254a',
+      accentColor: '#2fb4ff',
+      backgroundColor: '#f5f8ff',
+      surfaceColor: '#ffffff',
+      textColor: '#0b1c3a',
+      mutedColor: '#52688c',
+      borderColor: '#d6def0',
+      headerBg: '#030a1a',
+      headerText: '#ffffff',
+      headerMuted: 'rgba(216,226,246,0.78)',
+      heroOverlayStart: 'rgba(3, 10, 26, 0.92)',
+      heroOverlayEnd: 'rgba(11, 28, 58, 0.55)',
+      heroTextMuted: 'rgba(255, 255, 255, 0.92)',
+      heroReviewMuted: 'rgba(255, 255, 255, 0.85)',
+      reviewStar: '#facc15',
+    },
+  });
 
-  const cssVariables: Record<string, string> = {
-    '--color-primary': primary,
-    '--color-secondary': secondary,
-    '--color-accent': accent,
-    '--color-bg': theme.colors.backgroundColor || '#f5f8ff',
-    '--color-surface': (theme.colors as any).surfaceColor || '#ffffff',
-    '--color-text': theme.colors.textColor || '#0b1c3a',
-    '--color-muted': (theme.colors as any).mutedColor || '#52688c',
-    '--color-border': (theme.colors as any).borderColor || '#d6def0',
-    '--color-header-bg': (theme.colors as any).headerBg || '#030a1a',
-    '--color-header-text': (theme.colors as any).headerText || '#ffffff',
-    '--color-header-muted': (theme.colors as any).headerMuted || 'rgba(216,226,246,0.78)',
-    '--color-hero-overlay-start': (theme.colors as any).heroOverlayStart || 'rgba(3, 10, 26, 0.92)',
-    '--color-hero-overlay-end': (theme.colors as any).heroOverlayEnd || 'rgba(11, 28, 58, 0.55)',
+  const extras: Record<string, string> = {
+    // Dark-surface tier — the emitter emits --surface-*-dark / --border-on-dark
+    // under DIFFERENT names, so this theme's own dark navy surfaces live here.
+    // Kept brand-overridable via theme.colors.* exactly as before.
     '--color-surface-dark': (theme.colors as any).surfaceDark || '#0b1c3a',
     '--color-surface-card-dark': (theme.colors as any).surfaceCardDark || '#10254a',
     '--color-border-dark': (theme.colors as any).borderDark || 'rgba(149,177,220,0.22)',
-    '--color-hero-text-muted': (theme.colors as any).heroTextMuted || 'rgba(255, 255, 255, 0.92)',
-    '--color-hero-review-muted': (theme.colors as any).heroReviewMuted || 'rgba(255, 255, 255, 0.85)',
-    '--color-review-star': (theme.colors as any).reviewStar || '#facc15',
-
-    // Bridge variables (shared chrome / carous-platform style references)
-    '--brand-primary': primary,
-    '--brand-secondary': secondary,
-    '--brand-accent': accent,
-    '--brand-background': theme.colors.backgroundColor || '#ffffff',
-    '--brand-text': theme.colors.textColor || '#0f1623',
-    '--brand-primary-rgb': hexToRgb(primary),
-    '--brand-secondary-rgb': hexToRgb(secondary),
-    '--brand-accent-rgb': hexToRgb(accent),
+    // Foreground ink used on dark navy bands and filled brand surfaces.
+    '--color-on-dark': (theme.colors as any).onDark || '#ffffff',
+    // Third-party brand colors (WhatsApp FAB) — fixed by the third party, not the dealer palette.
+    '--color-whatsapp': '#25d366',
+    '--color-whatsapp-hover': '#1ebe5b',
 
     // Per-page image slots — every component references these via var(--brand-image-*).
     // Each slot independently falls back to its own theme-curated default (no cross-fall).
@@ -107,37 +120,26 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--brand-image-sell-your-car': `url("${escapeCssUrl(sellYourCarImage)}")`,
     '--brand-image-recently-sold': `url("${escapeCssUrl(recentlySoldImage)}")`,
 
-    // Legacy var kept for any leftover references during transition
+    // Legacy var kept for any leftover references during transition.
     '--dual-hero-image': `url("${escapeCssUrl(heroImageSlot)}")`,
 
-    // Font family overrides
+    // Font family overrides.
     '--font-ui-family-override': fontUi,
     '--font-brand-family-override': fontBrand,
   };
 
+  // Dynamic Google Fonts import — without this the --font-brand-family-override
+  // var resolves to a font the browser never loaded and headings silently fall
+  // back to a system serif. See memory feedback_brandstyles_must_load_google_fonts.
+  const fontImport = buildGoogleFontsImport(fontUi, fontBrand);
+
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: `
-          :root {
-            ${Object.entries(cssVariables)
-              .map(([key, value]) => `${key}: ${value};`)
-              .join('\n            ')}
-            font-family: ${fontUi};
-          }
-        `,
+        __html: renderThemeStyle({ vars, extras, fontFamily: fontUi, fontImport }),
       }}
     />
   );
-}
-
-function hexToRgb(hex: string): string {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 0, 0';
-}
-
-function escapeCssUrl(url: string): string {
-  return String(url).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n|\r/g, '');
 }
 
 function resolveFontToken(...candidates: Array<unknown>): string | null {

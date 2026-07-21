@@ -110,7 +110,7 @@ export default function LatestArrivals() {
   }
 
   return (
-    <section className={styles.section} aria-labelledby="warwick-latest-arrivals-heading">
+    <section className={styles.section} aria-labelledby="warwick-latest-arrivals-heading" data-aos="fade-up">
       <div className={styles.inner}>
         <header className={styles.header}>
           <div className={styles.headerCopy}>

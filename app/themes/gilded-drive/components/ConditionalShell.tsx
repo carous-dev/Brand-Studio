@@ -1,62 +1,48 @@
 "use client";
 
-import React from "react";
-import { usePathname } from "next/navigation";
-import { PreviewBanner } from "./PreviewBanner";
+import type { ReactNode } from "react";
+import { useBrand } from "../context/BrandClientWrapper";
 import ContactBar from "./ContactBar";
 import Header from "./Header";
 import Footer from "./Footer";
-import CookieBanner from "./CookieBanner";
-import SupportWidget from "./SupportWidget";
+import ThemeChrome from "@/app/themes/lib/ThemeChrome";
+
 import "../styles/base.css";
+import "../styles/color-policy.css";
 import "../styles/header.css";
 import "../styles/footer.css";
 
-export default function ConditionalShell({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname() || "";
+/**
+ * gilded-drive shell — thin wrapper over the shared <ThemeChrome> (route-gating,
+ * skip-link, canonical widget stack, PreviewBanner + CookieBanner +
+ * CarousWhatsAppWidget). Theme-specific bits: its own ContactBar + Header (the
+ * ContactBar sits above the Header, matching the legacy order) and Footer.
+ *
+ * AuthProvider is NOT wrapped here: gilded's context/AuthContext AuthProvider is
+ * mounted globally in app/layout.tsx (via the theme context registry) around the
+ * whole ThemeShell, so the shell itself wraps no providers — same as before.
+ *
+ * Widgets: gilded historically mounted ONLY AnimateOnScroll, so MotionFX and
+ * ScrollProgress stay off. No extraRoutes — every real page folder maps onto a
+ * canonical known route.
+ */
+export default function ConditionalShell({ children }: { children: ReactNode }) {
+  const brand = useBrand();
 
-  // Known routes that should have full site chrome
-  const knownRoutes = [
-    "/",
-    "/about",
-    "/car-service",
-    "/contact",
-    "/cookie-policy",
-    "/finance",
-    "/in",
-    "/privacy-policy",
-    "/reviews",
-    "/sell-your-car",
-    "/services",
-    "/terms",
-    "/used-cars",
-    "/warranty"
-  ];
-
-  // Check if pathname starts with known dynamic routes
-  const isKnownRoute = knownRoutes.includes(pathname) ||
-                      pathname.startsWith("/used-cars/") ||
-                      pathname.startsWith("/dashboard") ||
-                      pathname === "/login";
-
-  // Treat dashboard routes, login page, and unknown routes (404s) as areas that provide
-  // their own chrome (do not render the global header/footer/support UI)
-  const isSpecialArea = pathname.startsWith("/dashboard") || pathname === "/login" || !isKnownRoute;
-
-  if (isSpecialArea) {
-    return <main id="content" role="main" className="main-dashboard">{children}</main>;
-  }
-
-  // Otherwise render the normal public site chrome
   return (
-    <>
-      <PreviewBanner />
-      <ContactBar />
-      <Header />
-      <main id="content" role="main">{children}</main>
-      <Footer />
-      <CookieBanner />
-      <SupportWidget />
-    </>
+    <ThemeChrome
+      brand={brand ?? null}
+      classPrefix="gilded"
+      header={
+        <>
+          <ContactBar />
+          <Header />
+        </>
+      }
+      footer={<Footer />}
+      widgets={{ motionFx: false, scrollProgress: false }}
+    >
+      {children}
+    </ThemeChrome>
   );
 }

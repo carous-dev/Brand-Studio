@@ -47,6 +47,7 @@ export default function ServiceMain() {
   return (
     <motion.section
       className="services-section"
+      data-aos="fade-up"
       initial={{ opacity: 0, x: -50 }}
       whileInView={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8 }}

@@ -327,7 +327,7 @@ export default function AutoVehicleDetailPage() {
     images: vehicle?.images ?? [],
     vehicleTitle: vehicle?.title,
     loading,
-    template: 'thumbs',
+    template: 'grid',
   })
 
   if (loading) {

@@ -7,12 +7,12 @@
   position: relative;
   padding: clamp(32px, 6vw, 64px) 0;
   background:
-    radial-gradient(120% 130% at 80% -25%, color-mix(in srgb, var(--color-accent) 70%, #fff) 0%, transparent 50%),
-    radial-gradient(140% 140% at 12% 110%, color-mix(in srgb, var(--color-accent) 55%, #000) 0%, transparent 55%),
+    radial-gradient(120% 130% at 80% -25%, color-mix(in srgb, var(--color-accent) 70%, var(--color-surface)) 0%, transparent 50%),
+    radial-gradient(140% 140% at 12% 110%, color-mix(in srgb, var(--color-accent) 55%, var(--color-text)) 0%, transparent 55%),
     linear-gradient(135deg,
-      color-mix(in srgb, var(--color-accent) 88%, #000) 0%,
+      color-mix(in srgb, var(--color-accent) 88%, var(--color-text)) 0%,
       var(--color-accent) 50%,
-      color-mix(in srgb, var(--color-accent) 84%, #000) 100%);
+      color-mix(in srgb, var(--color-accent) 84%, var(--color-text)) 100%);
   color: var(--color-text);
 }
 
@@ -483,24 +483,46 @@
   height: 100%;
 }
 
-/* Compact mobile sizing for the toolbar row. */
+/* Mobile (≤719px) — restructure toolbar as a 2-row grid:
+   row 1: [Filters pill] + [Sort pill]  (side-by-side)
+   row 2: [Search]                       (full width)
+   This drops the toolbar from 3 stacked rows (wasteful) to 2 tight rows. */
 @media (max-width: 719px) {
+  .toolbarRow {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "filters sort"
+      "search  search";
+    gap: 8px;
+    align-items: stretch;
+  }
   .invFilterTrigger {
-    height: 38px;
+    grid-area: filters;
+    height: 40px;
     padding: 0 14px;
     font-size: 12px;
+    width: 100%;
+    justify-content: center;
+  }
+  .invToolbar {
+    grid-area: sort;
+    display: contents;
   }
   .invSearch {
+    grid-area: search;
     height: 42px;
     padding: 0 12px 0 38px;
+    width: 100%;
   }
   .invSearchIcon {
     left: 14px;
   }
   .invSort {
-    height: 38px;
+    grid-area: sort;
+    height: 40px;
     min-width: 0;
-    flex: 1 1 auto;
+    width: 100%;
   }
 }
 

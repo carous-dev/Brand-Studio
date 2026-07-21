@@ -7,13 +7,13 @@
   position: relative;
   padding: clamp(32px, 6vw, 64px) 0;
   background:
-    radial-gradient(120% 130% at 80% -25%, color-mix(in srgb, var(--color-accent) 70%, #fff) 0%, transparent 50%),
-    radial-gradient(140% 140% at 12% 110%, color-mix(in srgb, var(--color-accent) 55%, #000) 0%, transparent 55%),
+    radial-gradient(120% 130% at 80% -25%, color-mix(in srgb, var(--color-accent) 70%, var(--color-surface)) 0%, transparent 50%),
+    radial-gradient(140% 140% at 12% 110%, color-mix(in srgb, var(--color-accent) 55%, var(--color-text)) 0%, transparent 55%),
     linear-gradient(135deg,
-      color-mix(in srgb, var(--color-accent) 88%, #000) 0%,
+      color-mix(in srgb, var(--color-accent) 88%, var(--color-text)) 0%,
       var(--color-accent) 50%,
-      color-mix(in srgb, var(--color-accent) 84%, #000) 100%);
-  color: #ffffff;
+      color-mix(in srgb, var(--color-accent) 84%, var(--color-text)) 100%);
+  color: var(--color-bg);
 }
 
 .heroInner {
@@ -33,7 +33,7 @@
   font-size: 0.78rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
+  color: color-mix(in srgb, var(--color-bg) 72%, transparent);
   font-weight: 700;
 }
 
@@ -46,7 +46,7 @@
 
 .heroLead {
   margin: 0;
-  color: rgba(255, 255, 255, 0.78);
+  color: color-mix(in srgb, var(--color-bg) 78%, transparent);
   font-size: 1rem;
   line-height: 1.7;
 }
@@ -62,17 +62,17 @@
   border: 0;
   border-radius: 999px;
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg);
   font-weight: 600;
   padding: 12px 20px;
   cursor: pointer;
 }
 
 .secondaryButton {
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid color-mix(in srgb, var(--color-bg) 40%, transparent);
   border-radius: 999px;
   background: transparent;
-  color: #ffffff;
+  color: var(--color-bg);
   font-weight: 600;
   padding: 12px 20px;
   cursor: pointer;
@@ -201,7 +201,7 @@
   border: 0;
   border-radius: 999px;
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg);
   font-weight: 600;
   padding: 12px 20px;
   display: inline-flex;

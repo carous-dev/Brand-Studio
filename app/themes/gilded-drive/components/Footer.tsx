@@ -8,6 +8,15 @@ import { useBrand } from '../context/BrandClientWrapper'
 
 type FooterProps = {}
 
+const DAY_KEYS = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday']
+function getTodayHours(brand: any): string {
+  const hours = brand?.openingHours
+  if (!hours || typeof hours !== 'object') return 'Open by appointment — please call ahead'
+  const today = hours[DAY_KEYS[new Date().getDay()]]
+  if (!today || /closed/i.test(String(today))) return 'Closed today — message us anytime'
+  return `Today: ${String(today).trim()}`
+}
+
 const QUICK_LINKS = [
   { href: '/used-cars', label: 'Buy Used Cars' },
   { href: '/sell-your-car', label: 'Sell Your Car' },
@@ -155,7 +164,7 @@ const Footer: React.FC<FooterProps> = () => {
               ) : null}
             </div>
 
-            <p className="hours footer-hours">Open Mon-Sat: 09:30-17:30</p>
+            <p className="hours footer-hours">{getTodayHours(brand)}</p>
           </div>
         </div>
       </footer>

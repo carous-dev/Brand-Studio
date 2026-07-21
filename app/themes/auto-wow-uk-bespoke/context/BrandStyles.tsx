@@ -3,15 +3,18 @@
 import React from 'react';
 import type { BrandConfig } from '@/brands/types';
 import { buildGoogleFontsImport } from '@/app/lib/googleFonts';
+import { buildThemeTokens, renderThemeStyle, escapeCssUrl } from '@/app/themes/lib/theme-tokens';
 
 interface BrandStylesProps {
   brand: BrandConfig;
 }
 
 /**
- * Injects brand-specific CSS variables for the auto-wow-uk-bespoke theme.
- * The theme's base.css consumes these via var(--color-...) so swapping a
- * brand's primary/secondary/accent colours fully recolours the site.
+ * Injects brand-specific CSS variables for the auto-wow-uk-bespoke theme via the
+ * shared token emitter (buildThemeTokens + renderThemeStyle). Auto Wow's bespoke
+ * palette is passed as `defaults`; brand records override any of the 8 core
+ * tokens via theme.colors.*. The theme's base.css consumes these via
+ * var(--color-...) so swapping a brand's colours fully recolours the site.
  */
 export function BrandStyles({ brand }: BrandStylesProps) {
   const { theme } = brand;
@@ -73,34 +76,38 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   // Legacy reference for any code that reads --auto-hero-image directly.
   const heroImage = heroImageSlot;
 
-  const cssVariables: Record<string, string> = {
-    // Spring core palette mapped to brand tokens
-    '--color-primary': theme.colors.primaryColor || '#067a74',
-    '--color-secondary': theme.colors.secondaryColor || '#08a49d',
-    '--color-accent': theme.colors.accentColor || '#16b3a8',
-    '--color-bg': theme.colors.backgroundColor || '#f7f7f9',
-    '--color-surface': (theme.colors as any).surfaceColor || '#ffffff',
-    '--color-text': theme.colors.textColor || '#111827',
-    '--color-muted': (theme.colors as any).mutedColor || '#4b5563',
-    '--color-border': (theme.colors as any).borderColor || '#d3d7dc',
-    '--color-header-bg': (theme.colors as any).headerBg || '#ffffff',
-    '--color-header-text': (theme.colors as any).headerText || theme.colors.textColor || '#111827',
-    '--color-header-muted': (theme.colors as any).headerMuted || '#6b7280',
-    '--color-hero-overlay-start': (theme.colors as any).heroOverlayStart || 'rgba(11, 18, 17, 0.5)',
-    '--color-hero-overlay-end': (theme.colors as any).heroOverlayEnd || 'rgba(11, 18, 17, 0.55)',
-    '--color-hero-text-muted': (theme.colors as any).heroTextMuted || 'rgba(255, 255, 255, 0.9)',
-    '--color-hero-review-muted': (theme.colors as any).heroReviewMuted || 'rgba(255, 255, 255, 0.85)',
-    '--color-review-star': (theme.colors as any).reviewStar || '#facc15',
+  // Canonical token block via the shared emitter. Auto Wow's bespoke palette is
+  // passed as `defaults`; brand records override any core token via
+  // theme.colors.*. header-text is OMITTED (Auto Wow derived it from text, which
+  // is exactly what the emitter does). header-bg (#ffffff, not the #f7f7f9 page
+  // bg), header-muted, the dark hero-overlay pair, hero-text-muted (0.9) and the
+  // gold review star ARE distinct literals, so they're passed through.
+  const vars = buildThemeTokens(theme.colors as any, {
+    defaults: {
+      primaryColor: '#067a74',
+      secondaryColor: '#08a49d',
+      accentColor: '#16b3a8',
+      backgroundColor: '#f7f7f9',
+      surfaceColor: '#ffffff',
+      textColor: '#111827',
+      mutedColor: '#4b5563',
+      borderColor: '#d3d7dc',
+      headerBg: '#ffffff',
+      headerMuted: '#6b7280',
+      heroOverlayStart: 'rgba(11, 18, 17, 0.5)',
+      heroOverlayEnd: 'rgba(11, 18, 17, 0.55)',
+      heroTextMuted: 'rgba(255, 255, 255, 0.9)',
+      reviewStar: '#f0b400',
+    },
+  });
 
-    // Bridge variables for shared chrome / carous-platform style references
-    '--brand-primary': theme.colors.primaryColor || '#067a74',
-    '--brand-secondary': theme.colors.secondaryColor || '#08a49d',
-    '--brand-accent': theme.colors.accentColor || '#16b3a8',
-    '--brand-background': theme.colors.backgroundColor || '#f7f7f9',
-    '--brand-text': theme.colors.textColor || '#111827',
-    '--brand-primary-rgb': hexToRgb(theme.colors.primaryColor || '#067a74'),
-    '--brand-secondary-rgb': hexToRgb(theme.colors.secondaryColor || '#08a49d'),
-    '--brand-accent-rgb': hexToRgb(theme.colors.accentColor || '#16b3a8'),
+  const extras: Record<string, string> = {
+    // Fixed conventional hues that must NOT collapse to brand colours.
+    // WhatsApp/reserve green is a recognised action colour; kept as named
+    // tokens here (the sanctioned home) so components reference var(--t-*)
+    // instead of raw literals while the exact hue is preserved.
+    '--t-whatsapp': '#25d366',
+    '--t-whatsapp-ink': '#1f8b46',
 
     // Hero background image (resolves to brand.heroImage if set in dashboard)
     '--auto-hero-image': `url("${escapeCssUrl(heroImage)}")`,
@@ -127,25 +134,10 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: `${fontImport}:root {
-            ${Object.entries(cssVariables)
-              .map(([key, value]) => `${key}: ${value};`)
-              .join('\n            ')}
-            font-family: ${fontUi};
-          }
-        `,
+        __html: renderThemeStyle({ vars, extras, fontFamily: fontUi, fontImport }),
       }}
     />
   );
-}
-
-function hexToRgb(hex: string): string {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 0, 0';
-}
-
-function escapeCssUrl(url: string): string {
-  return String(url).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n|\r/g, '');
 }
 
 function resolveFontToken(...candidates: Array<unknown>): string | null {

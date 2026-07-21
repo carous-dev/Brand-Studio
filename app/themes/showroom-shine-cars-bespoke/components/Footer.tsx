@@ -36,12 +36,13 @@ const SOCIAL_LINKS = [
   { key: 'linkedin', icon: Linkedin, label: 'LinkedIn' },
 ] as const
 
-function openingHoursSummary(hours: unknown): string {
-  if (!hours || typeof hours !== 'object') return 'Contact us for opening hours'
-  const entries = Object.entries(hours as Record<string, unknown>)
-    .map(([day, value]) => `${day}: ${String(value || '').trim()}`)
-    .filter((line) => !line.endsWith(':'))
-  return entries.slice(0, 2).join(', ') || 'Contact us for opening hours'
+const DAY_KEYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+function getTodayHours(brand: any): string {
+  const hours = brand?.openingHours
+  if (!hours || typeof hours !== 'object') return 'Open by appointment — please call ahead'
+  const today = hours[DAY_KEYS[new Date().getDay()]]
+  if (!today || /closed/i.test(String(today))) return 'Closed today — message us anytime'
+  return `Today: ${String(today).trim()}`
 }
 
 export default function Footer() {
@@ -124,7 +125,7 @@ export default function Footer() {
             ) : null}
             <div className={styles.contactRow}>
               <Clock size={16} strokeWidth={2} aria-hidden />
-              <span>{openingHoursSummary((brand as any)?.openingHours)}</span>
+              <span>{getTodayHours(brand)}</span>
             </div>
             {contact.whatsappUrl ? (
               <div className={styles.contactRow}>

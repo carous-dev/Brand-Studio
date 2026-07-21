@@ -43,9 +43,9 @@ export default function LatestArrivalsSection() {
   }, [brand?.slug])
 
   return (
-    <section className={`auto-section ${styles.section}`} aria-labelledby="latest-arrivals-title">
+    <section className={`auto-section ${styles.section}`} aria-labelledby="latest-arrivals-title" data-aos="fade-up">
       <div className="auto-container">
-        <header className={styles.header} data-aos="fade-up">
+        <header className={styles.header}>
           <div className={styles.headerCopy}>
             <span className={styles.eyebrow}>
               <span className={styles.eyebrowMark} aria-hidden="true" />
@@ -77,16 +77,11 @@ export default function LatestArrivalsSection() {
 
         {items.length > 0 && (
           <ul className={styles.grid}>
-            {items.map((v, i) => {
+            {items.map((v) => {
               const href = buildVehiclePermalink(v as any) || `/used-cars/${v.id}`
               const stockNo = String(v.id).slice(-4).toUpperCase()
               return (
-                <li
-                  key={v.id}
-                  className={styles.card}
-                  data-aos="fade-up"
-                  data-aos-delay={i * 80}
-                >
+                <li key={v.id} className={styles.card}>
                   <Link href={href} className={styles.cardLink}>
                     <div className={styles.media}>
                       {v.image ? (

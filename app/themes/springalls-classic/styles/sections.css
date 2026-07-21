@@ -264,12 +264,12 @@
 [data-theme-id='springalls-classic'] .sps-cta-title {
   margin: 0;
   font-size: clamp(1.7rem, 3vw, 2.4rem);
-  color: #ffffff;
+  color: var(--color-bg);
 }
 
 [data-theme-id='springalls-classic'] .sps-cta-lead {
   margin: 0;
-  color: rgba(255, 255, 255, 0.92);
+  color: color-mix(in srgb, var(--color-bg) 92%, transparent);
   font-size: 1.05rem;
 }
 
@@ -289,17 +289,17 @@
   border-radius: 999px;
   font-weight: 700;
   text-decoration: none;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--color-bg);
 }
 
 [data-theme-id='springalls-classic'] .sps-cta-button-primary {
-  background: #ffffff;
+  background: var(--color-bg);
   color: var(--color-primary);
 }
 
 [data-theme-id='springalls-classic'] .sps-cta-button-secondary {
   background: transparent;
-  color: #ffffff;
+  color: var(--color-bg);
 }
 
 /* Directory */

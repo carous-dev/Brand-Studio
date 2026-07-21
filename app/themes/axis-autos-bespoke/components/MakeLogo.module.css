@@ -1,0 +1,29 @@
+/* Marque glyph — sits inside the BrowseByMake chip's pill holder, which owns
+   the background + sets `color: var(--brand-primary)`. The masked logo paints
+   with currentColor so it tints to the brand; the monogram fallback is a bare
+   letter (the holder provides the shape). */
+
+.logo {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  background: currentColor;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.monogram {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1;
+  color: currentColor;
+}

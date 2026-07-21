@@ -31,7 +31,7 @@ export function HeroBackdrop({ className }: { className?: string }) {
         <linearGradient id="hb-base" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="1" />
           <stop offset="55%" stopColor="var(--color-primary)" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="color-mix(in srgb, var(--color-primary) 80%, #000)" stopOpacity="1" />
+          <stop offset="100%" stopColor="color-mix(in srgb, var(--color-primary) 80%, var(--color-text))" stopOpacity="1" />
         </linearGradient>
 
         <radialGradient id="hb-glow-tr" cx="82%" cy="-10%" r="55%">
@@ -144,13 +144,13 @@ export function HeroBackdrop({ className }: { className?: string }) {
 
       {/* bottom edge fade so text above is always legible */}
       <linearGradient id="hb-bottom-fade" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#000000" stopOpacity="0" />
-        <stop offset="100%" stopColor="#000000" stopOpacity="0.32" />
+        <stop offset="0%" stopColor="var(--color-text)" stopOpacity="0" />
+        <stop offset="100%" stopColor="var(--color-text)" stopOpacity="0.32" />
       </linearGradient>
       <rect width="1440" height="600" fill="url(#hb-bottom-fade)" />
 
       {/* uniform darken pass for legibility */}
-      <rect width="1440" height="600" fill="#000000" opacity="0.22" />
+      <rect width="1440" height="600" fill="var(--color-text)" opacity="0.22" />
     </svg>
   )
 }

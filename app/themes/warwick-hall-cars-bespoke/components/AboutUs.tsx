@@ -60,7 +60,7 @@ export default function AboutUs() {
   const features: Feature[] = customFeatures.length === 3 ? customFeatures : DEFAULT_FEATURES
 
   return (
-    <section className={styles.section} aria-labelledby="warwick-about-title">
+    <section className={styles.section} aria-labelledby="warwick-about-title" data-aos="fade-up">
       <div className={styles.inner}>
         <header className={styles.intro}>
           <span className={styles.carGlyph} aria-hidden="true">

@@ -1,0 +1,40 @@
+{
+  "slug": "axis-autos-bespoke",
+  "generatedAt": "2026-05-25T18:44:58.268Z",
+  "brand": {
+    "primary": "#248709",
+    "primaryStrong": "#207708",
+    "onPrimary": "#ffffff",
+    "darkenAppliedToInput": 0.22,
+    "inputPrimary": "#2ead0b"
+  },
+  "neutralsLight": {
+    "surfaceBg": "#ffffff",
+    "surfaceCard": "#f6f7fb",
+    "textStrong": "#0f1623",
+    "textMuted": "#5b6573",
+    "border": "#e3e6ee"
+  },
+  "neutralsDark": {
+    "surfaceBg": "#0a0e14",
+    "surfaceCard": "#14181f",
+    "textStrong": "#ffffff",
+    "textMuted": "rgba(255,255,255,0.78)",
+    "border": "rgba(255,255,255,0.12)"
+  },
+  "cssVariables": {
+    "--surface-bg-light": "#ffffff",
+    "--surface-card-light": "#f6f7fb",
+    "--text-on-light-strong": "#0f1623",
+    "--text-on-light-muted": "#5b6573",
+    "--border-on-light": "#e3e6ee",
+    "--surface-bg-dark": "#0a0e14",
+    "--surface-card-dark": "#14181f",
+    "--text-on-dark-strong": "#ffffff",
+    "--text-on-dark-muted": "rgba(255,255,255,0.78)",
+    "--border-on-dark": "rgba(255,255,255,0.12)",
+    "--brand-primary": "#248709",
+    "--brand-primary-strong": "#207708",
+    "--brand-on-primary": "#ffffff"
+  }
+}

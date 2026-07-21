@@ -1,0 +1,40 @@
+{
+  "_comment": "DNA for axis-autos-bespoke — minimalist archetype, split-screen-photo-left hero, hairline-borderless chrome, sentence-case display. Brand primary #2ead0b auto-darkened to #248709 for AA white-on-primary. Generous whitespace, near-zero radii, near-zero shadows, near-zero decorative density (oneBigMove: decorative-density-minimum).",
+  "radii": {
+    "pill": "999px",
+    "card": "4px",
+    "input": "4px",
+    "button": "4px"
+  },
+  "spacing": {
+    "sectionInset": "clamp(80px, 10vw, 140px)",
+    "sectionGap": "clamp(80px, 10vw, 140px)",
+    "containerMax": "1240px",
+    "headerMax": "1240px"
+  },
+  "fonts": {
+    "heading": "Manrope",
+    "body": "IBM Plex Sans",
+    "headingWeight": 600,
+    "bodyWeight": 400
+  },
+  "hero": {
+    "minHeight": "640px",
+    "minHeightLg": "720px",
+    "minHeightSm": "520px",
+    "overlayStart": "rgba(255, 255, 255, 0.0)",
+    "overlayEnd": "rgba(255, 255, 255, 0.0)",
+    "searchRadius": "4px"
+  },
+  "shadows": {
+    "card": "0 1px 2px rgba(15, 22, 35, 0.04), 0 0 0 1px rgba(15, 22, 35, 0.05)",
+    "floating": "0 8px 24px rgba(15, 22, 35, 0.08)",
+    "button": "none"
+  },
+  "colors": {
+    "_note": "Tokens auto-derived from check-palette-policy.mjs (primary #2ead0b → #248709 after 22% darken). Brand triad consumed by BrandStyles. Paired surface/foreground tokens are DERIVED from --color-* dashboard pickers at runtime, NEVER hardcoded in CSS.",
+    "brandPrimary": "#248709",
+    "brandPrimaryStrong": "#207708",
+    "brandOnPrimary": "#ffffff"
+  }
+}

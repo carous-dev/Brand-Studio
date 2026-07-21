@@ -18,7 +18,7 @@
 }
 .titleAccent {
   display: inline-block;
-  background: linear-gradient(95deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 60%, #8fd2f3));
+  background: linear-gradient(95deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 60%, color-mix(in srgb, var(--color-accent) 62%, var(--color-on-dark))));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

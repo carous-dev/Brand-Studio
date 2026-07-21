@@ -364,6 +364,7 @@ export default function FeaturedRedesign() {
     return (
       <motion.section
         className="featured-redesign"
+        data-aos="fade-up"
         aria-label="Latest arrivals"
         initial={{ opacity: 0, x: -50 }}
         whileInView={{ opacity: 1, x: 0 }}
@@ -387,6 +388,7 @@ export default function FeaturedRedesign() {
   return (
     <motion.section
       className="featured-redesign"
+      data-aos="fade-up"
       aria-label="Latest arrivals"
       initial={{ opacity: 0, x: -50 }}
       whileInView={{ opacity: 1, x: 0 }}

@@ -1,44 +1,48 @@
 "use client";
 
 import React, { Suspense } from "react";
-import { usePathname } from "next/navigation";
-import { PreviewBanner } from "./PreviewBanner";
 import { Header } from "./Header";
 import ServicesCta from "./ServicesCta";
 import Footer from "./Footer";
-import CookieBanner from "./CookieBanner";
-import CarousWhatsAppWidget from "@/app/widgets/CarousWhatsAppWidget/CarousWhatsAppWidget";
+import ThemeChrome from "@/app/themes/lib/ThemeChrome";
 import { useBrand } from "../context/BrandClientWrapper";
 import "../styles/header.css";
 import "../styles/footer.css";
+import "../styles/color-policy.css";
 
+/**
+ * classic-dealer shell — thin wrapper over the shared <ThemeChrome>
+ * (route-gating, skip-link, canonical widget stack, shared PreviewBanner +
+ * CookieBanner). Theme-specific bits: the `.classic-theme` styling scope, its
+ * own Header (kept inside <Suspense>) / Footer, and the ServicesCta band
+ * rendered between <main> and the footer.
+ *
+ * classic has no Garage/Wishlist context, so no `provider` is passed. It never
+ * mounted MotionFX or ScrollProgress, so those widgets are opted out; the
+ * framer-motion whileInView sections in its components are untouched.
+ */
 export default function ConditionalShell({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname() || "";
   const brand = useBrand();
 
-  // Treat dashboard routes and the public login page as areas that provide
-  // their own chrome (do not render the global header/footer/support UI)
-  const isAuthArea = pathname.startsWith("/dashboard") || pathname === "/login";
-
-  if (isAuthArea) {
-    return <main id="content" role="main" className="classic-theme">{children}</main>;
-  }
-
-  // Otherwise render the normal public site chrome
+  // The `.classic-theme` div is a styling scope and must wrap BOTH the normal
+  // site chrome and the dashboard/login bare branch (ThemeChrome handles that
+  // route-gating internally), so it wraps <ThemeChrome> here.
   return (
     <div className="classic-theme">
-      <PreviewBanner />
-      <Suspense fallback={null}>
-        <Header />
-      </Suspense>
-      <main id="content" role="main">{children}</main>
-      <ServicesCta />
-      <Footer />
-      <CookieBanner />
-      {/* CDN-hosted WhatsApp enquiry widget (widgets.carous.co.uk) — replaces
-          the legacy custom SupportWidget. Uses the same dealer-config props
-          as auto-wow-uk-bespoke-02. */}
-      <CarousWhatsAppWidget brand={brand} />
+      <ThemeChrome
+        brand={brand ?? null}
+        classPrefix="classic"
+        header={
+          <Suspense fallback={null}>
+            <Header />
+          </Suspense>
+        }
+        footer={<Footer />}
+        belowMain={<ServicesCta />}
+        widgets={{ motionFx: false, scrollProgress: false }}
+      >
+        {children}
+      </ThemeChrome>
     </div>
   );
 }

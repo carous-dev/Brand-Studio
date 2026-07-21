@@ -1,11 +1,11 @@
 .footer {
   margin-top: 96px;
   background: var(--fbm-carbon-950);
-  color: #ffffff;
+  color: var(--color-bg);
   background-image:
     radial-gradient(900px 450px at 80% -10%, color-mix(in srgb, var(--color-primary) 18%, transparent), transparent 60%),
     radial-gradient(700px 400px at -10% 30%, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 60%);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid color-mix(in srgb, var(--color-bg) 6%, transparent);
 }
 
 .grid {
@@ -53,7 +53,7 @@
   margin-top: 16px;
   font-size: 0.9375rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.92);
+  color: color-mix(in srgb, var(--color-bg) 92%, transparent);
 }
 
 .address {
@@ -62,32 +62,32 @@
   font-style: normal;
   display: grid;
   gap: 4px;
-  /* Pure #ffffff — `rgba(...0.92)` was still reading as transparent on
-   * deeply tinted carbon backgrounds for brands with dark text colours.
-   * Pure white removes any inherited / cascade ambiguity. */
-  color: #ffffff;
+  /* Explicit full-opacity light token — the translucent variant was still
+   * reading as transparent on deeply tinted carbon backgrounds for brands
+   * with dark text colours. Full opacity removes cascade ambiguity. */
+  color: var(--color-bg);
   line-height: 1.55;
   font-weight: 500;
 }
 .address p {
   margin: 0;
-  color: #ffffff;
+  color: var(--color-bg);
 }
 .addressPhone {
   margin-top: 12px;
   font-weight: 600;
   font-size: 1rem;
-  color: #ffffff;
+  color: var(--color-bg);
   text-decoration: none;
   letter-spacing: 0.01em;
 }
-.addressPhone:hover { color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 55%, #ffffff); }
+.addressPhone:hover { color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 55%, var(--color-bg)); }
 .addressEmail {
-  color: #ffffff;
+  color: var(--color-bg);
   text-decoration: none;
   word-break: break-all;
 }
-.addressEmail:hover { color: #ffffff; }
+.addressEmail:hover { color: var(--color-bg); }
 
 /* Social icon row — sits below the brand column address. Only renders when
  * the brand record has at least one social URL wired. Single solid colour
@@ -105,16 +105,16 @@
   width: 36px;
   height: 36px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  background: color-mix(in srgb, var(--color-bg) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-bg) 14%, transparent);
+  color: var(--color-bg);
   transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
 }
 .socialIcon:hover,
 .socialIcon:focus-visible {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg);
   transform: translateY(-1px);
   outline: none;
 }
@@ -127,10 +127,10 @@
   /* Brand accent washed toward white — pure ember-400 on dark resolves to
    * near-invisible for brands whose accent is a deep hue. Same fix as the
    * hero eyebrow / testimonials title. */
-  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 50%, #ffffff);
+  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 50%, var(--color-bg));
   margin: 0;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-bg) 8%, transparent);
 }
 
 .quickLinks {
@@ -142,12 +142,12 @@
   font-size: 0.875rem;
 }
 .quickLinks a {
-  color: rgba(255, 255, 255, 0.85);
+  color: color-mix(in srgb, var(--color-bg) 85%, transparent);
   text-decoration: none;
   transition: color 0.2s;
 }
 .quickLinks a:hover {
-  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 50%, #ffffff);
+  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 50%, var(--color-bg));
 }
 
 .sellCta { margin-top: 32px; }
@@ -167,10 +167,10 @@
   width: 100%;
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--color-bg) 6%, transparent);
   padding: 12px 16px;
   font-size: 0.875rem;
-  color: #ffffff;
+  color: var(--color-bg);
   font-family: inherit;
 }
 .newsletterInput::placeholder { color: rgba(154, 167, 184, 0.6); }
@@ -189,7 +189,7 @@
 }
 
 .bottomBar {
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  border-top: 1px solid color-mix(in srgb, var(--color-bg) 14%, transparent);
   background: rgba(0, 0, 0, 0.4);
 }
 .bottomInner {
@@ -217,12 +217,12 @@
 
 /* Explicit copyright styling. Previously relied on `<p>` inheriting the
  * `.bottomInner` color, but default `<p>` margins + low inherited contrast
- * (0.88 white over a 0.4 black plate on carbon = ~#a8a8a8) made the line
+ * (a translucent light ink over the darkened plate) made the line
  * read as nothing on the dark bar. Now an explicit near-white with no
  * margin so the copyright is the visible anchor of the left side. */
 .bottomCopy {
   margin: 0;
-  color: #ffffff;
+  color: var(--color-bg);
   font-weight: 500;
   letter-spacing: 0.01em;
 }
@@ -233,14 +233,14 @@
   gap: 22px;
 }
 .bottomLink {
-  color: #ffffff;
+  color: var(--color-bg);
   text-decoration: none;
   cursor: pointer;
   font-weight: 500;
   transition: color 0.2s;
 }
 .bottomLink:hover {
-  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 50%, #ffffff);
+  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 50%, var(--color-bg));
 }
 
 /* "Designed by Carous" credit — sits after the legal links on desktop,
@@ -254,12 +254,12 @@
   transition: color 0.2s;
 }
 .bottomCredit span {
-  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 55%, #ffffff);
+  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 55%, var(--color-bg));
   font-weight: 600;
 }
 .bottomCredit:hover {
-  color: #ffffff;
+  color: var(--color-bg);
 }
 .bottomCredit:hover span {
-  color: #ffffff;
+  color: var(--color-bg);
 }

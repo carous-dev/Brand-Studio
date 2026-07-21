@@ -183,7 +183,7 @@
   display: inline-flex;
   align-items: center;
   padding: 6px 12px;
-  background: rgba(8, 11, 17, 0.78);
+  background: rgba(8, 11, 17, 0.78); /* photo-scrim-ok */
   color: var(--text-on-dark-strong);
   border-radius: 999px;
   font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
@@ -215,7 +215,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px 14px;
-  background: rgba(8, 11, 17, 0.84);
+  background: rgba(8, 11, 17, 0.84); /* photo-scrim-ok */
   color: var(--text-on-dark-strong);
   border-radius: 4px;
   font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
@@ -276,7 +276,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(8, 11, 17, 0.62);
+  background: rgba(8, 11, 17, 0.62); /* photo-scrim-ok */
   color: var(--text-on-dark-strong);
   font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
   font-size: 1.4rem;
@@ -491,8 +491,8 @@
   justify-content: center;
   gap: 10px;
   padding: 0 18px;
-  background: #25d366;
-  color: #ffffff;
+  background: var(--color-whatsapp);
+  color: var(--text-on-dark-strong);
   border: 0;
   border-radius: 4px;
   font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
@@ -504,7 +504,7 @@
   transition: background 0.15s ease;
 }
 .whatsCta:hover {
-  background: #128c7e;
+  background: var(--color-whatsapp-strong);
 }
 
 .contactMini {
@@ -685,7 +685,7 @@
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(0, 0, 0, 0.95); /* photo-scrim-ok */
   display: flex;
   align-items: center;
   justify-content: center;

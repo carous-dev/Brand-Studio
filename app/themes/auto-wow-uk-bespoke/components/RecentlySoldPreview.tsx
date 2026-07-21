@@ -37,9 +37,9 @@ export default function RecentlySoldPreview() {
   if (!items.length) return null
 
   return (
-    <section className={`auto-section ${styles.section}`} aria-labelledby="recently-sold-title">
+    <section className={`auto-section ${styles.section}`} aria-labelledby="recently-sold-title" data-aos="fade-up">
       <div className={`auto-container ${styles.inner}`}>
-        <header className={styles.header} data-aos="fade-up">
+        <header className={styles.header}>
           <div className={styles.headerCopy}>
             <span className={styles.eyebrow}>
               <span className={styles.eyebrowMark} aria-hidden="true" />
@@ -56,13 +56,8 @@ export default function RecentlySoldPreview() {
         </header>
 
         <ul className={styles.grid}>
-          {items.map((v, i) => (
-            <li
-              key={v.id}
-              className={styles.card}
-              data-aos="fade-up"
-              data-aos-delay={i * 100}
-            >
+          {items.map((v) => (
+            <li key={v.id} className={styles.card}>
               <div className={styles.media}>
                 {v.image ? (
                   <img src={v.image} alt={v.title} loading="lazy" />

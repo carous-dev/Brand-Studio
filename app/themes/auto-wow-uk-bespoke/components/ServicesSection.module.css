@@ -13,7 +13,7 @@
     linear-gradient(color-mix(in srgb, var(--color-text) 3.5%, transparent) 1px, transparent 1px),
     linear-gradient(90deg, color-mix(in srgb, var(--color-text) 3.5%, transparent) 1px, transparent 1px);
   background-size: 48px 48px;
-  mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.55) 28%, rgba(0, 0, 0, 0.55) 72%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--color-text) 55%, transparent) 28%, color-mix(in srgb, var(--color-text) 55%, transparent) 72%, transparent 100%);
   z-index: -1;
   pointer-events: none;
 }
@@ -23,12 +23,19 @@
 }
 
 .header {
+  position: relative;
+  z-index: 2;
   max-width: 760px;
-  margin: 0 0 clamp(36px, 5vw, 56px);
+  /* Use padding-bottom instead of margin-bottom so the spacing is part
+     of the header's box and can't collapse with the next element's
+     margin. Bigger gap so the lead's last line doesn't sit against the
+     first card row (Columbus's serif heading font renders denser than
+     the rugged Oswald default). */
+  margin: 0;
+  padding: 0 0 clamp(56px, 7vw, 96px);
   background: transparent !important;
   box-shadow: none !important;
   border: 0;
-  padding: 0;
 }
 
 .eyebrow {
@@ -198,6 +205,33 @@
 @media (max-width: 640px) {
   .section::before {
     display: none;
+  }
+  /* Mobile — title was dominating + overlapping the first card. */
+  .header {
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .eyebrow {
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    margin-bottom: 4px;
+  }
+  .eyebrowMark {
+    width: 22px;
+  }
+  .title {
+    font-size: clamp(1.4rem, 7vw, 1.85rem);
+    line-height: 1.12;
+    margin-bottom: 10px;
+  }
+  .lead {
+    font-size: 0.94rem;
+    line-height: 1.5;
+  }
+  .grid {
+    position: relative;
+    z-index: 1;
+    margin-top: 4px;
   }
   .cardLink {
     padding: 22px 20px 20px;
