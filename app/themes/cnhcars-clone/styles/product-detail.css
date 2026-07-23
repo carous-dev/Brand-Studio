@@ -325,7 +325,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--color-on-primary);
   flex-shrink: 0;
   transition: all 0.4s ease;
   position: relative;
@@ -459,7 +459,7 @@
 
 .btn-primary-modern {
   background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-  color: white;
+  color: var(--color-on-primary);
 }
 
 .btn-primary-modern:hover {
@@ -508,7 +508,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--color-on-primary);
   flex-shrink: 0;
 }
 
@@ -568,7 +568,7 @@
 .enquiry-form-card h2 svg {
   width: 36px;
   height: 36px;
-  color: white;
+  color: var(--color-on-primary);
   background: linear-gradient(135deg, var(--primary), var(--accent));
   padding: 0.875rem;
   border-radius: var(--radius-xl);
@@ -670,7 +670,7 @@
   top: 1rem;
   right: 1rem;
   background: var(--accent);
-  color: white;
+  color: var(--color-on-primary);
   padding: 0.5rem 1rem;
   border-radius: var(--radius-lg);
   font-size: 0.75rem;
@@ -715,7 +715,7 @@
 
 .enquiry-submit {
   background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-  color: white;
+  color: var(--color-on-primary);
   padding: 1rem 2rem;
   border-radius: var(--radius-lg);
   font-weight: 700;
@@ -738,7 +738,7 @@
   width: 100%;
   padding: 1rem;
   background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-  color: white;
+  color: var(--color-on-primary);
   border: none;
   border-radius: var(--radius-lg);
   font-weight: 700;
@@ -917,7 +917,7 @@
 .gallery-nav:hover {
   background: var(--primary);
   border-color: var(--primary);
-  color: white;
+  color: var(--color-on-primary);
   transform: translateY(-50%) scale(1.1);
 }
 
@@ -1390,7 +1390,7 @@
 
 .btn-primary {
   background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-  color: white;
+  color: var(--color-on-primary);
 }
 
 .btn-primary:hover {
@@ -1405,7 +1405,7 @@
 
 .btn-secondary:hover {
   background: var(--primary-color);
-  color: white;
+  color: var(--color-on-primary);
   transform: translateY(-2px);
 }
 
@@ -1520,7 +1520,7 @@
   top: 1rem;
   right: 1rem;
   background: var(--accent-color);
-  color: white;
+  color: var(--color-on-primary);
   padding: 0.25rem 0.75rem;
   border-radius: var(--radius-sm);
   font-size: 0.75rem;
@@ -1568,7 +1568,7 @@
   width: 100%;
   padding: 0.75rem;
   background: var(--primary-color);
-  color: white;
+  color: var(--color-on-primary);
   border: none;
   border-radius: var(--radius-md);
   font-weight: 600;
@@ -2105,7 +2105,7 @@
   width: fit-content;
   padding: 0.875rem 2rem;
   background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-  color: white;
+  color: var(--color-on-primary);
   border: none;
   border-radius: var(--radius-lg);
   font-weight: 700;

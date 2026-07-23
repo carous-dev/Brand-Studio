@@ -40,7 +40,7 @@
 .about p {
   font-size: 1rem;
   margin-bottom: 1.5rem;
-  color: color-mix(in srgb, var(--white) 95%, transparent);
+  color: var(--text-on-dark-strong);
   line-height: 1.6;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
@@ -77,7 +77,7 @@
 
 .feature p {
   margin: 0;
-  color: color-mix(in srgb, var(--white) 80%, transparent);
+  color: var(--text-on-dark-muted);
 }
 
 /* Remove rounded corners for a modern flat look */
@@ -103,14 +103,14 @@
 
   .feature {
     padding: 1.5rem 1rem;
-    background: color-mix(in srgb, var(--white) 5%, transparent);
-    border: 1px solid color-mix(in srgb, var(--white) 10%, transparent);
+    background: color-mix(in srgb, var(--text-on-dark-strong) 5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent);
     border-radius: 8px;
     transition: all 0.3s ease;
   }
 
   .feature:hover {
-    background: color-mix(in srgb, var(--white) 10%, transparent);
+    background: color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent);
     transform: translateY(-2px);
   }
 }
@@ -125,7 +125,7 @@
   .about p { font-size: 0.95rem; margin-bottom: 1.1rem; }
   .feature {
     padding: 0.8rem 0.5rem;
-    background: color-mix(in srgb, var(--white) 5%, transparent);
+    background: color-mix(in srgb, var(--text-on-dark-strong) 5%, transparent);
     border-radius: 6px;
     margin-bottom: 0.35rem;
   }

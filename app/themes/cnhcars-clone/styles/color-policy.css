@@ -19,7 +19,7 @@
   --t-action-bg: var(--color-primary);
   --t-action-bg-hover: color-mix(in srgb, var(--color-primary) 88%, var(--color-text));
   --t-action-bg-soft: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
-  --t-action-fg: var(--color-bg);
+  --t-action-fg: var(--color-on-primary);
   --t-action-fg-on-light: var(--color-primary);
   --t-action-ring: color-mix(in srgb, var(--color-primary) 22%, transparent);
 
@@ -60,7 +60,7 @@
   /* Text */
   --t-text: var(--color-text);
   --t-muted: var(--color-muted);
-  --t-text-on-brand: var(--color-bg);
+  --t-text-on-brand: var(--color-on-primary);
 
   /* Status (semantic, not brand-tinted) */
   --t-success: #0f5132;

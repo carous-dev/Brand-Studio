@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle, AlertCircle, User, Mail, Phone, MessageSquare, Send, MapPin } from 'lucide-react';
+import { CheckCircle, AlertCircle, Mail, Phone, Send, MapPin } from 'lucide-react';
 import { useContactLeadForm } from '../hooks/useContactLeadForm';
 import { useBrand } from '../context/BrandClientWrapper';
 import { getBrandContactInfo } from '../lib/contact';
@@ -45,6 +45,10 @@ export default function Contact() {
       <div className="container">
         <div className="contact-inner">
           <div className="contact-card">
+            <header className="contact-card-head">
+              <p className="contact-eyebrow">Get in touch</p>
+              <h3 className="contact-card-title">Send us a message</h3>
+            </header>
             {status === 'success' && (
               <div className="form-success" role="status" aria-live="polite">
                 <CheckCircle className="form-icon" />
@@ -61,14 +65,13 @@ export default function Contact() {
             <form className="contact-form" onSubmit={handleSubmit} aria-label="Contact form">
               <input type="text" {...honeypotProps} style={HONEYPOT_STYLE} tabIndex={-1} aria-hidden="true" />
               <div className="form-row">
-                <div className="input-with-icon">
+                <div className="form-field">
                   <label className="form-label" htmlFor="hc-name">Full name</label>
-                  <User className="input-icon" />
                   <input
                     id="hc-name"
                     className="form-input"
                     type="text"
-                    placeholder="Full name"
+                    placeholder="e.g. John Smith"
                     aria-required="true"
                     {...getFieldProps('name')}
                   />
@@ -76,14 +79,13 @@ export default function Contact() {
                     <p className="field-error">{errors.name}</p>
                   )}
                 </div>
-                <div className="input-with-icon">
+                <div className="form-field">
                   <label className="form-label" htmlFor="hc-email">Email address</label>
-                  <Mail className="input-icon" />
                   <input
                     id="hc-email"
                     className="form-input"
                     type="email"
-                    placeholder="Email address"
+                    placeholder="you@example.com"
                     aria-required="true"
                     {...getFieldProps('email')}
                   />
@@ -92,24 +94,22 @@ export default function Contact() {
                   )}
                 </div>
               </div>
-              <div className="input-with-icon">
-                <label className="form-label" htmlFor="hc-phone">Phone (optional)</label>
-                <Phone className="input-icon" />
+              <div className="form-field">
+                <label className="form-label" htmlFor="hc-phone">Phone <span className="form-label-hint">(optional)</span></label>
                 <input
                   id="hc-phone"
                   className="form-input"
                   type="tel"
-                  placeholder="Phone (optional)"
+                  placeholder="07123 456789"
                   {...getFieldProps('phone')}
                 />
               </div>
-              <div className="input-with-icon textarea">
-                <label className="form-label" htmlFor="hc-message">Tell us how we can help</label>
-                <MessageSquare className="input-icon" />
+              <div className="form-field">
+                <label className="form-label" htmlFor="hc-message">How can we help?</label>
                 <textarea
                   id="hc-message"
                   className="form-textarea"
-                  placeholder="Tell us how we can help"
+                  placeholder="Tell us about the car you're after, or ask us anything…"
                   aria-required="true"
                   {...getFieldProps('message')}
                 />

@@ -101,13 +101,13 @@
 .pref-toggle { display:inline-flex; align-items:center; cursor:pointer; }
 .pref-toggle input { position:absolute; opacity:0; pointer-events:none; }
 .toggle-ui { width:42px; height:24px; background:var(--surface-card); border-radius:999px; display:inline-block; position:relative; box-shadow:inset 0 1px 0 rgba(255,255,255,0.03); border:1px solid var(--border); }
-.toggle-ui:after { content:''; width:18px; height:18px; background:var(--white); border-radius:50%; position:absolute; left:3px; top:2px; transition:left 160ms ease, background 160ms ease; box-shadow:0 2px 6px rgba(15,15,15,0.08); }
+.toggle-ui:after { content:''; width:18px; height:18px; background:var(--color-on-primary); border-radius:50%; position:absolute; left:3px; top:2px; transition:left 160ms ease, background 160ms ease; box-shadow:0 2px 6px rgba(15,15,15,0.08); }
 .pref-toggle input:checked + .toggle-ui { background: var(--primary); border-color: transparent; }
 .pref-toggle input:checked + .toggle-ui:after { left:21px; }
 .prefs-actions { display:flex; align-items:center; gap:0.5rem; margin-top:0.5rem; }
 .prefs-actions > div { flex: 1; }
 .cookie-btn.cookie-decline { background:transparent; border:1px solid var(--border); color:var(--text-body); }
-.cookie-btn.cookie-save { background: var(--primary); color:var(--white); }
+.cookie-btn.cookie-save { background: var(--primary); color:var(--color-on-primary); }
 
 /* Off-canvas sidebar and backdrop */
 .cookie-backdrop { position:fixed; inset:0; background:color-mix(in srgb, var(--surface-bg-dark) 45%, transparent); opacity:0; pointer-events:none; transition:opacity 220ms ease; z-index:1220; }

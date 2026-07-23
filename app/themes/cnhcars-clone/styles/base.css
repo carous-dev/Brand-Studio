@@ -108,7 +108,7 @@ body[data-theme-id='cnhcars-clone'] .cnhcars-skip-link:focus {
   --font-weight-medium: var(--fw-semibold);
   --font-weight-bold: var(--fw-bold);
 
-  --text-inverse: var(--white);
+  --text-inverse: var(--color-on-primary);
   --text-dark: var(--text-heading);
   --dark-gray: var(--color-text);
   --medium-gray: var(--color-text-muted);
@@ -222,7 +222,7 @@ a:hover {
   align-items: center;
   gap: 0.5rem;
   background: var(--accent);
-  color: var(--white);
+  color: var(--color-on-primary);
   padding: 1rem 2rem;
   border-radius: 50px;
   font-weight: var(--fw-semibold);
@@ -236,7 +236,7 @@ a:hover {
 .cta-button i svg {
   width: 20px;
   height: 20px;
-  color: var(--white);
+  color: var(--color-on-primary);
   transition: transform 0.3s ease;
 }
 
@@ -253,8 +253,10 @@ a:hover {
 
 .btn-secondary {
   display: inline-block;
+  /* --secondary maps to --color-text (a dark ink fill) — natural inversion
+     pairs it with --color-bg, not the on-primary token. */
   background: var(--secondary);
-  color: var(--white);
+  color: var(--color-bg);
   padding: 0.75rem 1.5rem;
   border-radius: 25px;
   font-weight: var(--fw-semibold);

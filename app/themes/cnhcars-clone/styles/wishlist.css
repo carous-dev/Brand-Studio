@@ -25,7 +25,7 @@
 .wishlist-clear-btn,
 .wishlist-browse-btn {
   background: var(--primary);
-  color: var(--white);
+  color: var(--color-on-primary);
   border: none;
   border-radius: 999px;
   padding: 0.55rem 1rem;
@@ -46,14 +46,14 @@
 
 .wishlist-browse-btn {
   margin-top: 1rem;
-  color: var(--white);
+  color: var(--color-on-primary);
 }
 
 .wishlist-browse-btn:visited,
 .wishlist-browse-btn:hover,
 .wishlist-browse-btn:focus-visible,
 .wishlist-browse-btn:active {
-  color: var(--white);
+  color: var(--color-on-primary);
 }
 
 .wishlist-page #wishlist-grid {

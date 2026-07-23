@@ -157,7 +157,7 @@
   padding: 0.9rem;
   margin-top: 0.5rem;
   background: var(--accent);
-  color: var(--white);
+  color: var(--color-on-primary);
   border: none;
   font-size: 0.875rem;
   font-weight: 700;

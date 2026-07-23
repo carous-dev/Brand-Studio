@@ -6,6 +6,7 @@ import { useBrand } from './context/BrandClientWrapper'
 import Providers from './components/Providers'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import SmoothScroll from './components/SmoothScroll'
 
 import './styles/base.css'
 import './styles/color-policy.css'
@@ -26,6 +27,7 @@ export const themeShell: ThemeShellComponent = ({ children }) => {
 
   return (
     <Providers>
+      <SmoothScroll />
       <ThemeChrome
         brand={brand ?? null}
         classPrefix="cnhcars"

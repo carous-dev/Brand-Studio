@@ -28,7 +28,27 @@
 }
 
 .contact-section .contact-card {
-  padding: 1.45rem;
+  padding: 1.75rem;
+}
+
+.contact-section .contact-card-head {
+  margin-bottom: 1.25rem;
+}
+
+.contact-section .contact-eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.76rem;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--t-eyebrow);
+}
+
+.contact-section .contact-card-title {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.2;
+  color: var(--text-heading);
 }
 
 .contact-section .form-success,
@@ -72,37 +92,34 @@
   gap: 0.75rem;
 }
 
-.contact-section .input-with-icon {
-  position: relative;
+.contact-section .form-field {
+  display: grid;
+  gap: 0.4rem;
 }
 
-.contact-section .input-icon {
-  width: 18px;
-  height: 18px;
+.contact-section .form-label {
+  font-size: 0.82rem;
+  font-weight: var(--fw-semibold);
+  color: var(--text-heading);
+  letter-spacing: 0.01em;
+}
+
+.contact-section .form-label-hint {
+  font-weight: var(--fw-regular);
   color: var(--color-muted);
-  position: absolute;
-  left: 0.9rem;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-
-.contact-section .input-with-icon.textarea .input-icon {
-  top: 1rem;
-  transform: none;
 }
 
 .contact-section .form-input,
 .contact-section .form-textarea {
   width: 100%;
-  border: 1px solid var(--border);
-  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-bg));
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
   color: var(--text-heading);
-  border-radius: 12px;
+  border-radius: 10px;
   font-size: 0.95rem;
   line-height: 1.4;
-  padding: 0.78rem 0.88rem 0.78rem 2.7rem;
-  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+  padding: 0.72rem 0.9rem;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
 }
 
 .contact-section .form-input::placeholder,
@@ -110,18 +127,21 @@
   color: var(--color-muted);
 }
 
+.contact-section .form-input:hover,
+.contact-section .form-textarea:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border));
+}
+
 .contact-section .form-input:focus,
 .contact-section .form-textarea:focus {
   outline: none;
-  border-color: rgba(var(--color-primary-rgb), 0.45);
-  box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.12);
-  background: var(--color-bg);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 14%, transparent);
 }
 
 .contact-section .form-textarea {
   resize: vertical;
   min-height: 130px;
-  padding-top: 0.9rem;
 }
 
 .contact-section .field-error {
@@ -147,19 +167,19 @@
   gap: 0.5rem;
   border: none;
   border-radius: 999px;
-  padding: 0.72rem 1.2rem;
-  background: var(--primary);
-  color: var(--white);
+  padding: 0.78rem 1.5rem;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   cursor: pointer;
   transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
-  box-shadow: 0 8px 18px rgba(65, 105, 225, 0.22);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--color-primary) 24%, transparent);
 }
 
 .contact-section .form-submit:hover {
   transform: translateY(-1px);
-  background: var(--primary-hover);
+  background: var(--color-primary-strong);
 }
 
 .contact-section .form-submit:disabled {
@@ -293,16 +313,11 @@
   }
 
   .contact-section .contact-card {
-    padding: 1.05rem;
+    padding: 1.15rem;
   }
 
   .contact-section .form-row {
     grid-template-columns: 1fr;
-  }
-
-  .contact-section .form-input,
-  .contact-section .form-textarea {
-    padding-left: 2.55rem;
   }
 
   .contact-section .contact-map-wide iframe {

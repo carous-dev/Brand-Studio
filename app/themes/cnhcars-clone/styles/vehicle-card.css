@@ -134,7 +134,7 @@
 .vehicle-card.inventory-card-modern .inventory-card-action[aria-pressed='true'] {
   border-color: var(--primary);
   background: var(--primary);
-  color: var(--white);
+  color: var(--color-on-primary);
 }
 
 .vehicle-card.inventory-card-modern .inventory-card-action .heart-icon {

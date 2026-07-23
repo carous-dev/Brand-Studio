@@ -28,7 +28,7 @@
 
 .tab[aria-selected="true"] {
     background: var(--accent);
-    color: var(--white);
+    color: var(--color-on-primary);
     border-color: transparent;
 }
 

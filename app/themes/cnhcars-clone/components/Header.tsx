@@ -52,7 +52,7 @@ export default function Header() {
   return (
     <>
       <ContactBar />
-      <header>
+      <header className="cnh-site-header">
         <div className="header-glass">
           <div className="header-container container">
             <div className="logo">

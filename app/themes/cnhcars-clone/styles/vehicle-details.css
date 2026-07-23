@@ -1198,7 +1198,7 @@
 .vehicle-summary-tab.is-active {
     background: var(--primary);
     border-color: transparent;
-    color: var(--white);
+    color: var(--color-on-primary);
     box-shadow: none;
 }
 

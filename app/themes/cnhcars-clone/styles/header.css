@@ -14,19 +14,21 @@
     letter-spacing: 0.02em;
 }
 
-/* Futuristic glassmorphism header */
+/* Futuristic glassmorphism header.
+   Scoped to .cnh-site-header — a bare `header` selector also paints every
+   semantic <header> inside sections/cards (and leaks across themes). */
 
-header {
+header.cnh-site-header {
     position: sticky;
     z-index: 49;
     width: 100%;
     background: var(--surface-page);
-    border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 30%, transparent);
+    border-bottom: 1px solid var(--color-border);
     transition: all 0.3s ease;
     overflow: hidden;
 }
 
-header::before {
+header.cnh-site-header::before {
     content: '';
     position: absolute;
     top: 0;
@@ -37,7 +39,7 @@ header::before {
     pointer-events: none;
 }
 
-header::after {
+header.cnh-site-header::after {
     content: '';
     position: absolute;
     top: 0;
@@ -212,7 +214,7 @@ header::after {
     padding: 0 0.2rem;
     border-radius: 999px;
     background: var(--primary);
-    color: var(--white);
+    color: var(--color-on-primary);
     border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);
     font-size: 0.65rem;
     font-weight: var(--fw-semibold);
@@ -368,7 +370,7 @@ header::after {
 }
 
 /* Header - Mobile First Responsive */
-header {
+header.cnh-site-header {
     position: relative;
     width: 100%;
     background: var(--color-bg);
@@ -379,7 +381,7 @@ header {
     z-index: 100;
 }
 
-header::before {
+header.cnh-site-header::before {
     content: '';
     position: absolute;
     top: 0;
@@ -389,7 +391,7 @@ header::before {
     pointer-events: none;
 }
 
-header::after {
+header.cnh-site-header::after {
     content: '';
     position: absolute;
     top: 0;
@@ -567,7 +569,7 @@ header::after {
     display: flex;
     align-items: center;
     gap: 12px;
-    background: var(--white);
+    background: var(--color-bg);
     padding: 16px 18px;
     border: 1px solid var(--border);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
@@ -621,7 +623,7 @@ header::after {
 /* Search Suggestions */
 .search-suggestions {
     margin-top: 12px;
-    background: var(--white);
+    background: var(--color-bg);
     border: 1px solid var(--border);
     border-top: none;
     border-radius: 0 0 8px 8px;
@@ -941,7 +943,7 @@ header::after {
     gap: 0.75rem;
     padding: 0.75rem 1.25rem;
     background: var(--accent);
-    color: var(--white);
+    color: var(--color-on-primary);
     text-decoration: none;
     border-radius: 12px;
     font-weight: var(--fw-semibold);
@@ -1042,7 +1044,7 @@ header::after {
 
 /* Responsive - Desktop (1024px and up) */
 @media (min-width: 1024px) {
-    header {
+    header.cnh-site-header {
         position: static;
         background-attachment: fixed;
     }

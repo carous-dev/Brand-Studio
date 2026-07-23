@@ -64,7 +64,7 @@
 
 .filter-input {
   padding: 0.5rem 0.7rem;
-  background: var(--white);
+  background: var(--color-bg);
   border: 1px solid var(--border);
   border-radius: 4px;
   color: var(--text-body);
@@ -82,7 +82,7 @@
 .filter-input:focus {
   outline: none;
   border-color: var(--accent);
-  background: var(--white);
+  background: var(--color-bg);
 }
 
 .filter-input option {
@@ -95,7 +95,7 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0.4rem 0.9rem;
-  background: var(--white);
+  background: var(--color-bg);
   border: 1px solid var(--border);
   color: var(--text-body);
   font-weight: 600;
@@ -107,7 +107,7 @@
 .filter-btn:hover {
   background: var(--accent);
   border-color: var(--accent);
-  color: var(--white);
+  color: var(--color-on-primary);
 }
 
 .filter-btn i, .filter-btn svg {
@@ -226,7 +226,7 @@
 .car-price {
   margin-top: auto;
   padding-top: 0.8rem;
-  border-top: 1px solid color-mix(in srgb, var(--white) 5%, transparent);
+  border-top: 1px solid var(--color-border);
   font-size: 1.1rem;
   font-weight: var(--fw-semibold);
   color: var(--primary);
@@ -240,7 +240,7 @@
   padding: 0.8rem 1.8rem;
   background: var(--primary);
   border: 1px solid var(--primary);
-  color: var(--white);
+  color: var(--color-on-primary);
   font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
@@ -250,7 +250,7 @@
 }
 
 .car-overlay-btn:hover {
-  background: var(--white);
+  background: var(--color-bg);
   color: var(--primary);
   transform: scale(1.05);
 }
@@ -297,13 +297,13 @@
 .pagination-btn:hover:not(:disabled) {
   background: var(--accent);
   border-color: var(--accent);
-  color: var(--white);
+  color: var(--color-on-primary);
 }
 
 .pagination-btn.active {
   background: var(--primary);
   border-color: var(--primary);
-  color: var(--white);
+  color: var(--color-on-primary);
 }
 
 .pagination-btn:disabled {
