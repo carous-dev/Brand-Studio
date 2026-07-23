@@ -1,10 +1,13 @@
 import type { ThemePageProps } from '../../../types'
-import SellCarForm from '../../components/SellCarForm'
+import SellYourCarHero from '../../components/SellYourCarHero'
+import SellYourCarCdn from '../../components/SellYourCarCdn'
+import '../../styles/sell-your-car.css'
 
 export function ClassicSellYourCarPage(_: ThemePageProps) {
   return (
     <main className="sell-theme">
-      <SellCarForm className="has-image" />
+      <SellYourCarHero />
+      <SellYourCarCdn />
     </main>
   )
 }

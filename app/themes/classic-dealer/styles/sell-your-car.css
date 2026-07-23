@@ -165,6 +165,18 @@
   color: var(--text-inverse);
 }
 
+/* Hosted CDN sell-your-car widget section — the bundle injects its own
+   .sycw-* styles; we only give it a comfortable band to live in. */
+.scs-widget-section {
+  background: linear-gradient(180deg, var(--sell-surface) 0%, var(--sell-surface-soft) 100%);
+  padding: 56px 0 72px;
+}
+
+.scs-widget-root {
+  scroll-margin-top: 24px;
+  min-height: 320px;
+}
+
 .sell-main {
   background: linear-gradient(180deg, var(--sell-surface) 0%, var(--sell-surface-soft) 100%);
   padding: 56px 0 72px;
