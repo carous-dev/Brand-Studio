@@ -1,0 +1,136 @@
+/* Light photo hero — dark text over a page-background wash on the left, the
+ * brand hero image showing through on the right. */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(120deg, var(--b4l-hero-fallback) 0%, var(--b4l-hero-fallback-1) 55%, var(--b4l-hero-fallback-2) 100%);
+}
+
+/* Layered: the hero photo sits over the theme's soft gradient, so a 404ing
+ * brand image degrades to the gradient instead of a blank band. */
+.bgImage {
+  position: absolute;
+  inset: 0;
+  background-image:
+    var(--brand-image-hero),
+    linear-gradient(120deg, var(--b4l-hero-fallback) 0%, var(--b4l-hero-fallback-1) 55%, var(--b4l-hero-fallback-2) 100%);
+  background-size: cover, cover;
+  background-position: 72% center, center;
+  background-repeat: no-repeat;
+}
+
+/* Left-to-right page-colour wash guarantees legibility for the dark copy no
+ * matter what photo the brand uploads. */
+.wash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    var(--color-bg) 0%,
+    color-mix(in srgb, var(--color-bg) 88%, transparent) 34%,
+    color-mix(in srgb, var(--color-bg) 45%, transparent) 56%,
+    transparent 78%
+  );
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--b4l-container-max);
+  margin: 0 auto;
+  padding: clamp(56px, 9vw, 120px) clamp(16px, 3vw, 32px);
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  font-family: var(--font-brand-family-override, 'Montserrat', sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--t-eyebrow);
+}
+
+.title {
+  margin: 0 0 18px;
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.titleEmph {
+  color: var(--color-primary);
+}
+
+.lead {
+  margin: 0 0 26px;
+  max-width: 34ch;
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+  line-height: 1.6;
+  color: var(--color-text);
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cta,
+.ctaGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 12px 24px;
+  font-family: var(--font-brand-family-override, 'Montserrat', sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: var(--b4l-radius-sm);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.cta {
+  background: var(--t-action-bg);
+  color: var(--color-on-primary);
+}
+.cta:hover {
+  background: var(--t-action-bg-hover);
+}
+
+.ctaGhost {
+  border: 1px solid var(--color-primary);
+  color: var(--t-action-fg-on-light);
+  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+}
+.ctaGhost:hover {
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-bg));
+}
+
+/* Mobile — simplify: tighter block, single primary CTA */
+@media (max-width: 640px) {
+  .inner {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+  .bgImage {
+    background-position: 78% center;
+  }
+}
+
+@media (max-width: 480px) {
+  .ctaGhost {
+    display: none;
+  }
+  .lead {
+    max-width: 30ch;
+  }
+}

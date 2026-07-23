@@ -1,0 +1,137 @@
+/* Two-panel promo split — light finance panel / navy trade-in panel */
+.split {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.panel {
+  position: relative;
+  overflow: hidden;
+  min-height: 300px;
+  display: flex;
+}
+
+.panelBg {
+  position: absolute;
+  inset: 0;
+  background-image: var(--brand-image-finance);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.panelBgDark {
+  background-image: var(--brand-image-sell-your-car);
+  opacity: 0.22;
+}
+
+.panelLight {
+  background: var(--color-surface);
+}
+
+/* Page-colour wash keeps the dark copy legible over any brand photo */
+.panelWash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    var(--color-bg) 6%,
+    color-mix(in srgb, var(--color-bg) 82%, transparent) 44%,
+    color-mix(in srgb, var(--color-bg) 30%, transparent) 72%,
+    transparent 100%
+  );
+}
+
+.panelDark {
+  background: var(--b4l-band-charcoal);
+}
+
+.panelInner {
+  position: relative;
+  z-index: 1;
+  padding: clamp(36px, 5vw, 60px) clamp(20px, 4vw, 56px);
+  max-width: 560px;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  font-family: var(--font-brand-family-override, 'Montserrat', sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--t-eyebrow);
+}
+
+.eyebrowOnDark {
+  color: var(--color-on-dark-strong);
+}
+
+.title {
+  margin: 0 0 14px;
+  font-size: clamp(1.4rem, 2.8vw, 2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.titleOnDark {
+  color: var(--color-on-dark-strong);
+}
+
+.text {
+  margin: 0 0 22px;
+  max-width: 36ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.textOnDark {
+  color: var(--color-on-dark-muted);
+}
+
+.cta,
+.ctaGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 11px 24px;
+  font-family: var(--font-brand-family-override, 'Montserrat', sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: var(--b4l-radius-sm);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.cta {
+  background: var(--t-action-bg);
+  color: var(--color-on-primary);
+}
+.cta:hover {
+  background: var(--t-action-bg-hover);
+}
+
+.ctaGhost {
+  border: 1px solid var(--color-on-dark-strong);
+  color: var(--color-on-dark-strong);
+}
+.ctaGhost:hover {
+  background: var(--color-on-dark-strong);
+  color: var(--b4l-band-charcoal);
+}
+
+@media (min-width: 900px) {
+  .split {
+    grid-template-columns: 1fr 1fr;
+  }
+  .panel {
+    min-height: 340px;
+  }
+}

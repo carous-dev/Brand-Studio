@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Camera } from 'lucide-react'
+import { ArrowRight, Camera, Gauge } from 'lucide-react'
 import type { InventoryVehicle } from '../lib/inventory'
 import { buildVehiclePermalink } from '../lib/vehicle-links'
 import styles from './VehicleCard.module.css'
@@ -9,20 +9,9 @@ import styles from './VehicleCard.module.css'
 const gbp = (n: number) =>
   new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(n)
 
-const monthly = (price: number) => {
-  if (!price || price <= 0) return null
-  const apr = 0.099
-  const term = 60
-  const monthlyRate = apr / 12
-  const factor = (monthlyRate * Math.pow(1 + monthlyRate, term)) / (Math.pow(1 + monthlyRate, term) - 1)
-  return Math.round(price * factor)
-}
-
 export default function VehicleCard({ vehicle }: { vehicle: InventoryVehicle }) {
   const href = buildVehiclePermalink(vehicle)
   const hasImage = typeof vehicle.image === 'string' && vehicle.image.trim().length > 0
-  const pm = monthly(vehicle.price)
-  const tagline = (vehicle as any).tagline || "You're in safe hands"
 
   return (
     <Link href={href} className={styles.card} aria-label={vehicle.title}>
@@ -35,35 +24,24 @@ export default function VehicleCard({ vehicle }: { vehicle: InventoryVehicle }) 
             <span className={styles.placeholderText}>Image coming soon</span>
           </div>
         )}
-        <span className={styles.badge} aria-hidden>
-          <span className={styles.badgeDiamond} />
-          <span className={styles.badgeText}>QUALITY</span>
-        </span>
+        {vehicle.year > 0 ? (
+          <span className={styles.yearBadge}>{vehicle.year}</span>
+        ) : null}
       </div>
-      <div className={styles.bodyWrap}>
+      <div className={styles.body}>
         <h3 className={styles.title}>{vehicle.title}</h3>
         <p className={styles.meta}>
-          {[vehicle.body, vehicle.transmission, vehicle.fuel].filter(Boolean).join(' ').trim() || ' '}
+          <span className={styles.metaItem}>
+            <Gauge size={13} strokeWidth={2.2} aria-hidden />
+            {vehicle.mileage ? `${vehicle.mileage.toLocaleString('en-GB')} mi` : '—'}
+          </span>
+          <span className={styles.metaDot} aria-hidden />
+          <span className={styles.metaItem}>{vehicle.transmission || '—'}</span>
         </p>
-        <div className={styles.specs}>
-          <span>{vehicle.year || '—'}</span>
-          <span>{vehicle.mileage ? `${vehicle.mileage.toLocaleString('en-GB')} mi` : '—'}</span>
-          <span>{vehicle.transmission || '—'}</span>
-          <span>{vehicle.fuel || '—'}</span>
-        </div>
-      </div>
-      <div className={styles.safeStrip} aria-hidden>{tagline}</div>
-      <div className={styles.priceRow}>
-        <span className={styles.price}>{vehicle.price > 0 ? gbp(vehicle.price) : 'POA'}</span>
-        <span className={styles.monthly}>
-          {pm ? (
-            <>
-              <span className={styles.monthlyLabel}>From / Month</span>
-              <span className={styles.monthlyValue}>{gbp(pm)}</span>
-            </>
-          ) : (
-            <span className={styles.monthlyLabel}>Finance available</span>
-          )}
+        <p className={styles.price}>{vehicle.price > 0 ? gbp(vehicle.price) : 'POA'}</p>
+        <span className={styles.viewDetails}>
+          View Details
+          <ArrowRight size={13} strokeWidth={2.6} aria-hidden />
         </span>
       </div>
     </Link>

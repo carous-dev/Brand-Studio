@@ -1,292 +1,262 @@
 /* =============================================================================
- * HEADER — buy4lessuk-bespoke  ·  VECTOR console
- * Glass sticky bar, hairline bottom border only (no box-shadow), monospace nav,
- * chamfered neon Contact CTA. Mobile-first.
+ * HEADER — buy4lessuk-bespoke  ·  PRESTIGE classic dealer
+ * White sticky bar under the navy topbar, border-bottom only (no box-shadow),
+ * bold uppercase nav, solid primary CTA. Mobile-first.
  * ============================================================================= */
 
 .header {
-  background: color-mix(in srgb, var(--color-header-bg) 78%, transparent);
-  -webkit-backdrop-filter: blur(16px) saturate(1.2);
-          backdrop-filter: blur(16px) saturate(1.2);
   position: sticky;
-  top: calc(var(--brandstudio-preview-banner-height, 0px) + 34px);
-  z-index: 49;
-  border-bottom: 1px solid var(--fx-hairline);
+  top: 0;
+  z-index: 60;
+  background: var(--color-header-bg, var(--color-bg));
+  border-bottom: 1px solid var(--color-border);
 }
 
 .inner {
-  max-width: 1440px;
+  max-width: var(--b4l-container-max);
   margin: 0 auto;
-  padding: 12px 16px;
+  padding: 0 clamp(16px, 3vw, 32px);
+  min-height: 66px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-height: 64px;
+  justify-content: space-between;
+  gap: 20px;
 }
 
 .brandLink {
   display: inline-flex;
   align-items: center;
   text-decoration: none;
-  color: inherit;
-  flex: 0 0 auto;
-  min-height: 44px;
+  color: var(--b4l-header-text-strong);
+  min-width: 0;
 }
 
+/* Desktop nav — hidden on mobile */
 .nav {
   display: none;
   align-items: center;
-  gap: clamp(4px, 1vw, 10px);
-  margin-left: auto;
-  min-width: 0;
+  gap: clamp(16px, 2vw, 26px);
 }
 
 .navLink {
   position: relative;
-  text-decoration: none;
-  color: var(--b4l-header-text);
-  font-family: var(--font-mono-family-override, monospace);
+  font-family: var(--font-brand-family-override, 'Montserrat', sans-serif);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 12px 10px;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  white-space: nowrap;
-  transition: color 0.18s ease;
+  text-decoration: none;
+  color: var(--b4l-header-text);
+  padding: 24px 0 22px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
 }
-.navLink::after {
-  content: '';
-  position: absolute;
-  left: 10px;
-  right: 10px;
-  bottom: 6px;
-  height: 1px;
-  background: var(--color-accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.2s ease;
+
+.navLink:hover {
+  color: var(--color-primary);
 }
-.navLink:hover,
-.navLink:focus-visible {
-  color: var(--color-text);
-}
-.navLink:hover::after,
-.navLink:focus-visible::after {
-  transform: scaleX(1);
-}
+
 .navLinkActive {
-  color: var(--color-accent);
-}
-.navLinkActive::after {
-  transform: scaleX(1);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-accent) 60%, transparent);
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
 }
 
 .actions {
-  margin-left: auto;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 8px;
-  flex: 0 0 auto;
+  gap: 12px;
 }
 
 .ctaContact {
   display: none;
   align-items: center;
-  background: var(--color-primary);
+  padding: 11px 20px;
+  background: var(--t-action-bg);
   color: var(--color-on-primary);
-  text-decoration: none;
-  font-family: var(--font-mono-family-override, monospace);
-  font-weight: 700;
+  font-family: var(--font-brand-family-override, 'Montserrat', sans-serif);
   font-size: 12px;
-  letter-spacing: 0.1em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 12px 22px;
-  min-height: 42px;
-  clip-path: var(--b4l-chamfer-sm);
-  box-shadow: var(--fx-glow);
-  transition: background 0.18s ease, box-shadow 0.18s ease;
+  text-decoration: none;
+  border-radius: var(--b4l-radius-sm);
+  transition: background 0.15s ease;
 }
+
 .ctaContact:hover {
-  background: var(--color-primary-strong, var(--color-primary));
-  box-shadow: var(--fx-glow-strong);
+  background: var(--t-action-bg-hover);
 }
 
 .hamburger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--fx-hairline);
-  background: var(--fx-glass);
-  color: var(--b4l-header-text);
-  border-radius: 8px;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--b4l-radius-sm);
+  background: transparent;
+  color: var(--b4l-header-text-strong);
   cursor: pointer;
-  transition: border-color 0.18s ease, color 0.18s ease;
-}
-.hamburger:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
 }
 
-@media (min-width: 480px) {
-  .inner { padding: 12px 20px; }
-}
-@media (min-width: 720px) {
-  .inner { padding: 14px 24px; gap: 14px; min-height: 70px; }
-  .ctaContact { display: inline-flex; }
-}
 @media (min-width: 1024px) {
-  .nav { display: inline-flex; }
-  .actions { margin-left: 0; }
-  .hamburger { display: none; }
-}
-@media (min-width: 1280px) {
-  .inner { padding: 16px 32px; }
-  .nav { gap: 12px; }
+  .nav {
+    display: flex;
+  }
+  .ctaContact {
+    display: inline-flex;
+  }
+  .hamburger {
+    display: none;
+  }
 }
 
-/* ===== Mobile drawer ===== */
+/* ---------------------------------------------------------------------------
+ * Mobile drawer
+ * ------------------------------------------------------------------------- */
 
 .drawerScrim {
   position: fixed;
   inset: 0;
-  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 55;
-  transition: opacity 0.25s ease;
-  -webkit-backdrop-filter: blur(4px);
-          backdrop-filter: blur(4px);
+  z-index: 90;
+  background: color-mix(in srgb, var(--b4l-band-night-deep) 55%, transparent);
   border: 0;
   padding: 0;
-  cursor: pointer;
-  display: block;
-}
-.drawerScrim:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: -4px;
-}
-.drawerScrim.drawerOpen {
-  opacity: 1;
-  pointer-events: auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
 
 .drawer {
   position: fixed;
   top: 0;
-  bottom: 0;
   right: 0;
-  width: min(92vw, 380px);
-  background: var(--color-surface-dark);
-  border-left: 1px solid var(--fx-glass-border);
-  z-index: 60;
+  bottom: 0;
+  z-index: 100;
+  width: min(340px, 88vw);
+  background: var(--color-bg);
+  color: var(--color-text);
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
-  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: -18px 0 60px color-mix(in srgb, var(--color-bg) 70%, transparent);
+  transition: transform 0.24s ease;
+  border-left: 1px solid var(--color-border);
 }
-.drawer.drawerOpen { transform: translateX(0); }
+
+.drawerScrim.drawerOpen {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drawer.drawerOpen {
+  transform: translateX(0);
+}
+
+/* `hidden` attr must beat display:flex */
+.drawer[hidden],
+.drawerScrim[hidden] {
+  display: none !important;
+}
 
 .drawerHead {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--fx-hairline);
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .drawerBrand {
-  text-decoration: none;
-  color: inherit;
   display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--color-text);
+  min-width: 0;
 }
 
 .drawerClose {
-  width: 42px;
-  height: 42px;
-  border: 1px solid var(--fx-hairline);
-  background: transparent;
-  color: var(--color-on-dark-strong);
-  border-radius: 8px;
-  cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-}
-.drawerClose:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--b4l-radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
 }
 
 .drawerNav {
-  padding: 8px 0;
   display: flex;
   flex-direction: column;
+  padding: 10px 6px;
   overflow-y: auto;
-  flex: 1;
 }
 
 .drawerLink {
-  display: flex;
-  align-items: center;
-  padding: 16px 24px;
-  text-decoration: none;
-  color: var(--color-on-dark-strong);
-  font-family: var(--font-mono-family-override, monospace);
+  font-family: var(--font-brand-family-override, 'Montserrat', sans-serif);
+  font-size: 13px;
   font-weight: 700;
-  font-size: 14px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  border-bottom: 1px solid var(--fx-hairline);
-  transition: background 0.18s ease, color 0.18s ease;
+  text-decoration: none;
+  color: var(--color-text);
+  padding: 14px 14px;
+  border-radius: var(--b4l-radius-sm);
 }
-.drawerLink:hover,
-.drawerLink:focus-visible {
-  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
-  color: var(--color-accent);
+
+.drawerLink:hover {
+  background: var(--color-surface);
+  color: var(--color-primary);
 }
+
 .drawerLinkActive {
-  color: var(--color-accent);
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
 }
 
 .drawerLinkCta {
-  background: var(--color-primary);
+  margin: 8px 14px 0;
+  padding: 14px 16px;
+  background: var(--t-action-bg);
   color: var(--color-on-primary);
-  border-bottom: 0;
-  margin: 14px 20px 0;
-  clip-path: var(--b4l-chamfer-sm);
   text-align: center;
-  justify-content: center;
-  box-shadow: var(--fx-glow);
 }
-.drawerLinkCta:hover,
-.drawerLinkCta:focus-visible {
-  background: var(--color-primary-strong, var(--color-primary));
+
+.drawerLinkCta:hover {
+  background: var(--t-action-bg-hover);
   color: var(--color-on-primary);
 }
 
 .drawerFooter {
-  padding: 16px 20px 24px;
-  border-top: 1px solid var(--fx-hairline);
+  margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  padding: 14px;
+  border-top: 1px solid var(--color-border);
 }
 
 .drawerContact {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 4px;
+  padding: 10px 8px;
+  font-size: 13px;
+  font-weight: 600;
   text-decoration: none;
-  color: var(--color-on-dark-muted);
-  font-size: 14px;
-  font-weight: 500;
+  color: var(--color-text);
+  border-radius: var(--b4l-radius-sm);
 }
-.drawerContact:hover { color: var(--color-accent); }
+
+.drawerContact:hover {
+  color: var(--color-primary);
+  background: var(--color-surface);
+}
+
+.drawerContact svg {
+  color: var(--color-primary);
+}

@@ -1,0 +1,65 @@
+/* Full-width navy assurance band */
+.band {
+  background: var(--b4l-band-night);
+  color: var(--color-on-dark-muted);
+}
+
+.inner {
+  max-width: var(--b4l-container-max);
+  margin: 0 auto;
+  padding: clamp(32px, 5vw, 52px) clamp(16px, 3vw, 32px);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border: 1px solid color-mix(in srgb, var(--color-on-dark-strong) 25%, transparent);
+  border-radius: 50%;
+  color: var(--color-on-dark-strong);
+}
+
+.copy {
+  min-width: 0;
+}
+
+.itemTitle {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-on-dark-strong);
+}
+
+.itemText {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--color-on-dark-muted);
+}
+
+@media (min-width: 640px) {
+  .inner {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .inner {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+}

@@ -1,41 +1,27 @@
 .card {
   display: flex;
   flex-direction: column;
-  background: var(--fx-panel);
-  border: 1px solid var(--fx-hairline);
-  border-radius: 12px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--b4l-radius-sm);
   overflow: hidden;
   text-decoration: none;
   color: var(--color-text);
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-  position: relative;
-  min-width: 0;
+  transition: transform 0.15s ease, border-color 0.15s ease;
 }
+
 .card:hover {
-  transform: translateY(-3px);
-  border-color: var(--fx-hairline-bright);
-  box-shadow: var(--fx-glow);
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
 }
-/* top hairline that lights up on hover */
-.card::after {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
-  opacity: 0;
-  transition: opacity 0.22s ease;
-  z-index: 3;
-}
-.card:hover::after { opacity: 0.8; }
 
 .imageWrap {
   position: relative;
   aspect-ratio: 4 / 3;
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--color-text) 4%, var(--color-surface)) 0%, color-mix(in srgb, var(--color-primary) 8%, var(--color-surface)) 100%);
+  background: var(--color-surface);
   overflow: hidden;
 }
+
 .image {
   width: 100%;
   height: 100%;
@@ -51,147 +37,95 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: color-mix(in srgb, var(--color-muted) 80%, var(--color-surface));
-  background:
-    radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--color-primary) 14%, transparent) 0%, transparent 60%),
-    repeating-linear-gradient(135deg, color-mix(in srgb, var(--color-text) 3%, transparent) 0 2px, transparent 2px 18px);
-}
-.placeholderIcon { opacity: 0.7; }
-.placeholderText {
-  font-family: var(--font-mono-family-override, monospace);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  opacity: 0.85;
+  color: var(--color-muted);
 }
 
-.badge {
+.placeholderText {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.yearBadge {
   position: absolute;
   top: 10px;
   left: 10px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: color-mix(in srgb, var(--color-surface-dark) 72%, transparent);
-  border: 1px solid var(--fx-glass-border);
-  -webkit-backdrop-filter: blur(6px);
-          backdrop-filter: blur(6px);
-  padding: 5px 10px 5px 6px;
-  border-radius: 5px;
-  font-family: var(--font-mono-family-override, monospace);
-  font-size: 10px;
+  padding: 4px 9px;
+  background: var(--t-action-bg);
+  color: var(--color-on-primary);
+  font-family: var(--font-brand-family-override, 'Montserrat', sans-serif);
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-on-dark-strong);
+  letter-spacing: 0.06em;
+  border-radius: 3px;
 }
-.badgeDiamond {
-  width: 12px;
-  height: 12px;
-  background: var(--color-accent);
-  transform: rotate(45deg);
-  display: inline-block;
-  box-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 70%, transparent);
-}
-.badgeText { transform: translateY(-1px); }
 
-.bodyWrap {
-  padding: 14px 15px 10px;
+.body {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  min-height: 92px;
+  align-items: flex-start;
+  padding: 14px 16px 16px;
 }
 
 .title {
-  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
-  font-size: 15.5px;
+  margin: 0 0 8px;
+  width: 100%;
+  font-size: 15px;
   font-weight: 700;
-  line-height: 1.22;
-  letter-spacing: -0.01em;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  line-height: 1.3;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .meta {
-  font-family: var(--font-mono-family-override, monospace);
-  font-size: 11px;
-  color: var(--color-muted);
-  line-height: 1.35;
-  margin: 0;
-  letter-spacing: 0.04em;
-}
-
-.specs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px 10px;
-  font-family: var(--font-mono-family-override, monospace);
-  font-size: 11px;
-  color: var(--color-muted);
-  margin-top: 6px;
-  letter-spacing: 0.02em;
-}
-.specs span {
-  padding: 3px 8px;
-  background: color-mix(in srgb, var(--color-text) 5%, transparent);
-  border: 1px solid var(--fx-hairline);
-  border-radius: 4px;
-}
-
-.safeStrip {
-  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
-  color: var(--color-accent);
-  font-family: var(--font-mono-family-override, monospace);
-  font-weight: 700;
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  padding: 7px 15px;
-  text-align: left;
-  border-top: 1px solid var(--fx-hairline);
-}
-
-.priceRow {
-  display: grid;
-  grid-template-columns: 1fr auto;
   align-items: center;
-  background: var(--color-surface-dark);
-  border-top: 1px solid var(--fx-hairline);
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 12.5px;
+  color: var(--color-muted);
 }
-.price {
-  padding: 12px 15px;
-  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
-  font-weight: 700;
-  font-size: 19px;
-  letter-spacing: -0.01em;
-  color: var(--color-on-dark-strong);
-}
-.monthly {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+
+.metaItem {
   display: inline-flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 9px 15px;
+  align-items: center;
+  gap: 5px;
+}
+
+.metaItem svg {
+  color: var(--color-muted);
+}
+
+.metaDot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--color-muted);
+}
+
+.price {
+  margin: 0 0 12px;
+  font-family: var(--font-brand-family-override, 'Montserrat', sans-serif);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.viewDetails {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 12px;
+  width: 100%;
+  border-top: 1px solid var(--color-border);
+  font-family: var(--font-brand-family-override, 'Montserrat', sans-serif);
   font-size: 11px;
-  text-align: right;
-  min-width: 96px;
-}
-.monthlyLabel {
-  font-family: var(--font-mono-family-override, monospace);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  opacity: 0.92;
-  font-size: 9px;
-}
-.monthlyValue {
-  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
   font-weight: 700;
-  font-size: 18px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--t-action-fg-on-light);
+}
+
+.card:hover .viewDetails {
+  color: var(--color-accent);
 }

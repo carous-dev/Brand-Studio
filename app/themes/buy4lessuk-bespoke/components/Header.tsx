@@ -9,11 +9,11 @@ import BrandLogo from './BrandLogo'
 import styles from './Header.module.css'
 
 const NAV_ITEMS = [
-  { label: 'Showroom', href: '/used-cars' },
-  { label: 'Finance', href: '/finance' },
+  { label: 'Inventory', href: '/used-cars' },
+  { label: 'Financing', href: '/finance' },
   { label: 'Sell Your Car', href: '/sell-my-car' },
-  { label: 'Vehicle Sourcing', href: '/services' },
-  { label: 'Reviews', href: '/about' },
+  { label: 'Part Exchange', href: '/part-exchange' },
+  { label: 'Services', href: '/services' },
 ]
 
 function isActive(pathname: string, href: string) {
@@ -61,8 +61,8 @@ export default function Header() {
           </nav>
 
           <div className={styles.actions}>
-            <Link href="/contact" className={styles.ctaContact}>
-              Contact Us
+            <Link href="/finance" className={styles.ctaContact}>
+              Get Pre-Approved
             </Link>
             <button
               type="button"
@@ -124,6 +124,13 @@ export default function Header() {
               </Link>
             )
           })}
+          <Link
+            href="/about"
+            onClick={() => setOpen(false)}
+            className={styles.drawerLink}
+          >
+            About Us
+          </Link>
           <Link
             href="/contact"
             onClick={() => setOpen(false)}

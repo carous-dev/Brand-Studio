@@ -1,0 +1,116 @@
+.section {
+  background: var(--t-section-tint);
+  padding: var(--b4l-section-gap) clamp(16px, 3vw, 32px);
+}
+
+.inner {
+  max-width: var(--b4l-container-max);
+  margin: 0 auto;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 0 0 22px;
+  font-size: clamp(1.3rem, 2.6vw, 1.7rem);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.titleDash {
+  width: 34px;
+  height: 2px;
+  background: var(--color-primary);
+  flex: 0 0 auto;
+}
+
+/* Body-style tabs — scroll-snap rail on mobile */
+.tabs {
+  display: flex;
+  justify-content: flex-start;
+  gap: 4px;
+  margin: 0 0 26px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  padding: 10px 16px;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  font-family: var(--font-brand-family-override, 'Montserrat', sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: var(--color-text);
+}
+
+.tabActive {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.moreRow {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.moreBtn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 12px 28px;
+  background: var(--t-action-bg);
+  color: var(--color-on-primary);
+  font-family: var(--font-brand-family-override, 'Montserrat', sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: var(--b4l-radius-sm);
+  transition: background 0.15s ease;
+}
+
+.moreBtn:hover {
+  background: var(--t-action-bg-hover);
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .tabs {
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

@@ -24,7 +24,7 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     "'Inter', 'Segoe UI', sans-serif";
   const fontBrand =
     resolveFontToken(fonts.brand, (fonts as any).heading, themeAny.fontBrand, themeAny.brandFont) ||
-    "'Space Grotesk', 'Segoe UI', sans-serif";
+    "'Montserrat', 'Segoe UI', sans-serif";
   const fontMono =
     resolveFontToken(fonts.mono, themeAny.fontMono, themeAny.monoFont) ||
     "'Space Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace";
@@ -44,8 +44,6 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     recentlySold: 'https://images.unsplash.com/photo-1571987502227-9231b837d92a?w=1600&auto=format&fit=crop&q=80',
   } as const
 
-  const heroImage = brand.heroImage || FALLBACKS.hero;
-
   // Per-page imagery (7 slots) — sourced by tools/fetch-theme-images.mjs and
   // saved per-brand under /themes/<id>/images/<slot>.jpg. brand.images is the
   // dashboard-editable structured field; falls back to the hardcoded Unsplash
@@ -56,7 +54,12 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     const v = brandImages[slotKey];
     return typeof v === 'string' && v.trim() ? v : fallback;
   };
-  const heroImageSlot = imageOr('hero', heroImage);
+  // Hero: brand.heroImage is the dashboard source of truth; images.hero is
+  // often stale, so it's only a fallback when heroImage is unset.
+  const heroImage =
+    (typeof brand.heroImage === 'string' && brand.heroImage.trim() ? brand.heroImage : '') ||
+    imageOr('hero', FALLBACKS.hero);
+  const heroImageSlot = heroImage;
   const aboutImage = imageOr('about', FALLBACKS.about);
   const servicesImage = imageOr('services', FALLBACKS.services);
   const financeImage = imageOr('finance', FALLBACKS.finance);
@@ -69,59 +72,60 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   // theme.colors.*. header-text is omitted (the emitter derives it from
   // --color-text identically); header-bg/-muted are passed because their
   // defaults differ from background/muted.
-  // VECTOR — futuristic dark-console default palette. Near-black cool
-  // surfaces, electric-azure primary, aqua accent, violet supporting tint.
-  // These are DEFAULTS only: a brand record's theme.colors.* still overrides
-  // every core-8 token, so the site remains fully dashboard-recolourable.
+  // PRESTIGE — classic light dealer palette. White page, deep-navy bands
+  // (topbar / search band / value props / footer), bright royal-blue primary
+  // for CTAs and emphasis. These are DEFAULTS only: a brand record's
+  // theme.colors.* still overrides every core-8 token, so the site remains
+  // fully dashboard-recolourable.
   const vars = buildThemeTokens(theme.colors as any, {
     defaults: {
-      primaryColor: '#3d7dff',
-      secondaryColor: '#7c5cff',
-      accentColor: '#25e6c5',
-      backgroundColor: '#060812',
-      surfaceColor: '#0e1424',
-      textColor: '#e8edfb',
-      mutedColor: '#8b96b5',
-      borderColor: '#1f294a',
-      primaryStrong: '#2b5fd9',
-      headerBg: '#080b18',
-      headerMuted: '#8b96b5',
-      heroOverlayStart: 'rgba(4, 6, 14, 0.20)',
-      heroOverlayEnd: 'rgba(4, 6, 14, 0.86)',
+      primaryColor: '#1656c8',
+      secondaryColor: '#10294f',
+      accentColor: '#2f7df6',
+      backgroundColor: '#ffffff',
+      surfaceColor: '#f4f6fa',
+      textColor: '#101c33',
+      mutedColor: '#5b6b84',
+      borderColor: '#dce3ee',
+      primaryStrong: '#1146a3',
+      headerBg: '#ffffff',
+      headerMuted: '#5b6b84',
+      heroOverlayStart: 'rgba(8, 16, 32, 0.86)',
+      heroOverlayEnd: 'rgba(8, 16, 32, 0.78)',
       heroTextMuted: 'rgba(255, 255, 255, 0.92)',
       heroReviewMuted: 'rgba(255, 255, 255, 0.85)',
-      reviewStar: '#25e6c5',
+      reviewStar: '#f5b301',
     },
   });
 
   const extras: Record<string, string> = {
     // Extended surface / border / topbar / on-dark tokens — NOT part of the
-    // core-8 emitter contract; each stays dashboard-overridable. Tuned dark
-    // for the VECTOR console aesthetic.
-    '--color-surface-dark': c.surfaceDark || '#05070f',
-    '--color-text-invert': c.textInvert || '#f2f6ff',
-    '--color-border-dark': c.borderDark || 'rgba(140, 170, 255, 0.14)',
-    '--color-topbar-bg': c.topbarBg || '#05070f',
-    '--color-topbar-text': c.topbarText || 'rgba(226, 233, 255, 0.72)',
+    // core-8 emitter contract; each stays dashboard-overridable. The dark
+    // values live on the full-width navy bands only (topbar, search band,
+    // value-props band, footer).
+    '--color-surface-dark': c.surfaceDark || '#0b1d3a',
+    '--color-text-invert': c.textInvert || '#f5f8fd',
+    '--color-border-dark': c.borderDark || 'rgba(160, 185, 225, 0.18)',
+    '--color-topbar-bg': c.topbarBg || '#0b1d3a',
+    '--color-topbar-text': c.topbarText || 'rgba(226, 233, 248, 0.85)',
     '--color-on-dark-strong': c.onDarkStrong || '#ffffff',
-    '--color-on-dark-muted': c.onDarkMuted || 'rgba(226, 233, 255, 0.74)',
+    '--color-on-dark-muted': c.onDarkMuted || 'rgba(226, 233, 248, 0.75)',
 
     // -----------------------------------------------------------------------
     // Fixed decorative hue tokens — colours that are intentionally NOT part of
-    // the 8-token brand palette (deep display bands, hero fallback gradient,
-    // UK number-plate yellow, body-type category coding, the vehicle-detail
-    // teal/slate carried over from the source layout). Defining them here (the
-    // checker-exempt token source) keeps component CSS literal-free while
-    // preserving exact hues; each stays dashboard-overridable. Bands are now
-    // deep-navy/void to sit under the neon chrome.
-    '--b4l-band-charcoal': c.bandCharcoal || '#0b1120',
-    '--b4l-band-charcoal-2': c.bandCharcoal2 || '#0f1830',
-    '--b4l-band-charcoal-3': c.bandCharcoal3 || '#132146',
-    '--b4l-band-night': c.bandNight || '#070b16',
-    '--b4l-band-night-deep': c.bandNightDeep || '#03060d',
-    '--b4l-hero-fallback': c.heroFallback || '#070b16',
-    '--b4l-hero-fallback-1': c.heroFallback1 || '#0b1330',
-    '--b4l-hero-fallback-2': c.heroFallback2 || '#122a5c',
+    // the 8-token brand palette (deep navy display bands, hero fallback
+    // gradient, UK number-plate yellow, body-type category coding). Defining
+    // them here (the checker-exempt token source) keeps component CSS
+    // literal-free while preserving exact hues; each stays
+    // dashboard-overridable.
+    '--b4l-band-charcoal': c.bandCharcoal || '#10294f',
+    '--b4l-band-charcoal-2': c.bandCharcoal2 || '#132f5b',
+    '--b4l-band-charcoal-3': c.bandCharcoal3 || '#1a3a6e',
+    '--b4l-band-night': c.bandNight || '#0b1d3a',
+    '--b4l-band-night-deep': c.bandNightDeep || '#081630',
+    '--b4l-hero-fallback': c.heroFallback || '#dde6f2',
+    '--b4l-hero-fallback-1': c.heroFallback1 || '#c6d5ea',
+    '--b4l-hero-fallback-2': c.heroFallback2 || '#9fb8dc',
     '--b4l-plate-yellow': c.plateYellow || '#ffd400',
     '--b4l-btn-yellow': c.btnYellow || '#fbd826',
     '--b4l-plate-ink': c.plateInk || '#4b3d00',

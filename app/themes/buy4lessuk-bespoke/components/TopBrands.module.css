@@ -1,0 +1,78 @@
+.section {
+  background: var(--color-bg);
+  padding: clamp(36px, 5vw, 56px) clamp(16px, 3vw, 32px);
+}
+
+.inner {
+  max-width: var(--b4l-container-max);
+  margin: 0 auto;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 0 0 28px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.titleDash {
+  width: 34px;
+  height: 2px;
+  background: var(--color-primary);
+  flex: 0 0 auto;
+}
+
+.row {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px clamp(14px, 3vw, 40px);
+}
+
+.cell {
+  display: flex;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 86px;
+  padding: 12px 10px;
+  text-decoration: none;
+  color: var(--color-muted);
+  border-radius: var(--b4l-radius-sm);
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.brand:hover {
+  color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.brandName {
+  font-family: var(--font-brand-family-override, 'Montserrat', sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .brand {
+    min-width: 72px;
+    padding: 10px 6px;
+  }
+}

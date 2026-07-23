@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useMemo } from 'react'
-import { MapPin, Phone, Mail, Clock } from 'lucide-react'
+import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Twitter, Youtube } from 'lucide-react'
 import { useBrand } from '../context/BrandClientWrapper'
 import { useWorkingHours } from '@/app/hooks/use-working-hours'
 import type { WorkingPeriod } from '@/app/lib/working-status'
@@ -24,12 +24,12 @@ const DAY_LABELS: Record<string, string> = {
 }
 
 const QUICK_LINKS = [
-  { label: 'Showroom', href: '/used-cars' },
-  { label: 'Part Exchange', href: '/part-exchange' },
+  { label: 'Inventory', href: '/used-cars' },
+  { label: 'Financing', href: '/finance' },
   { label: 'Sell Your Car', href: '/sell-my-car' },
-  { label: 'Warranty', href: '/services' },
-  { label: 'Finance', href: '/finance' },
-  { label: 'Reviews', href: '/about' },
+  { label: 'Part Exchange', href: '/part-exchange' },
+  { label: 'Services', href: '/services' },
+  { label: 'About Us', href: '/about' },
   { label: 'Contact Us', href: '/contact' },
 ]
 
@@ -42,6 +42,7 @@ export default function Footer() {
   const phoneTel = phone.replace(/[^\d+]/g, '')
   const email = String(location.email || '').trim()
   const vat = String((brand as any)?.vatNumber || (brand as any)?.legalNumber || '').trim()
+  const social = (brand as any)?.socialLinks || {}
   const today = new Date().toLocaleString('en-GB', { weekday: 'long' })
   const year = new Date().getFullYear()
 
@@ -61,6 +62,13 @@ export default function Footer() {
       .filter(Boolean).join(', '),
   ].filter((v): v is string => typeof v === 'string' && v.trim().length > 0)
 
+  const socials = [
+    { key: 'facebook', href: social.facebook, label: 'Facebook', Icon: Facebook },
+    { key: 'instagram', href: social.instagram, label: 'Instagram', Icon: Instagram },
+    { key: 'twitter', href: social.twitter, label: 'Twitter / X', Icon: Twitter },
+    { key: 'youtube', href: social.youtube, label: 'YouTube', Icon: Youtube },
+  ]
+
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
@@ -68,25 +76,30 @@ export default function Footer() {
           <Link href="/" aria-label={name} className={styles.brandRow}>
             <BrandLogo variant="footer" />
           </Link>
-          <h3 className={styles.heading}>Contact Us</h3>
-          <p className={styles.companyName}>{name}</p>
-          {addressLines.length > 0 ? (
-            <address className={styles.address}>
-              <MapPin size={14} strokeWidth={2.2} aria-hidden />
-              <span>{addressLines.join(', ')}</span>
-            </address>
-          ) : null}
-          {phone ? (
-            <a href={`tel:${phoneTel}`} className={styles.contactLink}>
-              <Phone size={14} strokeWidth={2.2} aria-hidden /> {phone}
-            </a>
-          ) : null}
-          {email ? (
-            <a href={`mailto:${email}`} className={styles.contactLink}>
-              <Mail size={14} strokeWidth={2.2} aria-hidden /> {email}
-            </a>
-          ) : null}
-          {vat ? <p className={styles.vat}>VAT Number: {vat}</p> : null}
+          <p className={styles.blurb}>
+            We&apos;re more than a dealership. We&apos;re your automotive
+            partner for life.
+          </p>
+          <div className={styles.socials}>
+            {socials.map(({ key, href, label, Icon }) =>
+              typeof href === 'string' && href.trim() ? (
+                <a
+                  key={key}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className={styles.social}
+                >
+                  <Icon size={15} strokeWidth={2} aria-hidden />
+                </a>
+              ) : (
+                <span key={key} aria-hidden="true" className={styles.social}>
+                  <Icon size={15} strokeWidth={2} aria-hidden />
+                </span>
+              )
+            )}
+          </div>
         </div>
 
         <div className={styles.col}>
@@ -101,8 +114,30 @@ export default function Footer() {
         </div>
 
         <div className={styles.col}>
+          <h3 className={styles.heading}>Contact Us</h3>
+          <p className={styles.companyName}>{name}</p>
+          {phone ? (
+            <a href={`tel:${phoneTel}`} className={styles.contactLink}>
+              <Phone size={14} strokeWidth={2.2} aria-hidden /> {phone}
+            </a>
+          ) : null}
+          {email ? (
+            <a href={`mailto:${email}`} className={styles.contactLink}>
+              <Mail size={14} strokeWidth={2.2} aria-hidden /> {email}
+            </a>
+          ) : null}
+          {addressLines.length > 0 ? (
+            <address className={styles.address}>
+              <MapPin size={14} strokeWidth={2.2} aria-hidden />
+              <span>{addressLines.join(', ')}</span>
+            </address>
+          ) : null}
+          {vat ? <p className={styles.vat}>VAT Number: {vat}</p> : null}
+        </div>
+
+        <div className={styles.col}>
           <h3 className={styles.heading}>
-            <span>Opening Hours</span>
+            <span>Hours</span>
             <span className={`${styles.status} ${isOnline ? styles.statusOpen : ''}`}>
               <Clock size={12} strokeWidth={2.4} aria-hidden />
               {isOnline ? 'Open now' : 'Closed'}

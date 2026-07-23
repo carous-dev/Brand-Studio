@@ -5,6 +5,7 @@ import { normalizeInventoryItem, type InventoryVehicle } from './inventory'
 export type HomeData = {
   featured: InventoryVehicle[]
   makes: string[]
+  bodies: string[]
 }
 
 const FALLBACK_MAKES = [
@@ -28,6 +29,7 @@ export async function loadHomeData(): Promise<HomeData> {
 
   let featured: InventoryVehicle[] = []
   let makes: string[] = FALLBACK_MAKES
+  let bodies: string[] = []
 
   try {
     const res = await fetch(apiUrl(`/inventory?${params.toString()}`), { cache: 'no-store' })
@@ -37,10 +39,16 @@ export async function loadHomeData(): Promise<HomeData> {
       featured = items.map((item: any) => normalizeInventoryItem(item)).filter(Boolean) as InventoryVehicle[]
       const available: string[] = payload?.meta?.available?.makes || []
       if (Array.isArray(available) && available.length > 0) makes = available
+      const availableBodies: string[] = payload?.meta?.available?.body_types || []
+      if (Array.isArray(availableBodies)) bodies = availableBodies.filter((b) => typeof b === 'string' && b.trim())
     }
   } catch {
     /* keep fallbacks */
   }
 
-  return { featured, makes }
+  if (bodies.length === 0) {
+    bodies = Array.from(new Set(featured.map((v) => v.body).filter(Boolean)))
+  }
+
+  return { featured, makes, bodies }
 }

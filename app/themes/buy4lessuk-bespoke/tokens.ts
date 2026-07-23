@@ -14,9 +14,9 @@ export const themeTokens: ThemeTokenMap = {
     headerMax: "1440px",
   },
   typography: {
-    headingFamily: "Playfair Display",
+    headingFamily: "Montserrat",
     bodyFamily: "Inter",
-    headingWeight: 700,
+    headingWeight: 800,
     bodyWeight: 400,
   },
   hero: {

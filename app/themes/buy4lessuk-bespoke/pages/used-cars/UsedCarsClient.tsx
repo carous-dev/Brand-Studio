@@ -27,7 +27,6 @@ import { useBrand } from '../../context/BrandClientWrapper'
 import { apiUrl } from '../../lib/api'
 import { normalizeInventoryItem, type InventoryMeta, type InventoryVehicle } from '../../lib/inventory'
 import { buildVehiclePermalink } from '../../lib/vehicle-links'
-import { HeroBackdrop } from '../../components/HeroBackdrop'
 
 type Vehicle = InventoryVehicle
 
@@ -707,10 +706,13 @@ export default function UsedCarsClient({
   return (
     <main className={styles.page}>
       <section className={styles.hero}>
-        <HeroBackdrop />
         <div className={styles.heroInner}>
           <div>
-            <p className={styles.eyebrow}>Used Cars</p>
+            <p className={styles.eyebrow}>
+              <span className={styles.eyebrowDash} aria-hidden />
+              <span>Our Inventory</span>
+              <span className={styles.eyebrowDash} aria-hidden />
+            </p>
             <h1 className={styles.heroTitle}>{area ? `Used Cars in ${area}` : 'Used Cars'}</h1>
             <p className={styles.heroLead}>
               Browse carefully presented used cars from {brandName}, with finance options, part exchange, and
@@ -719,16 +721,16 @@ export default function UsedCarsClient({
           </div>
           <div className={styles.heroHighlights}>
             <div className={styles.heroHighlight}>
-              <BadgeCheck size={18} strokeWidth={2} />
+              <BadgeCheck size={16} strokeWidth={2} />
               Privately sourced stock
             </div>
             <div className={styles.heroHighlight}>
-              <MapPin size={18} strokeWidth={2} />
+              <MapPin size={16} strokeWidth={2} />
               {area || 'Contact the showroom'}
             </div>
             <div className={styles.heroHighlight}>
-              <Gauge size={18} strokeWidth={2} />
-              Fully inspected & prepared
+              <Gauge size={16} strokeWidth={2} />
+              Fully inspected &amp; prepared
             </div>
           </div>
         </div>

@@ -3,16 +3,11 @@
   color: var(--t-text);
 }
 
+/* Solid navy page-hero band, matching the theme's full-width dark bands */
 .hero {
   position: relative;
-  padding: clamp(32px, 6vw, 64px) 0;
-  background:
-    radial-gradient(120% 130% at 80% -25%, color-mix(in srgb, var(--color-accent) 70%, var(--color-text-invert)) 0%, transparent 50%),
-    radial-gradient(140% 140% at 12% 110%, color-mix(in srgb, var(--color-accent) 55%, var(--color-text)) 0%, transparent 55%),
-    linear-gradient(135deg,
-      color-mix(in srgb, var(--color-accent) 88%, var(--color-text)) 0%,
-      var(--color-accent) 50%,
-      color-mix(in srgb, var(--color-accent) 84%, var(--color-text)) 100%);
+  padding: clamp(30px, 5vw, 56px) 0 0;
+  background: linear-gradient(180deg, var(--b4l-band-charcoal) 0%, var(--b4l-band-night) 100%);
   color: var(--color-on-dark-strong);
 }
 
@@ -23,53 +18,88 @@
   margin: 0 auto;
   padding: 0 20px;
   display: grid;
-  gap: 20px;
+  gap: clamp(18px, 3vw, 28px);
   text-align: center;
   justify-items: center;
 }
 
 .eyebrow {
-  margin: 0;
-  font-size: 0.78rem;
-  letter-spacing: 0.2em;
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: var(--font-brand-family-override, 'Montserrat', sans-serif);
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-text-invert) 72%, transparent);
+  color: var(--color-on-dark-muted);
   font-weight: 700;
+}
+
+.eyebrowDash {
+  width: 28px;
+  height: 2px;
+  background: var(--color-accent);
+  flex: 0 0 auto;
 }
 
 .heroTitle {
   margin: 0;
-  font-family: 'Oswald', 'Montserrat', sans-serif;
-  font-size: clamp(1.9rem, 4vw, 3rem);
-  font-weight: 700;
+  font-family: var(--font-brand-family-override, 'Montserrat', sans-serif);
+  font-size: clamp(1.7rem, 3.6vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-on-dark-strong);
+  text-wrap: balance;
 }
 
 .heroLead {
-  margin: 0;
+  margin: 10px auto 0;
+  max-width: 62ch;
   color: var(--color-on-dark-muted);
-  font-size: 1rem;
+  font-size: 0.98rem;
   line-height: 1.7;
+  text-wrap: pretty;
 }
 
+/* Hairline assurance strip — quiet divider row, not pill chips */
 .heroHighlights {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
   justify-content: center;
+  gap: 10px clamp(18px, 3vw, 40px);
+  width: 100%;
+  padding: 14px 0;
+  border-top: 1px solid var(--color-border-dark);
 }
 
 .heroHighlight {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-text-invert) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-text-invert) 28%, transparent);
-  color: color-mix(in srgb, var(--color-text-invert) 92%, transparent);
-  font-size: 0.9rem;
+  color: var(--color-on-dark-muted);
+  font-size: 0.85rem;
   font-weight: 600;
-  backdrop-filter: blur(2px);
+}
+
+.heroHighlight svg {
+  color: var(--color-accent);
+  flex: 0 0 auto;
+}
+
+/* Mobile — modest: hide lead + extra assurance items, tighten padding */
+@media (max-width: 640px) {
+  .hero {
+    padding-top: 24px;
+  }
+  .heroLead {
+    display: none;
+  }
+  .heroHighlight:nth-child(n + 2) {
+    display: none;
+  }
 }
 
 .section {
