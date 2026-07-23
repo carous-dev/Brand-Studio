@@ -36,6 +36,6 @@
 
 .tone-light .wordmark,
 .tone-light .tagline { color: var(--text-on-light-strong); }
-.tone-dark .wordmark { color: #ffffff; }
+.tone-dark .wordmark { color: var(--text-on-dark-strong); }
 .tone-dark .tagline { color: var(--kain-accent-warm); }
 .tone-auto .wordmark { color: currentColor; }

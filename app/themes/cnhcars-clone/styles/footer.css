@@ -4,10 +4,10 @@
    selector so global rules can't fight it. */
 
 body[data-theme-id='cnhcars-clone'] footer {
-  background: #0a0e14;
-  color: #ffffff;
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
   padding: 3.5rem 0 2.25rem;
-  border-top: 3px solid var(--color-primary, #4169E1);
+  border-top: 3px solid var(--color-primary);
   position: relative;
 }
 
@@ -21,7 +21,7 @@ body[data-theme-id='cnhcars-clone'] footer::before {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    var(--color-primary, #4169E1) 50%,
+    var(--color-primary) 50%,
     transparent 100%
   );
   opacity: 0.6;
@@ -62,7 +62,7 @@ body[data-theme-id='cnhcars-clone'] .footer-col h4 {
   text-transform: uppercase !important;
   letter-spacing: 0.08em !important;
   margin: 0 0 1.25rem 0 !important;
-  color: #ffffff !important;
+  color: var(--text-on-dark-strong) !important;
   background: transparent !important;
   padding: 0 !important;
   border: none !important;
@@ -77,7 +77,7 @@ body[data-theme-id='cnhcars-clone'] .footer-col h4::after {
   bottom: 0;
   width: 28px;
   height: 2px;
-  background: var(--color-primary, #4169E1);
+  background: var(--color-primary);
   border-radius: 1px;
 }
 
@@ -92,7 +92,7 @@ body[data-theme-id='cnhcars-clone'] .footer-brand img {
 
 body[data-theme-id='cnhcars-clone'] .brand-description {
   font-size: 0.92rem !important;
-  color: rgba(255, 255, 255, 0.72) !important;
+  color: color-mix(in srgb, var(--text-on-dark-strong) 72%, transparent) !important;
   line-height: 1.65 !important;
   margin: 0 !important;
   max-width: 360px;
@@ -113,7 +113,7 @@ body[data-theme-id='cnhcars-clone'] .footer-links li {
 }
 
 body[data-theme-id='cnhcars-clone'] .footer-links a {
-  color: rgba(255, 255, 255, 0.72) !important;
+  color: color-mix(in srgb, var(--text-on-dark-strong) 72%, transparent) !important;
   font-size: 0.92rem !important;
   text-decoration: none !important;
   transition: color 0.18s ease, transform 0.18s ease !important;
@@ -122,7 +122,7 @@ body[data-theme-id='cnhcars-clone'] .footer-links a {
 }
 
 body[data-theme-id='cnhcars-clone'] .footer-links a:hover {
-  color: #ffffff !important;
+  color: var(--text-on-dark-strong) !important;
   transform: translateX(3px);
   text-decoration: none !important;
   padding-left: 0 !important;
@@ -137,27 +137,27 @@ body[data-theme-id='cnhcars-clone'] .footer-contact .contact-line {
 
 body[data-theme-id='cnhcars-clone'] .footer-contact .contact-line p {
   margin: 0 !important;
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: color-mix(in srgb, var(--text-on-dark-strong) 85%, transparent) !important;
   font-size: 0.92rem !important;
   line-height: 1.5 !important;
 }
 
 body[data-theme-id='cnhcars-clone'] .footer-contact .contact-line a {
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: color-mix(in srgb, var(--text-on-dark-strong) 85%, transparent) !important;
   text-decoration: none !important;
   transition: color 0.18s ease !important;
 }
 
 body[data-theme-id='cnhcars-clone'] .footer-contact .contact-line a:hover {
-  color: #ffffff !important;
+  color: var(--text-on-dark-strong) !important;
 }
 
 body[data-theme-id='cnhcars-clone'] .footer-contact .contact-line svg,
 body[data-theme-id='cnhcars-clone'] .footer-contact .contact-icon {
   width: 16px !important;
   height: 16px !important;
-  color: var(--color-primary, #4169E1) !important;
-  stroke: var(--color-primary, #4169E1) !important;
+  color: var(--color-primary) !important;
+  stroke: var(--color-primary) !important;
   flex-shrink: 0;
   margin-top: 3px;
 }
@@ -170,10 +170,10 @@ body[data-theme-id='cnhcars-clone'] .footer-bottom {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  background: #060a10;
-  color: rgba(255, 255, 255, 0.6);
+  background: var(--surface-bg-dark);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 60%, transparent);
   font-size: 0.82rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
 }
 
 body[data-theme-id='cnhcars-clone'] .footer-bottom .footer-legal {
@@ -184,7 +184,7 @@ body[data-theme-id='cnhcars-clone'] .footer-bottom .footer-legal {
 }
 
 body[data-theme-id='cnhcars-clone'] .footer-bottom .legal-link {
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: color-mix(in srgb, var(--text-on-dark-strong) 60%, transparent) !important;
   text-decoration: none !important;
   font-size: 0.78rem !important;
   font-weight: 600 !important;
@@ -197,36 +197,36 @@ body[data-theme-id='cnhcars-clone'] .footer-bottom .legal-link {
 }
 
 body[data-theme-id='cnhcars-clone'] .footer-bottom .legal-link:hover {
-  color: #ffffff !important;
+  color: var(--text-on-dark-strong) !important;
 }
 
 body[data-theme-id='cnhcars-clone'] .footer-bottom .legal-divider {
-  color: rgba(255, 255, 255, 0.25);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 25%, transparent);
   font-weight: 300;
 }
 
 body[data-theme-id='cnhcars-clone'] .footer-bottom .footer-bottom-text {
   margin: 0 !important;
   font-size: 0.82rem !important;
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: color-mix(in srgb, var(--text-on-dark-strong) 70%, transparent) !important;
   text-align: center;
 }
 
 body[data-theme-id='cnhcars-clone'] .footer-bottom .footer-credit {
   margin: 0;
   font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.55);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 55%, transparent);
   text-align: right;
 }
 
 body[data-theme-id='cnhcars-clone'] .footer-bottom .footer-credit a {
-  color: rgba(255, 255, 255, 0.78) !important;
+  color: color-mix(in srgb, var(--text-on-dark-strong) 78%, transparent) !important;
   text-decoration: none !important;
   transition: color 0.18s ease;
 }
 
 body[data-theme-id='cnhcars-clone'] .footer-bottom .footer-credit a:hover {
-  color: var(--color-primary, #4169E1) !important;
+  color: var(--color-primary) !important;
 }
 
 /* Responsive: stack at tablet/mobile */

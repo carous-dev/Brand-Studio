@@ -42,14 +42,14 @@
 .regWrap {
   display: flex;
   align-items: stretch;
-  background: #fbd826;
+  background: var(--b4l-btn-yellow);
   border-radius: 4px;
   overflow: hidden;
   min-height: 48px;
 }
 .regFlag {
-  background: #2563eb;
-  color: #ffd400;
+  background: var(--b4l-cat-blue);
+  color: var(--b4l-plate-yellow);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -62,14 +62,14 @@
   flex: 1;
   border: 0;
   outline: none;
-  background: #fbd826;
+  background: var(--b4l-btn-yellow);
   font-family: 'Charles Wright', 'UKNumberPlate', 'Arial Black', sans-serif;
   font-weight: 900;
   font-size: 18px;
   letter-spacing: 0.04em;
   text-align: center;
   text-transform: uppercase;
-  color: #0f1623;
+  color: var(--color-text);
   min-height: 48px;
 }
 

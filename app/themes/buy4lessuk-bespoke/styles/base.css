@@ -1,11 +1,16 @@
 /* =============================================================================
- * BASE STYLES — buy4lessuk-bespoke
+ * BASE STYLES — buy4lessuk-bespoke  ·  "VECTOR" futuristic console
+ * -----------------------------------------------------------------------------
+ * Dark command-deck aesthetic driven entirely through the shared token
+ * contract, so the dashboard can still recolour every surface. Blueprint-grid
+ * backdrop, hairline luminous chrome, geometric display type (Space Grotesk),
+ * monospace tech labels (Space Mono).
  * ============================================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;0,900;1,500;1,700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
 [data-theme-id='buy4lessuk-bespoke'] {
-  color-scheme: light;
+  color-scheme: dark;
   font-family: var(--font-ui-family-override, 'Inter', 'Segoe UI', sans-serif);
   background: var(--color-bg);
   color: var(--color-text);
@@ -13,9 +18,39 @@
   overflow-x: clip;
   --b4l-section-gap: clamp(48px, 6vw, 80px);
   --b4l-container-max: 1240px;
-  --b4l-radius: 4px;
+  --b4l-radius: 10px;
+  --b4l-radius-sm: 6px;
   --b4l-header-text: var(--color-header-text, var(--color-text));
   --b4l-header-text-strong: var(--color-text);
+  /* HUD chamfer — clip a notch off two opposite corners for the console look */
+  --b4l-chamfer: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  --b4l-chamfer-sm: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
+}
+
+/* Blueprint-grid + aurora page backdrop. Fixed so bands scroll over it and the
+ * whole site feels like one lit surface. Sits behind all content. */
+[data-theme-id='buy4lessuk-bespoke']::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1100px 620px at 78% -8%, color-mix(in srgb, var(--color-primary) 20%, transparent) 0%, transparent 60%),
+    radial-gradient(900px 560px at 4% 8%, color-mix(in srgb, var(--color-accent) 12%, transparent) 0%, transparent 58%),
+    linear-gradient(var(--fx-grid-line) 1px, transparent 1px) 0 0 / 44px 44px,
+    linear-gradient(90deg, var(--fx-grid-line) 1px, transparent 1px) 0 0 / 44px 44px,
+    var(--color-bg);
+  -webkit-mask-image: linear-gradient(180deg, var(--color-text) 0%, var(--color-text) 60%, transparent 100%);
+          mask-image: linear-gradient(180deg, var(--color-text) 0%, var(--color-text) 60%, transparent 100%);
+}
+
+/* Keep real content above the fixed backdrop */
+[data-theme-id='buy4lessuk-bespoke'] .buy4lessuk-main,
+[data-theme-id='buy4lessuk-bespoke'] header,
+[data-theme-id='buy4lessuk-bespoke'] footer {
+  position: relative;
+  z-index: 1;
 }
 
 /* Belt + braces: prevent any descendant from leaking past viewport */
@@ -35,8 +70,8 @@ html:has([data-theme-id='buy4lessuk-bespoke']) body {
 [data-theme-id='buy4lessuk-bespoke'] h2,
 [data-theme-id='buy4lessuk-bespoke'] h3,
 [data-theme-id='buy4lessuk-bespoke'] h4 {
-  font-family: var(--font-brand-family-override, 'Oswald', 'Arial Narrow', sans-serif);
-  letter-spacing: 0.01em;
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  letter-spacing: -0.01em;
   margin: 0;
 }
 
@@ -74,9 +109,6 @@ html:has([data-theme-id='buy4lessuk-bespoke']) body {
   min-height: calc(100vh - 240px);
 }
 
-/* Pad bottom of main to prevent FixedCtaBar overlapping content. Footer
- * sits inside the same scroll context, so the pad applies to the page above
- * it. Account for both the CTA bar (~58–72px) and the WhatsApp FAB. */
 [data-theme-id='buy4lessuk-bespoke'] .buy4lessuk-main:not(.main-dashboard) {
   padding-bottom: 0;
 }
@@ -87,31 +119,59 @@ html:has([data-theme-id='buy4lessuk-bespoke']) body {
 /* Section utility classes used by inner pages */
 [data-theme-id='buy4lessuk-bespoke'] .buy4lessuk-section {
   padding: clamp(36px, 6vw, 72px) clamp(16px, 3vw, 32px);
-  background: var(--color-surface);
+  background: transparent;
+}
+
+/* Shared eyebrow / mono label look for inner pages */
+[data-theme-id='buy4lessuk-bespoke'] .buy4lessuk-eyebrow {
+  font-family: var(--font-mono-family-override, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--t-eyebrow);
 }
 
 [data-theme-id='buy4lessuk-bespoke'] .buy4lessuk-cta-link {
   display: inline-flex;
   align-items: center;
-  padding: 12px 26px;
+  gap: 10px;
+  padding: 13px 26px;
   background: var(--color-primary);
   color: var(--color-on-primary);
   text-decoration: none;
+  font-family: var(--font-mono-family-override, monospace);
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  font-size: 13px;
-  min-height: 44px;
-  transition: background 0.2s ease;
+  font-size: 12px;
+  min-height: 46px;
+  clip-path: var(--b4l-chamfer-sm);
+  box-shadow: var(--fx-glow);
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 [data-theme-id='buy4lessuk-bespoke'] .buy4lessuk-cta-link:hover {
   background: var(--color-primary-strong);
+  box-shadow: var(--fx-glow-strong);
+  transform: translateY(-1px);
+}
+
+/* Custom scrollbar — thin neon rail */
+[data-theme-id='buy4lessuk-bespoke'] ::-webkit-scrollbar { width: 10px; height: 10px; }
+[data-theme-id='buy4lessuk-bespoke'] ::-webkit-scrollbar-track { background: var(--color-surface-dark); }
+[data-theme-id='buy4lessuk-bespoke'] ::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-primary) 55%, var(--color-surface-dark));
+  border-radius: 999px;
+  border: 2px solid var(--color-surface-dark);
+}
+[data-theme-id='buy4lessuk-bespoke'] ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
 }
 
 /* Selection */
 [data-theme-id='buy4lessuk-bespoke'] ::selection {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+  background: color-mix(in srgb, var(--color-primary) 55%, transparent);
+  color: var(--color-on-dark-strong);
 }
 
 /* Reduce motion */

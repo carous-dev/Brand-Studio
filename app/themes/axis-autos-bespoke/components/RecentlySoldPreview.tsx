@@ -14,9 +14,9 @@ export default function RecentlySoldPreview({
   if (!items.length) return null
 
   return (
-    <section className={`axis-section ${styles.section}`} aria-label="Recently sold" data-aos="fade-up">
+    <section className={`axis-section ${styles.section}`} aria-label="Recently sold">
       <div className="axis-shell">
-        <header className={styles.header}>
+        <header className={styles.header} data-aos="fade-up">
           <div>
             <span className="axis-eyebrow">Recently sold</span>
             <h2 className="axis-section-title">A snapshot of cars that found new homes.</h2>
@@ -29,7 +29,7 @@ export default function RecentlySoldPreview({
 
         <div className={styles.grid}>
           {items.map((v, i) => (
-            <div key={v.id ?? i}>
+            <div key={v.id ?? i} data-aos="fade-up" data-aos-delay={String(Math.min(i * 90, 360))}>
               <VehicleCard vehicle={v} sold />
             </div>
           ))}

@@ -8,8 +8,8 @@
 	overflow: hidden;
 	/* layered backgrounds: subtle colour blobs + photography (removed heavy top darkening to avoid a solid black strip) */
 	background-image:
-		radial-gradient(ellipse at 10% 20%, rgba(185, 146, 74, 0.08), transparent 12%),
-		radial-gradient(ellipse at 90% 80%, rgba(209, 182, 122, 0.05), transparent 18%),
+		radial-gradient(ellipse at 10% 20%, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 12%),
+		radial-gradient(ellipse at 90% 80%, color-mix(in srgb, var(--color-primary) 5%, transparent), transparent 18%),
 		var(--classic-hero-image, url('/images/hero-home.webp'));
 	background-size: 60% 60%, 50% 50%, cover;
 	background-position: left top, right bottom, center;
@@ -55,10 +55,10 @@
 	align-items: center;
 	transform: translateZ(0);
 	/* glassmorphic base */
-	background: rgba(255, 255, 255, 0.03);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
 	-webkit-backdrop-filter: blur(8px);
 	backdrop-filter: blur(8px);
-	border: 1px solid rgba(255, 255, 255, 0.06);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
 	box-shadow: 0 10px 30px rgba(2, 6, 23, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.02);
 }
 
@@ -67,7 +67,7 @@
 	position: absolute;
 	inset: 0;
 	border-radius: 18px;
-	background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.005));
+	background: linear-gradient(135deg, color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 0.5%, transparent));
 	mix-blend-mode: overlay;
 	pointer-events: none
 }
@@ -78,7 +78,7 @@
 	top: 12px;
 	height: calc(100% - 24px);
 	width: 4px;
-	background: linear-gradient(180deg, rgba(185, 146, 74, 0.95), rgba(209, 182, 122, 0.6));
+	background: linear-gradient(180deg, color-mix(in srgb, var(--color-primary) 95%, transparent), color-mix(in srgb, var(--color-primary) 60%, transparent));
 	mix-blend-mode: screen;
 	border-radius: 4px
 }
@@ -99,9 +99,9 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-	border: 1px solid rgba(255, 255, 255, 0.06);
-	color: #fff;
+	background: linear-gradient(180deg, color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent));
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
+	color: var(--text-on-dark-strong);
 	box-shadow: inset 0 -6px 12px rgba(0, 0, 0, 0.25)
 }
 
@@ -113,12 +113,12 @@
 .mini-copy h4 {
 	margin: 0;
 	font-size: 16px;
-	color: #fff
+	color: var(--text-on-dark-strong)
 }
 
 .mini-copy p {
 	margin: 6px 0 0;
-	color: rgba(255, 255, 255, 0.82);
+	color: color-mix(in srgb, var(--text-on-dark-strong) 82%, transparent);
 	font-size: 13px
 }
 
@@ -147,11 +147,11 @@
 	height: 44px;
 	border-radius: 50%;
 	border: none;
-	background: linear-gradient(90deg, rgba(185, 146, 74, 0.12), rgba(209, 182, 122, 0.06));
+	background: linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 12%, transparent), color-mix(in srgb, var(--color-primary) 6%, transparent));
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: #fff;
+	color: var(--text-on-dark-strong);
 	cursor: pointer;
 	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45)
 }
@@ -233,9 +233,9 @@
 
 /* make hero-panel wider and match container margins (edge aligned to navbar) */
 .hero-panel {
-	background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.02));
-	border: 1px solid rgba(255, 255, 255, 0.04);
-	border: 1px solid rgba(255, 255, 255, 0.04);
+	background: linear-gradient(180deg, color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent));
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 	backdrop-filter: blur(6px);
 	padding: 28px;
 	border-radius: 16px;
@@ -283,16 +283,16 @@
 
 /* Futuristic hero CTA button */
 .btn.hero-cta {
-	--g1: rgba(185, 146, 74, 1);
-	--g2: rgba(209, 182, 122, 1);
+	--g1: var(--color-primary);
+	--g2: color-mix(in srgb, var(--color-primary) 72%, var(--text-on-dark-strong));
 	position: relative;
 	display: inline-flex;
 	align-items: center;
 	gap: 10px;
 	padding: 14px 22px;
 	border-radius: 12px;
-	background: #fff;
-	color: #0b0b0b;
+	background: var(--color-surface);
+	color: var(--color-text);
 	font-weight: 700;
 	box-shadow: 0 8px 30px rgba(185, 146, 74, 0.12), 0 2px 8px rgba(0, 0, 0, 0.5);
 	border: none;
@@ -309,7 +309,7 @@
 	top: 0;
 	height: 100%;
 	width: 60%;
-	background: linear-gradient(120deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.12));
+	background: linear-gradient(120deg, color-mix(in srgb, var(--text-on-dark-strong) 12%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 12%, transparent));
 	transform: skewX(-18deg);
 	filter: blur(6px);
 	opacity: 0.0;
@@ -341,11 +341,11 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
-	background: rgba(255, 255, 255, 0.05);
-	border: 1px solid rgba(255, 255, 255, 0.08);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 5%, transparent);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
 	padding: 8px 10px;
 	border-radius: 12px;
-	color: #fff;
+	color: var(--text-on-dark-strong);
 	font-size: 13px
 }
 
@@ -360,8 +360,8 @@
 }
 
 .hero-panel-foot .badge:hover {
-	background: rgba(255, 255, 255, 0.08);
-	color: #fff
+	background: color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
+	color: var(--text-on-dark-strong)
 }
 
 
@@ -441,7 +441,7 @@
 	height: 420px;
 	left: -8%;
 	top: 6%;
-	background: radial-gradient(circle at 30% 30%, rgba(185, 146, 74, 0.22), rgba(177, 146, 74, 0.06) 40%, transparent 60%);
+	background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--color-primary) 22%, transparent), color-mix(in srgb, var(--color-primary) 6%, transparent) 40%, transparent 60%);
 	animation: float 8s ease-in-out infinite
 }
 
@@ -450,7 +450,7 @@
 	height: 520px;
 	right: -12%;
 	bottom: -8%;
-	background: radial-gradient(circle at 70% 70%, rgba(209, 182, 122, 0.14), rgba(209, 182, 122, 0.04) 40%, transparent 65%);
+	background: radial-gradient(circle at 70% 70%, color-mix(in srgb, var(--color-primary) 14%, transparent), color-mix(in srgb, var(--color-primary) 4%, transparent) 40%, transparent 65%);
 	animation: float 10s ease-in-out infinite
 }
 
@@ -458,7 +458,7 @@
 	content: "";
 	position: absolute;
 	inset: 0;
-	background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.35));
+	background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.35)); /* photo-scrim-ok */
 	mix-blend-mode: multiply
 }
 
@@ -484,7 +484,7 @@
 	right: 0;
 	bottom: 0;
 	pointer-events: none;
-	background: linear-gradient(180deg, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.04) 40%, rgba(255, 255, 255, 0.03) 100%);
+	background: linear-gradient(180deg, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.04) 40%, rgba(255, 255, 255, 0.03) 100%); /* photo-scrim-ok */
 	z-index: 1;
 }
 
@@ -497,8 +497,8 @@
 
 .eyebrow {
 	display: inline-block;
-	background: rgba(255, 255, 255, 0.03);
-	color: var(--muted-foreground, #fff);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
+	color: var(--muted-foreground, var(--text-on-dark-strong));
 	padding: 6px 12px;
 	border-radius: 999px;
 	font-size: 13px;
@@ -506,7 +506,7 @@
 	letter-spacing: 0.06em;
 	text-transform: uppercase;
 	margin: 0 0 12px;
-	border: 1px solid rgba(255, 255, 255, 0.04);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 }
 
 .hero-title {
@@ -515,7 +515,7 @@
 	margin: 0 0 18px;
 	font-weight: 800;
 	letter-spacing: -0.02em;
-	color: #fff;
+	color: var(--text-on-dark-strong);
 	text-shadow: 0 8px 30px rgba(0, 0, 0, 0.6)
 }
 
@@ -541,8 +541,8 @@
 
 /* Boxed caption panel inside the hero */
 .hero-panel {
-	background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.02));
-	border: 1px solid rgba(255, 255, 255, 0.04);
+	background: linear-gradient(180deg, color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent));
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 	backdrop-filter: blur(6px);
 	padding: 28px;
 	border-radius: 16px;
@@ -578,8 +578,8 @@
 }
 
 .badge {
-	background: rgba(255, 255, 255, 0.03);
-	border: 1px solid rgba(255, 255, 255, 0.03);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
 	padding: 6px 10px;
 	border-radius: 10px;
 	color: var(--muted);
@@ -652,15 +652,15 @@
 }
 
 .inventory-hero .btn-cta-primary {
-	background: linear-gradient(90deg, rgba(185,146,74,1), rgba(209,182,122,1));
-	color: #0b0b0b;
+	background: linear-gradient(90deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 72%, var(--text-on-dark-strong)));
+	color: var(--color-text);
 	box-shadow: 0 10px 30px rgba(185,146,74,0.12);
 }
 
 .inventory-hero .btn-cta-secondary {
-	background: rgba(255,255,255,0.06);
-	color: #fff;
-	border: 1px solid rgba(255,255,255,0.04);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
+	color: var(--text-on-dark-strong);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 }
 
 @media (max-width:900px) {

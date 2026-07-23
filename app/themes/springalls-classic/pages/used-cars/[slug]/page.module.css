@@ -1048,7 +1048,7 @@
   height: 42px;
   border-radius: 50%;
   border: 0;
-  background: rgba(15, 23, 42, 0.55);
+  background: rgba(15, 23, 42, 0.55); /* photo-scrim-ok — gallery nav control over photo */
   color: var(--color-bg);
   display: inline-flex;
   align-items: center;
@@ -1081,7 +1081,7 @@
   padding: 8px 12px;
   border-radius: 999px;
   border: 0;
-  background: rgba(15, 23, 42, 0.55);
+  background: rgba(15, 23, 42, 0.55); /* photo-scrim-ok — gallery expand control over photo */
   color: var(--color-bg);
   font-size: 0.78rem;
   cursor: pointer;
@@ -1102,8 +1102,8 @@
   gap: 6px;
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  background: rgba(10, 12, 16, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.28); /* photo-scrim-ok — gallery counter over photo */
+  background: rgba(10, 12, 16, 0.55); /* photo-scrim-ok — gallery counter over photo */
   color: var(--color-bg);
   font-size: 0.78rem;
   z-index: 2;
@@ -1195,7 +1195,7 @@
 .page :global(.vehicle-gallery-grid-cta-count) {
   padding: 2px 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.22);
+  background: color-mix(in srgb, var(--color-bg) 22%, transparent);
   color: var(--color-bg);
   font-size: 0.75rem;
   font-weight: 700;
@@ -1265,7 +1265,7 @@
 .page :global(.vehicle-enquiry-backdrop) {
   position: absolute;
   inset: 0;
-  background: rgba(10, 20, 19, 0.65);
+  background: color-mix(in srgb, var(--color-text) 65%, transparent);
 }
 
 .page :global(.vehicle-enquiry-dialog) {
@@ -1352,7 +1352,7 @@
 .page :global(.vehicle-enquiry-field select),
 .page :global(.vehicle-enquiry-field textarea) {
   border-radius: 12px;
-  border: 1px solid rgba(15, 23, 42, 0.12);
+  border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
   padding: 10px 12px;
   font-size: 0.95rem;
   font-family: inherit;
@@ -1361,7 +1361,7 @@
 .page :global(.vehicle-enquiry-field input:focus-visible),
 .page :global(.vehicle-enquiry-field select:focus-visible),
 .page :global(.vehicle-enquiry-field textarea:focus-visible) {
-  outline: 2px solid rgba(6, 122, 116, 0.4);
+  outline: 2px solid color-mix(in srgb, var(--color-primary) 40%, transparent);
   outline-offset: 2px;
 }
 
@@ -1390,12 +1390,12 @@
 }
 
 .page :global(.vehicle-enquiry-status.is-error) {
-  background: rgba(180, 35, 24, 0.08);
+  background: color-mix(in srgb, var(--t-error) 8%, transparent);
   color: var(--t-error);
 }
 
 .page :global(.vehicle-enquiry-status.is-success) {
-  background: rgba(6, 122, 116, 0.12);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
   color: var(--accent);
 }
 
@@ -1460,7 +1460,7 @@
 .page :global(.vehicle-lightbox-backdrop) {
   position: absolute;
   inset: 0;
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(15, 23, 42, 0.9); /* photo-scrim-ok — lightbox backdrop over gallery */
   backdrop-filter: blur(12px);
 }
 
@@ -1491,7 +1491,7 @@
   height: 46px;
   border-radius: 50%;
   border: 1px solid color-mix(in srgb, var(--color-bg) 34%, transparent);
-  background: rgba(10, 12, 16, 0.62);
+  background: rgba(10, 12, 16, 0.62); /* photo-scrim-ok — lightbox close control over imagery */
   color: var(--color-bg);
   display: inline-flex;
   align-items: center;
@@ -1516,8 +1516,8 @@
   letter-spacing: 0.2px;
   padding: 8px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  background: rgba(8, 12, 18, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.24); /* photo-scrim-ok — lightbox counter over imagery */
+  background: rgba(8, 12, 18, 0.66); /* photo-scrim-ok — lightbox counter over imagery */
   backdrop-filter: blur(8px);
   pointer-events: auto;
   z-index: 9;
@@ -1530,7 +1530,7 @@
   overflow: hidden;
   border-radius: 0;
   border: none;
-  background: linear-gradient(180deg, #101723 0%, #06090d 100%);
+  background: linear-gradient(180deg, #101723 0%, #06090d 100%); /* photo-scrim-ok — lightbox viewing stage behind photo */
   display: grid;
   place-items: center;
   isolation: isolate;
@@ -1555,7 +1555,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: radial-gradient(ellipse at center, rgba(9, 13, 19, 0.15) 36%, rgba(6, 9, 13, 0.72) 100%);
+  background: radial-gradient(ellipse at center, rgba(9, 13, 19, 0.15) 36%, rgba(6, 9, 13, 0.72) 100%); /* photo-scrim-ok — lightbox vignette over blurred photo fill */
   pointer-events: none;
 }
 
@@ -1597,7 +1597,7 @@
 
 .page :global(.vehicle-lightbox-empty) {
   margin: 0;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(255, 255, 255, 0.82); /* photo-scrim-ok — empty-state caption over lightbox stage */
   font-size: 15px;
   position: relative;
   z-index: 2;
@@ -1611,7 +1611,7 @@
   height: 50px;
   border-radius: 50%;
   border: 1px solid color-mix(in srgb, var(--color-bg) 34%, transparent);
-  background: rgba(10, 12, 16, 0.6);
+  background: rgba(10, 12, 16, 0.6); /* photo-scrim-ok — lightbox nav control over imagery */
   color: var(--color-bg);
   display: inline-flex;
   align-items: center;
@@ -1631,13 +1631,13 @@
 
 .page :global(.vehicle-lightbox-control:hover),
 .page :global(.vehicle-lightbox-close:hover) {
-  background: rgba(6, 122, 116, 0.9);
-  border-color: rgba(6, 122, 116, 0.98);
+  background: color-mix(in srgb, var(--color-primary) 90%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 98%, transparent);
 }
 
 .page :global(.vehicle-lightbox-close:focus-visible),
 .page :global(.vehicle-lightbox-control:focus-visible) {
-  outline: 2px solid #ffffff;
+  outline: 2px solid #ffffff; /* photo-scrim-ok — focus ring over lightbox imagery */
   outline-offset: 2px;
 }
 

@@ -14,23 +14,25 @@
 }
 
 .diamond {
-  width: 44px;
-  height: 44px;
-  background: var(--color-primary);
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(150deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 60%, var(--color-accent)));
   display: inline-flex;
   align-items: center;
   justify-content: center;
   transform: rotate(45deg);
-  box-shadow: 0 6px 18px rgba(225, 29, 42, 0.28);
+  border: 1px solid color-mix(in srgb, var(--color-on-primary) 35%, transparent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--color-primary) 55%, transparent);
   flex: 0 0 auto;
 }
 
 .diamondInner {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   background: var(--color-on-primary);
   display: block;
   transform: rotate(-45deg);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--color-on-primary) 60%, transparent);
 }
 
 .lockup {
@@ -41,10 +43,9 @@
 }
 
 .wordmark {
-  /* Logo wordmark stays sans even when brand display font is serif */
-  font-family: var(--font-ui-family-override, 'Inter', sans-serif);
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
+  font-weight: 700;
+  letter-spacing: 0.01em;
   font-size: clamp(18px, 2.4vw, 24px);
   text-transform: uppercase;
   color: var(--b4l-header-text);
@@ -58,14 +59,14 @@
 }
 
 .wordEmph {
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .tagline {
-  font-family: var(--font-ui-family-override, 'Inter', sans-serif);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
+  font-family: var(--font-mono-family-override, monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-muted);
 }

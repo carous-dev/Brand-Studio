@@ -626,7 +626,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(209, 182, 122, 0.16);
+  background: var(--kain-accent-warm-soft);
   color: var(--kain-accent-warm);
   border-radius: 50%;
 }
@@ -699,7 +699,7 @@
   width: 240px;
   height: 240px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(209,182,122,0.22) 0%, transparent 65%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--kain-accent-warm) 22%, transparent) 0%, transparent 65%);
   pointer-events: none;
 }
 @media (min-width: 720px) {
@@ -727,7 +727,7 @@
   letter-spacing: 0.02em;
   text-transform: uppercase;
   margin: 0;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
 }
 .financeTitle em {
   font-family: var(--font-editorial-family, 'Playfair Display', serif);
@@ -739,7 +739,7 @@
 }
 .financeLead {
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text-on-dark-muted);
   margin: 0;
   font-size: 0.92rem;
   line-height: 1.6;
@@ -834,14 +834,14 @@
 .contactBtn:hover {
   border-color: var(--kain-accent-warm);
   color: var(--brand-primary);
-  background: rgba(209, 182, 122, 0.04);
+  background: color-mix(in srgb, var(--kain-accent-warm) 4%, transparent);
 }
 .contactWhats {
-  background: #25d366;
-  color: #ffffff;
+  background: var(--kain-whatsapp);
+  color: var(--text-on-dark-strong);
   border-color: transparent;
 }
-.contactWhats:hover { background: #1ebe5b; color: #ffffff; border-color: transparent; }
+.contactWhats:hover { background: var(--kain-whatsapp-hover-alt); color: var(--text-on-dark-strong); border-color: transparent; }
 
 .sidebarDivider {
   height: 1px;
@@ -926,7 +926,7 @@
 .lightbox {
   position: fixed;
   inset: 0;
-  background: rgba(5, 7, 12, 0.96);
+  background: rgba(5, 7, 12, 0.96); /* photo-scrim-ok */
   z-index: 9999;
   display: grid;
   place-items: center;
@@ -935,8 +935,8 @@
 .lightboxClose,
 .lightboxNav {
   appearance: none;
-  background: rgba(209, 182, 122, 0.18);
-  border: 1px solid rgba(209, 182, 122, 0.5);
+  background: color-mix(in srgb, var(--kain-accent-warm) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--kain-accent-warm) 50%, transparent);
   color: var(--kain-accent-warm);
   font-size: 1.6rem;
   width: 48px;
@@ -948,7 +948,7 @@
   transition: background 0.18s ease, color 0.18s ease;
 }
 .lightboxClose:hover,
-.lightboxNav:hover { background: rgba(209, 182, 122, 0.32); color: #ffffff; }
+.lightboxNav:hover { background: color-mix(in srgb, var(--kain-accent-warm) 32%, transparent); color: var(--text-on-dark-strong); }
 .lightboxClose {
   position: absolute;
   top: 20px;

@@ -1,8 +1,8 @@
 /* ----- Announcement bar (above contact bar) ----- */
 .announcement {
-  background: linear-gradient(90deg, #0a0e14 0%, #14181f 60%, #0a0e14 100%);
-  color: #ffffff;
-  border-bottom: 1px solid rgba(209, 182, 122, 0.3);
+  background: linear-gradient(90deg, var(--surface-bg-dark) 0%, var(--surface-card-dark) 60%, var(--surface-bg-dark) 100%);
+  color: var(--text-on-dark-strong);
+  border-bottom: 1px solid color-mix(in srgb, var(--kain-accent-warm) 30%, transparent);
 }
 .announcementInner {
   max-width: 1440px;
@@ -25,9 +25,9 @@
 
 /* ----- Top contact bar ----- */
 .topBar {
-  background: #0a0e14;
-  color: #ffffff;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
 }
 .topBarInner {
@@ -44,14 +44,14 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text-on-dark-muted);
   white-space: nowrap;
 }
 .statusChip {
   color: var(--kain-accent-warm);
 }
-.dotOpen { --mfx-dot-color: #34d399; }
-.dotClosed { --mfx-dot-color: rgba(255, 255, 255, 0.45); }
+.dotOpen { --mfx-dot-color: var(--kain-status-open); }
+.dotClosed { --mfx-dot-color: color-mix(in srgb, var(--text-on-dark-strong) 45%, transparent); }
 .topBarSpacer { flex: 1 1 auto; }
 .socialRow {
   display: inline-flex;
@@ -70,8 +70,8 @@
   transition: color 0.18s ease, background-color 0.18s ease;
 }
 .socialLink:hover {
-  background: rgba(209, 182, 122, 0.14);
-  color: #ffffff;
+  background: color-mix(in srgb, var(--kain-accent-warm) 14%, transparent);
+  color: var(--text-on-dark-strong);
 }
 .socialMuted {
   opacity: 0.42;
@@ -89,7 +89,7 @@
   font-size: 0.92rem;
   white-space: nowrap;
 }
-.topBarPhone:hover { color: #ffffff; }
+.topBarPhone:hover { color: var(--text-on-dark-strong); }
 
 @media (max-width: 640px) {
   .topBarInner { padding: 8px 12px; gap: 10px; font-size: 0.74rem; }
@@ -108,15 +108,15 @@
   /* Sticks below PreviewBanner when present (var falls back to 0px). */
   top: var(--brandstudio-preview-banner-height, 0px);
   z-index: 40;
-  background: color-mix(in srgb, #0a0e14 94%, transparent);
+  background: color-mix(in srgb, var(--surface-bg-dark) 94%, transparent);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(209, 182, 122, 0.18);
-  color: #ffffff;
+  border-bottom: 1px solid color-mix(in srgb, var(--kain-accent-warm) 18%, transparent);
+  color: var(--text-on-dark-strong);
   transition: background-color 0.24s ease, border-color 0.24s ease;
 }
 .headerScrolled {
-  background: rgba(10, 14, 20, 0.97);
-  border-color: rgba(209, 182, 122, 0.32);
+  background: color-mix(in srgb, var(--surface-bg-dark) 97%, transparent);
+  border-color: color-mix(in srgb, var(--kain-accent-warm) 32%, transparent);
 }
 .headerInner {
   max-width: 1440px;
@@ -152,7 +152,7 @@
   font-size: 0.92rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.86);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 86%, transparent);
   text-decoration: none;
   padding: 10px 2px;
   transition: color 0.18s ease;
@@ -201,7 +201,7 @@
   transition: background-color 0.18s ease, color 0.18s ease;
 }
 .iconBtn:hover {
-  background: rgba(209, 182, 122, 0.14);
+  background: color-mix(in srgb, var(--kain-accent-warm) 14%, transparent);
   color: var(--kain-accent-warm);
 }
 .menuBtn { display: inline-flex; }
@@ -217,7 +217,7 @@
   padding: 0 4px;
   border-radius: 999px;
   background: var(--kain-accent-warm);
-  color: #0a0e14;
+  color: var(--surface-bg-dark);
   font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
   font-size: 0.62rem;
   font-weight: 700;
@@ -230,14 +230,14 @@
   position: fixed;
   inset: 0 0 0 auto;
   width: min(86vw, 380px);
-  background: #0a0e14;
-  color: #ffffff;
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
   z-index: 80;
   transform: translateX(110%);
   transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
   display: flex;
   flex-direction: column;
-  border-left: 1px solid rgba(209, 182, 122, 0.32);
+  border-left: 1px solid color-mix(in srgb, var(--kain-accent-warm) 32%, transparent);
 }
 .drawerOpen { transform: translateX(0); }
 .drawerHead {
@@ -245,13 +245,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 18px 18px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
 }
 .drawerClose {
   appearance: none;
   background: transparent;
   border: 0;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   width: 44px;
   height: 44px;
   border-radius: 999px;
@@ -260,7 +260,7 @@
   align-items: center;
   justify-content: center;
 }
-.drawerClose:hover { background: rgba(255, 255, 255, 0.08); color: var(--kain-accent-warm); }
+.drawerClose:hover { background: color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent); color: var(--kain-accent-warm); }
 .drawerNav {
   flex: 1 1 auto;
   display: flex;
@@ -279,13 +279,13 @@
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.92);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 92%, transparent);
   text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
   min-height: 56px;
 }
 .drawerLink:hover {
-  background: rgba(209, 182, 122, 0.08);
+  background: color-mix(in srgb, var(--kain-accent-warm) 8%, transparent);
   color: var(--kain-accent-warm);
 }
 .drawerLinkActive {
@@ -297,7 +297,7 @@
 }
 .drawerContact {
   padding: 20px 22px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -306,7 +306,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: rgba(255, 255, 255, 0.86);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 86%, transparent);
   text-decoration: none;
   font-size: 0.92rem;
 }
@@ -323,16 +323,16 @@
   width: 40px;
   height: 40px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
   color: var(--kain-accent-warm);
   text-decoration: none;
 }
-.drawerSocialLink:hover { background: rgba(209, 182, 122, 0.18); color: #ffffff; }
+.drawerSocialLink:hover { background: color-mix(in srgb, var(--kain-accent-warm) 18%, transparent); color: var(--text-on-dark-strong); }
 
 .scrim {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: color-mix(in srgb, var(--kain-black) 55%, transparent);
   z-index: 70;
   opacity: 0;
   pointer-events: none;
@@ -344,7 +344,7 @@
 .searchOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(10, 14, 20, 0.92);
+  background: color-mix(in srgb, var(--surface-bg-dark) 92%, transparent);
   backdrop-filter: blur(12px);
   z-index: 90;
   display: flex;
@@ -365,7 +365,7 @@
   align-items: center;
   gap: 12px;
   padding: 14px 18px;
-  background: #ffffff;
+  background: var(--surface-bg-light);
   border-radius: 4px;
   border-bottom: 2px solid var(--kain-accent-warm);
   color: var(--text-on-light-strong);

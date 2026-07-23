@@ -8,7 +8,7 @@
 .dashboard-layout {
   /* Handled by dashboard-layout.css */
 }
-  color: #fff;
+  color: var(--text-on-dark-strong);
   font-family: var(--font-base);
 }
 
@@ -17,7 +17,7 @@
   display: flex;
   gap: 8px;
   margin-bottom: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
   padding-bottom: 12px;
 }
 
@@ -27,8 +27,8 @@
   gap: 8px;
   padding: 10px 16px;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 12%, transparent);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 60%, transparent);
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
@@ -37,9 +37,9 @@
 }
 
 .tab-button:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.8);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
+  border-color: color-mix(in srgb, var(--text-on-dark-strong) 20%, transparent);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 80%, transparent);
 }
 
 .tab-button.active {
@@ -101,10 +101,10 @@
 .search-input {
   width: 100%;
   padding: 12px 16px 12px 48px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 12%, transparent);
   border-radius: 12px;
-  color: #fff;
+  color: var(--text-on-dark-strong);
   font-size: 14px;
   transition: all 0.2s ease;
   backdrop-filter: blur(10px);
@@ -116,7 +116,7 @@
 
 .search-input:focus {
   outline: none;
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
   border-color: var(--accent);
   box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.2);
 }
@@ -130,16 +130,16 @@
 .filter-label {
   font-size: 14px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 80%, transparent);
   white-space: nowrap;
 }
 
 .filter-select {
   padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 12%, transparent);
   border-radius: 12px;
-  color: #fff;
+  color: var(--text-on-dark-strong);
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -148,14 +148,14 @@
 
 .filter-select:hover,
 .filter-select:focus {
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
   border-color: var(--accent);
   outline: none;
 }
 
 .filter-select option {
   background: var(--panel);
-  color: #fff;
+  color: var(--text-on-dark-strong);
 }
 
 /* Buttons */
@@ -176,7 +176,7 @@
 
 .btn-primary {
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  color: #000;
+  color: var(--color-text);
   box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.2);
 }
 
@@ -186,19 +186,19 @@
 }
 
 .dashboard-container .btn-secondary {
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
+  color: var(--text-on-dark-strong);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 12%, transparent);
 }
 
 .dashboard-container .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 12%, transparent);
+  border-color: color-mix(in srgb, var(--text-on-dark-strong) 20%, transparent);
 }
 
 .btn-danger {
-  background: linear-gradient(90deg, #ff4757, #ff6b7a);
-  color: #fff;
+  background: linear-gradient(90deg, var(--t-error), var(--t-error));
+  color: var(--text-on-dark-strong);
   box-shadow: 0 8px 32px rgba(255, 71, 87, 0.2);
 }
 
@@ -215,8 +215,8 @@
 .dashboard-table-wrapper {
   margin: 0;
   padding: 0;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
   border-radius: 16px;
   overflow: hidden;
   backdrop-filter: blur(10px);
@@ -249,17 +249,17 @@
 }
 
 .dashboard-table tbody tr {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
   transition: all 0.2s ease;
 }
 
 .dashboard-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
 }
 
 .table-row td {
   padding: 16px;
-  color: rgba(255, 255, 255, 0.85);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 85%, transparent);
 }
 
 /* Badges & Status */
@@ -330,7 +330,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: rgba(255, 255, 255, 0.5);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 50%, transparent);
   font-weight: 600;
 }
 
@@ -410,7 +410,7 @@
 
 .empty-state p {
   font-size: 18px;
-  color: rgba(255, 255, 255, 0.6);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 60%, transparent);
   margin-bottom: 20px;
 }
 
@@ -418,7 +418,7 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: color-mix(in srgb, var(--surface-bg-dark) 70%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -428,7 +428,7 @@
 
 .modal-content {
   background: linear-gradient(135deg, var(--bg), var(--panel));
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 12%, transparent);
   border-radius: 16px;
   padding: 32px;
   max-width: 500px;
@@ -448,11 +448,11 @@
   font-size: 28px;
   font-weight: 800;
   margin: 0 0 24px;
-  color: #fff;
+  color: var(--text-on-dark-strong);
 }
 
 .modal-message {
-  color: rgba(255, 255, 255, 0.7);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 70%, transparent);
   margin-bottom: 32px;
   line-height: 1.6;
 }
@@ -495,10 +495,10 @@
 .form-group input,
 .form-group select {
   padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 5%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 12%, transparent);
   border-radius: 10px;
-  color: #fff;
+  color: var(--text-on-dark-strong);
   font-size: 14px;
   transition: all 0.2s ease;
 }
@@ -506,14 +506,14 @@
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
   border-color: var(--accent);
   box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.15);
 }
 
 .form-group select option {
   background: var(--panel);
-  color: #fff;
+  color: var(--text-on-dark-strong);
 }
 
 .modal-actions {
@@ -644,8 +644,8 @@
 }
 
 .analytics-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 5%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent);
   border-radius: 12px;
   padding: 20px;
   transition: all 0.3s ease;
@@ -689,7 +689,7 @@
 
 .metric-label {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 70%, transparent);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -705,7 +705,7 @@
   height: 45px;
   object-fit: cover;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent);
 }
 
 .cell-views,
@@ -744,6 +744,6 @@
   grid-column: 1 / -1;
   text-align: center;
   padding: 40px 20px;
-  color: rgba(255, 255, 255, 0.7);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 70%, transparent);
   font-size: 16px;
 }

@@ -171,7 +171,7 @@
   height: 40px;
   /* photo-scrim-ok: chrome sits over the gallery photo */
   background: rgba(0, 0, 0, 0.55);
-  color: #ffffff;
+  color: #ffffff; /* photo-scrim-ok */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -206,7 +206,7 @@
   inset: 0;
   /* photo-scrim-ok: "+N" overlay sits over the thumbnail photo */
   background: rgba(0, 0, 0, 0.58);
-  color: #ffffff;
+  color: #ffffff; /* photo-scrim-ok */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -666,8 +666,8 @@
   height: 44px;
   /* photo-scrim-ok: lightbox chrome over a full-screen dark photo viewer */
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* photo-scrim-ok */
+  color: #ffffff; /* photo-scrim-ok */
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -702,7 +702,7 @@
   background-color: rgba(255, 255, 255, 0.06);
   background-size: cover;
   background-position: center;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.18); /* photo-scrim-ok */
   cursor: pointer;
   padding: 0;
   border-radius: 2px;

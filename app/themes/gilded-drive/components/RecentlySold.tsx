@@ -100,7 +100,7 @@ export default function RecentlySold() {
     }
 
     const matchedKey = Object.keys(colorMap).find((key) => normalized.includes(key))
-    return matchedKey ? colorMap[matchedKey] : "#9ca3af"
+    return matchedKey ? colorMap[matchedKey] : "var(--color-muted)"
   }
 
   const filteredVehicles = vehicles.filter(vehicle => {

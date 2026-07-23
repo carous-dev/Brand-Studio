@@ -45,15 +45,15 @@
     mask-image: linear-gradient(
       to right,
       transparent 0%,
-      #000 5%,
-      #000 95%,
+      var(--shade-deep) 5%,
+      var(--shade-deep) 95%,
       transparent 100%
     );
     -webkit-mask-image: linear-gradient(
       to right,
       transparent 0%,
-      #000 5%,
-      #000 95%,
+      var(--shade-deep) 5%,
+      var(--shade-deep) 95%,
       transparent 100%
     );
   }

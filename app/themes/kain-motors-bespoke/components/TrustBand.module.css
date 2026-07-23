@@ -24,7 +24,7 @@
   flex-direction: column;
   gap: 8px;
   padding-top: 28px;
-  border-top: 1px solid rgba(209, 182, 122, 0.42);
+  border-top: 1px solid color-mix(in srgb, var(--kain-accent-warm) 42%, transparent);
   position: relative;
 }
 .num {

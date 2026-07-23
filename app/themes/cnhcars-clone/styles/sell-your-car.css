@@ -17,7 +17,7 @@
 
 .form-group-compact label {
   font-weight: 600;
-  color: #374151;
+  color: var(--color-muted);
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -25,27 +25,27 @@
 
 .form-group-compact input {
   padding: 0.875rem 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   font-size: 0.95rem;
   transition: all 0.2s ease;
-  background: #ffffff;
+  background: var(--color-surface);
 }
 
 .form-group-compact input:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
-  background: #ffffff;
+  background: var(--color-surface);
 }
 
 .form-group-compact input::placeholder {
-  color: #9ca3af;
+  color: var(--color-muted);
   font-style: italic;
 }
 
 .btn-quote {
-  background: linear-gradient(135deg, var(--color-primary) 0%, #1e3a8a 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-strong) 100%);
   color: white;
   border: none;
   padding: 0.875rem 1.5rem;
@@ -60,7 +60,7 @@
 }
 
 .btn-quote:hover:not(:disabled) {
-  background: linear-gradient(135deg, #1e3a8a 0%, #1e3a8a 100%);
+  background: linear-gradient(135deg, var(--color-primary-strong) 0%, var(--color-primary-strong) 100%);
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(65, 105, 225, 0.4);
 }
@@ -85,15 +85,15 @@
 }
 
 .form-success {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, var(--t-success) 0%, color-mix(in srgb, var(--t-success) 82%, var(--color-text)) 100%);
   color: white;
-  border: 1px solid #059669;
+  border: 1px solid var(--t-success);
 }
 
 .form-error {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  background: linear-gradient(135deg, var(--t-error) 0%, color-mix(in srgb, var(--t-error) 85%, var(--color-text)) 100%);
   color: white;
-  border: 1px solid #dc2626;
+  border: 1px solid var(--t-error);
 }
 
 .form-icon {
@@ -105,13 +105,13 @@
 .field-error {
   font-size: 0.75rem;
   font-weight: 500;
-  color: #ef4444;
+  color: var(--t-error);
   margin-top: 0.25rem;
 }
 
 /* Hero Section */
 .sell-hero {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background: linear-gradient(135deg, var(--surface-card-dark) 0%, var(--surface-section-dark) 100%);
   padding: 4rem 0;
   color: white;
 }
@@ -131,7 +131,7 @@
   font-weight: 700;
   margin-bottom: 1rem;
   line-height: 1.2;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -139,7 +139,7 @@
   font-size: 1.1rem;
   margin-bottom: 2rem;
   opacity: 0.95;
-  color: #f3f4f6;
+  color: var(--text-on-dark-muted);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
@@ -150,24 +150,24 @@
 }
 
 .sell-badge {
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent);
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.85rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 20%, transparent);
 }
 
 .sell-form-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: color-mix(in srgb, var(--color-surface) 95%, transparent);
   backdrop-filter: blur(10px);
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 20%, transparent);
 }
 
 .sell-form-card h3 {
-  color: #1f2937;
+  color: var(--color-text);
   margin-bottom: 1.5rem;
   text-align: center;
   font-size: 1.3rem;
@@ -177,7 +177,7 @@
 /* Benefits Section */
 .sell-benefits {
   padding: 4rem 0;
-  background: #f8f9fa;
+  background: color-mix(in srgb, var(--color-text) 3%, var(--color-bg));
 }
 
 .sell-benefits-container {
@@ -190,7 +190,7 @@
   text-align: center;
   font-size: 2.5rem;
   margin-bottom: 3rem;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .sell-benefits-grid {
@@ -223,11 +223,11 @@
 .sell-benefit h3 {
   font-size: 1.3rem;
   margin-bottom: 1rem;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .sell-benefit p {
-  color: #666;
+  color: var(--color-muted);
   line-height: 1.6;
 }
 
@@ -247,7 +247,7 @@
   text-align: center;
   font-size: 2.5rem;
   margin-bottom: 3rem;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .sell-process-steps {
@@ -278,18 +278,18 @@
 .sell-step h3 {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .sell-step p {
-  color: #666;
+  color: var(--color-muted);
   line-height: 1.5;
 }
 
 /* CTA Section */
 .sell-cta {
   padding: 4rem 0;
-  background: linear-gradient(135deg, var(--color-primary) 0%, #1e3a8a 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-strong) 100%);
   color: white;
   text-align: center;
 }

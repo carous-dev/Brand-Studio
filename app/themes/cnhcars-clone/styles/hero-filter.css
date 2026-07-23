@@ -4,9 +4,9 @@
   width: 100%;
   max-width: 100%;
   margin-top: 2rem;
-  background: rgba(255, 255, 255, 0.98);
+  background: color-mix(in srgb, var(--color-surface) 98%, transparent);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   z-index: 3;
@@ -27,8 +27,8 @@
 /* Tab Navigation */
 .hero-filter-tabs {
   display: flex;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
+  background: color-mix(in srgb, var(--color-surface) 50%, transparent);
 }
 
 .hero-filter-tab {
@@ -36,7 +36,7 @@
   padding: 1rem 0.75rem;
   border: none;
   background: transparent;
-  color: rgba(0, 0, 0, 0.6);
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
@@ -61,8 +61,8 @@
 }
 
 .hero-filter-tab:hover {
-  color: rgba(0, 0, 0, 0.8);
-  background: rgba(0, 0, 0, 0.02);
+  color: color-mix(in srgb, var(--color-text) 80%, transparent);
+  background: color-mix(in srgb, var(--color-text) 2%, transparent);
 }
 
 .hero-filter-tab.active {
@@ -113,7 +113,7 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: rgba(0, 0, 0, 0.6);
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
   margin-bottom: 0.5rem;
   font-weight: 600;
 }
@@ -122,22 +122,22 @@
 .hero-filter-select {
   width: 100%;
   padding: 0.75rem;
-  background: rgba(0, 0, 0, 0.02);
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  color: rgba(0, 0, 0, 0.8);
+  background: color-mix(in srgb, var(--color-text) 2%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+  color: color-mix(in srgb, var(--color-text) 80%, transparent);
   font-size: 0.875rem;
   font-family: var(--font-brand-body-override, inherit);
   transition: all 200ms ease;
 }
 
 .hero-filter-input::placeholder {
-  color: rgba(0, 0, 0, 0.4);
+  color: color-mix(in srgb, var(--color-text) 40%, transparent);
 }
 
 .hero-filter-input:focus,
 .hero-filter-select:focus {
   outline: none;
-  background: rgba(0, 0, 0, 0.04);
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(65, 105, 225, 0.15);
 }

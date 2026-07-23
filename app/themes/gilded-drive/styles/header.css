@@ -7,13 +7,13 @@
   z-index: 1000;
   /* ensure header sits above hero decorations but below mobile panels */
   pointer-events: auto;
-  --header-text: var(--brand-text, #ffffff);
+  --header-text: var(--brand-text);
   --header-text-rgb: var(--brand-text-rgb, 255, 255, 255);
-  --header-primary: var(--brand-primary, #b8924a);
+  --header-primary: var(--brand-primary);
   --header-primary-rgb: var(--brand-primary-rgb, 185, 146, 74);
-  --header-secondary: var(--brand-secondary, #d1b67a);
+  --header-secondary: var(--brand-secondary);
   --header-secondary-rgb: var(--brand-secondary-rgb, 209, 182, 122);
-  --header-accent: var(--brand-accent, var(--brand-primary, #b8924a));
+  --header-accent: var(--brand-accent, var(--brand-primary));
   --header-accent-rgb: var(--brand-accent-rgb, var(--brand-primary-rgb, 185, 146, 74));
 }
 
@@ -198,7 +198,7 @@
   padding: 10px 14px;
   border-radius: 10px;
   background: linear-gradient(90deg, var(--header-primary), var(--header-secondary));
-  color: var(--brand-background, #0b0b0b);
+  color: var(--brand-background);
   font-weight: 700;
   box-shadow: 0 10px 24px rgba(var(--header-primary-rgb), 0.22);
   border: 1px solid rgba(var(--header-primary-rgb), 0.25)
@@ -375,7 +375,7 @@
   padding: 12px 16px;
   border-radius: 10px;
   background: linear-gradient(90deg, var(--header-primary), var(--header-secondary));
-  color: var(--brand-background, #0b0b0b);
+  color: var(--brand-background);
   font-weight: 700;
   border: 1px solid rgba(var(--header-primary-rgb), 0.25)
 }

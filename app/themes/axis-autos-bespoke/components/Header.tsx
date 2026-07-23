@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Heart, GitCompare } from 'lucide-react'
+import { Menu, X, Heart, GitCompare, Phone } from 'lucide-react'
 import { useBrand } from '../context/BrandClientWrapper'
 import { useGarage } from '../context/GarageContext'
 import { getBrandContactInfo } from '../lib/contact'
@@ -38,6 +38,7 @@ export default function Header() {
   const logo = (brand as any)?.logo || `/themes/axis-autos-bespoke/logo.png`
 
   const NAV: Array<{ label: string; href: string }> = [
+    { label: 'Home', href: '/' },
     { label: 'Stock', href: '/used-cars' },
     { label: 'Sell', href: '/sell-my-car' },
     { label: 'Finance', href: '/finance' },
@@ -79,7 +80,7 @@ export default function Header() {
               className={`${styles.navLink} ${isActive(item.href) ? styles.navLinkActive : ''}`}
               aria-current={isActive(item.href) ? 'page' : undefined}
             >
-              {item.label}
+              <span className={styles.navLabel}>{item.label}</span>
             </Link>
           ))}
         </nav>
@@ -93,13 +94,16 @@ export default function Header() {
             <GitCompare size={18} strokeWidth={1.6} />
             {compareCount > 0 ? <span className={styles.countBadge}>{compareCount}</span> : null}
           </Link>
+          <span className={styles.actionDivider} aria-hidden="true" />
           {contact.phoneTel ? (
             <a href={`tel:${contact.phoneTel}`} className={`axis-btn axis-btn--primary ${styles.cta}`}>
-              {contact.phoneDisplay}
+              <Phone size={16} strokeWidth={2} />
+              <span>{contact.phoneDisplay}</span>
             </a>
           ) : (
             <Link href="/contact" className={`axis-btn axis-btn--primary ${styles.cta}`}>
-              Contact
+              <Phone size={16} strokeWidth={2} />
+              <span>Contact</span>
             </Link>
           )}
           <button

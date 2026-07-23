@@ -10,8 +10,8 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 2px solid rgba(84, 98, 119, 0.22);
-  border-top-color: #667286;
+  border: 2px solid color-mix(in srgb, var(--color-muted) 22%, transparent);
+  border-top-color: var(--color-muted);
   animation: vehicle-details-spinner-rotate 0.78s linear infinite;
 }
 
@@ -33,12 +33,12 @@
 }
 
 .vehicle-details-root .loader-spinner.is-light {
-  color: rgba(255, 255, 255, 0.9);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);
 }
 
 .vehicle-details-root .loader-spinner.is-light .loader-spinner-ring {
-  border-color: rgba(255, 255, 255, 0.25);
-  border-top-color: rgba(255, 255, 255, 0.95);
+  border-color: color-mix(in srgb, var(--text-on-dark-strong) 25%, transparent);
+  border-top-color: color-mix(in srgb, var(--text-on-dark-strong) 95%, transparent);
 }
 
 .vehicle-details-root .loader-spinner-text {

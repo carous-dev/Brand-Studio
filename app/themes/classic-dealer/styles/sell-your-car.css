@@ -42,7 +42,7 @@
   inset: 0;
   background:
     radial-gradient(600px 320px at 18% 20%, rgba(var(--sell-accent-rgb), 0.38), transparent 70%),
-    radial-gradient(520px 300px at 88% 86%, rgba(255, 255, 255, 0.14), transparent 75%);
+    radial-gradient(520px 300px at 88% 86%, color-mix(in srgb, var(--color-bg) 14%, transparent), transparent 75%);
   pointer-events: none;
 }
 
@@ -61,11 +61,11 @@
   gap: 8px;
   font-size: 13px;
   margin: 0 auto 12px;
-  color: rgba(255, 255, 255, 0.75);
+  color: color-mix(in srgb, var(--color-bg) 75%, transparent);
 }
 
 .sell-breadcrumb a {
-  color: rgba(255, 255, 255, 0.85);
+  color: color-mix(in srgb, var(--color-bg) 85%, transparent);
   text-decoration: none;
 }
 
@@ -88,7 +88,7 @@
   max-width: 680px;
   font-size: clamp(14px, 2.1vw, 18px);
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.85);
+  color: color-mix(in srgb, var(--color-bg) 85%, transparent);
 }
 
 .sell-hero-actions {
@@ -127,14 +127,14 @@
 }
 
 .sell-hero-btn.ghost {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: color-mix(in srgb, var(--color-bg) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-bg) 30%, transparent);
   color: var(--text-inverse);
 }
 
 .sell-hero-btn.ghost:hover,
 .sell-hero-btn.ghost:focus-visible {
-  background: rgba(255, 255, 255, 0.22);
+  background: color-mix(in srgb, var(--color-bg) 22%, transparent);
 }
 
 .sell-main {

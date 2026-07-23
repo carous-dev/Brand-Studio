@@ -5,7 +5,7 @@
 	--carousel-gap:18px;
 }
 
-.featured .section-title{font-size:26px;text-align:center;margin:8px 0 12px;color:#fff}
+.featured .section-title{font-size:26px;text-align:center;margin:8px 0 12px;color:var(--color-text)}
 .featured .section-sub{max-width:900px;margin:0 auto 18px;color:var(--muted)}
 
 /* Featured carousel layout */
@@ -37,7 +37,7 @@
 .img-overlay{position:absolute;top:8px;right:8px;display:flex;gap:8px;z-index:15}
 .img-btn{width:36px;height:36px;border-radius:999px;border:0;background:rgba(2,6,23,0.56);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(6px);box-shadow:0 6px 18px rgba(2,6,23,0.45);transition:transform .14s ease,background .14s ease,opacity .14s ease}
 .img-btn svg{width:16px;height:16px;display:block}
-.img-btn:focus{outline:3px solid rgba(8,112,255,0.16);outline-offset:2px}
+.img-btn:focus{outline:3px solid color-mix(in srgb, var(--color-primary) 16%, transparent);outline-offset:2px}
 .img-btn:hover{transform:translateY(-3px);background:linear-gradient(90deg,var(--accent),var(--accent-2))}
 
 /* Ensure overlay sits inside the image wrapper and doesn't affect flow */
@@ -45,9 +45,9 @@
 
 /* Spec badges inside featured cards */
 .spec-badges{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 6px}
-.spec-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);color:var(--muted);font-size:13px}
+.spec-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);color:var(--muted);font-size:13px}
 .spec-badge .spec-icon{width:16px;height:16px;flex:0 0 16px;stroke:var(--accent-2);fill:none}
-.spec-badge .spec-text{font-weight:600;color:rgba(255,255,255,0.95);font-size:13px}
+.spec-badge .spec-text{font-weight:600;color:color-mix(in srgb, var(--text-on-dark-strong) 95%, transparent);font-size:13px}
 
 @media (max-width:640px){
 	.spec-badges{gap:6px}
@@ -58,12 +58,12 @@
 .carousel-controls{position:absolute;right:18px;bottom:18px;display:flex;gap:12px;z-index:20}
 .carousel-controls button{width:var(--carousel-control-size);height:var(--carousel-control-size);border-radius:999px;border:0;background:rgba(6,10,18,0.72);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 12px 36px rgba(2,6,23,0.5);transition:transform .14s ease,background .14s ease}
 .carousel-controls button svg{width:34px;height:34px}
-.carousel-controls button:focus{outline:3px solid rgba(8,112,255,0.16);outline-offset:2px}
+.carousel-controls button:focus{outline:3px solid color-mix(in srgb, var(--color-primary) 16%, transparent);outline-offset:2px}
 .carousel-controls button:hover{transform:translateY(-4px);background:linear-gradient(90deg,var(--accent),var(--accent-2))}
 
 /* Dots */
 .carousel-dots{position:absolute;left:18px;bottom:26px;display:flex;gap:8px;z-index:20}
-.carousel-dots button{width:10px;height:10px;border-radius:50%;border:0;background:rgba(255,255,255,0.26);cursor:pointer}
+.carousel-dots button{width:10px;height:10px;border-radius:50%;border:0;background:color-mix(in srgb, var(--text-on-dark-strong) 26%, transparent);cursor:pointer}
 .carousel-dots button.active{background:var(--accent)}
 
 @media (max-width:1000px){

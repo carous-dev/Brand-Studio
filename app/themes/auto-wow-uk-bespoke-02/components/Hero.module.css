@@ -23,16 +23,16 @@
     /* photo-scrim-ok — centered readability spotlight */
     radial-gradient(
       ellipse 78% 66% at 50% 46%,
-      rgba(6, 12, 22, 0.82) 0%,
-      rgba(6, 12, 22, 0.5) 46%,
-      rgba(6, 12, 22, 0.22) 100%
+      rgba(6, 12, 22, 0.82) 0%, /* photo-scrim-ok */
+      rgba(6, 12, 22, 0.5) 46%, /* photo-scrim-ok */
+      rgba(6, 12, 22, 0.22) 100% /* photo-scrim-ok */
     ),
     /* photo-scrim-ok — vertical bottom fade into the strip */
     linear-gradient(
       180deg,
-      rgba(6, 12, 22, 0.28) 0%,
-      rgba(6, 12, 22, 0.3) 55%,
-      rgba(6, 12, 22, 0.82) 100%
+      rgba(6, 12, 22, 0.28) 0%, /* photo-scrim-ok */
+      rgba(6, 12, 22, 0.3) 55%, /* photo-scrim-ok */
+      rgba(6, 12, 22, 0.82) 100% /* photo-scrim-ok */
     ),
     var(--brand-image-hero, none),
     url('/themes/auto-wow-uk-bespoke-02/images/hero.jpg');
@@ -60,7 +60,9 @@
       transparent 1px
     );
   background-size: 11.11% 100%, 100% 11.11%;
+  /* photo-scrim-ok — mask alpha values (black/transparent), not painted color */
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 46%, transparent 0%, rgba(0, 0, 0, 0.6) 60%, #000 100%);
+  /* photo-scrim-ok — mask alpha values (black/transparent), not painted color */
   mask-image: radial-gradient(ellipse 70% 60% at 50% 46%, transparent 0%, rgba(0, 0, 0, 0.6) 60%, #000 100%);
   pointer-events: none;
 }

@@ -14,9 +14,9 @@ export default function FeaturedStock({
   if (!items.length) return null
 
   return (
-    <section className={`axis-section ${styles.section}`} aria-label="Latest arrivals" data-aos="fade-up">
+    <section className={`axis-section ${styles.section}`} aria-label="Latest arrivals">
       <div className="axis-shell">
-        <header className={styles.header}>
+        <header className={styles.header} data-aos="fade-up">
           <div className={styles.headerText}>
             <span className="axis-eyebrow">Latest arrivals</span>
             <h2 className="axis-section-title">Fresh on the forecourt this week.</h2>
@@ -29,7 +29,7 @@ export default function FeaturedStock({
 
         <div className={styles.grid}>
           {items.map((v, i) => (
-            <div key={v.id ?? i}>
+            <div key={v.id ?? i} data-aos="fade-up" data-aos-delay={String(Math.min(i * 90, 360))}>
               <VehicleCard vehicle={v} />
             </div>
           ))}

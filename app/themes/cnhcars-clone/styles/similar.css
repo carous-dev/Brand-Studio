@@ -1,7 +1,7 @@
 /* Featured Similar Vehicles Section (Homepage) */
 .featured-similar-section {
   padding: 80px 0;
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-surface) 100%);
   position: relative;
 }
 
@@ -30,10 +30,10 @@
 .featured-similar-title {
   font-size: 42px;
   font-weight: 800;
-  color: #1a1a1a;
+  color: var(--color-text);
   margin: 0;
   font-family: var(--font-brand-body-override, var(--font-brand));
-  background: linear-gradient(135deg, var(--accent-primary), #2563eb);
+  background: linear-gradient(135deg, var(--accent-primary), var(--color-primary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -101,7 +101,7 @@
   align-items: center;
   justify-content: center;
   padding: 18px 40px;
-  background: linear-gradient(135deg, var(--accent-primary), #2563eb);
+  background: linear-gradient(135deg, var(--accent-primary), var(--color-primary));
   color: white;
   text-decoration: none;
   border-radius: 12px;
@@ -121,7 +121,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.2);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 20%, transparent);
   transition: left 0.6s ease;
 }
 
@@ -192,7 +192,7 @@
 .similar-vehicles-section {
   position: relative;
   padding: 40px 0;
-  background: linear-gradient(180deg, #f7fbff 0%, #eef4ff 100%);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-primary) 6%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-primary) 6%, var(--color-bg)) 100%);
 }
 
 .similar-vehicles-section .similar-vehicles-inner {
@@ -216,7 +216,7 @@
 .similar-vehicles-title {
   font-size: 32px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--color-text);
   margin: 0;
   font-family: var(--font-brand-body-override, var(--font-brand));
 }
@@ -233,7 +233,7 @@
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid #e2e8f0;
+  border: 3px solid var(--color-border);
   border-top: 3px solid var(--accent-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -247,7 +247,7 @@
 
 .similar-vehicles-loading p,
 .similar-vehicles-empty p {
-  color: #64748b;
+  color: var(--color-muted);
   font-size: 16px;
   margin: 0;
   font-family: var(--font-brand-body-override, var(--font-ui));
@@ -338,13 +338,13 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.95); /* photo-scrim-ok */
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2); /* photo-scrim-ok */
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: #64748b;
+  color: var(--color-muted);
 }
 
 .similar-vehicle-action-btn:hover {
@@ -365,7 +365,7 @@
 .similar-vehicle-title {
   font-size: 18px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--color-text);
   margin: 0 0 8px 0;
   font-family: var(--font-brand-body-override, var(--font-brand));
   line-height: 1.3;
@@ -376,7 +376,7 @@
 
 .similar-vehicle-derivative {
   font-size: 14px;
-  color: #64748b;
+  color: var(--color-muted);
   margin: 0 0 16px 0;
   font-family: var(--font-brand-body-override, var(--font-ui));
   line-height: 1.4;
@@ -397,7 +397,7 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #64748b;
+  color: var(--color-muted);
   font-family: var(--font-brand-body-override, var(--font-ui));
 }
 
@@ -411,7 +411,7 @@
   align-items: center;
   justify-content: space-between;
   padding-top: 16px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--color-border);
 }
 
 .similar-vehicle-price {
@@ -423,16 +423,16 @@
 
 .similar-vehicle-reg {
   font-size: 12px;
-  color: #64748b;
+  color: var(--color-muted);
   font-family: var(--font-brand-body-override, var(--font-ui));
 }
 
 .reg-number {
-  background: #f1f5f9;
+  background: var(--color-surface);
   padding: 4px 8px;
   border-radius: 6px;
   font-weight: 600;
-  color: #475569;
+  color: var(--color-muted);
 }
 
 

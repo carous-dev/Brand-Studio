@@ -5,7 +5,7 @@
   display:flex;
   align-items:center;
   justify-content:center;
-  background:rgba(255,255,255,0.86);
+  background:color-mix(in srgb, var(--surface-bg-light) 86%, transparent);
   border-radius:10px;
   box-shadow:0 8px 24px rgba(6,10,15,0.08);
   opacity:0;
@@ -23,13 +23,13 @@
 .panel-loader__inner{ display:flex; flex-direction:column; align-items:center; gap:10px }
 .spinner{
   width:52px; height:52px; border-radius:50%;
-  border:6px solid rgba(0,0,0,0.06);
-  border-top-color:rgba(0,0,0,0.45);
+  border:6px solid color-mix(in srgb, var(--text-on-light-strong) 6%, transparent);
+  border-top-color:color-mix(in srgb, var(--text-on-light-strong) 45%, transparent);
   animation:spin 0.95s linear infinite;
 }
 @keyframes spin{ to{ transform:rotate(360deg); } }
 
-.panel-loader__label{ font-size:0.95rem; color:#222; font-weight:600 }
+.panel-loader__label{ font-size:0.95rem; color:var(--text-on-light-strong); font-weight:600 }
 
 /* Ensure parent panel can be positioned relative so overlay covers it */
 .sell-hero-panel{ position:relative }

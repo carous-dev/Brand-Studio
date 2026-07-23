@@ -111,8 +111,8 @@
 
 .form {
   padding: 28px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 12%, transparent);
   border-top: 3px solid var(--brand-primary);
   border-radius: 6px;
   display: grid;
@@ -144,22 +144,22 @@
 .field input,
 .field select,
 .field textarea {
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
   color: var(--text-on-dark-strong);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 16%, transparent);
 }
 .field input::placeholder,
 .field textarea::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 40%, transparent);
 }
 .submit {
   min-height: 56px;
   font-size: 1rem;
 }
 .error {
-  background: rgba(180, 35, 24, 0.16);
-  border: 1px solid rgba(180, 35, 24, 0.4);
-  color: #fee2e2;
+  background: color-mix(in srgb, var(--t-error) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--t-error) 40%, transparent);
+  color: color-mix(in srgb, var(--t-error) 12%, var(--text-on-dark-strong));
   padding: 12px 16px;
   border-radius: 4px;
   font-size: 0.9rem;
@@ -196,8 +196,8 @@
 .altCta {
   margin-top: 36px;
   padding: 22px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent);
   border-radius: 6px;
   display: flex;
   align-items: center;

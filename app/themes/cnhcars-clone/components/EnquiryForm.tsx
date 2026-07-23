@@ -209,12 +209,12 @@ export default function EnquiryForm({ carInfo, modalType }: EnquiryFormProps) {
           <div className="form-group">
             <label htmlFor="enquiry-name">Full Name *</label>
             <input type="text" id="enquiry-name" placeholder="John Smith" required {...getFieldProps('name')} />
-          {errors.name && <p className="field-error" style={{ color: '#e11d48', marginTop: 4 }}>{errors.name}</p>}
+          {errors.name && <p className="field-error" style={{ color: 'var(--t-error)', marginTop: 4 }}>{errors.name}</p>}
           </div>
           <div className="form-group">
             <label htmlFor="enquiry-email">Email Address *</label>
             <input type="email" id="enquiry-email" placeholder="john@example.com" required {...getFieldProps('email')} />
-          {errors.email && <p className="field-error" style={{ color: '#e11d48', marginTop: 4 }}>{errors.email}</p>}
+          {errors.email && <p className="field-error" style={{ color: 'var(--t-error)', marginTop: 4 }}>{errors.email}</p>}
           </div>
         </div>
         <div className="form-row">
@@ -236,7 +236,7 @@ export default function EnquiryForm({ carInfo, modalType }: EnquiryFormProps) {
             <label htmlFor="enquiry-message">Message *</label>
             <textarea id="enquiry-message" rows={2} required {...getFieldProps('message')} />
           {errors.message && (
-            <p className="field-error" style={{ color: '#e11d48', marginTop: 4 }}>{errors.message}</p>
+            <p className="field-error" style={{ color: 'var(--t-error)', marginTop: 4 }}>{errors.message}</p>
           )}
         </div>
         <button type="submit" className="btn-primary enquiry-submit" disabled={isSubmitting}>

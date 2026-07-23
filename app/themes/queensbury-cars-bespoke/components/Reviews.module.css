@@ -37,7 +37,7 @@
 .stars {
   display: inline-flex;
   gap: 2px;
-  color: #facc15;
+  color: var(--color-review-star);
 }
 
 .quote {

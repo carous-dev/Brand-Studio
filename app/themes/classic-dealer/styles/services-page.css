@@ -13,7 +13,7 @@
   --font-weight-medium: 600;
 
   padding: 100px 0;
-  background-color: #0f141a;
+  background-color: color-mix(in srgb, var(--color-text) 92%, var(--color-bg));
   background-image: url("https://images.unsplash.com/photo-1755288348835-dc6c29852299?auto=format&fit=crop&w=2200&q=80");
   background-position: center;
   background-size: cover;
@@ -29,7 +29,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(15, 20, 26, 0.72);
+  background: color-mix(in srgb, var(--color-text) 72%, transparent);
   pointer-events: none;
   z-index: 1;
 }
@@ -70,7 +70,7 @@
 .services-subtitle {
   font-family: var(--font-family-body);
   font-size: 18px;
-  color: rgba(255, 255, 255, 0.88);
+  color: color-mix(in srgb, var(--color-bg) 88%, transparent);
   max-width: 700px;
   margin: 0 auto;
   line-height: 1.6;

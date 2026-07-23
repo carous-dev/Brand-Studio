@@ -49,7 +49,7 @@
   border-color: var(--kain-accent-warm);
   color: var(--brand-primary);
   transform: translateY(-2px);
-  background: #ffffff;
+  background: var(--surface-bg-light);
 }
 .chipInitial {
   display: inline-flex;

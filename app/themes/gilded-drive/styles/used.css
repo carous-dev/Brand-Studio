@@ -4,8 +4,8 @@
 }
 
 .inventory-hero {
-	background: linear-gradient(180deg, rgba(6, 8, 10, 0.02), rgba(6, 8, 10, 0.0));
-	border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+	background: linear-gradient(180deg, color-mix(in srgb, var(--surface-bg-dark) 2%, transparent), color-mix(in srgb, var(--surface-bg-dark) 0%, transparent));
+	border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
 	text-align: center;
 }
 
@@ -25,12 +25,12 @@
 	font-family: var(--font-display);
 	font-size: 32px;
 	margin: 0;
-	color: #fff;
+	color: var(--text-on-dark-strong);
 	line-height: 1.04
 }
 
 .lead {
-	color: rgba(255, 255, 255, 0.85);
+	color: color-mix(in srgb, var(--text-on-dark-strong) 85%, transparent);
 	margin-top: 8px;
 	font-size: 15px
 }
@@ -71,22 +71,22 @@
 
 .slide-overlay-primary {
 	background: linear-gradient(135deg,
-		rgba(2, 6, 23, 0.7) 0%,
-		rgba(2, 6, 23, 0.5) 50%,
-		rgba(2, 6, 23, 0.3) 100%);
+		rgba(2, 6, 23, 0.7) 0%, /* photo-scrim-ok */
+		rgba(2, 6, 23, 0.5) 50%, /* photo-scrim-ok */
+		rgba(2, 6, 23, 0.3) 100%); /* photo-scrim-ok */
 }
 
 .slide-overlay-secondary {
 	background: radial-gradient(ellipse at center,
-		rgba(0, 0, 0, 0.15) 0%,
-		rgba(0, 0, 0, 0.05) 50%,
+		rgba(0, 0, 0, 0.15) 0%, /* photo-scrim-ok */
+		rgba(0, 0, 0, 0.05) 50%, /* photo-scrim-ok */
 		transparent 100%);
 }
 
 .slide-overlay-tertiary {
 	background: linear-gradient(180deg,
 		transparent 0%,
-		rgba(0, 0, 0, 0.1) 100%);
+		rgba(0, 0, 0, 0.1) 100%); /* photo-scrim-ok */
 }
 
 .slide-inner {
@@ -111,13 +111,13 @@
 	font-size: clamp(2rem, 5vw, 3.5rem);
 	font-weight: 800;
 	margin: 0;
-	color: #ffffff;
+	color: var(--text-on-dark-strong);
 	line-height: 1.1;
 	text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .slide-lead {
-	color: rgba(255, 255, 255, 0.9);
+	color: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);
 	font-size: clamp(1rem, 2vw, 1.25rem);
 	line-height: 1.6;
 	margin: 0 0 2rem 0;
@@ -132,9 +132,9 @@
 	width: 50px;
 	height: 50px;
 	border-radius: 50%;
-	background: rgba(255, 255, 255, 0.1);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent);
 	backdrop-filter: blur(10px);
-	border: 1px solid rgba(255, 255, 255, 0.2);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 20%, transparent);
 	color: white;
 	display: flex;
 	align-items: center;
@@ -150,7 +150,7 @@
 }
 
 .carousel-nav:hover {
-	background: rgba(255, 255, 255, 0.2);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 20%, transparent);
 	transform: translateY(-50%) scale(1.05);
 	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
@@ -167,7 +167,7 @@
 .loading-overlay {
 	position: absolute;
 	inset: 0;
-	background: rgba(2, 6, 23, 0.8);
+	background: color-mix(in srgb, var(--surface-bg-dark) 80%, transparent);
 	z-index: 20;
 }
 
@@ -249,7 +249,7 @@
 	align-items: center;
 	padding: 8px;
 	/* darker, translucent surface to match dark hero while keeping content readable */
-	background: rgba(6, 8, 10, 0.64);
+	background: color-mix(in srgb, var(--surface-bg-dark) 64%, transparent);
 	border-radius: 12px;
 	z-index: 5;
 	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
@@ -260,8 +260,8 @@
 	width: 14px;
 	height: 14px;
 	border-radius: 999px;
-	background: rgba(255, 255, 255, 0.14);
-	border: 1px solid rgba(255, 255, 255, 0.06);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 14%, transparent);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
 	cursor: pointer;
 	transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
 }
@@ -277,7 +277,7 @@
 }
 
 .indicator.active {
-	background: #ffffff;
+	background: var(--text-on-dark-strong);
 	border-color: rgba(var(--accent-rgb), 0.22);
 	box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.12), 0 0 12px rgba(var(--accent-rgb), 0.06);
 	transform: scale(1.22);
@@ -299,7 +299,7 @@
 }
 
 .slide-title {
-	color: #fff;
+	color: var(--text-on-dark-strong);
 	text-shadow: 0 8px 36px rgba(var(--accent-rgb), 0.06), 0 1px 6px rgba(0, 0, 0, 0.6)
 }
 
@@ -323,7 +323,7 @@
 
 /* Apply neon only to the active slide for subtlety */
 .carousel-slide[aria-hidden="false"] .slide-title {
-	color: #fff;
+	color: var(--text-on-dark-strong);
 	animation: neonPulse 3.6s ease-in-out infinite;
 }
 
@@ -341,7 +341,7 @@
 
 /* Pulse glow for active indicator */
 .indicator.active {
-	background: linear-gradient(180deg, var(--accent), #d1b57a);
+	background: linear-gradient(180deg, var(--accent), var(--color-primary));
 	box-shadow: 0 12px 40px rgba(var(--accent-rgb), 0.22), 0 0 48px rgba(var(--accent-rgb), 0.12), inset 0 0 8px rgba(255, 255, 255, 0.04);
 	transform: scale(1.16);
 	animation: neonPulse 3.6s ease-in-out infinite;
@@ -378,8 +378,8 @@ a {
 
 /* Lighter, smaller CTA buttons */
 .btn-cta-primary {
-	background: linear-gradient(90deg, var(--accent), #d1b57a);
-	color: #060606;
+	background: linear-gradient(90deg, var(--accent), var(--color-primary));
+	color: var(--color-on-primary);
 	border: none;
 	padding: 8px 12px;
 	border-radius: 8px;
@@ -402,8 +402,8 @@ a {
 
 .btn-cta-secondary {
 	background: transparent;
-	color: #fff;
-	border: 1px solid rgba(255, 255, 255, 0.06);
+	color: var(--text-on-dark-strong);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
 	padding: 7px 10px;
 	border-radius: 8px;
 	cursor: pointer;
@@ -419,7 +419,7 @@ a {
 
 .btn-cta-ghost {
 	background: transparent;
-	color: #fff;
+	color: var(--text-on-dark-strong);
 	border: none;
 	padding: 6px 10px;
 	font-size: 13px
@@ -456,7 +456,7 @@ a {
 		padding: 6px 8px;
 		border-radius: 999px;
 		align-items: center;
-		background: rgba(6, 8, 10, 0.64) !important;
+		background: color-mix(in srgb, var(--surface-bg-dark) 64%, transparent) !important;
 		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
 	}
 
@@ -477,16 +477,16 @@ a {
 	padding: 10px 12px;
 	border-radius: 12px;
 	background: transparent;
-	border: 1px solid rgba(255, 255, 255, 0.03);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
 	box-shadow: none;
 }
 
 .inventory-pagination button {
 	-webkit-appearance: none;
 	appearance: none;
-	background: rgba(255, 255, 255, 0.02);
-	color: rgba(255, 255, 255, 0.95);
-	border: 1px solid rgba(255, 255, 255, 0.04);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
+	color: color-mix(in srgb, var(--text-on-dark-strong) 95%, transparent);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 	padding: 8px 12px;
 	border-radius: 10px;
 	cursor: pointer;
@@ -499,7 +499,7 @@ a {
 .inventory-pagination button:hover {
 	transform: translateY(-2px);
 	box-shadow: none;
-	background: rgba(255, 255, 255, 0.04);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 }
 
 .inventory-pagination button:disabled {
@@ -511,14 +511,14 @@ a {
 
 .inventory-pagination .page-btn.active {
 	background: var(--accent);
-	color: #ffffff;
+	color: var(--color-on-primary);
 	border-color: var(--accent);
 	box-shadow: none;
 	transform: none;
 }
 
 .inventory-pagination .ellipsis {
-	color: rgba(255, 255, 255, 0.5);
+	color: color-mix(in srgb, var(--text-on-dark-strong) 50%, transparent);
 	padding: 0 6px;
 }
 
@@ -558,11 +558,11 @@ a {
 
 .filter-row input,
 .filter-row select {
-	background: rgba(255, 255, 255, 0.02);
-	border: 1px solid rgba(255, 255, 255, 0.04);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 	padding: 10px;
 	border-radius: 8px;
-	color: #fff
+	color: var(--text-on-dark-strong)
 }
 
 .filter-row input[type="number"] {
@@ -579,7 +579,7 @@ a {
 
 .car-card {
 	position: relative;
-	background: linear-gradient(180deg, rgba(12, 14, 16, 0.85), rgba(6, 8, 10, 0.85));
+	background: linear-gradient(180deg, color-mix(in srgb, var(--surface-card-dark) 85%, transparent), color-mix(in srgb, var(--surface-bg-dark) 85%, transparent));
 	border-radius: 12px;
 	overflow: hidden;
 	/* subtle accent/grey border */
@@ -601,14 +601,14 @@ a {
 	gap: 8px;
 	padding: 6px 10px;
 	border-radius: 999px;
-	color: #fff;
+	color: var(--text-on-dark-strong);
 	font-weight: 700;
 	font-size: 12px;
 	line-height: 1;
 	text-transform: none;
 	backdrop-filter: blur(6px);
 	-webkit-backdrop-filter: blur(6px);
-	border: 1px solid rgba(255, 255, 255, 0.06);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
 }
 
 .car-card .stock-badge::before {
@@ -616,25 +616,25 @@ a {
 	width: 8px;
 	height: 8px;
 	border-radius: 50%;
-	background: rgba(255, 255, 255, 0.9);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);
 	opacity: 0.95;
 	display: inline-block;
 }
 
 .car-card .stock-badge.stock-sold {
-	background-color: #dc2626;
+	background-color: var(--t-error);
 }
 
 .car-card .stock-badge.stock-reserved {
-	background-color: #ea580c;
+	background-color: color-mix(in srgb, var(--t-error) 55%, var(--color-accent));
 }
 
 .car-card .stock-badge.stock-pending {
-	background-color: #ca8a04;
+	background-color: var(--color-accent);
 }
 
 .car-card .stock-badge.stock-withdrawn {
-	background-color: #6b7280;
+	background-color: var(--color-muted);
 }
 
 /* Slightly reduce badge size on small screens */
@@ -710,7 +710,7 @@ a {
 .car-title {
 	margin: 0;
 	font-size: 16px;
-	color: #fff
+	color: var(--text-on-dark-strong)
 }
 
 .title-row {
@@ -735,7 +735,7 @@ a {
 }
 
 .meta {
-	color: rgba(255, 255, 255, 0.7);
+	color: color-mix(in srgb, var(--text-on-dark-strong) 70%, transparent);
 	font-size: 13px;
 	/* default: single-line with ellipsis to keep grid tidy */
 	white-space: nowrap;
@@ -756,25 +756,25 @@ a {
 }
 
 .btn {
-	background: linear-gradient(90deg, rgba(255, 255, 255, 0.98), rgba(246, 244, 239, 0.98));
+	background: linear-gradient(90deg, color-mix(in srgb, var(--color-surface) 98%, transparent), color-mix(in srgb, var(--surface-bg-light) 98%, transparent));
 	border: none;
 	padding: 8px 12px;
 	border-radius: 8px;
 	cursor: pointer;
-	color: #071018;
+	color: var(--text-on-light-strong);
 	font-weight: 700;
 	box-shadow: 0 6px 18px rgba(6, 8, 10, 0.04)
 }
 
 .btn.ghost {
 	background: transparent;
-	border: 1px solid rgba(6, 8, 10, 0.06);
-	color: #071018
+	border: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent);
+	color: var(--text-on-light-strong)
 }
 
 .btn.details {
-	background: linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(249, 247, 244, 0.98));
-	color: #071018;
+	background: linear-gradient(90deg, color-mix(in srgb, var(--color-surface) 96%, transparent), color-mix(in srgb, var(--surface-bg-light) 98%, transparent));
+	color: var(--text-on-light-strong);
 	border-radius: 8px;
 	padding: 8px 10px;
 	box-shadow: 0 6px 14px rgba(6, 8, 10, 0.03)
@@ -925,7 +925,7 @@ a {
 
 
 .car-meta {
-	color: rgba(255, 255, 255, 0.85);
+	color: color-mix(in srgb, var(--text-on-dark-strong) 85%, transparent);
 	font-size: 13px;
 	margin-top: 6px;
 	display: grid;
@@ -938,12 +938,12 @@ a {
 .car-meta span {
 	display: inline-flex;
 	gap: 8px;
-	background: rgba(255, 255, 255, 0.03);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
 	padding: 6px 8px;
 	border-radius: 12px;
 	font-size: 13px;
-	color: rgba(255, 255, 255, 0.95);
-	border: 1px solid rgba(255, 255, 255, 0.03);
+	color: color-mix(in srgb, var(--text-on-dark-strong) 95%, transparent);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
 	box-shadow: 0 6px 18px rgba(2, 6, 23, 0.45)
 }
 
@@ -963,11 +963,11 @@ a {
 
 .vehicle-features li {
 	list-style: none;
-	background: rgba(255, 255, 255, 0.03);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
 	padding: 6px 8px;
 	border-radius: 8px;
 	font-size: 13px;
-	color: rgba(255, 255, 255, 0.9)
+	color: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent)
 }
 
 /* Footer row inside card: price (left) and view details (right) */
@@ -1091,8 +1091,8 @@ a {
 	width: 36px;
 	height: 36px;
 	border-radius: 8px;
-	background: rgba(255, 255, 255, 0.03);
-	border: 1px solid rgba(255, 255, 255, 0.04);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 	display: inline-grid;
 	place-items: center
 }
@@ -1103,8 +1103,8 @@ a {
 }
 
 .card-share .icon-btn.saved {
-	background: linear-gradient(90deg, var(--accent), #d1b57a);
-	color: #060606;
+	background: linear-gradient(90deg, var(--accent), var(--color-primary));
+	color: var(--color-on-primary);
 	border-color: transparent;
 	box-shadow: 0 8px 22px rgba(var(--accent-rgb), 0.12)
 }
@@ -1217,11 +1217,11 @@ a {
 .car-modal[aria-hidden="false"] {
 	pointer-events: auto;
 	opacity: 1;
-	background: linear-gradient(180deg, rgba(2, 6, 23, 0.6), rgba(2, 6, 23, 0.6))
+	background: linear-gradient(180deg, color-mix(in srgb, var(--color-text) 60%, transparent), color-mix(in srgb, var(--color-text) 60%, transparent))
 }
 
 .car-modal-inner {
-	background: linear-gradient(180deg, rgba(10, 10, 12, 0.98), rgba(6, 8, 10, 0.96));
+	background: linear-gradient(180deg, color-mix(in srgb, var(--surface-card-dark) 98%, transparent), color-mix(in srgb, var(--surface-bg-dark) 96%, transparent));
 	padding: 18px;
 	border-radius: 12px;
 	display: flex;
@@ -1239,7 +1239,7 @@ a {
 }
 
 .modal-body {
-	color: #fff
+	color: var(--text-on-dark-strong)
 }
 
 .modal-title {
@@ -1248,7 +1248,7 @@ a {
 }
 
 .modal-meta {
-	color: rgba(255, 255, 255, 0.8);
+	color: color-mix(in srgb, var(--text-on-dark-strong) 80%, transparent);
 	margin-top: 8px
 }
 
@@ -1260,8 +1260,8 @@ a {
 
 .modal-close {
 	background: transparent;
-	border: 1px solid rgba(255, 255, 255, 0.06);
-	color: #fff;
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
+	color: var(--text-on-dark-strong);
 	border-radius: 8px;
 	padding: 6px 8px;
 	cursor: pointer;
@@ -1289,7 +1289,7 @@ a {
 	justify-content: space-between;
 	align-items: center;
 	padding: 32px 0;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+	border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
 	gap: 18px;
 	position: sticky;
 	top: 0;
@@ -1301,7 +1301,7 @@ a {
 .inventory-title {
 	font-family: var(--font-display);
 	font-size: 18px;
-	color: #fff;
+	color: var(--text-on-dark-strong);
 	margin: 0 0 6px 0
 }
 
@@ -1325,7 +1325,7 @@ a {
 	display: flex;
 	gap: 18px;
 	align-items: center;
-	color: rgba(255, 255, 255, 0.85);
+	color: color-mix(in srgb, var(--text-on-dark-strong) 85%, transparent);
 	font-size: 14px
 }
 
@@ -1343,25 +1343,25 @@ a {
 .inline-search {
 	padding: 8px 10px;
 	border-radius: 8px;
-	border: 1px solid rgba(255, 255, 255, 0.04);
-	background: rgba(255, 255, 255, 0.02);
-	color: #fff
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
+	color: var(--text-on-dark-strong)
 }
 
 .inline-select {
 	padding: 8px 10px;
 	border-radius: 8px;
-	border: 1px solid rgba(255, 255, 255, 0.04);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 	background: transparent;
-	color: #fff
+	color: var(--text-on-dark-strong)
 }
 
 .view-toggle .icon-btn {
 	background: transparent;
-	border: 1px solid rgba(255, 255, 255, 0.04);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 	padding: 8px;
 	border-radius: 8px;
-	color: #fff
+	color: var(--text-on-dark-strong)
 }
 
 /* Small screens: stack header elements and simplify controls for mobile */
@@ -1427,9 +1427,9 @@ a {
 .inventory-header .inline-select,
 .inventory-header .filters-inline .inline-search,
 .inventory-header .filters-inline .inline-select {
-	background: rgba(255, 255, 255, 0.04);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 	border: 1px solid rgba(var(--accent-rgb), 0.10);
-	color: #fff;
+	color: var(--text-on-dark-strong);
 	padding: 8px 10px;
 	border-radius: 10px;
 	box-shadow: 0 6px 18px rgba(2, 6, 23, 0.45);
@@ -1438,12 +1438,12 @@ a {
 
 .inventory-header .inline-search::placeholder,
 .inventory-header .filters-inline .inline-search::placeholder {
-	color: rgba(255, 255, 255, 0.6);
+	color: color-mix(in srgb, var(--text-on-dark-strong) 60%, transparent);
 }
 
 /* Use accent color for selects (subtle) and focus rings */
 .inventory-header .inline-select {
-	background-image: linear-gradient(180deg, rgba(var(--accent-rgb), 0.02), rgba(255, 255, 255, 0.00));
+	background-image: linear-gradient(180deg, rgba(var(--accent-rgb), 0.02), color-mix(in srgb, var(--text-on-dark-strong) 0%, transparent));
 }
 
 .inventory-header .inline-select:focus,
@@ -1458,9 +1458,9 @@ a {
 /* Make small header icon buttons stand out with a muted background and accent focus */
 .inventory-header .view-toggle .icon-btn,
 .inventory-header .filters-inline .icon-btn {
-	background: rgba(255, 255, 255, 0.035);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 3.5%, transparent);
 	border: 1px solid rgba(var(--accent-rgb), 0.08);
-	color: #fff;
+	color: var(--text-on-dark-strong);
 	box-shadow: 0 6px 18px rgba(2, 6, 23, 0.32);
 }
 
@@ -1482,7 +1482,7 @@ a {
 
 /* Sticky state: when header becomes stuck at the top of the viewport */
 .inventory-header.stuck {
-	background: rgba(6, 8, 10, 0.96);
+	background: color-mix(in srgb, var(--surface-bg-dark) 96%, transparent);
 	/* dark background when sticky */
 	box-shadow: 0 8px 30px rgba(2, 6, 23, 0.7);
 	padding-top: 12px;
@@ -1493,7 +1493,7 @@ a {
 .inventory-header.stuck .inline-search,
 .inventory-header.stuck .inline-select {
 	box-shadow: none;
-	border-color: rgba(255, 255, 255, 0.06);
+	border-color: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
 }
 
 /* Gradient border line at the bottom of the inventory header */
@@ -1519,7 +1519,7 @@ a {
 	background: linear-gradient(90deg,
 			rgba(var(--accent-rgb), 1) 0%,
 			rgba(var(--accent-rgb), 0.92) 6%,
-			rgba(255, 255, 255, 0.02) 50%,
+			color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent) 50%,
 			rgba(var(--accent-rgb), 0.92) 94%,
 			rgba(var(--accent-rgb), 1) 100%);
 	opacity: 0.45;
@@ -1534,7 +1534,7 @@ a {
 	background: linear-gradient(90deg,
 			rgba(var(--accent-rgb), 1) 0%,
 			rgba(var(--accent-rgb), 0.98) 8%,
-			rgba(255, 255, 255, 0.06) 50%,
+			color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent) 50%,
 			rgba(var(--accent-rgb), 0.98) 92%,
 			rgba(var(--accent-rgb), 1) 100%);
 }
@@ -1581,9 +1581,9 @@ a {
 	gap: 8px;
 	padding: 6px 10px;
 	border-radius: 999px;
-	background: rgba(255, 255, 255, 0.03);
-	border: 1px solid rgba(255, 255, 255, 0.04);
-	color: rgba(255, 255, 255, 0.95);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
+	color: color-mix(in srgb, var(--text-on-dark-strong) 95%, transparent);
 	font-size: 13px;
 	box-shadow: none;
 }
@@ -1641,12 +1641,12 @@ a {
 	background: var(--accent);
 	padding: 6px 8px;
 	border-radius: 999px;
-	color: #fff;
+	color: var(--color-on-primary);
 	font-weight: 700;
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
-	border: 1px solid rgba(255, 255, 255, 0.04)
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent)
 }
 
 .media .img-count svg {
@@ -1663,7 +1663,7 @@ a {
 	border: 0;
 	display: inline-grid;
 	place-items: center;
-	color: #fff;
+	color: var(--color-on-primary);
 	cursor: pointer;
 	backdrop-filter: blur(6px);
 	transition: transform .14s ease, background .14s ease, opacity .14s ease
@@ -1677,13 +1677,13 @@ a {
 }
 
 .icon-btn.saved {
-	background: linear-gradient(90deg, var(--accent), #d1b57a);
-	color: #060606;
+	background: linear-gradient(90deg, var(--accent), var(--color-primary));
+	color: var(--color-on-primary);
 	border-color: transparent
 }
 
 .icon-btn:focus {
-	outline: 3px solid rgba(8, 112, 255, 0.12);
+	outline: 3px solid color-mix(in srgb, var(--color-accent) 12%, transparent);
 	outline-offset: 2px
 }
 
@@ -1717,7 +1717,7 @@ a {
 .used-page .car-card>a {
 	background-image: none !important;
 	box-shadow: none !important;
-	border: 1px solid #1018200f !important;
+	border: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent) !important;
 	border-radius: 12px;
 }
 
@@ -1735,8 +1735,8 @@ a {
 
 /* Card body: subtle light background to separate content from media */
 .used-page .car-card .card-body {
-	background: rgba(255, 255, 255, 0.02);
-	border-top: 1px solid rgba(255, 255, 255, 0.03);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
+	border-top: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
 	border-bottom-left-radius: 12px;
 	border-bottom-right-radius: 12px;
 	padding: 14px;
@@ -1749,22 +1749,22 @@ a {
 .used-page .btn-cta-primary,
 .used-page .icon-btn.saved {
 	background-image: none !important;
-	background: rgba(255, 255, 255, 0.02);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
 	box-shadow: none !important;
-	color: rgba(255, 255, 255, 0.95);
-	border: 1px solid rgba(255, 255, 255, 0.03);
+	color: color-mix(in srgb, var(--text-on-dark-strong) 95%, transparent);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
 }
 
 /* Saved state: use solid accent color for clarity */
 .used-page .icon-btn.saved {
 	background: var(--accent);
-	color: #fff;
+	color: var(--color-on-primary);
 }
 
 /* Media overlay hover: avoid gradient transitions */
 .used-page .media-overlay .icon-btn:hover {
 	transform: none;
-	background: rgba(255, 255, 255, 0.03);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
 }
 
 /* Remove backdrop-filter effects on cars page */
@@ -1813,11 +1813,11 @@ a {
 
 /* Light-theme inventory overrides (scoped to .used-page) */
 .used-page {
-	--inventory-page-bg: #f6f7f9;
-	--inventory-card-bg: #ffffff;
-	--inventory-card-body-bg: #fbfbfd;
-	--inventory-text: #0b1720;
-	--inventory-muted: #6b7280;
+	--inventory-page-bg: var(--surface-bg-light);
+	--inventory-card-bg: var(--surface-card-light);
+	--inventory-card-body-bg: var(--color-surface);
+	--inventory-text: var(--text-on-light-strong);
+	--inventory-muted: var(--color-muted);
 }
 
 /* Page band background to lift content from the site background */
@@ -1829,7 +1829,7 @@ a {
 .used-page .car-card {
 	background: var(--inventory-card-bg) !important;
 	color: var(--inventory-text) !important;
-	border: 1px solid rgba(16, 24, 32, 0.06) !important;
+	border: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent) !important;
 }
 
 /* Card hover: subtle lift without heavy shadow */
@@ -1848,14 +1848,14 @@ a {
 .used-page .car-card .card-body {
 	background: var(--inventory-card-body-bg) !important;
 	color: var(--inventory-text) !important;
-	border-top: 1px solid rgba(16, 24, 32, 0.04);
+	border-top: 1px solid color-mix(in srgb, var(--color-text) 4%, transparent);
 }
 
 /* Meta chips: light chip with muted text */
 .used-page .car-meta span {
-	background: #f3f4f6 !important;
+	background: var(--color-surface) !important;
 	color: var(--inventory-text) !important;
-	border: 1px solid rgba(16, 24, 32, 0.04) !important;
+	border: 1px solid color-mix(in srgb, var(--color-text) 4%, transparent) !important;
 	box-shadow: none !important;
 }
 
@@ -1868,16 +1868,16 @@ a {
 .used-page .btn,
 .used-page .btn.details,
 .used-page .inventory-pagination button {
-	background: #ffffff !important;
+	background: var(--surface-card-light) !important;
 	color: var(--inventory-text) !important;
-	border: 1px solid rgba(16, 24, 32, 0.06) !important;
+	border: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent) !important;
 	box-shadow: none !important;
 }
 
 .used-page .btn-cta-primary,
 .used-page .inventory-pagination .page-btn.active {
 	background: var(--accent) !important;
-	color: #fff !important;
+	color: var(--color-on-primary) !important;
 	border-color: var(--accent) !important;
 	box-shadow: none !important;
 }
@@ -1885,14 +1885,14 @@ a {
 /* Small icon buttons (save/share): soft light circle with accent on saved */
 .used-page .media-overlay .icon-btn,
 .used-page .card-share .icon-btn {
-	background: rgba(0, 0, 0, 0.06) !important;
+	background: color-mix(in srgb, var(--color-text) 6%, transparent) !important;
 	color: var(--inventory-text) !important;
-	border: 1px solid rgba(16, 24, 32, 0.04) !important;
+	border: 1px solid color-mix(in srgb, var(--color-text) 4%, transparent) !important;
 }
 
 .used-page .icon-btn.saved {
 	background: var(--accent) !important;
-	color: #fff !important;
+	color: var(--color-on-primary) !important;
 }
 
 /* Pagination wrapper: subtle transparent band on the page bg */
@@ -1903,15 +1903,15 @@ a {
 /* Inventory header controls: light inputs */
 .used-page .inventory-header .inline-search,
 .used-page .inventory-header .inline-select {
-	background: #fff !important;
+	background: var(--surface-card-light) !important;
 	color: var(--inventory-text) !important;
-	border: 1px solid rgba(16, 24, 32, 0.06) !important;
+	border: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent) !important;
 	box-shadow: none !important;
 }
 
 /* Modal: light surface */
 .used-page .car-modal-inner {
-	background: #ffffff !important;
+	background: var(--surface-card-light) !important;
 	color: var(--inventory-text) !important;
 	box-shadow: 0 16px 48px rgba(16, 24, 32, 0.12) !important;
 }
@@ -1920,7 +1920,7 @@ a {
 .used-page .inventory-header {
 	background: transparent !important;
 	color: var(--inventory-text) !important;
-	border-bottom: 1px solid rgba(16, 24, 32, 0.06) !important;
+	border-bottom: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent) !important;
 }
 
 .used-page .inventory-title {
@@ -1939,17 +1939,17 @@ a {
 /* Header controls */
 .used-page .inventory-header .view-toggle .icon-btn,
 .used-page .inventory-header .filters-inline .icon-btn {
-	background: #fff !important;
-	border: 1px solid rgba(16, 24, 32, 0.04) !important;
+	background: var(--surface-card-light) !important;
+	border: 1px solid color-mix(in srgb, var(--color-text) 4%, transparent) !important;
 	color: var(--inventory-text) !important;
 	box-shadow: none !important;
 }
 
 .used-page .inventory-header .inline-search,
 .used-page .inventory-header .inline-select {
-	background: #fff !important;
+	background: var(--surface-card-light) !important;
 	color: var(--inventory-text) !important;
-	border: 1px solid rgba(16, 24, 32, 0.06) !important;
+	border: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent) !important;
 	box-shadow: none !important;
 }
 
@@ -1969,8 +1969,8 @@ a {
 }
 
 .used-page .car-card .stock-badge {
-	border: 1px solid rgba(16, 24, 32, 0.04) !important;
-	color: #fff !important;
+	border: 1px solid color-mix(in srgb, var(--color-text) 4%, transparent) !important;
+	color: var(--text-on-dark-strong) !important;
 }
 
 .used-page .details-link {

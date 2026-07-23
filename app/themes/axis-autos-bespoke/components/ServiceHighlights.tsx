@@ -39,9 +39,9 @@ const SERVICES = [
 
 export default function ServiceHighlights() {
   return (
-    <section className={`axis-section ${styles.section}`} aria-label="Services" data-aos="fade-up">
+    <section className={`axis-section ${styles.section}`} aria-label="Services">
       <div className="axis-shell">
-        <header className={styles.header}>
+        <header className={styles.header} data-aos="fade-up">
           <span className="axis-eyebrow">Services</span>
           <h2 className="axis-section-title">Everything you need, under one roof.</h2>
           <p className="axis-section-lead">
@@ -50,10 +50,10 @@ export default function ServiceHighlights() {
         </header>
 
         <ul className={styles.grid}>
-          {SERVICES.map((s) => {
+          {SERVICES.map((s, i) => {
             const Icon = s.icon
             return (
-              <li key={s.title}>
+              <li key={s.title} data-aos="fade-up" data-aos-delay={String(Math.min(i * 80, 320))}>
                 <Link href={s.href} className={styles.item}>
                   <span className={styles.iconBox} aria-hidden="true">
                     <Icon size={22} strokeWidth={1.6} />

@@ -43,7 +43,7 @@
 }
 .rail::-webkit-scrollbar { height: 6px; }
 .rail::-webkit-scrollbar-track { background: transparent; }
-.rail::-webkit-scrollbar-thumb { background: rgba(209,182,122,0.5); border-radius: 999px; }
+.rail::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--kain-accent-warm) 50%, transparent); border-radius: 999px; }
 .railCell { scroll-snap-align: start; min-width: 0; }
 
 @media (min-width: 960px) {
@@ -58,7 +58,7 @@
 }
 .skeleton {
   aspect-ratio: 4 / 3;
-  background: linear-gradient(120deg, var(--surface-bg-light) 0%, rgba(209,182,122,0.08) 50%, var(--surface-bg-light) 100%);
+  background: linear-gradient(120deg, var(--surface-bg-light) 0%, color-mix(in srgb, var(--kain-accent-warm) 8%, transparent) 50%, var(--surface-bg-light) 100%);
   background-size: 200% 100%;
   border-radius: 6px;
   animation: aSkel 2s linear infinite;

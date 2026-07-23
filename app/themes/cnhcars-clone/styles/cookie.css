@@ -6,9 +6,9 @@
   bottom: 0;
   max-width: none;
   margin: 0;
-  background: rgba(7, 12, 20, 0.96);
-  color: #e8efff;
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  background: color-mix(in srgb, var(--surface-bg-dark) 96%, transparent);
+  color: var(--text-on-dark-strong);
+  border-top: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 14%, transparent);
   box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.4);
   padding: 1rem 1rem;
   display: flex;
@@ -28,20 +28,20 @@
   pointer-events: auto;
 }
 .cookie-banner .cookie-left { display:flex; gap:0.55rem; align-items:center; flex:1; min-width:0; }
-.cookie-banner .cookie-icon { width:22px; height:22px; flex-shrink:0; color:#95b7ff; }
+.cookie-banner .cookie-icon { width:22px; height:22px; flex-shrink:0; color:var(--color-accent); }
 .cookie-banner .cookie-content { display:flex; flex-direction:column; gap:0.25rem; }
-.cookie-banner h4 { margin:0; font-size:0.95rem; color:#ffffff; line-height:1.12; }
-.cookie-banner p { margin:0; color:rgba(228, 237, 255, 0.92); font-size:0.9rem; line-height:1.4; }
+.cookie-banner h4 { margin:0; font-size:0.95rem; color:var(--text-on-dark-strong); line-height:1.12; }
+.cookie-banner p { margin:0; color:color-mix(in srgb, var(--color-surface) 92%, transparent); font-size:0.9rem; line-height:1.4; }
 .cookie-banner .cookie-policy-link {
   display: inline;
   font-size: 0.88rem;
   font-weight: 600;
-  color: #8eb4ff;
+  color: var(--color-accent);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 .cookie-banner .cookie-policy-link:hover {
-  color: #c1d6ff;
+  color: color-mix(in srgb, var(--color-accent) 70%, var(--color-bg));
 }
 .cookie-banner .cookie-actions { display:flex; gap:0.4rem; align-items:center; margin-left:0.65rem; }
 .cookie-btn {
@@ -50,21 +50,21 @@
 .cookie-btn i, .cookie-btn svg { width:16px; height:16px; }
 .cookie-btn.cookie-btn-reject {
   background: transparent;
-  border-color: rgba(255, 255, 255, 0.34);
-  color: #e9f0ff;
+  border-color: color-mix(in srgb, var(--text-on-dark-strong) 34%, transparent);
+  color: var(--text-on-dark-strong);
 }
 .cookie-btn.cookie-btn-reject:hover {
-  border-color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.06);
+  border-color: color-mix(in srgb, var(--text-on-dark-strong) 50%, transparent);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
 }
 .cookie-btn.cookie-btn-accept {
-  background: #3f77ef;
-  border-color: #3f77ef;
-  color: #ffffff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
 }
 .cookie-btn.cookie-btn-accept:hover {
-  background: #3468d9;
-  border-color: #3468d9;
+  background: var(--color-primary-strong);
+  border-color: var(--color-primary-strong);
 }
 .cookie-btn.cookie-btn-close {
   width: 34px;
@@ -72,12 +72,12 @@
   padding: 0;
   justify-content: center;
   background: transparent;
-  border-color: rgba(255, 255, 255, 0.24);
-  color: #d5e4ff;
+  border-color: color-mix(in srgb, var(--text-on-dark-strong) 24%, transparent);
+  color: var(--text-on-dark-strong);
 }
 .cookie-btn.cookie-btn-close:hover {
-  border-color: rgba(255, 255, 255, 0.42);
-  background: rgba(255, 255, 255, 0.06);
+  border-color: color-mix(in srgb, var(--text-on-dark-strong) 42%, transparent);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
 }
 
 /* Preferences panel */
@@ -110,7 +110,7 @@
 .cookie-btn.cookie-save { background: var(--primary); color:var(--white); }
 
 /* Off-canvas sidebar and backdrop */
-.cookie-backdrop { position:fixed; inset:0; background:rgba(5,10,15,0.45); opacity:0; pointer-events:none; transition:opacity 220ms ease; z-index:1220; }
+.cookie-backdrop { position:fixed; inset:0; background:color-mix(in srgb, var(--surface-bg-dark) 45%, transparent); opacity:0; pointer-events:none; transition:opacity 220ms ease; z-index:1220; }
 .cookie-backdrop.show { opacity:1; pointer-events:auto; }
 .cookie-sidebar { position:fixed; left:0; top:0; bottom:0; width:360px; max-width:85%; background:var(--surface-card); box-shadow: 12px 0 40px rgba(5,10,15,0.12); transform:translateX(-108%); transition:transform 300ms cubic-bezier(.2,.9,.3,1); z-index:1230; overflow:auto; }
 .cookie-sidebar[aria-hidden="true"] { transform:translateX(-108%); }

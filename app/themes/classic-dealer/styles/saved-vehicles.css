@@ -10,7 +10,7 @@
     padding: 72px 0 96px;
     background: var(--white);
     min-height: 100vh;
-    border-top: 1px solid #ecf0f4;
+    border-top: 1px solid var(--color-border);
 }
 
 .saved-vehicles-section::before {
@@ -50,7 +50,7 @@
     display: inline-flex;
     align-items: center;
     gap: 18px;
-    border-bottom: 1px solid #dbe2ea;
+    border-bottom: 1px solid var(--color-border);
     padding-bottom: 6px;
 }
 
@@ -58,7 +58,7 @@
     position: relative;
     padding: 6px 0;
     text-decoration: none;
-    color: #64748b;
+    color: var(--color-muted);
     font-size: 14px;
     font-weight: 600;
     transition: color 0.2s ease;
@@ -98,12 +98,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px dashed #d7dee7;
+    border: 1px dashed var(--color-border);
     border-radius: 12px;
 }
 
 .saved-vehicles-empty {
-    border: 1px solid #dbe2ea;
+    border: 1px solid var(--color-border);
     border-radius: 12px;
     padding: 46px 28px;
     text-align: center;
@@ -143,7 +143,7 @@
 .saved-vehicles-empty a:hover {
     color: var(--primary-red-dark);
     border-color: var(--primary-red-dark);
-    background-color: #fff5f5;
+    background-color: var(--t-error-bg);
 }
 
 .saved-vehicles-toolbar {
@@ -153,8 +153,8 @@
     gap: 16px;
     margin-bottom: 22px;
     padding: 12px 0;
-    border-top: 1px solid #e3e9f0;
-    border-bottom: 1px solid #e3e9f0;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .saved-vehicles-toolbar p {
@@ -180,9 +180,9 @@
 }
 
 .saved-vehicles-toolbar button {
-    border: 1px solid #f3c0c0;
+    border: 1px solid var(--t-error-border);
     background: transparent;
-    color: #b91c1c;
+    color: var(--t-error);
     border-radius: 10px;
     min-height: 38px;
     padding: 0 14px;
@@ -193,9 +193,9 @@
 }
 
 .saved-vehicles-toolbar button:hover {
-    border-color: #ef4444;
-    color: #991b1b;
-    background-color: #fff6f6;
+    border-color: var(--t-error);
+    color: var(--t-error-strong);
+    background-color: var(--t-error-bg);
 }
 
 .saved-vehicles-snackbar {
@@ -210,8 +210,8 @@
     min-height: 42px;
     padding: 0 16px;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(15, 23, 42, 0.94);
+    border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+    background: color-mix(in srgb, var(--color-text) 94%, transparent);
     color: var(--white);
     font-size: 13px;
     font-weight: 600;
@@ -243,7 +243,7 @@
 }
 
 .saved-wishlist-row {
-    border: 1px solid #dbe2ea;
+    border: 1px solid var(--color-border);
     border-radius: 12px;
     padding: 12px;
     display: grid;
@@ -356,7 +356,7 @@
 
 .saved-wishlist-actions a,
 .saved-wishlist-actions button {
-    border: 1px solid #dbe2ea;
+    border: 1px solid var(--color-border);
     border-radius: 10px;
     min-height: 36px;
     padding: 0 12px;
@@ -373,40 +373,40 @@
 }
 
 .saved-wishlist-actions a {
-    border-color: #f4b4b4;
+    border-color: var(--t-error-border);
     color: var(--primary-red);
 }
 
 .saved-wishlist-actions a:hover {
     border-color: var(--primary-red);
     color: var(--primary-red-dark);
-    background-color: #fff6f6;
+    background-color: var(--t-error-bg);
 }
 
 .saved-wishlist-actions button {
-    color: #1d4ed8;
-    border-color: #bfdbfe;
+    color: var(--t-info);
+    border-color: var(--t-info-border);
 }
 
 .saved-wishlist-actions button:hover {
-    color: #1e40af;
-    border-color: #93c5fd;
-    background-color: #f4f8ff;
+    color: var(--t-info-strong);
+    border-color: var(--t-info-border);
+    background-color: var(--t-info-bg);
 }
 
 .saved-wishlist-actions button.is-danger {
-    color: #b91c1c;
-    border-color: #fecaca;
+    color: var(--t-error);
+    border-color: var(--t-error-border);
 }
 
 .saved-wishlist-actions button.is-danger:hover {
-    color: #991b1b;
-    border-color: #fda4af;
-    background-color: #fff6f6;
+    color: var(--t-error-strong);
+    border-color: var(--t-error-border);
+    background-color: var(--t-error-bg);
 }
 
 .saved-vehicle-card {
-    border: 1px solid #dbe2ea;
+    border: 1px solid var(--color-border);
     border-radius: 12px;
     overflow: hidden;
     transition: border-color 0.2s ease;
@@ -417,7 +417,7 @@
 }
 
 .saved-vehicle-card:hover {
-    border-color: #cbd5e1;
+    border-color: var(--color-border);
 }
 
 .saved-vehicle-media {
@@ -516,7 +516,7 @@
 
 .saved-vehicle-actions a,
 .saved-vehicle-actions button {
-    border: 1px solid #dbe2ea;
+    border: 1px solid var(--color-border);
     border-radius: 10px;
     min-height: 40px;
     padding: 0 14px;
@@ -534,48 +534,48 @@
 }
 
 .saved-vehicle-actions a {
-    border-color: #f4b4b4;
+    border-color: var(--t-error-border);
     color: var(--primary-red);
 }
 
 .saved-vehicle-actions a:hover {
     border-color: var(--primary-red);
     color: var(--primary-red-dark);
-    background-color: #fff6f6;
+    background-color: var(--t-error-bg);
 }
 
 .saved-vehicle-actions button {
-    color: #1d4ed8;
-    border-color: #bfdbfe;
+    color: var(--t-info);
+    border-color: var(--t-info-border);
 }
 
 .saved-vehicle-actions button:hover {
-    color: #1e40af;
-    border-color: #93c5fd;
-    background-color: #f4f8ff;
+    color: var(--t-info-strong);
+    border-color: var(--t-info-border);
+    background-color: var(--t-info-bg);
 }
 
 .saved-vehicle-actions button.is-danger {
-    color: #b91c1c;
-    border-color: #fecaca;
+    color: var(--t-error);
+    border-color: var(--t-error-border);
 }
 
 .saved-vehicle-actions button.is-danger:hover {
-    color: #991b1b;
-    border-color: #fda4af;
-    background-color: #fff6f6;
+    color: var(--t-error-strong);
+    border-color: var(--t-error-border);
+    background-color: var(--t-error-bg);
 }
 
 .saved-compare-wrap {
     margin-top: 28px;
-    border: 1px solid #dbe2ea;
+    border: 1px solid var(--color-border);
     border-radius: 12px;
     overflow: hidden;
 }
 
 .saved-compare-insights {
     margin-top: 24px;
-    border: 1px solid #dbe2ea;
+    border: 1px solid var(--color-border);
     border-radius: 12px;
     padding: 16px;
 }
@@ -604,7 +604,7 @@
 }
 
 .saved-compare-insight-item {
-    border: 1px solid #e8edf2;
+    border: 1px solid var(--color-border);
     border-radius: 10px;
     padding: 10px 12px;
     display: flex;
@@ -614,7 +614,7 @@
 }
 
 .saved-compare-insight-item span {
-    color: #64748b;
+    color: var(--color-muted);
     font-size: 12px;
     line-height: 1.3;
 }
@@ -630,7 +630,7 @@
     margin: 12px 0 0;
     padding: 0;
     list-style: none;
-    border: 1px solid #e8edf2;
+    border: 1px solid var(--color-border);
     border-radius: 10px;
     overflow: hidden;
 }
@@ -641,9 +641,9 @@
     align-items: center;
     gap: 12px;
     padding: 10px 12px;
-    border-bottom: 1px solid #eef2f6;
+    border-bottom: 1px solid var(--color-border);
     font-size: 13px;
-    color: #475569;
+    color: var(--color-muted);
 }
 
 .saved-compare-price-list li:last-child {
@@ -669,7 +669,7 @@
     font-size: 13px;
     font-weight: 700;
     padding: 16px 14px;
-    border-bottom: 1px solid #dbe2ea;
+    border-bottom: 1px solid var(--color-border);
     text-align: left;
 }
 
@@ -677,13 +677,13 @@
 .saved-compare-table td {
     padding: 14px;
     text-align: left;
-    border-bottom: 1px solid #e8edf2;
+    border-bottom: 1px solid var(--color-border);
     vertical-align: top;
 }
 
 .saved-compare-table tbody th {
     width: 200px;
-    color: #475569;
+    color: var(--color-muted);
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
@@ -701,8 +701,8 @@
 .saved-compare-hint {
     margin: 20px 0 0;
     border-radius: 10px;
-    border: 1px dashed #cbd5e1;
-    color: #475569;
+    border: 1px dashed var(--color-border);
+    color: var(--color-muted);
     padding: 14px 16px;
     font-size: 14px;
     line-height: 1.6;
@@ -758,7 +758,7 @@
         grid-column: 1 / -1;
         min-width: 0;
         width: 100%;
-        border-top: 1px solid #e8edf2;
+        border-top: 1px solid var(--color-border);
         padding-top: 10px;
         display: flex;
         flex-direction: row;

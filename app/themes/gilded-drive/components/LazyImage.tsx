@@ -13,7 +13,7 @@ type LazyImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
 
 const TRANSPARENT_PIXEL = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='
 
-const defaultPlaceholder = 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)'
+const defaultPlaceholder = 'linear-gradient(135deg, var(--surface-card-light) 0%, var(--border-on-light) 100%)'
 
 const LazyImage = forwardRef<HTMLImageElement, LazyImageProps>(function LazyImage(
   { src, alt, rootMargin = '200px', threshold = 0.01, placeholder = TRANSPARENT_PIXEL, priority = false, className, style, ...rest },

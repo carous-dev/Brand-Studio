@@ -52,9 +52,9 @@
   gap: 14px;
 }
 .cardLifted {
-  background: #0a0e14;
-  color: #ffffff;
-  border-color: rgba(209, 182, 122, 0.32);
+  background: var(--surface-bg-dark);
+  color: var(--text-on-dark-strong);
+  border-color: color-mix(in srgb, var(--kain-accent-warm) 32%, transparent);
 }
 @media (min-width: 880px) {
   .cardLifted { transform: translateY(-16px); }

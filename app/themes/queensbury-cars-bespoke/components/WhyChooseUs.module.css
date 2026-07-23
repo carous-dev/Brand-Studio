@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 1px;
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -47,7 +47,7 @@
   padding: 4px 10px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--brand-primary) 22%, transparent);
-  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
+  color: color-mix(in srgb, var(--brand-primary) 30%, var(--text-on-dark-strong));
   border: 1px solid color-mix(in srgb, var(--brand-primary) 32%, transparent);
 }
 
@@ -59,7 +59,7 @@
   height: 44px;
   border-radius: 4px;
   background: color-mix(in srgb, var(--brand-primary) 20%, transparent);
-  color: color-mix(in srgb, var(--brand-primary) 30%, #ffffff);
+  color: color-mix(in srgb, var(--brand-primary) 30%, var(--text-on-dark-strong));
 }
 
 .title {
@@ -67,11 +67,11 @@
   font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: -0.005em;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   margin: 0;
 }
 .desc {
-  color: rgba(255, 255, 255, 0.82);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 82%, transparent);
   font-size: 0.95rem;
   line-height: 1.55;
   margin: 0;

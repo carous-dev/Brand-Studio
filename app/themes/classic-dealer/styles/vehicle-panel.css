@@ -39,7 +39,7 @@
 .vehicle-panel-header {
     padding: 24px 32px 20px;
     position: relative;
-    background: #f5f5f7;
+    background: var(--color-surface);
 }
 
 .vehicle-panel-headline {
@@ -295,7 +295,7 @@
     flex: 1;
     padding: 10px;
     border-radius: 8px;
-    background: #f5f5f7;
+    background: var(--color-surface);
     border: 1px solid rgba(var(--brand-text-rgb), 0.15);
     color: var(--brand-text);
     cursor: pointer;

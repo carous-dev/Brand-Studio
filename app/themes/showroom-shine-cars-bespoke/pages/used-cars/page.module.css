@@ -35,8 +35,8 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 80% at 80% 30%, rgba(173, 11, 27, 0.32) 0%, transparent 60%),
-    linear-gradient(120deg, rgba(8, 11, 17, 0.92) 0%, rgba(8, 11, 17, 0.66) 50%, rgba(8, 11, 17, 0.92) 100%);
+    radial-gradient(ellipse 60% 80% at 80% 30%, color-mix(in srgb, var(--brand-primary) 32%, transparent) 0%, transparent 60%),
+    linear-gradient(120deg, rgba(8, 11, 17, 0.92) 0%, rgba(8, 11, 17, 0.66) 50%, rgba(8, 11, 17, 0.92) 100%); /* photo-scrim-ok */
   z-index: -2;
 }
 .heroPattern {
@@ -426,7 +426,7 @@
 .actionActive {
   border-color: var(--brand-primary);
   color: var(--brand-primary);
-  background: rgba(173, 11, 27, 0.06);
+  background: color-mix(in srgb, var(--brand-primary) 6%, transparent);
 }
 .actionActive .actionCount {
   background: var(--brand-primary);
@@ -705,7 +705,7 @@
 
 .skeletonCard {
   aspect-ratio: 16 / 19;
-  background: linear-gradient(110deg, var(--surface-card-light) 8%, rgba(229,232,238,0.4) 18%, var(--surface-card-light) 33%);
+  background: linear-gradient(110deg, var(--surface-card-light) 8%, color-mix(in srgb, var(--color-border) 40%, transparent) 18%, var(--surface-card-light) 33%);
   background-size: 200% 100%;
   animation: shimmer 1.4s linear infinite;
   border: 1px solid var(--border-on-light);

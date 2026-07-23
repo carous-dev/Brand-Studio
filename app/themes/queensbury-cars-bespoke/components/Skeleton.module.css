@@ -14,9 +14,9 @@
 .barDark {
   background: linear-gradient(
     100deg,
-    rgba(255, 255, 255, 0.06) 0%,
-    rgba(255, 255, 255, 0.16) 50%,
-    rgba(255, 255, 255, 0.06) 100%
+    color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent) 0%,
+    color-mix(in srgb, var(--text-on-dark-strong) 16%, transparent) 50%,
+    color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent) 100%
   );
   background-size: 200% 100%;
 }
@@ -56,7 +56,7 @@
   background: color-mix(in srgb, var(--text-on-light-strong) 4%, transparent);
 }
 .cardDark .cardImage {
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 }
 
 .cardBody {
@@ -82,7 +82,7 @@
   border-top: 1px solid var(--border-on-light);
 }
 .cardDark .cardFooter {
-  border-top-color: rgba(255, 255, 255, 0.08);
+  border-top-color: color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
 }
 
 .grid {

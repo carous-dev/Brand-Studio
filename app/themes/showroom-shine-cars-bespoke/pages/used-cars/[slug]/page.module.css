@@ -645,14 +645,14 @@
 }
 .skeletonHero {
   aspect-ratio: 16 / 9;
-  background: linear-gradient(110deg, var(--surface-card-light) 8%, rgba(229,232,238,0.4) 18%, var(--surface-card-light) 33%);
+  background: linear-gradient(110deg, var(--surface-card-light) 8%, color-mix(in srgb, var(--color-border) 40%, transparent) 18%, var(--surface-card-light) 33%);
   background-size: 200% 100%;
   animation: shimmer 1.4s linear infinite;
   border-radius: 6px;
 }
 .skeletonBody {
   height: 240px;
-  background: linear-gradient(110deg, var(--surface-card-light) 8%, rgba(229,232,238,0.4) 18%, var(--surface-card-light) 33%);
+  background: linear-gradient(110deg, var(--surface-card-light) 8%, color-mix(in srgb, var(--color-border) 40%, transparent) 18%, var(--surface-card-light) 33%);
   background-size: 200% 100%;
   animation: shimmer 1.4s linear infinite;
   border-radius: 6px;
@@ -723,9 +723,9 @@
   width: 44px;
   height: 44px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.1); /* photo-scrim-ok */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* photo-scrim-ok */
+  color: #fff; /* photo-scrim-ok */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -738,16 +738,16 @@
   width: 52px;
   height: 52px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.12); /* photo-scrim-ok */
   border: 0;
-  color: #fff;
+  color: #fff; /* photo-scrim-ok */
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
 }
 .lightboxNav:hover {
-  background: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.24); /* photo-scrim-ok */
 }
 .lightboxPrev { left: 24px; }
 .lightboxNext { right: 24px; }
@@ -757,9 +757,9 @@
   left: 50%;
   transform: translateX(-50%);
   padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.12); /* photo-scrim-ok */
   border-radius: 999px;
-  color: #fff;
+  color: #fff; /* photo-scrim-ok */
   font-family: var(--font-brand-family-override, 'Oswald', sans-serif);
   font-size: 0.85rem;
   font-weight: 700;

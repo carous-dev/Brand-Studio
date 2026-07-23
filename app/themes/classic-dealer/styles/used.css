@@ -4,7 +4,7 @@
 }
 
 .inventory-hero {
-	background: linear-gradient(135deg, var(--bg-elevated, #18261d) 0%, var(--bg-tertiary, #121c15) 40%, var(--bg-secondary, #0b120d) 100%);
+	background: linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-tertiary) 40%, var(--bg-secondary) 100%);
 	border-bottom: 4px solid var(--accent-primary);
 	text-align: center;
 	position: relative;
@@ -90,7 +90,7 @@
 	content: '';
 	position: absolute;
 	inset: 0;
-	background: linear-gradient(180deg, rgba(var(--accent-primary-rgb), 0.2) 0%, rgba(0, 0, 0, 0.35) 100%);
+	background: linear-gradient(180deg, rgba(var(--accent-primary-rgb), 0.2) 0%, rgba(0, 0, 0, 0.35) 100%); /* photo-scrim-ok */
 	mix-blend-mode: multiply;
 	pointer-events: none;
 	z-index: 1
@@ -100,7 +100,7 @@
 	content: '';
 	position: absolute;
 	inset: 0;
-	background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.00) 45%);
+	background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.00) 45%); /* photo-scrim-ok */
 	mix-blend-mode: multiply;
 	pointer-events: none;
 	z-index: 2
@@ -126,14 +126,14 @@
 	font-size: clamp(28px, 5vw, 48px);
 	font-weight: 900;
 	margin: 0 0 8px;
-	color: #1a1a1a;
+	color: var(--color-text);
 	font-family: var(--font-brand);
 	letter-spacing: -0.01em;
 	text-transform: uppercase;
 }
 
 .slide-lead {
-	color: rgba(255, 255, 255, 0.98);
+	color: color-mix(in srgb, var(--text-inverse) 98%, transparent);
 	margin: 0 0 20px;
 	font-size: 16px;
 	line-height: 1.6;
@@ -164,7 +164,7 @@
 	gap: 12px;
 	align-items: center;
 	padding: 8px;
-	background: rgba(26, 26, 26, 0.95);
+	background: color-mix(in srgb, var(--color-text) 95%, transparent);
 	border-radius: 12px;
 	z-index: 5;
 	backdrop-filter: blur(8px)
@@ -205,11 +205,11 @@
 	opacity: 1;
 	transform: none;
 	z-index: 2;
-	color: #fff;
+	color: var(--text-inverse);
 }
 
 .slide-title {
-	color: #fff;
+	color: var(--text-inverse);
 }
 
 /* Neon lighting: animated glow for active slide title and CTAs */
@@ -226,7 +226,7 @@
 
 /* Apply neon only to the active slide for subtlety */
 .carousel-slide[aria-hidden="false"] .slide-title {
-	color: #fff;
+	color: var(--text-inverse);
 	animation: neonPulse 3.6s ease-in-out infinite;
 }
 
@@ -278,9 +278,9 @@ a {
 
 /* Lighter, smaller CTA buttons - Plain Color Futuristic */
 .btn-cta-primary {
-	background: #ffffff;
-	color: #1a1a1a;
-	border: 2px solid #e5e5e5;
+	background: var(--color-surface);
+	color: var(--color-text);
+	border: 2px solid var(--color-border);
 	padding: 12px 20px;
 	border-radius: 12px;
 	font-weight: 700;
@@ -295,13 +295,13 @@ a {
 	content: '';
 	position: absolute;
 	inset: 0;
-	background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+	background: linear-gradient(135deg, color-mix(in srgb, var(--text-inverse) 20%, transparent) 0%, transparent 50%);
 	opacity: 0;
 	transition: opacity 0.3s ease;
 }
 
 .btn-cta-primary:hover {
-	background: #f8f9fa;
+	background: color-mix(in srgb, var(--color-text) 3%, var(--color-bg));
 	border-color: var(--accent-strong);
 	color: var(--accent-strong);
 	transform: translateY(-3px);
@@ -316,9 +316,9 @@ a {
 }
 
 .btn-cta-secondary {
-	background: rgba(255, 255, 255, 0.1);
+	background: color-mix(in srgb, var(--text-inverse) 10%, transparent);
 	color: var(--text-primary);
-	border: 2px solid rgba(255, 255, 255, 0.2);
+	border: 2px solid color-mix(in srgb, var(--text-inverse) 20%, transparent);
 	padding: 10px 18px;
 	border-radius: 12px;
 	cursor: pointer;
@@ -383,8 +383,8 @@ a {
 .inventory-pagination button {
 	-webkit-appearance: none;
 	appearance: none;
-	background: #ffffff;
-	color: rgba(26, 26, 26, 0.9);
+	background: var(--color-surface);
+	color: color-mix(in srgb, var(--color-text) 90%, transparent);
 	border: 1px solid rgba(var(--accent-primary-rgb), 0.3);
 	padding: 0 10px;
 	height: 32px;
@@ -398,7 +398,7 @@ a {
 }
 
 .inventory-pagination button:hover {
-	background: #ffffff;
+	background: var(--color-surface);
 	color: var(--accent-strong);
 	transform: none;
 	border: 1px solid rgba(var(--accent-primary-rgb), 0.6);
@@ -408,7 +408,7 @@ a {
 	opacity: 0.4;
 	cursor: not-allowed;
 	transform: none;
-	background: #ffffff;
+	background: var(--color-surface);
 }
 
 .inventory-pagination .page-btn.active {
@@ -447,11 +447,11 @@ a {
 
 .filter-row input,
 .filter-row select {
-	background: rgba(255, 255, 255, 0.02);
-	border: 1px solid rgba(255, 255, 255, 0.04);
+	background: color-mix(in srgb, var(--text-inverse) 2%, transparent);
+	border: 1px solid color-mix(in srgb, var(--text-inverse) 4%, transparent);
 	padding: 10px;
 	border-radius: 8px;
-	color: #1a1a1a;
+	color: var(--color-text);
 	font-family: var(--font-ui);
 }
 
@@ -469,10 +469,10 @@ a {
 
 .car-card {
 	position: relative;
-	background: #ffffff;
+	background: var(--color-surface);
 	border-radius: 12px;
 	overflow: hidden;
-	border: 2px solid #e5e5e5;
+	border: 2px solid var(--color-border);
 	border-top: 4px solid;
 	border-top-color: var(--accent-primary);
 	display: flex;
@@ -509,7 +509,7 @@ a {
 
 /* Short description preview: single-line ellipsis in grid view; full text in list view */
 .short-desc {
-	color: #8b949e;
+	color: var(--color-muted);
 	font-size: 14px;
 	line-height: 1.5;
 	margin: 4px 0 0;
@@ -538,7 +538,7 @@ a {
 .car-title {
 	margin: 0;
 	font-size: 18px;
-	color: #1a1a1a;
+	color: var(--color-text);
 	font-weight: 700;
 	line-height: 1.3;
 	letter-spacing: 0.5px;
@@ -612,7 +612,7 @@ a {
 	left: -100%;
 	width: 100%;
 	height: 100%;
-	background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+	background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--text-inverse) 20%, transparent), transparent);
 	transition: left .5s ease;
 }
 
@@ -802,7 +802,7 @@ gap: 8px;
 }
 
 .car-meta {
-color: #8b949e;
+color: var(--color-muted);
 font-size: 13px;
 margin-top: 8px;
 display: grid;
@@ -1001,8 +1001,8 @@ align-items: center;
 	width: 36px;
 	height: 36px;
 	border-radius: 8px;
-	background: rgba(255, 255, 255, 0.03);
-	border: 1px solid rgba(255, 255, 255, 0.04);
+	background: color-mix(in srgb, var(--text-inverse) 3%, transparent);
+	border: 1px solid color-mix(in srgb, var(--text-inverse) 4%, transparent);
 	display: inline-grid;
 	place-items: center
 }
@@ -1140,11 +1140,11 @@ main.used-page .car-card .media {
 .car-modal[aria-hidden="false"] {
 	pointer-events: auto;
 	opacity: 1;
-	background: linear-gradient(180deg, rgba(2, 6, 23, 0.6), rgba(2, 6, 23, 0.6))
+	background: linear-gradient(180deg, color-mix(in srgb, var(--color-text) 60%, transparent), color-mix(in srgb, var(--color-text) 60%, transparent))
 }
 
 .car-modal-inner {
-	background: linear-gradient(180deg, rgba(10, 10, 12, 0.98), rgba(6, 8, 10, 0.96));
+	background: linear-gradient(180deg, color-mix(in srgb, var(--color-text) 98%, transparent), color-mix(in srgb, var(--color-text) 96%, transparent));
 	padding: 18px;
 	border-radius: 12px;
 	display: flex;
@@ -1161,7 +1161,7 @@ main.used-page .car-card .media {
 }
 
 .modal-body {
-	color: #fff
+	color: var(--text-inverse)
 }
 
 .modal-title {
@@ -1170,7 +1170,7 @@ main.used-page .car-card .media {
 }
 
 .modal-meta {
-	color: rgba(255, 255, 255, 0.8);
+	color: color-mix(in srgb, var(--text-inverse) 80%, transparent);
 	margin-top: 8px
 }
 
@@ -1182,8 +1182,8 @@ main.used-page .car-card .media {
 
 .modal-close {
 	background: transparent;
-	border: 1px solid rgba(255, 255, 255, 0.06);
-	color: #fff;
+	border: 1px solid color-mix(in srgb, var(--text-inverse) 6%, transparent);
+	color: var(--text-inverse);
 	border-radius: 8px;
 	padding: 6px 8px;
 	cursor: pointer;
@@ -1195,7 +1195,7 @@ main.used-page .car-card .media {
 /* Inventory header section: boxed container */
 .inventory-header-section {
 	padding: 24px 0;
-	background: rgba(255, 255, 255, 0.95);
+	background: color-mix(in srgb, var(--text-inverse) 95%, transparent);
 	backdrop-filter: blur(12px);
 	border: 1px solid rgba(var(--accent-primary-rgb), 0.15);
 	border-radius: 16px;
@@ -1233,7 +1233,7 @@ main.used-page .car-card .media {
 	position: relative;
 	z-index: 1;
 	transition: all .18s ease;
-	background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+	background: linear-gradient(135deg, var(--color-surface) 0%, color-mix(in srgb, var(--color-text) 3%, var(--color-bg)) 100%);
 	margin: 0;
 }
 
@@ -1241,7 +1241,7 @@ main.used-page .car-card .media {
 	font-family: var(--font-brand);
 	font-size: 28px;
 	font-weight: 900;
-	color: #1a1a1a;
+	color: var(--color-text);
 	margin: 0 0 12px 0;
 	letter-spacing: -0.02em;
 	text-transform: uppercase;
@@ -1256,7 +1256,7 @@ main.used-page .car-card .media {
 	display: flex;
 	gap: 32px;
 	align-items: center;
-	color: #666666;
+	color: var(--color-muted);
 	font-size: 15px;
 	font-weight: 500;
 	letter-spacing: 0.3px;
@@ -1280,9 +1280,9 @@ main.used-page .car-card .media {
 .inline-search {
 	padding: 11px 14px;
 	border-radius: 10px;
-	border: 2px solid #e5e5e5;
-	background: #ffffff;
-	color: #1a1a1a;
+	border: 2px solid var(--color-border);
+	background: var(--color-surface);
+	color: var(--color-text);
 	font-size: 14px;
 	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 	font-family: var(--font-ui);
@@ -1291,9 +1291,9 @@ main.used-page .car-card .media {
 .inline-select {
 	padding: 11px 14px;
 	border-radius: 10px;
-	border: 2px solid #e5e5e5;
-	background: #ffffff;
-	color: #1a1a1a;
+	border: 2px solid var(--color-border);
+	background: var(--color-surface);
+	color: var(--color-text);
 	font-size: 14px;
 	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 	font-family: var(--font-ui);
@@ -1303,16 +1303,16 @@ main.used-page .car-card .media {
    Global select styles set white option text; force readable local colors here. */
 .inventory-header .inline-select,
 .inventory-header .filters-inline .inline-select {
-	background-color: #ffffff !important;
-	color: #111827 !important;
+	background-color: var(--color-surface) !important;
+	color: var(--color-text) !important;
 }
 
 .inventory-header .inline-select option,
 .inventory-header .inline-select optgroup,
 .inventory-header .filters-inline .inline-select option,
 .inventory-header .filters-inline .inline-select optgroup {
-	background-color: #ffffff !important;
-	color: #111827 !important;
+	background-color: var(--color-surface) !important;
+	color: var(--color-text) !important;
 }
 
 .inventory-header .inline-select option:checked,
@@ -1321,13 +1321,13 @@ main.used-page .car-card .media {
 .inventory-header .filters-inline .inline-select option:checked,
 .inventory-header .filters-inline .inline-select option:hover,
 .inventory-header .filters-inline .inline-select option:focus {
-	background-color: #e9f8ef !important;
-	color: #0f5132 !important;
+	background-color: var(--t-success-bg) !important;
+	color: var(--t-success-fg) !important;
 }
 
 .inventory-header .inline-select option:disabled,
 .inventory-header .filters-inline .inline-select option:disabled {
-	color: #6b7280 !important;
+	color: var(--color-muted) !important;
 }
 
 .view-toggle {
@@ -1337,11 +1337,11 @@ main.used-page .car-card .media {
 }
 
 .view-toggle .icon-btn {
-	background: #ffffff;
-	border: 2px solid #e5e5e5;
+	background: var(--color-surface);
+	border: 2px solid var(--color-border);
 	padding: 11px 14px;
 	border-radius: 10px;
-	color: #666666;
+	color: var(--color-muted);
 	cursor: pointer;
 	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 	display: flex;
@@ -1440,7 +1440,7 @@ main.used-page .car-card .media {
 /* Plain color backgrounds for inventory header controls */
 .inventory-header .inline-search::placeholder,
 .inventory-header .filters-inline .inline-search::placeholder {
-	color: #64748b;
+	color: var(--color-muted);
 }
 
 .inventory-header .inline-select:focus,
@@ -1449,15 +1449,15 @@ main.used-page .car-card .media {
 .inventory-header .filters-inline .inline-search:focus {
 	outline: none;
 	border-color: var(--accent-primary);
-	background: #f8f9fa;
+	background: color-mix(in srgb, var(--color-text) 3%, var(--color-bg));
 }
 
 /* Plain color icon buttons with futuristic effects */
 .inventory-header .view-toggle .icon-btn,
 .inventory-header .filters-inline .icon-btn {
-	background: #ffffff;
-	border: 2px solid #e5e5e5;
-	color: #666666;
+	background: var(--color-surface);
+	border: 2px solid var(--color-border);
+	color: var(--color-muted);
 	padding: 5px;
 	border-radius: 10px;
 	cursor: pointer;
@@ -1479,9 +1479,9 @@ main.used-page .car-card .media {
 
 /* Specific styles for the second button (list view) to be white */
 .inventory-header .view-toggle .icon-btn:nth-child(2) {
-	background: #ffffff !important;
-	border-color: #e5e5e5 !important;
-	color: #666666 !important;
+	background: var(--color-surface) !important;
+	border-color: var(--color-border) !important;
+	color: var(--color-muted) !important;
 }
 
 .inventory-header .view-toggle .icon-btn:nth-child(2):hover {
@@ -1513,7 +1513,7 @@ main.used-page .car-card .media {
 /* Sticky state: when header becomes stuck at the top of the viewport */
 .inventory-header.stuck {
 	backdrop-filter: blur(20px);
-	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	border-bottom: 1px solid color-mix(in srgb, var(--text-inverse) 10%, transparent);
 	padding-top: 16px;
 	padding-bottom: 16px;
 	transition: all 0.3s cubic-bezier(0.2, 0.9, 0.2, 1);
@@ -1541,7 +1541,7 @@ main.used-page .car-card .media {
 .inventory-header.stuck .inline-search,
 .inventory-header.stuck .inline-select {
 	border-color: rgba(var(--accent-primary-rgb), 0.3);
-	background: rgba(255, 255, 255, 0.95);
+	background: color-mix(in srgb, var(--text-inverse) 95%, transparent);
 }
 
 /* Gradient border line at the bottom of the inventory header */
@@ -1567,7 +1567,7 @@ main.used-page .car-card .media {
 	background: linear-gradient(90deg,
 			rgba(var(--accent-primary-rgb), 1) 0%,
 			rgba(var(--accent-primary-rgb), 0.92) 6%,
-			rgba(255, 255, 255, 0.02) 50%,
+			color-mix(in srgb, var(--text-inverse) 2%, transparent) 50%,
 			rgba(var(--accent-primary-rgb), 0.92) 94%,
 			rgba(var(--accent-primary-rgb), 1) 100%);
 	opacity: 0.45;
@@ -1582,7 +1582,7 @@ main.used-page .car-card .media {
 	background: linear-gradient(90deg,
 			rgba(var(--accent-primary-rgb), 1) 0%,
 			rgba(var(--accent-primary-rgb), 0.98) 8%,
-			rgba(255, 255, 255, 0.06) 50%,
+			color-mix(in srgb, var(--text-inverse) 6%, transparent) 50%,
 			rgba(var(--accent-primary-rgb), 0.98) 92%,
 			rgba(var(--accent-primary-rgb), 1) 100%);
 }
@@ -1612,19 +1612,19 @@ main.used-page .car-card .media {
 }
 
 .stock-ribbon.stock-sold::before {
-	border-color: transparent #dc2626 transparent transparent;
+	border-color: transparent var(--t-error) transparent transparent;
 }
 
 .stock-ribbon.stock-reserved::before {
-	border-color: transparent #ea580c transparent transparent;
+	border-color: transparent color-mix(in srgb, var(--t-error) 55%, var(--t-warning)) transparent transparent;
 }
 
 .stock-ribbon.stock-pending::before {
-	border-color: transparent #ca8a04 transparent transparent;
+	border-color: transparent var(--t-warning) transparent transparent;
 }
 
 .stock-ribbon.stock-withdrawn::before {
-	border-color: transparent #6b7280 transparent transparent;
+	border-color: transparent var(--color-muted) transparent transparent;
 }
 
 .ribbon-text {
@@ -1700,7 +1700,7 @@ main.used-page #inventoryGrid .car-card .inventory-card-title-row {
 main.used-page #inventoryGrid .car-card .inventory-card-title {
 	margin: 0;
 	font-size: 21px;
-	color: #111827;
+	color: var(--color-text);
 	font-weight: 700;
 	line-height: 1.3;
 	letter-spacing: 0.5px;
@@ -1715,13 +1715,13 @@ main.used-page #inventoryGrid .car-card .inventory-card-price {
 	font-size: 24px;
 	font-weight: 800;
 	font-family: var(--font-brand);
-	color: #111827;
+	color: var(--color-text);
 	letter-spacing: 0.5px;
 	flex-shrink: 0;
 }
 
 main.used-page #inventoryGrid .car-card .inventory-card-short-desc {
-	color: #8b949e;
+	color: var(--color-muted);
 	font-size: 14px;
 	line-height: 1.5;
 	margin: 4px 0 0;
@@ -1762,7 +1762,7 @@ main.used-page #inventoryGrid.inventory-list-mode .car-card .inventory-card-body
 
 .list-view main.used-page #inventoryGrid .car-card .inventory-card-short-desc,
 main.used-page #inventoryGrid.inventory-list-mode .car-card .inventory-card-short-desc {
-	color: #64748b;
+	color: var(--color-muted);
 	font-size: 15px;
 	line-height: 1.6;
 	white-space: normal;
@@ -1777,13 +1777,13 @@ main.used-page #inventoryGrid.inventory-list-mode .car-card .inventory-card-shor
 .list-view main.used-page #inventoryGrid .car-card .inventory-card-price,
 main.used-page #inventoryGrid.inventory-list-mode .car-card .inventory-card-price {
 	font-size: 28px;
-	color: #0f172a;
+	color: var(--color-text);
 }
 
 .list-view main.used-page #inventoryGrid .car-card .inventory-card-title,
 main.used-page #inventoryGrid.inventory-list-mode .car-card .inventory-card-title {
 	font-size: 24px;
-	color: #0f172a;
+	color: var(--color-text);
 	line-height: 1.25;
 }
 
@@ -1802,9 +1802,9 @@ main.used-page #inventoryGrid.inventory-list-mode .car-card .inventory-card-deta
 	border-radius: 999px;
 	font-size: 12px;
 	font-weight: 600;
-	color: #334155;
-	background: #e5e7eb;
-	border: 1px solid #d1d5db;
+	color: var(--color-muted);
+	background: color-mix(in srgb, var(--color-text) 8%, var(--color-bg));
+	border: 1px solid var(--color-border);
 	max-width: 100%;
 	white-space: nowrap;
 	overflow: hidden;
@@ -1832,10 +1832,10 @@ main.used-page #inventoryGrid.inventory-list-mode .car-card .inventory-card-slid
 	pointer-events: auto;
 	width: 34px;
 	height: 34px;
-	border: 1px solid rgba(255, 255, 255, 0.45);
+	border: 1px solid color-mix(in srgb, var(--text-inverse) 45%, transparent);
 	border-radius: 999px;
-	background: rgba(17, 24, 39, 0.58);
-	color: #ffffff;
+	background: color-mix(in srgb, var(--color-text) 58%, transparent);
+	color: var(--text-inverse);
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -1858,7 +1858,7 @@ main.used-page #inventoryGrid.inventory-list-mode .car-card .inventory-card-slid
 
 .list-view main.used-page #inventoryGrid .car-card .inventory-card-slider-btn:hover,
 main.used-page #inventoryGrid.inventory-list-mode .car-card .inventory-card-slider-btn:hover {
-	background: rgba(17, 24, 39, 0.78);
+	background: color-mix(in srgb, var(--color-text) 78%, transparent);
 }
 
 /* Disable hover transform effects on inventory cards/images */

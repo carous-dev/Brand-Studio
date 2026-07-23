@@ -5,7 +5,7 @@
     margin-left: 0.5em;
     font-size: 0.85em;
     font-weight: var(--fw-bold);
-    color: #fff;
+    color: var(--color-on-primary);
     background: var(--primary);
     border-radius: 1em;
     vertical-align: middle;
@@ -21,7 +21,7 @@ header {
     z-index: 49;
     width: 100%;
     background: var(--surface-page);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 30%, transparent);
     transition: all 0.3s ease;
     overflow: hidden;
 }
@@ -90,7 +90,7 @@ header::after {
 
 .logo .brand-wordmark {
     font-weight: 700;
-    color: var(--text-heading, #0f1623);
+    color: var(--text-heading);
     text-decoration: none;
     white-space: nowrap;
 }
@@ -121,7 +121,7 @@ header::after {
     right: -1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: rgba(17, 24, 39, 0.28);
+    color: color-mix(in srgb, var(--color-text) 28%, transparent);
     opacity: 0.6;
     font-size: 1rem;
     pointer-events: none;
@@ -179,8 +179,8 @@ header::after {
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 999px;
-    border: 1px solid rgba(31, 41, 55, 0.14);
-    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
+    background: color-mix(in srgb, var(--text-on-dark-strong) 94%, transparent);
     color: var(--text-heading);
     display: inline-flex;
     align-items: center;
@@ -198,8 +198,8 @@ header::after {
 }
 
 .wishlist-btn:hover {
-    border-color: rgba(59, 130, 246, 0.32);
-    background: rgba(241, 245, 249, 0.96);
+    border-color: rgba(var(--color-primary-rgb), 0.32);
+    background: color-mix(in srgb, var(--color-surface) 96%, transparent);
     transform: translateY(-1px);
 }
 
@@ -213,7 +213,7 @@ header::after {
     border-radius: 999px;
     background: var(--primary);
     color: var(--white);
-    border: 1px solid rgba(255, 255, 255, 0.9);
+    border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);
     font-size: 0.65rem;
     font-weight: var(--fw-semibold);
     line-height: 1;
@@ -226,8 +226,8 @@ header::after {
     /* Locked to --color-primary (the brand-record-overridable token) rather
        than going through --accent — keeps the CTA contrast-stable even
        when downstream rules / brand overrides mutate the alias chain. */
-    background: var(--color-primary, #4169E1) !important;
-    color: #ffffff !important;
+    background: var(--color-primary) !important;
+    color: var(--color-on-primary) !important;
     padding: 0.55rem 1.1rem;
     border-radius: 30px;
     text-decoration: none;
@@ -239,14 +239,14 @@ header::after {
     gap: 0.5rem;
     white-space: nowrap;
     flex-shrink: 0;
-    border: 1px solid var(--color-primary, #4169E1);
+    border: 1px solid var(--color-primary);
     line-height: 1.2;
     box-shadow: 0 2px 10px rgba(15, 23, 42, 0.12);
 }
 
 .shop-btn:hover {
-    background: var(--color-primary-strong, var(--color-primary, #2A4A9F)) !important;
-    color: #ffffff !important;
+    background: var(--color-primary-strong, var(--color-primary)) !important;
+    color: var(--color-on-primary) !important;
     transform: translateY(-2px);
 }
 
@@ -254,8 +254,8 @@ header::after {
    background — don't let any cascading lucide icon rule wash it out. */
 .shop-btn svg,
 .shop-btn .icon {
-    color: #ffffff !important;
-    stroke: #ffffff !important;
+    color: var(--color-on-primary) !important;
+    stroke: var(--color-on-primary) !important;
     width: 1.05rem;
     height: 1.05rem;
     flex-shrink: 0;
@@ -285,7 +285,7 @@ header::after {
 }
 
 .hamburger:hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: color-mix(in srgb, var(--surface-bg-dark) 10%, transparent);
 }
 
 .hamburger svg {
@@ -371,7 +371,7 @@ header::after {
 header {
     position: relative;
     width: 100%;
-    background: #FFFFFF;
+    background: var(--color-bg);
     border-bottom: 1px solid var(--border);
     font-family: var(--font-brand-body-override, var(--font-body));
     color: var(--text-body);
@@ -545,7 +545,7 @@ header::after {
     align-items: center;
     pointer-events: none;
     opacity: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: color-mix(in srgb, var(--surface-bg-dark) 60%, transparent);
     backdrop-filter: blur(4px);
     transition: opacity 220ms ease, background 220ms ease;
     z-index: 999;
@@ -554,7 +554,7 @@ header::after {
 .header-search-panel.open {
     pointer-events: auto;
     opacity: 1;
-    background: rgba(0, 0, 0, 0.7);
+    background: color-mix(in srgb, var(--surface-bg-dark) 70%, transparent);
 }
 
 .header-search-inner {
@@ -637,7 +637,7 @@ header::after {
 
 .suggestion-item {
     padding: 12px 18px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    border-bottom: 1px solid color-mix(in srgb, var(--surface-bg-dark) 6%, transparent);
     cursor: pointer;
     transition: background 200ms ease;
     display: flex;
@@ -652,11 +652,11 @@ header::after {
 }
 
 .suggestion-item:hover {
-    background: rgba(0, 0, 0, 0.04);
+    background: color-mix(in srgb, var(--surface-bg-dark) 4%, transparent);
 }
 
 .suggestion-item.active {
-    background: rgba(65, 105, 225, 0.08);
+    background: rgba(var(--color-primary-rgb), 0.08);
     color: var(--accent);
 }
 
@@ -677,7 +677,7 @@ header::after {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: rgba(0, 0, 0, 0.4);
+    color: color-mix(in srgb, var(--surface-bg-dark) 40%, transparent);
     flex-shrink: 0;
 }
 
@@ -705,7 +705,7 @@ header::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: color-mix(in srgb, var(--surface-bg-dark) 50%, transparent);
     backdrop-filter: blur(4px);
     z-index: 1000;
     opacity: 0;
@@ -802,7 +802,7 @@ header::after {
     font-family: var(--font-brand-body-override, var(--font-body));
     font-size: 1rem;
     transition: all 0.2s ease;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-text) 5%, transparent);
 }
 
 .mobile-nav-dropdown {
@@ -832,7 +832,7 @@ header::after {
 .mobile-dropdown-menu {
     display: none;
     flex-direction: column;
-    background: #fff;
+    background: var(--color-bg);
     border-radius: 0 0 10px 10px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     position: absolute;
@@ -857,7 +857,7 @@ header::after {
     color: var(--text-body);
     text-decoration: none;
     font-weight: var(--fw-regular);
-    background: #fff;
+    background: var(--color-bg);
     border-bottom: 1px solid var(--primary-dark);
     transition: background 0.2s, color 0.2s;
 }
@@ -867,12 +867,12 @@ header::after {
 }
 
 .mobile-dropdown-link:hover {
-    background: rgba(65, 105, 225, 0.07);
+    background: rgba(var(--color-primary-rgb), 0.07);
     color: var(--accent);
 }
 
 .mobile-nav-link:hover {
-    background: rgba(65, 105, 225, 0.05);
+    background: rgba(var(--color-primary-rgb), 0.05);
     color: var(--accent);
     padding-left: 2rem;
 }
@@ -891,7 +891,7 @@ header::after {
 }
 
 .mobile-nav-link.active {
-    background: rgba(211, 47, 47, 0.05);
+    background: color-mix(in srgb, var(--t-error) 5%, transparent);
     color: var(--primary);
     padding-left: 2rem;
 }
@@ -908,7 +908,7 @@ header::after {
     right: 0;
     padding: 1rem;
     border-top: 1px solid var(--border);
-    background: rgba(255, 255, 255, 0.9);
+    background: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);
     backdrop-filter: blur(10px);
     position: relative;
     z-index: 1;
@@ -932,7 +932,7 @@ header::after {
 .mobile-menu-sell {
     padding: 0.75rem 1.25rem;
     border-top: 1px solid var(--border);
-    background: rgba(255, 255, 255, 0.95);
+    background: color-mix(in srgb, var(--text-on-dark-strong) 95%, transparent);
 }
 
 .mobile-sell-btn {

@@ -9,7 +9,7 @@
     align-items: center;
     justify-content: center;
     /* subtle dark dim to focus the light modal */
-    background: rgba(6,8,10,0.28);
+    background: color-mix(in srgb, var(--color-text) 28%, transparent);
     z-index: 400000;
     padding: 20px;
     animation: enquiry-overlay-in .18s ease forwards;
@@ -21,10 +21,10 @@
     border-radius: 12px;
     padding: 20px 20px 18px 20px;
     position: relative;
-    color: var(--inventory-text, #0b1720);
-    background: #fbfbfd;
+    color: var(--color-text);
+    background: var(--color-surface);
     /* subtle borderless panel with soft shadow to lift from page */
-    border: 1px solid rgba(16,24,32,0.04);
+    border: 1px solid color-mix(in srgb, var(--color-text) 4%, transparent);
     box-shadow: 0 10px 30px rgba(11,23,32,0.06);
     animation: enquiry-modal-in .22s cubic-bezier(.2,.9,.2,1) .03s both;
 }
@@ -35,7 +35,7 @@
     top: 12px;
     border: 0;
     background: transparent;
-    color: var(--inventory-text, #0b1720);
+    color: var(--color-text);
     font-size: 18px;
     line-height: 1;
     cursor: pointer;
@@ -46,12 +46,12 @@
     margin: 2px 0 6px;
     font-size: 20px;
     font-weight: 700;
-    color: var(--inventory-text, #0b1720);
+    color: var(--color-text);
 }
 
 .enquiry-sub {
     margin: 0 0 14px;
-    color: var(--inventory-muted, #6b7280);
+    color: var(--color-muted);
     font-size: 13px;
 }
 
@@ -63,7 +63,7 @@
     display: block;
     font-weight: 600;
     margin-bottom: 8px;
-    color: var(--inventory-text, #0b1720);
+    color: var(--color-text);
     font-size: 13px;
 }
 
@@ -74,16 +74,16 @@
     width: 100%;
     padding: 12px 14px;
     border-radius: 10px;
-    border: 1px solid rgba(16,24,32,0.06);
+    border: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent);
     box-sizing: border-box;
     font-size: 14px;
-    color: var(--inventory-text, #0b1720);
-    background: #ffffff;
+    color: var(--color-text);
+    background: var(--color-bg);
 }
 
 .enquiry-form input::placeholder,
 .enquiry-form textarea::placeholder {
-    color: rgba(11,23,32,0.32);
+    color: color-mix(in srgb, var(--color-text) 32%, transparent);
 }
 
 .enquiry-form textarea {
@@ -110,8 +110,8 @@
     appearance: none;
     -webkit-appearance: none;
     border-radius: 4px;
-    border: 1px solid rgba(16,24,32,0.06);
-    background: #fff;
+    border: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent);
+    background: var(--color-bg);
     display: inline-grid;
     place-items: center;
     cursor: pointer;
@@ -135,7 +135,7 @@
     display: inline-block;
     padding: 12px 16px;
     background: var(--accent);
-    color: #ffffff;
+    color: var(--color-on-primary);
     border-radius: 10px;
     border: none;
     cursor: pointer;
@@ -155,7 +155,7 @@
 .enquiry-footer {
     margin-top: 10px;
     text-align: center;
-    color: var(--inventory-muted, #6b7280);
+    color: var(--color-muted);
     font-size: 12px;
 }
 
@@ -163,8 +163,8 @@
     margin-top: 12px;
     padding: 10px 12px;
     border-radius: 8px;
-    background: rgba(11,23,32,0.04);
-    color: var(--inventory-text, #0b1720);
+    background: color-mix(in srgb, var(--color-text) 4%, transparent);
+    color: var(--color-text);
     font-size: 13px;
     border-left: 4px solid rgba(var(--accent-rgb), 0.12);
 }

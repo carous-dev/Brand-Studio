@@ -76,7 +76,7 @@
 }
 .skeleton {
   aspect-ratio: 4 / 3;
-  background: linear-gradient(120deg, var(--surface-card-light) 0%, rgba(209,182,122,0.08) 50%, var(--surface-card-light) 100%);
+  background: linear-gradient(120deg, var(--surface-card-light) 0%, color-mix(in srgb, var(--kain-accent-warm) 8%, transparent) 50%, var(--surface-card-light) 100%);
   background-size: 200% 100%;
   border-radius: 6px;
   animation: skeletonShimmer 2s linear infinite;

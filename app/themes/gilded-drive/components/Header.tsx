@@ -199,7 +199,7 @@ export const Header: React.FC = () => {
                             })()}
                             {l.label}
                         </a>
-                        {i < LINKS.length - 1 && <hr className="mobile-divider" style={{ border: 'none', borderTop: '1px solid #333', margin: '8px 0' }} />}
+                        {i < LINKS.length - 1 && <hr className="mobile-divider" style={{ border: 'none', borderTop: '1px solid var(--border-on-dark)', margin: '8px 0' }} />}
                     </React.Fragment>
                 ))}
             </nav>

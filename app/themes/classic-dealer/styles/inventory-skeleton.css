@@ -4,7 +4,7 @@
   display:flex;
   flex-direction:column;
   gap:0.75rem;
-  background:rgba(255,255,255,0.02);
+  background:color-mix(in srgb, var(--color-bg) 2%, transparent);
   border-radius:8px;
   padding:12px;
   min-height:220px;
@@ -61,7 +61,7 @@
 }
 .inventory-empty-icon{ color:var(--accent); opacity:0.95 }
 .inventory-empty-message{ font-size:1.125rem; font-weight:600; margin:0; color:var(--fg); max-width:64ch }
-.inventory-empty-sub{ margin:0; color:var(--muted, rgba(255,255,255,0.6)); font-size:0.95rem; max-width:72ch }
+.inventory-empty-sub{ margin:0; color:var(--muted, var(--color-muted)); font-size:0.95rem; max-width:72ch }
 
 @media (max-width:600px){
   .inventory-empty{ padding:2rem 1rem; min-height:20rem }
@@ -76,7 +76,7 @@
 .loader-fullwidth-wrapper{ width:100%; display:flex; justify-content:center; padding:3rem 1rem; box-sizing:border-box }
 
 /* Generic loader styles (used by `Loader.tsx`) */
-.loader { display:inline-block; width:48px; height:48px; border-radius:50%; border:5px solid rgba(255,255,255,0.06); border-top-color:var(--accent); animation: spinner 1s linear infinite }
-.loader-overlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.4); z-index:9999 }
+.loader { display:inline-block; width:48px; height:48px; border-radius:50%; border:5px solid color-mix(in srgb, var(--color-bg) 6%, transparent); border-top-color:var(--accent); animation: spinner 1s linear infinite }
+.loader-overlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:color-mix(in srgb, var(--color-text) 40%, transparent); z-index:9999 }
 
 @keyframes spinner{ to { transform: rotate(360deg) } }

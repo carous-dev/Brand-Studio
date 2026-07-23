@@ -5,7 +5,7 @@
    accent rail, a confident title, a subtitle, and a 2×2 grid of stat cards.
    All rules scoped to body[data-theme-id="classic-dealer"] because three
    other themes (gilded-drive about-modern.css, services.css, services-new.css)
-   ship unscoped `.stat-value { color: #f3f3f3 }` and similar rules that
+   ship an unscoped near-white `.stat-value` colour rule and similar rules that
    leak into the bundle and would otherwise tie our specificity, then win
    on source order — making the stat text render as near-white on white.
    ========================================================================== */
@@ -220,7 +220,7 @@ body[data-theme-id="classic-dealer"] .services-stat .stat-icon svg {
 }
 
 /* Stat text — scoped + !important to defeat gilded-drive's leaked
-   `.stat-value { color: #f3f3f3 }` rule. */
+   near-white `.stat-value` colour rule. */
 body[data-theme-id="classic-dealer"] .services-stat .stat-meta {
   display: flex;
   flex-direction: column;

@@ -65,7 +65,7 @@
     font-size: clamp(48px, 8vw, 72px);
     font-weight: 800;
     line-height: 1.1;
-    color: #ffffff;
+    color: var(--text-on-dark-strong);
     margin: 0 0 24px;
     letter-spacing: -0.02em;
 }
@@ -111,7 +111,7 @@
 .stat-value {
     font-size: 24px;
     font-weight: 700;
-    color: #f3f3f3;
+    color: var(--text-on-dark-strong);
     font-family: var(--font-display);
 }
 
@@ -239,7 +239,7 @@
 
 .service-card-modern {
     position: relative;
-    background: #ffffff;
+    background: var(--color-surface);
     border: 1px solid rgba(var(--accent-rgb), 0.1);
     border-radius: 20px;
     padding: 32px;
@@ -267,7 +267,7 @@
 
 .service-card-modern:hover {
     transform: translateY(-8px);
-    background: #ffffff;
+    background: var(--color-surface);
     border-color: var(--accent);
     box-shadow: 0 20px 60px rgba(var(--accent-rgb), 0.15);
 }
@@ -457,7 +457,7 @@
     font-size: clamp(36px, 5vw, 48px);
     font-weight: 800;
     line-height: 1.1;
-    color: #f3f3f3;
+    color: var(--text-on-dark-strong);
     margin: 0 0 24px;
     letter-spacing: -0.02em;
 }
@@ -551,7 +551,7 @@
 }
 
 .faq-list details {
-	background: rgba(255, 255, 255, 0.03);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
 	padding: 14px;
 	border-radius: 10px;
 	margin-bottom: 10px
@@ -564,7 +564,7 @@
 
 .faq-list p {
 	margin: 8px 0 0;
-	color: rgba(255, 255, 255, 0.9)
+	color: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent)
 }
 
 /* Futuristic FAQ accordion */
@@ -586,7 +586,7 @@
 .faq-item {
 	background: var(--panel);
 	border-radius: 12px;
-	border: 1px solid rgba(255, 255, 255, 0.04);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 	box-shadow: 0 10px 28px rgba(2, 6, 23, 0.12);
 	overflow: hidden
 }
@@ -602,7 +602,7 @@
 	background: transparent;
 	cursor: pointer;
 	font-weight: 700;
-	color: #fff
+	color: var(--text-on-dark-strong)
 }
 
 .faq-toggle:focus {
@@ -650,7 +650,7 @@
 .faq-item {
 	background: var(--panel);
 	border-radius: 12px;
-	border: 1px solid rgba(255, 255, 255, 0.04);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 	box-shadow: 0 10px 28px rgba(2, 6, 23, 0.12);
 	overflow: hidden
 }
@@ -743,7 +743,7 @@
 
 .services-futuristic {
 	padding: 80px 0;
-	background: linear-gradient(rgba(0, 0, 0, 0.82), rgba(6, 6, 8, 0.62)), url("https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1800&q=80") center/cover no-repeat;
+	background: linear-gradient(rgba(0, 0, 0, 0.82), rgba(6, 6, 8, 0.62)), url("https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1800&q=80") center/cover no-repeat; /* photo-scrim-ok */
 	color: var(--muted)
 }
 
@@ -797,13 +797,13 @@
 
 .services-left {
 	/* pure glassmorphism: translucent surface with strong blur and subtle border */
-	background: rgba(255, 255, 255, 0.06);
-	border: 1px solid rgba(255, 255, 255, 0.12);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 12%, transparent);
 	border-radius: 14px;
 	backdrop-filter: blur(12px) saturate(140%);
 	-webkit-backdrop-filter: blur(12px) saturate(140%);
 	box-shadow: 0 12px 30px rgba(2, 6, 23, 0.45);
-	color: rgba(255, 255, 255, 0.95);
+	color: color-mix(in srgb, var(--text-on-dark-strong) 95%, transparent);
 	/* entry animation initial state */
 	opacity: 0;
 	transform: translateX(-22px);
@@ -821,7 +821,7 @@
 	inset: 0;
 	border-radius: inherit;
 	/* stronger dark overlay to improve caption legibility against images */
-	background: linear-gradient(180deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.6));
+	background: linear-gradient(180deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.6)); /* photo-scrim-ok */
 	opacity: 0.74;
 	transition: opacity .18s ease, transform .18s ease;
 	z-index: 0;
@@ -860,18 +860,18 @@
 	display: flex;
 	gap: 0; /* connected segmented control - no gap between pills */
  	align-items: stretch;
- 	background: #fff; /* tabs container is white */
+ 	background: var(--color-surface); /* tabs container is white */
  	width: 100%;
 }
 
 
 .tab-btn {
-	background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-	border: 1px solid rgba(255, 255, 255, 0.06);
+	background: linear-gradient(180deg, color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent));
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
 	padding: 10px 14px;
 	/* make each button share the row equally */
 	border-radius: 0;
-	color: #000;
+	color: var(--color-text);
 	font-weight: 700;
 	cursor: pointer;
 	transition: transform .14s ease, box-shadow .18s ease, background .12s ease;
@@ -905,8 +905,8 @@
 .tab-btn:first-child {
 	border-bottom-left-radius: 0px;
 	background: var(--accent);
-	color: #fff;
-	border-color: rgba(255,255,255,0.06);
+	color: var(--color-on-primary);
+	border-color: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
 	border-bottom-right-radius: 0px; /* make bottom-right square for left tab */
 }
 
@@ -923,8 +923,8 @@
 }
 
 .tab-btn.active {
-	background: #fff;
-	color: #000;
+	background: var(--color-surface);
+	color: var(--color-text);
 	z-index: 2; /* bring active pill above its sibling so it visually connects */
 }
 
@@ -943,7 +943,7 @@
 	width: 22px;
 	height: 22px;
 	border-radius: 50%;
-	background: rgba(255, 255, 255, 0.06); /* match .services-left background */
+	background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent); /* match .services-left background */
 	z-index: 4;
 	box-shadow: 0 2px 6px rgba(0,0,0,0.06) inset;
 }
@@ -1056,7 +1056,7 @@
 }
 
 .services-tabs.active-sell + .tab-panels {
-	background: #fff;
+	background: var(--color-surface);
 	color: var(--bg);
 }
 
@@ -1064,20 +1064,20 @@
    so it reads like an inactive pill over the glass left column, while the Sell tab
    (last-child) becomes the white active pill. */
 .services-tabs.active-sell .tab-btn:first-child {
-	color: #fff;
+	color: var(--text-on-dark-strong);
 	background: transparent;
 }
 
 /* Keep the sell tab styled as the white active pill (last-child). */
 .services-tabs.active-sell .tab-btn:last-child {
-	background: #fff;
+	background: var(--color-surface);
 	color: var(--bg);
 	border-top-left-radius: 20px;
 }
 
 /* Hover for the overview (transparent) tab when sell active: subtle light tint */
 .services-tabs.active-sell .tab-btn:first-child:hover:not(.active) {
-	background: rgba(255,255,255,0.03);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
 }
 
 /* When the LAST tab is active: make it white and round its top-left corner, and give the other tab the bottom-right radius.
@@ -1093,7 +1093,7 @@
 }
 
 .services-tabs.active-sell .tab-btn:last-child {
-	background: #fff;
+	background: var(--color-surface);
 	color: var(--bg);
 	border-top-left-radius: 20px;
 }
@@ -1104,7 +1104,7 @@
 
 /* Futuristic visual refresh for tab pills */
 .services-tabs {
-	background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+	background: linear-gradient(180deg, color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 1%, transparent));
 	padding: 0; /* remove outer padding so tabs sit flush */
 	border-radius: 14px;
 }
@@ -1112,7 +1112,7 @@
 .tab-btn {
 	border-radius: 10px;
 	/* Inactive tabs: transparent with white text for consistent contrast on dark glass panel */
-	color: #fff;
+	color: var(--text-on-dark-strong);
 	background: transparent;
 	padding: 16px 10px; /* reduce padding so buttons are more compact */
 }
@@ -1123,18 +1123,18 @@
 }
 
 .tab-btn.active {
-	background: linear-gradient(90deg, rgba(var(--accent-rgb),0.98), rgba(255,255,255,0.96));
+	background: linear-gradient(90deg, rgba(var(--accent-rgb),0.98), color-mix(in srgb, var(--text-on-dark-strong) 96%, transparent));
 	color: var(--bg);
 }
 
 /* Keep the left tab's text white even when active so it remains readable on the accent background */
 .tab-btn:first-child.active {
-	color: #fff !important;
+	color: var(--color-on-primary) !important;
 }
 
 
 .tab-btn:hover:not(.active) {
-	background: rgba(255,255,255,0.02);
+	background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
 }
 
 /* Sell form: futuristic inputs */
@@ -1145,8 +1145,8 @@
 	margin-top: 8px;
 	padding: 20px;
 	border-radius: 12px;
-	background: rgba(255, 255, 255, 0.95);
-	border: 1px solid rgba(8, 10, 12, 0.08);
+	background: color-mix(in srgb, var(--color-surface) 95%, transparent);
+	border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
 	backdrop-filter: blur(8px);
 }
 
@@ -1158,13 +1158,13 @@
 .sell-form-header h3 {
 	font-size: 18px;
 	font-weight: 700;
-	color: rgba(8, 10, 12, 0.9);
+	color: color-mix(in srgb, var(--color-text) 90%, transparent);
 	margin: 0 0 4px 0;
 }
 
 .sell-form-header p {
 	font-size: 14px;
-	color: rgba(8, 10, 12, 0.6);
+	color: color-mix(in srgb, var(--color-text) 60%, transparent);
 	margin: 0;
 }
 
@@ -1177,7 +1177,7 @@
 
 .sell-form label {
 	font-size: 14px;
-	color: rgba(8, 10, 12, 0.9);
+	color: color-mix(in srgb, var(--color-text) 90%, transparent);
 	font-weight: 600;
 	margin-bottom: 2px;
 	text-align: start !important;
@@ -1185,15 +1185,15 @@
 
 /* When the Sell panel is active (white background), make form labels dark for contrast */
 .services-tabs.active-sell + .tab-panels #panel-sell .sell-form label {
-	color: rgba(8,10,12,0.9);
+	color: color-mix(in srgb, var(--color-text) 90%, transparent);
 }
 
 .sell-form input {
-	background: rgba(255, 255, 255, 0.98);
-	border: 1px solid rgba(8, 10, 12, 0.12);
+	background: color-mix(in srgb, var(--color-surface) 98%, transparent);
+	border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
 	padding: 14px 16px;
 	border-radius: 8px;
-	color: rgba(8, 10, 12, 0.9);
+	color: color-mix(in srgb, var(--color-text) 90%, transparent);
 	font-size: 15px;
 	box-shadow: 0 2px 8px rgba(2, 6, 23, 0.04);
 	transition: all .2s ease;
@@ -1201,7 +1201,7 @@
 }
 
 .sell-form input::placeholder {
-	color: rgba(8, 10, 12, 0.4);
+	color: color-mix(in srgb, var(--color-text) 40%, transparent);
 	font-size: 14px;
 }
 
@@ -1226,7 +1226,7 @@
 	text-transform: none;
 	letter-spacing: 0.3px;
 	background: linear-gradient(135deg, var(--accent), var(--accent-2));
-	color: #fff;
+	color: var(--color-on-primary);
 	border: none;
 	box-shadow: 0 4px 16px rgba(var(--accent-rgb), 0.2);
 	transition: all .2s ease;
@@ -1271,7 +1271,7 @@
 .services-left .section-title {
 	font-size: 30px;
 	margin-bottom: 8px;
-	color: rgba(255, 255, 255, 0.96)
+	color: color-mix(in srgb, var(--text-on-dark-strong) 96%, transparent)
 }
 
 .services-left .section-sub {
@@ -1288,7 +1288,7 @@
 /* Overview tab: make lead and subsection text pure white for maximum contrast */
 .tab-panel#panel-overview .services-header .lead,
 .tab-panel#panel-overview .services-header .section-sub {
-	color: #fff;
+	color: var(--text-on-dark-strong);
 }
 
 /* Make the overview CTA full-width and center its label */
@@ -1307,7 +1307,7 @@
 .services-left .section-title {
 	font-size: 30px;
 	margin-bottom: 8px;
-	color: rgba(255, 255, 255, 0.96)
+	color: color-mix(in srgb, var(--text-on-dark-strong) 96%, transparent)
 }
 
 .services-left .section-sub {
@@ -1335,7 +1335,7 @@
 	padding: 10px 16px;
 	border-radius: 10px;
 	font-weight: 700;
-	color: #fff;
+	color: var(--color-on-primary);
 	text-decoration: none;
 	transition: background .22s ease, transform .12s ease, box-shadow .22s ease;
 	box-shadow: 0 8px 18px rgba(2, 6, 23, 0.12)
@@ -1361,13 +1361,13 @@
 
 .services-left .services-cta .btn.secondary {
 	background: transparent;
-	border: 1px solid rgba(12, 18, 28, 0.06);
+	border: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent);
 	color: var(--accent-2)
 }
 
 .services-left .services-cta .btn.secondary:hover,
 .services-left .services-cta .btn.secondary:focus {
-	background: rgba(12, 18, 28, 0.02);
+	background: color-mix(in srgb, var(--color-text) 2%, transparent);
 	transform: translateY(-2px)
 }
 
@@ -1393,7 +1393,7 @@
 }
 
 .service-card-link:focus-visible {
-	outline: 2px solid rgba(184, 146, 74, 0.85);
+	outline: 2px solid color-mix(in srgb, var(--color-primary) 85%, transparent);
 	outline-offset: -2px;
 }
 
@@ -1497,7 +1497,7 @@
 	justify-content: center;
 	gap: 6px;
 	padding: 10px 14px;
-	color: #fff;
+	color: var(--text-on-dark-strong);
 	text-align: center;
 	opacity: 1;
 	z-index: 2;
@@ -1595,7 +1595,7 @@
     width: 0;
     height: 0;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
+    background: color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent);
     transform: translate(-50%, -50%);
     transition: width 0.6s, height 0.6s;
 }
@@ -1617,7 +1617,7 @@ html {
 }
 
 .loading-shimmer {
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent), transparent);
     background-size: 1000px 100%;
     animation: shimmer 2s infinite;
 }
@@ -1739,7 +1739,7 @@ html {
 		height: inherit;
 		display: flex;
 		padding: 6px 10px;
-		color: #fff;
+		color: var(--text-on-dark-strong);
 		opacity: 1;
 		z-index: 2;
 		border-radius: 0;

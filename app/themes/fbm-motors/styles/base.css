@@ -59,7 +59,7 @@
   width: auto;
   height: auto;
   padding: 12px 16px;
-  background: #ffffff;
+  background: var(--color-surface);
   color: var(--color-primary);
   z-index: 1000;
   border-radius: 8px;
@@ -84,8 +84,8 @@
 
 /* ─── Card + interactive primitives (ported from globals.css @layer components) ─── */
 [data-theme-id='fbm-motors'] .fbm-card {
-  background: #ffffff;
-  border: 1px solid rgba(14, 20, 32, 0.06);
+  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent);
   box-shadow: var(--fbm-shadow-card);
   border-radius: 24px;
 }
@@ -112,7 +112,7 @@
   padding: 12px 24px;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-on-primary);
   text-decoration: none;
   border: 0;
   cursor: pointer;
@@ -122,7 +122,7 @@
 }
 [data-theme-id='fbm-motors'] .fbm-btn-primary:hover {
   transform: translateY(-1px);
-  background: color-mix(in srgb, var(--color-primary) 88%, #000);
+  background: var(--color-primary-strong);
 }
 [data-theme-id='fbm-motors'] .fbm-btn-primary:focus-visible {
   outline: 2px solid var(--fbm-ember-500, var(--color-primary));
@@ -141,7 +141,7 @@
   justify-content: center;
   gap: 8px;
   border-radius: 999px;
-  border: 1px solid rgba(14, 20, 32, 0.15);
+  border: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent);
   background: transparent;
   padding: 12px 24px;
   font-size: 0.875rem;
@@ -168,12 +168,12 @@
   justify-content: center;
   gap: 8px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid color-mix(in srgb, var(--color-bg) 20%, transparent);
   background: transparent;
   padding: 12px 24px;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-bg);
   text-decoration: none;
   cursor: pointer;
   transition: color 0.2s, border-color 0.2s;
@@ -187,15 +187,15 @@
 [data-theme-id='fbm-motors'] .fbm-field {
   width: 100%;
   border-radius: 14px;
-  border: 1px solid rgba(14, 20, 32, 0.1);
-  background: #ffffff;
+  border: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+  background: var(--color-surface);
   padding: 12px 16px;
   font-size: 0.875rem;
   color: var(--fbm-ink-900, var(--color-text));
   font-family: inherit;
 }
 [data-theme-id='fbm-motors'] .fbm-field::placeholder {
-  color: rgba(91, 107, 126, 0.5);
+  color: color-mix(in srgb, var(--color-muted) 50%, transparent);
 }
 [data-theme-id='fbm-motors'] .fbm-field:focus {
   outline: none;
@@ -206,29 +206,29 @@
 /* ─── Dark anchor sections ─── */
 [data-theme-id='fbm-motors'] .fbm-section-dark {
   background: var(--fbm-carbon-950);
-  color: #ffffff;
+  color: var(--color-bg);
   background-image:
     radial-gradient(900px 450px at 80% -10%, color-mix(in srgb, var(--color-primary) 12%, transparent), transparent 60%),
-    radial-gradient(700px 400px at -10% 30%, rgba(56, 130, 246, 0.07), transparent 60%);
+    radial-gradient(700px 400px at -10% 30%, color-mix(in srgb, var(--color-accent) 7%, transparent), transparent 60%);
 }
 [data-theme-id='fbm-motors'] .fbm-section-dark h1,
 [data-theme-id='fbm-motors'] .fbm-section-dark h2,
 [data-theme-id='fbm-motors'] .fbm-section-dark h3,
 [data-theme-id='fbm-motors'] .fbm-section-dark h4 {
-  color: #ffffff;
+  color: var(--color-bg);
 }
 
 [data-theme-id='fbm-motors'] .fbm-glass-dark {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--color-bg) 5%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-bg) 10%, transparent);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
 
 [data-theme-id='fbm-motors'] .fbm-grid-atmosphere {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    linear-gradient(color-mix(in srgb, var(--color-bg) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-bg) 5%, transparent) 1px, transparent 1px);
   background-size: 56px 56px;
   -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
   mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
@@ -242,10 +242,10 @@
 [data-theme-id='fbm-motors'] .fbm-text-ink-500 { color: var(--fbm-ink-500); }
 [data-theme-id='fbm-motors'] .fbm-text-ink-700 { color: var(--fbm-ink-700); }
 [data-theme-id='fbm-motors'] .fbm-text-ink-900 { color: var(--fbm-ink-900); }
-[data-theme-id='fbm-motors'] .fbm-text-white { color: #ffffff; }
+[data-theme-id='fbm-motors'] .fbm-text-white { color: var(--color-bg); }
 
 [data-theme-id='fbm-motors'] .fbm-bg-paper { background: var(--fbm-paper); }
-[data-theme-id='fbm-motors'] .fbm-bg-white { background: #ffffff; }
+[data-theme-id='fbm-motors'] .fbm-bg-white { background: var(--color-surface); }
 [data-theme-id='fbm-motors'] .fbm-bg-ember-50 { background: var(--fbm-ember-50); }
 
 /* ─── Animations (ported from tailwind.config keyframes) ─── */

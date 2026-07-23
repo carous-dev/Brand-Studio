@@ -42,9 +42,9 @@
      photo overlays (page heroes, lightbox, over-image badges). Media-chrome
      exception: they sit over photographic content, not a brand surface, so they
      stay white/dark in any palette. Never use these on a plain brand surface. */
-  --on-scrim: #ffffff;
-  --on-scrim-muted: rgba(255, 255, 255, 0.82);
-  --scrim-deep: #0b1220;
+  --on-scrim: #ffffff; /* photo-scrim-ok */
+  --on-scrim-muted: rgba(255, 255, 255, 0.82); /* photo-scrim-ok */
+  --scrim-deep: #0b1220; /* photo-scrim-ok */
 
   /* Brand-tinted helpers — derived via color-mix so any brand-record change
      repaints every accent. Never hard-code literal brand RGB values. */
@@ -243,10 +243,40 @@
   border-radius: 4px;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease,
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
   min-height: 48px;
   text-decoration: none;
   line-height: 1;
+}
+
+/* Interactive micro-motion — every axis button lifts on hover, presses on
+   click, and nudges its trailing arrow. Shared primitive so the whole site
+   (homepage included) feels alive with zero per-component JS. Only a TRAILING
+   icon (svg:last-child) slides, so leading phone glyphs stay put. */
+[data-theme-id='axis-autos-bespoke'] .axis-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--color-text) 14%, transparent);
+}
+[data-theme-id='axis-autos-bespoke'] .axis-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-text) 12%, transparent);
+  transition-duration: 90ms;
+}
+[data-theme-id='axis-autos-bespoke'] .axis-btn svg {
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-theme-id='axis-autos-bespoke'] .axis-btn:hover svg:last-child {
+  transform: translateX(3px);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-theme-id='axis-autos-bespoke'] .axis-btn,
+  [data-theme-id='axis-autos-bespoke'] .axis-btn svg {
+    transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+  }
+  [data-theme-id='axis-autos-bespoke'] .axis-btn:hover { transform: none; box-shadow: none; }
+  [data-theme-id='axis-autos-bespoke'] .axis-btn:active { transform: none; }
+  [data-theme-id='axis-autos-bespoke'] .axis-btn:hover svg:last-child { transform: none; }
 }
 [data-theme-id='axis-autos-bespoke'] .axis-btn--primary {
   background: var(--brand-primary);

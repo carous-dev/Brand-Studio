@@ -18,7 +18,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: #fff;
+	background: var(--color-surface);
 	border: 0;
 	color: var(--muted);
 	cursor: pointer;
@@ -43,11 +43,11 @@
 }
 
 .futuristic-brands .brands-panel {
-	background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(6,6,6,0.16));
+	background: linear-gradient(135deg, color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent), color-mix(in srgb, var(--surface-bg-dark) 16%, transparent));
 	border-radius: 12px;
 	padding: 18px;
 	backdrop-filter: blur(6px) saturate(1.05);
-	border: 1px solid rgba(255,255,255,0.03);
+	border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
 	position: relative;
 	overflow: visible;
 }
@@ -65,10 +65,10 @@
 .futuristic-brands .brands-header.search-by { flex-direction: column; align-items: flex-start; gap: 10px }
 .futuristic-brands .brands-header.search-by .pill-toggle { order: 0 }
 .futuristic-brands .brands-header.search-by .hero-brands { order: 1; width: 100% }
-.futuristic-brands .section-title.large { font-size: 56px; line-height: 1; letter-spacing: 0.02em; margin: 0; color: #fff; font-family: var(--font-display); font-weight: 400 }
-.futuristic-brands .pill-toggle { background: transparent; border-radius: 40px; padding: 6px; border: 1px solid rgba(255,255,255,0.06); display:flex; gap:6px; align-items:center }
-.futuristic-brands .pill-toggle .pill { background: transparent; border: none; padding: 10px 22px; border-radius: 28px; color: rgba(255,255,255,0.85); cursor: pointer; font-weight: 600 }
-.futuristic-brands .pill-toggle .pill.active { background: linear-gradient(90deg,#b8862d,#a86f2a); color: #fff; box-shadow: 0 6px 18px rgba(184,134,45,0.12); border:1px solid rgba(0,0,0,0.06) }
+.futuristic-brands .section-title.large { font-size: 56px; line-height: 1; letter-spacing: 0.02em; margin: 0; color: var(--text-on-dark-strong); font-family: var(--font-display); font-weight: 400 }
+.futuristic-brands .pill-toggle { background: transparent; border-radius: 40px; padding: 6px; border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent); display:flex; gap:6px; align-items:center }
+.futuristic-brands .pill-toggle .pill { background: transparent; border: none; padding: 10px 22px; border-radius: 28px; color: color-mix(in srgb, var(--text-on-dark-strong) 85%, transparent); cursor: pointer; font-weight: 600 }
+.futuristic-brands .pill-toggle .pill.active { background: linear-gradient(90deg,var(--color-primary),var(--color-primary-strong)); color: var(--color-on-primary); box-shadow: 0 6px 18px rgba(184,134,45,0.12); border:1px solid color-mix(in srgb, var(--color-text) 6%, transparent) }
 .futuristic-brands .brands-row { display:flex; align-items:center; gap:12px }
 
 /* futuristic variant: larger gap, padded, and fixed-size items */
@@ -137,11 +137,11 @@
 	 and remove with:
 	 document.body.classList.remove('debug-brands')
  */
-.debug-brands .hero { outline: 2px solid rgba(255,0,0,0.9); }
-.debug-brands .hero-left { outline: 2px dashed rgba(255,165,0,0.9); }
-.debug-brands .hero-brands { outline: 2px solid rgba(0,123,255,0.9); }
-.debug-brands .hero-brands .brand-list { outline: 2px dotted rgba(0,200,120,0.9); }
-.debug-brands .hero-brands .brand-item { outline: 1px solid rgba(255,255,0,0.6); }
+.debug-brands .hero { outline: 2px solid var(--t-error); }
+.debug-brands .hero-left { outline: 2px dashed var(--color-primary); }
+.debug-brands .hero-brands { outline: 2px solid var(--color-accent); }
+.debug-brands .hero-brands .brand-list { outline: 2px dotted var(--t-success); }
+.debug-brands .hero-brands .brand-item { outline: 1px solid var(--color-primary); }
 
 /* Brand scroll container constraints and debug scrollbar helper
 	 - Keeps the scroll wrapper within the hero width
@@ -160,11 +160,11 @@
 .brand-scroll.debug-scrollbar{
 	overflow-x: scroll !important;
 	scrollbar-width: thin; /* Firefox */
-	scrollbar-color: rgba(200,200,200,0.8) transparent;
+	scrollbar-color: color-mix(in srgb, var(--text-on-dark-strong) 80%, transparent) transparent;
 }
 .brand-scroll.debug-scrollbar::-webkit-scrollbar{ height:12px }
 .brand-scroll.debug-scrollbar::-webkit-scrollbar-track{ background: transparent }
-.brand-scroll.debug-scrollbar::-webkit-scrollbar-thumb{ background: rgba(200,200,200,0.9); border-radius:8px }
+.brand-scroll.debug-scrollbar::-webkit-scrollbar-thumb{ background: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent); border-radius:8px }
 
 /* On larger screens show multiple brands per 'slide' using flex-wrap so 8 items fit on each row */
 @media (min-width:901px){

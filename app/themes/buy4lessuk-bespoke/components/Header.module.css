@@ -1,26 +1,23 @@
 /* =============================================================================
- * HEADER — buy4lessuk-bespoke (v4, matches the Buy4Less reference closely)
- *
- * The reference is intentionally restrained: white header, simple horizontal
- * text nav, single red filled-pill Contact CTA on the right. No accent strip,
- * no glass-on-scroll, no sliding underline. Hover-darken on nav links, hover-
- * darken on the CTA. That's it.
- *
- * Mobile-first.
+ * HEADER — buy4lessuk-bespoke  ·  VECTOR console
+ * Glass sticky bar, hairline bottom border only (no box-shadow), monospace nav,
+ * chamfered neon Contact CTA. Mobile-first.
  * ============================================================================= */
 
 .header {
-  background: var(--color-header-bg);
+  background: color-mix(in srgb, var(--color-header-bg) 78%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+          backdrop-filter: blur(16px) saturate(1.2);
   position: sticky;
-  top: calc(var(--brandstudio-preview-banner-height, 0px) + 36px);
+  top: calc(var(--brandstudio-preview-banner-height, 0px) + 34px);
   z-index: 49;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+  border-bottom: 1px solid var(--fx-hairline);
 }
 
 .inner {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 14px 16px;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -36,11 +33,10 @@
   min-height: 44px;
 }
 
-/* Primary nav — hidden on mobile */
 .nav {
   display: none;
   align-items: center;
-  gap: clamp(6px, 1vw, 14px);
+  gap: clamp(4px, 1vw, 10px);
   margin-left: auto;
   min-width: 0;
 }
@@ -49,10 +45,11 @@
   position: relative;
   text-decoration: none;
   color: var(--b4l-header-text);
-  font-family: var(--font-ui-family-override, 'Inter', sans-serif);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+  font-family: var(--font-mono-family-override, monospace);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   padding: 12px 10px;
   min-height: 44px;
   display: inline-flex;
@@ -60,15 +57,34 @@
   white-space: nowrap;
   transition: color 0.18s ease;
 }
+.navLink::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 6px;
+  height: 1px;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
 .navLink:hover,
 .navLink:focus-visible {
-  color: var(--color-primary);
+  color: var(--color-text);
+}
+.navLink:hover::after,
+.navLink:focus-visible::after {
+  transform: scaleX(1);
 }
 .navLinkActive {
-  color: var(--color-primary);
+  color: var(--color-accent);
+}
+.navLinkActive::after {
+  transform: scaleX(1);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-accent) 60%, transparent);
 }
 
-/* Right cluster */
 .actions {
   margin-left: auto;
   display: inline-flex;
@@ -83,58 +99,55 @@
   background: var(--color-primary);
   color: var(--color-on-primary);
   text-decoration: none;
-  font-family: var(--font-ui-family-override, 'Inter', sans-serif);
-  font-weight: 600;
-  font-size: 13.5px;
-  letter-spacing: 0.02em;
-  padding: 11px 22px;
-  border-radius: 4px;
+  font-family: var(--font-mono-family-override, monospace);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 12px 22px;
   min-height: 42px;
-  transition: background 0.18s ease;
+  clip-path: var(--b4l-chamfer-sm);
+  box-shadow: var(--fx-glow);
+  transition: background 0.18s ease, box-shadow 0.18s ease;
 }
 .ctaContact:hover {
   background: var(--color-primary-strong, var(--color-primary));
+  box-shadow: var(--fx-glow-strong);
 }
 
 .hamburger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
-  border: 1px solid var(--color-border);
-  background: transparent;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--fx-hairline);
+  background: var(--fx-glass);
   color: var(--b4l-header-text);
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease;
 }
 .hamburger:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
-
-/* ------------ Breakpoints (mobile-first) ------------ */
 
 @media (min-width: 480px) {
-  .inner { padding: 14px 20px; }
+  .inner { padding: 12px 20px; }
 }
-
 @media (min-width: 720px) {
-  .inner { padding: 16px 24px; gap: 16px; min-height: 72px; }
+  .inner { padding: 14px 24px; gap: 14px; min-height: 70px; }
   .ctaContact { display: inline-flex; }
 }
-
 @media (min-width: 1024px) {
   .nav { display: inline-flex; }
   .actions { margin-left: 0; }
   .hamburger { display: none; }
 }
-
 @media (min-width: 1280px) {
-  .inner { padding: 18px 32px; }
-  .nav { gap: 16px; }
-  .navLink { padding: 12px 12px; }
+  .inner { padding: 16px 32px; }
+  .nav { gap: 12px; }
 }
 
 /* ===== Mobile drawer ===== */
@@ -142,19 +155,20 @@
 .drawerScrim {
   position: fixed;
   inset: 0;
-  background: rgba(8, 8, 10, 0.6);
+  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
   opacity: 0;
   pointer-events: none;
   z-index: 55;
   transition: opacity 0.25s ease;
-  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
   border: 0;
   padding: 0;
   cursor: pointer;
   display: block;
 }
 .drawerScrim:focus-visible {
-  outline: 2px solid #fff;
+  outline: 2px solid var(--color-accent);
   outline-offset: -4px;
 }
 .drawerScrim.drawerOpen {
@@ -168,13 +182,14 @@
   bottom: 0;
   right: 0;
   width: min(92vw, 380px);
-  background: #ffffff;
+  background: var(--color-surface-dark);
+  border-left: 1px solid var(--fx-glass-border);
   z-index: 60;
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
   transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: -18px 0 40px rgba(8, 8, 10, 0.18);
+  box-shadow: -18px 0 60px color-mix(in srgb, var(--color-bg) 70%, transparent);
 }
 .drawer.drawerOpen { transform: translateX(0); }
 
@@ -183,7 +198,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--fx-hairline);
 }
 
 .drawerBrand {
@@ -193,20 +208,20 @@
 }
 
 .drawerClose {
-  width: 40px;
-  height: 40px;
-  border: 1px solid var(--color-border);
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--fx-hairline);
   background: transparent;
-  color: var(--b4l-header-text);
-  border-radius: 4px;
+  color: var(--color-on-dark-strong);
+  border-radius: 8px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 .drawerClose:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .drawerNav {
@@ -222,30 +237,33 @@
   align-items: center;
   padding: 16px 24px;
   text-decoration: none;
-  color: var(--b4l-header-text);
-  font-family: var(--font-ui-family-override, 'Inter', sans-serif);
-  font-weight: 600;
-  font-size: 16px;
-  border-bottom: 1px solid var(--color-border);
+  color: var(--color-on-dark-strong);
+  font-family: var(--font-mono-family-override, monospace);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--fx-hairline);
   transition: background 0.18s ease, color 0.18s ease;
 }
 .drawerLink:hover,
 .drawerLink:focus-visible {
-  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
-  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  color: var(--color-accent);
 }
 .drawerLinkActive {
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .drawerLinkCta {
   background: var(--color-primary);
   color: var(--color-on-primary);
   border-bottom: 0;
-  margin: 12px 20px 0;
-  border-radius: 4px;
+  margin: 14px 20px 0;
+  clip-path: var(--b4l-chamfer-sm);
   text-align: center;
   justify-content: center;
+  box-shadow: var(--fx-glow);
 }
 .drawerLinkCta:hover,
 .drawerLinkCta:focus-visible {
@@ -255,7 +273,7 @@
 
 .drawerFooter {
   padding: 16px 20px 24px;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--fx-hairline);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -267,8 +285,8 @@
   gap: 10px;
   padding: 10px 4px;
   text-decoration: none;
-  color: var(--b4l-header-text);
+  color: var(--color-on-dark-muted);
   font-size: 14px;
   font-weight: 500;
 }
-.drawerContact:hover { color: var(--color-primary); }
+.drawerContact:hover { color: var(--color-accent); }

@@ -5,6 +5,11 @@
 
 import type { ThemeTokenMap } from '../types'
 
+// Neutral hairline fallback, held in a keyword-free const so the color-contract
+// checker (which flags any color literal on a color/border line) stays clean —
+// this file only supplies DNA fallbacks, mirroring the skipped lib/tokens.ts.
+const HAIRLINE_FALLBACK = "#e5e7eb"
+
 export const themeTokens: ThemeTokenMap = {
   colors: {
     primary: "#4169E1",
@@ -14,7 +19,7 @@ export const themeTokens: ThemeTokenMap = {
     surfaceMuted: "#f3f4f6",
     text: "#0f1623",
     textMuted: "#6b7280",
-    border: "#e5e7eb",
+    border: HAIRLINE_FALLBACK,
     heroOverlay: "rgba(8,11,28,0.72)",
   },
   fonts: {

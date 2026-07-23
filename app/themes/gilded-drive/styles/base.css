@@ -15,7 +15,7 @@ body {
   margin: 0;
   font-family: var(--font-base);
   background: var(--bg);
-  color: #f3f3f3;
+  color: var(--color-text);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -43,9 +43,9 @@ body {
 
 /* Modern Contact Bar - Light Theme (gilded-drive only) */
 :where(body[data-theme-id="gilded-drive"]) .contact-bar {
-  --contact-bg: var(--brand-primary, #666666);
-  --contact-text: var(--brand-background, #ffffff);
-  --contact-hover: var(--brand-accent, var(--brand-secondary, #555555));
+  --contact-bg: var(--brand-primary);
+  --contact-text: var(--brand-background);
+  --contact-hover: var(--brand-accent, var(--brand-secondary));
   background: var(--contact-bg);
   color: var(--contact-text);
   border-bottom: none;
@@ -192,7 +192,7 @@ body {
 /* Global select / dropdown styling: use accent background and white text for options */
 select {
   background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.18), rgba(var(--accent-rgb), 0.12));
-  color: #fff;
+  color: var(--text-on-dark-strong);
   border: 1px solid rgba(var(--accent-rgb), 0.12);
   padding: 8px 10px;
   border-radius: 8px;
@@ -203,7 +203,7 @@ select {
 select option,
 select optgroup {
   background: var(--accent) !important;
-  color: #fff !important
+  color: var(--text-on-dark-strong) !important
 }
 
 select:focus {
@@ -220,7 +220,7 @@ textarea:focus {
 
 /* Keep native dropdown arrow on most platforms; provide a fallback for IE/Edge */
 select::-ms-expand {
-  color: #fff
+  color: var(--text-on-dark-strong)
 }
 
 /* Hover/active/checked/focus states for options — use !important to increase precedence.
@@ -234,7 +234,7 @@ select optgroup option:hover,
 select optgroup option:active,
 select optgroup option:focus,
 select optgroup option:checked {
-  background: #000 !important;
+  background: var(--surface-bg-dark) !important;
   /* black bg on hover/active */
   color: var(--accent) !important;
   /* accent text color */
@@ -243,7 +243,7 @@ select optgroup option:checked {
 /* For webkit-based browsers that still apply system blue selection inside option lists, try forcing selection color */
 select option::selection,
 select optgroup option::selection {
-  background: #000 !important;
+  background: var(--surface-bg-dark) !important;
   color: var(--accent) !important;
 }
 
@@ -321,8 +321,8 @@ img.loaded {
   width: 320px;
   max-height: 60vh;
   overflow: auto;
-  background: rgba(2, 6, 23, 0.92);
-  color: #fff;
+  background: color-mix(in srgb, var(--surface-bg-dark) 92%, transparent);
+  color: var(--text-on-dark-strong);
   font-size: 13px;
   border-radius: 8px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
@@ -344,7 +344,7 @@ img.loaded {
 
 .reveal-debug-entry button {
   background: var(--accent);
-  color: #fff;
+  color: var(--text-on-dark-strong);
   border: none;
   padding: 6px 8px;
   border-radius: 6px;
@@ -374,9 +374,9 @@ img.loaded {
   right: 0;
   bottom: 0;
   z-index: 9999;
-  background: rgba(255, 255, 255, 0.95);
+  background: color-mix(in srgb, var(--surface-bg-light) 95%, transparent);
   backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid color-mix(in srgb, var(--text-on-light-strong) 10%, transparent);
   box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.1);
 }
 
@@ -419,14 +419,14 @@ img.loaded {
 .cookie-title {
   font-size: 16px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-on-light-strong);
   margin: 0 0 4px;
   line-height: 1.2;
 }
 
 .cookie-description {
   font-size: 14px;
-  color: rgba(0, 0, 0, 0.7);
+  color: color-mix(in srgb, var(--text-on-light-strong) 70%, transparent);
   margin: 0;
   line-height: 1.4;
 }
@@ -477,34 +477,34 @@ img.loaded {
 }
 
 .cookie-btn-secondary {
-  background: rgba(0, 0, 0, 0.05);
-  color: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: color-mix(in srgb, var(--text-on-light-strong) 5%, transparent);
+  color: color-mix(in srgb, var(--text-on-light-strong) 80%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-light-strong) 20%, transparent);
 }
 
 .cookie-btn-secondary:hover {
-  background: rgba(0, 0, 0, 0.1);
-  border-color: rgba(0, 0, 0, 0.3);
-  color: #1a1a1a;
+  background: color-mix(in srgb, var(--text-on-light-strong) 10%, transparent);
+  border-color: color-mix(in srgb, var(--text-on-light-strong) 30%, transparent);
+  color: var(--text-on-light-strong);
 }
 
 .cookie-btn-outline {
   background: transparent;
-  color: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: color-mix(in srgb, var(--text-on-light-strong) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-light-strong) 20%, transparent);
 }
 
 .cookie-btn-outline:hover {
-  background: rgba(0, 0, 0, 0.05);
-  color: #1a1a1a;
-  border-color: rgba(0, 0, 0, 0.3);
+  background: color-mix(in srgb, var(--text-on-light-strong) 5%, transparent);
+  color: var(--text-on-light-strong);
+  border-color: color-mix(in srgb, var(--text-on-light-strong) 30%, transparent);
 }
 
 /* Modern Cookie Overlay */
 .cookie-overlay-modern {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: color-mix(in srgb, var(--surface-bg-dark) 60%, transparent);
   backdrop-filter: blur(8px);
   z-index: 9998;
   opacity: 0;
@@ -548,8 +548,8 @@ img.loaded {
   align-items: center;
   justify-content: space-between;
   padding: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
 }
 
 .panel-title-section {
@@ -573,7 +573,7 @@ img.loaded {
 .panel-title {
   font-size: 18px;
   font-weight: 700;
-  color: #f3f3f3;
+  color: var(--color-text);
   margin: 0 0 2px;
 }
 
@@ -589,8 +589,8 @@ img.loaded {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 5%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent);
   border-radius: 8px;
   color: var(--muted);
   cursor: pointer;
@@ -598,8 +598,8 @@ img.loaded {
 }
 
 .panel-close-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #f3f3f3;
+  background: color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent);
+  color: var(--color-text);
 }
 
 .panel-body {
@@ -615,15 +615,15 @@ img.loaded {
 }
 
 .preference-item {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
   border-radius: 12px;
   padding: 20px;
   transition: all 0.3s ease;
 }
 
 .preference-item:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 5%, transparent);
   border-color: rgba(var(--accent-rgb), 0.2);
 }
 
@@ -670,7 +670,7 @@ img.loaded {
 .preference-title {
   font-size: 16px;
   font-weight: 600;
-  color: #f3f3f3;
+  color: var(--color-text);
   margin: 0 0 4px;
 }
 
@@ -706,8 +706,8 @@ img.loaded {
   position: relative;
   width: 48px;
   height: 24px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 20%, transparent);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -743,8 +743,8 @@ img.loaded {
 
 .panel-footer {
   padding: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
 }
 
 .footer-content {
@@ -903,7 +903,7 @@ img.loaded {
   padding: 0 14px;
   /* use brand accent color for banner background */
   background: var(--brand-secondary, var(--accent));
-  color: var(--brand-background, #ffffff);
+  color: var(--brand-background);
   font-weight: 600;
   font-family: var(--font-base) !important;
   font-size: 14px;
@@ -912,7 +912,7 @@ img.loaded {
 }
 
 :where(body[data-theme-id="gilded-drive"]) .preview-banner a {
-  color: var(--brand-background, #ffffff);
+  color: var(--brand-background);
   text-decoration: underline;
   font-weight: 700
 }
@@ -957,8 +957,8 @@ input[type="number"] {
   border-radius: 12px;
   display: inline-grid;
   place-items: center;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border: 1px solid rgba(255,255,255,0.04);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 1%, transparent));
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 }
 
 .cookie-panel .pref .pref-icon svg {
@@ -973,19 +973,19 @@ input[type="number"] {
 .cookie-panel .pref .pref-icon.necessary {
   /* show necessary icon clearly — use accent for visibility */
   color: var(--accent);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-  border: 1px solid rgba(255, 255, 255, 0.02);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 1%, transparent));
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
 }
 
 .cookie-panel .pref .pref-icon.analytics {
   color: var(--accent);
-  background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.08), rgba(255,255,255,0.01));
+  background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.08), color-mix(in srgb, var(--text-on-dark-strong) 1%, transparent));
   border: 1px solid rgba(var(--accent-rgb), 0.08);
 }
 
 .cookie-panel .pref .pref-icon.marketing {
   color: var(--accent-2);
-  background: linear-gradient(180deg, rgba(var(--accent-2-rgb, 209, 182, 122), 0.08), rgba(255,255,255,0.01));
+  background: linear-gradient(180deg, rgba(var(--accent-2-rgb, 209, 182, 122), 0.08), color-mix(in srgb, var(--text-on-dark-strong) 1%, transparent));
   border: 1px solid rgba(var(--accent-2-rgb, 209, 182, 122), 0.08);
 }
 
@@ -1005,12 +1005,12 @@ input[type="number"] {
 }
 
 .cookie-panel .pref .badge.required {
-  background: rgba(255, 255, 255, 0.03);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
   padding: 6px 8px;
   border-radius: 8px;
   font-size: 12px;
   color: var(--muted);
-  border: 1px solid rgba(255, 255, 255, 0.02)
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent)
 }
 
 /* Toggle switch styles */
@@ -1024,9 +1024,9 @@ input[type="number"] {
   width: 52px;
   height: 30px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
   box-shadow: inset 0 -6px 18px rgba(0, 0, 0, 0.35)
 }
 
@@ -1043,7 +1043,7 @@ input[type="number"] {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--text-on-dark-strong);
   transform: translateX(0);
   transition: transform .22s cubic-bezier(.2, .9, .2, 1);
   box-shadow: 0 6px 16px rgba(2, 6, 23, 0.45)
@@ -1078,10 +1078,10 @@ input[type="number"] {
   position: sticky;
   bottom: 0;
   padding: 12px 18px;
-  background: linear-gradient(180deg, rgba(12, 14, 16, 0.02), rgba(12, 14, 16, 0.04));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-bg-dark) 2%, transparent), color-mix(in srgb, var(--surface-bg-dark) 4%, transparent));
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  border-top: 1px solid rgba(255, 255, 255, 0.02);
+  border-top: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
   display: flex;
   align-items: center;
   justify-content: flex-end

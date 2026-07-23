@@ -1,5 +1,5 @@
 .vehicle-card.inventory-card-modern {
-  --inventory-status-badge-bg: color-mix(in srgb, var(--primary) 88%, #20b589 12%);
+  --inventory-status-badge-bg: color-mix(in srgb, var(--primary) 88%, var(--t-success) 12%);
   position: relative;
   background: var(--surface-card);
   border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
@@ -355,8 +355,8 @@
   padding: 7px 11px;
   border-radius: 8px;
   border: 1px solid color-mix(in srgb, var(--color-primary, var(--primary)) 12%, var(--border));
-  background: color-mix(in srgb, var(--color-primary, var(--primary)) 5%, #ffffff);
-  color: color-mix(in srgb, var(--text-body) 86%, #2a3a57 14%);
+  background: color-mix(in srgb, var(--color-primary, var(--primary)) 5%, var(--color-surface));
+  color: color-mix(in srgb, var(--text-body) 86%, var(--color-text) 14%);
   font-family: var(--font-brand-body-override, var(--font-body));
   font-size: 0.76rem;
   font-weight: var(--fw-semibold);
@@ -369,7 +369,7 @@
 
 .vehicle-card.inventory-card-modern:hover .inventory-specs li {
   border-color: color-mix(in srgb, var(--color-primary, var(--primary)) 28%, var(--border));
-  background: color-mix(in srgb, var(--color-primary, var(--primary)) 9%, #ffffff);
+  background: color-mix(in srgb, var(--color-primary, var(--primary)) 9%, var(--color-surface));
 }
 
 .vehicle-card.inventory-card-modern .inventory-specs li svg {
@@ -391,8 +391,8 @@
   gap: 10px;
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--color-primary, var(--primary)) 4%, #ffffff) 0%,
-    color-mix(in srgb, var(--color-primary, var(--primary)) 7%, #ffffff) 100%
+    color-mix(in srgb, var(--color-primary, var(--primary)) 4%, var(--color-surface)) 0%,
+    color-mix(in srgb, var(--color-primary, var(--primary)) 7%, var(--color-surface)) 100%
   );
   border-top: 1px solid color-mix(in srgb, var(--color-primary, var(--primary)) 16%, var(--border));
   font-family: var(--font-brand-body-override, var(--font-heading));

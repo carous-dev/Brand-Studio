@@ -75,7 +75,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.92);
+  background: color-mix(in srgb, var(--surface-bg-light) 92%, transparent);
   color: var(--brand-primary);
   border: none;
   border-radius: 50%;
@@ -85,12 +85,12 @@
 }
 .actionIcon:hover {
   background: var(--brand-primary);
-  color: #ffffff;
+  color: var(--brand-on-primary);
   transform: translateY(-1px);
 }
 .actionIconActive {
   background: var(--brand-primary);
-  color: #ffffff;
+  color: var(--brand-on-primary);
 }
 
 .tagRow {
@@ -103,7 +103,7 @@
 }
 .tag {
   background: color-mix(in srgb, var(--surface-bg-dark) 85%, transparent);
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
   font-size: 0.7rem;
   font-weight: 700;
@@ -220,7 +220,7 @@
   right: -30px;
   transform: rotate(35deg);
   background: var(--brand-primary);
-  color: #ffffff;
+  color: var(--brand-on-primary);
   padding: 5px 36px;
   font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);
   font-weight: 800;

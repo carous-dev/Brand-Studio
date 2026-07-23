@@ -1,6 +1,10 @@
-/* Editorial intro — a calm two-column band. Left: statement headline + copy.
-   Right: a numbered editorial list (01 / 02 / 03) using the theme's index
-   thread. All tokens derive from the dashboard palette. */
+/* Editorial intro — a calm two-column band. Left: statement headline + copy,
+   anchored by a brand hairline thread. Right: three interactive spec cards
+   (Sourcing / Pricing / Finance) that respond to hover with a precise reveal —
+   a growing brand edge, an arrow that slides in, a hairline that lifts to the
+   brand colour. Modern/technical, but zero decorative layers: consistent with
+   the theme's minimalist fingerprint. All tokens derive from the dashboard
+   palette. */
 
 .intro {
   background: var(--surface-bg-light);
@@ -21,15 +25,36 @@
   }
 }
 
+/* ---- Left column ---- */
 .left {
   display: flex;
   flex-direction: column;
   gap: 22px;
   max-width: 46ch;
+  position: relative;
 }
 
 @media (min-width: 960px) {
-  .left { position: sticky; top: 96px; }
+  .left {
+    position: sticky;
+    top: 96px;
+    /* Brand hairline thread running down the left edge — the single ornament. */
+    padding-left: 28px;
+  }
+  .left::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      var(--brand-primary),
+      color-mix(in srgb, var(--brand-primary) 8%, transparent)
+    );
+    border-radius: 2px;
+  }
 }
 
 .title {
@@ -64,34 +89,84 @@
   border-color: var(--brand-primary);
 }
 
-/* ---- Numbered editorial list ---- */
+/* ---- Interactive spec cards ---- */
 .points {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
+  gap: 14px;
 }
 
-.points li {
+.card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: 18px;
+  padding: clamp(20px, 2.6vw, 28px);
+  padding-left: clamp(24px, 3vw, 32px);
+  border: 1px solid var(--border-hairline);
+  border-radius: 10px;
+  background: var(--surface-bg-light);
+  overflow: hidden;
+  transition: border-color 220ms ease, background 220ms ease, transform 220ms ease,
+    box-shadow 220ms ease;
+}
+
+/* The growing brand edge — collapsed to a sliver at rest, expands on hover. */
+.cardEdge {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--brand-primary);
+  transform: scaleY(0.28);
+  transform-origin: top;
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card:hover {
+  border-color: var(--brand-soft-border);
+  background: color-mix(in srgb, var(--brand-primary) 3%, var(--surface-bg-light));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+.card:hover .cardEdge {
+  transform: scaleY(1);
+}
+
+.cardIcon {
+  /* .axis-icon base sizing kept; nudge alignment with the kicker baseline. */
+  margin-top: 2px;
+  transition: background 220ms ease, border-color 220ms ease, transform 220ms ease;
+}
+.card:hover .cardIcon {
+  background: var(--brand-soft-bg-strong);
+  border-color: var(--brand-primary);
+  transform: translateY(-1px);
+}
+
+.cardText {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: clamp(24px, 3vw, 34px) 0;
-  border-top: 1px solid var(--border-hairline);
+  gap: 9px;
+  min-width: 0;
 }
-.points li:last-child { border-bottom: 1px solid var(--border-hairline); }
 
 .kicker {
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
-.points strong {
+.cardTitle {
   font-family: var(--font-brand-family-override, 'Manrope', sans-serif);
-  font-size: 1.25rem;
+  font-size: 1.22rem;
   font-weight: 600;
   letter-spacing: -0.015em;
   color: var(--text-on-light-strong);
+  line-height: 1.2;
 }
 
 .pointBody {
@@ -101,8 +176,45 @@
   max-width: 46ch;
 }
 
+.cardArrow {
+  color: var(--text-on-light-muted);
+  align-self: center;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translate(-6px, 4px);
+  transition: opacity 220ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 220ms ease;
+}
+.card:hover .cardArrow {
+  color: var(--brand-primary);
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .cardEdge,
+  .cardIcon,
+  .cardArrow,
+  .link {
+    transition: none;
+  }
+  .card:hover { transform: none; }
+}
+
+/* ---- Mobile — simplify, don't scale. Per feedback_mobile_modest_design. ---- */
 @media (max-width: 640px) {
   .grid { gap: 32px; }
-  .points li { padding: 20px 0; }
-  .points strong { font-size: 1.12rem; }
+  .points { gap: 12px; }
+  .card {
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    padding: 18px;
+    padding-left: 20px;
+  }
+  .cardTitle { font-size: 1.1rem; }
+  /* Arrow is a hover affordance — no hover on touch, so drop it. */
+  .cardArrow { display: none; }
+  /* Static brand edge at a fixed height reads as intentional without hover. */
+  .cardEdge { transform: scaleY(1); width: 2px; }
 }

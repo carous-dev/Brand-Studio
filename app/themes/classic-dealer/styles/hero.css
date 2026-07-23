@@ -80,7 +80,7 @@ body[data-theme-id="classic-dealer"] .hero-content {
   font-size: clamp(18px, 2.5vw, 24px);
   line-height: 1.6;
   margin: 0;
-  color: rgba(255, 255, 255, 0.9);
+  color: color-mix(in srgb, var(--color-bg) 90%, transparent);
   font-weight: 400;
   letter-spacing: 0.5px;
   font-family: var(--font-ui);
@@ -97,12 +97,12 @@ body[data-theme-id="classic-dealer"] .hero-content {
   display: grid;
   grid-template-columns: repeat(4, 1fr) auto;
   gap: 20px;
-  background: rgba(255, 255, 255, 0.95);
+  background: color-mix(in srgb, var(--color-bg) 95%, transparent);
   backdrop-filter: blur(20px);
   padding: 32px;
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid color-mix(in srgb, var(--color-bg) 20%, transparent);
   align-items: flex-end;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -138,7 +138,7 @@ body[data-theme-id="classic-dealer"] .hero-content {
   border-radius: 12px;
   font-size: 15px;
   font-family: var(--font-ui);
-  background: rgba(255, 255, 255, 0.8);
+  background: color-mix(in srgb, var(--color-bg) 80%, transparent);
   color: var(--brand-text);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -151,14 +151,14 @@ body[data-theme-id="classic-dealer"] .hero-content {
 
 .search-input:hover {
   border-color: var(--brand-primary);
-  background: rgba(255, 255, 255, 0.95);
+  background: color-mix(in srgb, var(--color-bg) 95%, transparent);
 }
 
 .search-input:focus {
   outline: none;
   border-color: var(--brand-primary);
   box-shadow: 0 0 0 4px rgba(var(--brand-primary-rgb), 0.15);
-  background: rgba(255, 255, 255, 1);
+  background: var(--color-bg);
 }
 
 .search-input:disabled {

@@ -22,7 +22,7 @@
     width: 460px;
     max-width: 100vw;
     box-shadow: 0 20px 50px rgba(3, 10, 30, 0.55);
-    border-left: 1px solid rgba(255, 255, 255, 0.04);
+    border-left: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
     border-radius: 12px;
     overflow: hidden;
     /* start fully off-screen to avoid layout reflow when animating */
@@ -42,7 +42,7 @@
     align-items: flex-start;
     gap: 12px;
     padding: 20px 20px 14px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
     position: relative
 }
 
@@ -73,7 +73,7 @@
 
 #vehiclePanelPrice {
     font-family: var(--font-base);
-    color: #6ef3d6;
+    color: var(--color-primary);
     font-weight: 800;
     font-size: 20px;
     margin-top: 6px;
@@ -83,7 +83,7 @@
 .vehicle-close {
     background: transparent;
     border: 0;
-    color: rgba(255, 255, 255, 0.88);
+    color: color-mix(in srgb, var(--text-on-dark-strong) 88%, transparent);
     font-size: 20px;
     padding: 6px;
     cursor: pointer;
@@ -97,7 +97,7 @@
     content: "";
     display: block;
     height: 1px;
-    background: rgba(255, 255, 255, 0.03);
+    background: color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
     position: absolute;
     left: 16px;
     right: 16px;
@@ -110,7 +110,7 @@
     max-height: 78vh;
     overflow: auto;
     scrollbar-width: thin;
-    scrollbar-color: rgba(110, 243, 214, 0.32) transparent;
+    scrollbar-color: color-mix(in srgb, var(--color-primary) 32%, transparent) transparent;
     -ms-overflow-style: auto
 }
 
@@ -124,14 +124,14 @@
 }
 
 .vehicle-panel-body::-webkit-scrollbar-thumb {
-    background: rgba(110, 243, 214, 0.32);
+    background: color-mix(in srgb, var(--color-primary) 32%, transparent);
     border-radius: 8px;
     border: 2px solid transparent;
     background-clip: padding-box
 }
 
 .vehicle-panel-body::-webkit-scrollbar-thumb:hover {
-    background: rgba(110, 243, 214, 0.6)
+    background: color-mix(in srgb, var(--color-primary) 60%, transparent)
 }
 
 /* Optional: hide scrollbars completely by adding `.no-scrollbar` to the panel or body */
@@ -157,17 +157,17 @@
     display: flex;
     justify-content: space-between;
     padding: 14px 6px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
     align-items: center
 }
 
 .vehicle-meta-row strong {
-    color: #e6fbff;
+    color: var(--text-on-dark-strong);
     font-weight: 700
 }
 
 .vehicle-meta-row span {
-    color: #dff7ff;
+    color: var(--text-on-dark-strong);
     font-weight: 700
 }
 
@@ -256,7 +256,7 @@
     width: 100%;
     padding: 14px 16px;
     border-radius: 8px;
-    background: #fff;
+    background: var(--color-bg);
     border: 1px solid var(--accent);
     color: var(--bg);
     font-size: 14px;
@@ -298,7 +298,7 @@
     padding: 10px;
     border-radius: 8px;
     background: var(--accent);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
     color: var(--text);
     cursor: pointer;
     font-family: var(--font-display);
@@ -314,7 +314,7 @@
     width: 100%;
     background: var(--accent);
     border: none;
-    color:#fff;
+    color: var(--color-on-primary);
     padding: 12px;
     border-radius: 8px;
     font-weight: 800;
@@ -337,8 +337,8 @@
     transform: translateY(-50%);
     width: 16px;
     height: 16px;
-    border: 2px solid rgba(255,255,255,0.22);
-    border-top-color: rgba(255,255,255,0.9);
+    border: 2px solid color-mix(in srgb, var(--text-on-dark-strong) 22%, transparent);
+    border-top-color: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);
     border-radius: 50%;
     animation: vp-spin .8s linear infinite;
 }
@@ -349,7 +349,7 @@
 .panel-sell-form .label {
     display: block;
     margin-bottom: 6px;
-    color: rgba(200, 210, 220, 0.85);
+    color: var(--text-on-dark-muted);
     font-weight: 700
 }
 
@@ -374,7 +374,7 @@
     display: inline-block;
     margin: 10px 0 0 6px;
     background: transparent;
-    border: 1px solid rgba(110, 243, 214, 0.06);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 6%, transparent);
     color: var(--text);
     padding: 6px 10px;
     border-radius: 8px;

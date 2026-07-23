@@ -6,10 +6,10 @@
   margin-bottom: 16px;
   font-family: var(--font-ui-family-override, 'DM Sans', sans-serif);
   font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 70%, transparent);
 }
 .crumb a {
-  color: rgba(255, 255, 255, 0.7);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 70%, transparent);
   text-decoration: none;
 }
 .crumb a:hover { color: var(--kain-accent-warm); }

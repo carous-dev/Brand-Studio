@@ -156,4 +156,44 @@
 
   --t-glow-shadow: 0 14px 28px color-mix(in srgb, var(--color-primary) 28%, transparent);
   --t-glow-shadow-strong: 0 18px 36px color-mix(in srgb, var(--color-primary) 38%, transparent);
+
+  /* -----------------------------------------------------------------------
+   * VECTOR EFFECT TOKENS — the futuristic console layer.
+   *
+   * Everything below is derived from the brand palette via color-mix, so the
+   * glassmorphism, blueprint grid, and neon glow all re-tint automatically
+   * when the dashboard changes primary/accent/surface. Components read these
+   * via var(--fx-*) and stay literal-free (checker-safe).
+   * ----------------------------------------------------------------------- */
+
+  /* Blueprint grid lines (page + panel backdrops) */
+  --fx-grid-line: color-mix(in srgb, var(--color-text) 6%, transparent);
+  --fx-grid-line-strong: color-mix(in srgb, var(--color-primary) 22%, transparent);
+
+  /* Hairline borders — the luminous 1px edge on every console surface */
+  --fx-hairline: color-mix(in srgb, var(--color-text) 12%, transparent);
+  --fx-hairline-bright: color-mix(in srgb, var(--color-primary) 32%, transparent);
+
+  /* Glass panels — translucent surface + backdrop blur */
+  --fx-glass: color-mix(in srgb, var(--color-surface) 74%, transparent);
+  --fx-glass-strong: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  --fx-glass-border: color-mix(in srgb, var(--color-primary) 24%, var(--fx-hairline));
+
+  /* Neon glow shadows for lifted / active elements */
+  --fx-glow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 26%, transparent),
+             0 10px 30px color-mix(in srgb, var(--color-primary) 22%, transparent);
+  --fx-glow-strong: 0 0 0 1px color-mix(in srgb, var(--color-primary) 42%, transparent),
+             0 16px 44px color-mix(in srgb, var(--color-primary) 34%, transparent);
+  --fx-glow-accent: 0 0 0 1px color-mix(in srgb, var(--color-accent) 40%, transparent),
+             0 14px 40px color-mix(in srgb, var(--color-accent) 26%, transparent);
+
+  /* Aurora — the signature radial glow used behind headings / bands */
+  --fx-aurora: radial-gradient(120% 140% at 82% 0%, color-mix(in srgb, var(--color-primary) 34%, transparent) 0%, transparent 55%),
+               radial-gradient(120% 140% at 8% 100%, color-mix(in srgb, var(--color-accent) 22%, transparent) 0%, transparent 55%);
+
+  /* Panel fill — a soft vertical sheen for glass cards */
+  --fx-panel: linear-gradient(160deg, color-mix(in srgb, var(--color-text) 5%, var(--color-surface)) 0%, var(--color-surface) 52%, color-mix(in srgb, var(--color-primary) 8%, var(--color-surface)) 100%);
+
+  /* Scanline overlay (subtle horizontal hatch for hero / feature bands) */
+  --fx-scan: repeating-linear-gradient(0deg, color-mix(in srgb, var(--color-text) 4%, transparent) 0 1px, transparent 1px 4px);
 }

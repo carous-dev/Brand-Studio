@@ -1,18 +1,18 @@
 
 @import url('base.css');
 
-.cta-banner{background:linear-gradient(90deg,var(--panel),#121212);padding:22px 0;margin-top:28px;border-radius:8px;font-family:var(--font-base)}
+.cta-banner{background:linear-gradient(90deg,var(--panel),var(--surface-card-dark));padding:22px 0;margin-top:28px;border-radius:8px;font-family:var(--font-base)}
 .cta-inner{display:flex;align-items:center;justify-content:space-between;gap:12px}
 
 /* Futuristic CTA Hero */
 .hero-cta{position:relative;overflow:hidden;min-height:180px;display:flex;align-items:center}
 .hero-cta__bg{position:absolute;inset:0;z-index:0;background-size:cover;background-position:bottom center;will-change:auto}
-.hero-cta__overlay{position:absolute;inset:0;z-index:1;background:rgba(0,0,0,0.82)}
+.hero-cta__overlay{position:absolute;inset:0;z-index:1;background:rgba(0,0,0,0.82)} /* photo-scrim-ok */
 .hero-cta__bg.loaded{opacity:1;transition:opacity 600ms ease}
 .hero-cta__inner{position:relative;z-index:2;padding:56px 0;display:flex;align-items:center;justify-content:center}
-.hero-cta__content{text-align:center;color:var(--muted-foreground,#fff);max-width:980px;margin:0 auto}
-.hero-cta__title{font-family:var(--font-display),sans-serif;font-size:40px;line-height:1.03;margin:0 0 12px;color:var(--foreground,#fff);letter-spacing:-0.02em}
-.hero-cta__sub{margin:0 0 22px;color:rgba(255,255,255,0.9);font-size:16px}
+.hero-cta__content{text-align:center;color:var(--muted-foreground, var(--text-on-dark-strong));max-width:980px;margin:0 auto}
+.hero-cta__title{font-family:var(--font-display),sans-serif;font-size:40px;line-height:1.03;margin:0 0 12px;color:var(--foreground, var(--text-on-dark-strong));letter-spacing:-0.02em}
+.hero-cta__sub{margin:0 0 22px;color:color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);font-size:16px}
 .hero-cta__actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
 .hero-cta__actions{margin-top:28px}
 .btn-pill{display:inline-flex;align-items:center;gap:10px;padding:12px 26px;border-radius:999px;font-weight:700;text-decoration:none}
@@ -36,16 +36,16 @@
 .cta-hero{position:relative;overflow:hidden;overflow-x:hidden;border-radius:14px;margin-top:28px}
 .cta-hero .hero-cta__inner{padding:60px 0}
 .cta-hero .hero-cta__content{max-width:920px;text-align:center}
-.cta-hero .hero-cta__overlay{position:absolute;inset:0;z-index:1;background:rgba(0,0,0,0.82)}
-	.cta-accent{position:absolute;right:-6%;top:10%;width:420px;height:420px;border-radius:50%;pointer-events:none;filter:blur(36px);background:rgba(184,146,74,0.12);transform:translateZ(0)}
+.cta-hero .hero-cta__overlay{position:absolute;inset:0;z-index:1;background:rgba(0,0,0,0.82)} /* photo-scrim-ok */
+	.cta-accent{position:absolute;right:-6%;top:10%;width:420px;height:420px;border-radius:50%;pointer-events:none;filter:blur(36px);background:color-mix(in srgb, var(--color-primary) 12%, transparent);transform:translateZ(0)}
 
 /* subtle scanline and glow */
 	.cta-hero::before{content:'';position:absolute;inset:0;border-radius:14px;box-shadow:0 8px 40px rgba(2,6,23,0.45);pointer-events:none}
-	.cta-hero::after{content:'';position:absolute;left:6%;bottom:-18%;width:60%;height:2px;background:rgba(184,146,74,0.12);opacity:0.06;filter:blur(6px);transform:translateZ(0)}
+	.cta-hero::after{content:'';position:absolute;left:6%;bottom:-18%;width:60%;height:2px;background:color-mix(in srgb, var(--color-primary) 12%, transparent);opacity:0.06;filter:blur(6px);transform:translateZ(0)}
 
 /* Button tweak for neon/futuristic look */
-.cta-hero .btn-ghost{background:linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));border:1px solid rgba(184,146,74,0.18);color:#f8f3ea}
-.cta-hero .btn-dark-outline{background:transparent;border:1px solid rgba(209,182,122,0.2);color:#f3efe8}
+.cta-hero .btn-ghost{background:linear-gradient(90deg, color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent));border:1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);color:var(--text-on-dark-strong)}
+.cta-hero .btn-dark-outline{background:transparent;border:1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);color:var(--text-on-dark-strong)}
 
 @media (max-width:900px){
   .cta-hero .hero-cta__title{font-size:30px}
@@ -75,7 +75,7 @@
 	position:absolute;
 	inset:-6px;
 	border-radius:999px;
-	background:linear-gradient(90deg, rgba(184,146,74,0.95) 0%, rgba(209,182,122,0.95) 50%);
+	background:linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 95%, transparent) 0%, color-mix(in srgb, var(--color-primary) 95%, transparent) 50%);
 	filter:blur(12px);
 	opacity:0.36;
 	z-index:-2;
@@ -87,7 +87,7 @@
 	position:absolute;
 	inset:0;
 	border-radius:999px;
-	background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+	background:linear-gradient(180deg, color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent), transparent);
 	mix-blend-mode: overlay;
 	z-index:1;
 	pointer-events:none;
@@ -96,8 +96,8 @@
 .cta-hero .btn-pill:hover{transform:translateY(-4px);box-shadow:0 18px 50px rgba(184,146,74,0.12), 0 6px 18px rgba(0,0,0,0.28)}
 .cta-hero .btn-pill:hover::before{transform:scale(1.06);opacity:0.56}
 
-.cta-hero .btn-ghost{border:1px solid rgba(184,146,74,0.26);color:#f8f3ea;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.006))}
-.cta-hero .btn-dark-outline{border:1px solid rgba(209,182,122,0.28);color:#efeae0}
+.cta-hero .btn-ghost{border:1px solid color-mix(in srgb, var(--color-primary) 26%, transparent);color:var(--text-on-dark-strong);background:linear-gradient(180deg, color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 0.6%, transparent))}
+.cta-hero .btn-dark-outline{border:1px solid color-mix(in srgb, var(--color-primary) 28%, transparent);color:var(--text-on-dark-strong)}
 
 .cta-hero .btn-pill:focus{outline:none;box-shadow:0 0 0 4px rgba(184,146,74,0.08), 0 12px 36px rgba(184,146,74,0.12)}
 
@@ -111,7 +111,7 @@
 /* Neon (primary) and Dim (secondary) button variants for CTA */
 .cta-hero .btn-neon{
 	background:var(--accent);
-	color:#0b0b0b;
+	color:var(--color-text);
 	border:none;
 	position:relative;
 	z-index:2;
@@ -123,7 +123,7 @@
 	position:absolute;
 	inset:-8px;
 	border-radius:999px;
-	background:linear-gradient(90deg, rgba(184,146,74,0.95) 0%, rgba(209,182,122,0.85) 60%);
+	background:linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 95%, transparent) 0%, color-mix(in srgb, var(--color-primary) 85%, transparent) 60%);
 	filter:blur(18px);
 	opacity:0.64;
 	z-index:-2;
@@ -136,9 +136,9 @@
 .cta-hero .btn-neon:focus{box-shadow:0 0 0 6px rgba(181,140,60,0.08), 0 18px 48px rgba(181,140,60,0.14)}
 
 .cta-hero .btn-dim{
-	background:rgba(255,255,255,0.02);
-	color:rgba(255,255,255,0.88);
-	border:1px solid rgba(255,255,255,0.04);
+	background:color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
+	color:color-mix(in srgb, var(--text-on-dark-strong) 88%, transparent);
+	border:1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 	filter:grayscale(20%);
 	opacity:0.78;
 	transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease, opacity .16s ease;
@@ -155,7 +155,7 @@
 .cta-hero .btn-neon svg{width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:10px;stroke:currentColor;fill:none}
 
 /* Slightly stronger dim border (subtle) so it reads as an outlined secondary action */
-.cta-hero .btn-dim{border-color:rgba(255,255,255,0.06)}
+.cta-hero .btn-dim{border-color:color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent)}
 
 /* Featured section accent (big, subtle glow) */
 .featured.featured-carousel{position:relative;overflow:visible}
@@ -167,7 +167,7 @@
 	height:760px;
 	border-radius:50%;
 	pointer-events:none;
-	background: radial-gradient(circle at 30% 30%, rgba(94,243,255,0.14), rgba(142,123,255,0.12) 30%, rgba(255,123,210,0.08) 60%, transparent 70%);
+	background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--color-accent) 14%, transparent), color-mix(in srgb, var(--color-primary) 12%, transparent) 30%, color-mix(in srgb, var(--color-secondary) 8%, transparent) 60%, transparent 70%);
 	filter: blur(80px);
 	transform: translateZ(0);
 	opacity:0.18;

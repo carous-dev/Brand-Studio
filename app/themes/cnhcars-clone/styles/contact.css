@@ -2,8 +2,8 @@
 .contact-section {
   padding: clamp(2.75rem, 5vw, 4.5rem) 0;
   background:
-    radial-gradient(100% 120% at 0% 0%, rgba(65, 105, 225, 0.08) 0%, rgba(65, 105, 225, 0) 55%),
-    linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    radial-gradient(100% 120% at 0% 0%, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0) 55%),
+    linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg) 100%);
   border-top: 1px solid var(--border);
 }
 
@@ -44,15 +44,15 @@
 }
 
 .contact-section .form-success {
-  background: rgba(40, 167, 69, 0.1);
-  color: #166534;
-  border: 1px solid rgba(40, 167, 69, 0.25);
+  background: color-mix(in srgb, var(--t-success) 10%, transparent);
+  color: var(--t-success);
+  border: 1px solid color-mix(in srgb, var(--t-success) 25%, transparent);
 }
 
 .contact-section .form-error {
-  background: rgba(220, 53, 69, 0.1);
-  color: #b42318;
-  border: 1px solid rgba(220, 53, 69, 0.25);
+  background: color-mix(in srgb, var(--t-error) 10%, transparent);
+  color: var(--t-error);
+  border: 1px solid color-mix(in srgb, var(--t-error) 25%, transparent);
 }
 
 .contact-section .form-icon {
@@ -79,7 +79,7 @@
 .contact-section .input-icon {
   width: 18px;
   height: 18px;
-  color: #64748b;
+  color: var(--color-muted);
   position: absolute;
   left: 0.9rem;
   top: 50%;
@@ -96,7 +96,7 @@
 .contact-section .form-textarea {
   width: 100%;
   border: 1px solid var(--border);
-  background: #fbfcfe;
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-bg));
   color: var(--text-heading);
   border-radius: 12px;
   font-size: 0.95rem;
@@ -107,15 +107,15 @@
 
 .contact-section .form-input::placeholder,
 .contact-section .form-textarea::placeholder {
-  color: #8b98ab;
+  color: var(--color-muted);
 }
 
 .contact-section .form-input:focus,
 .contact-section .form-textarea:focus {
   outline: none;
-  border-color: rgba(65, 105, 225, 0.45);
+  border-color: rgba(var(--color-primary-rgb), 0.45);
   box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.12);
-  background: #ffffff;
+  background: var(--color-bg);
 }
 
 .contact-section .form-textarea {
@@ -127,7 +127,7 @@
 .contact-section .field-error {
   margin-top: 0.35rem;
   margin-left: 0.1rem;
-  color: #b42318;
+  color: var(--t-error);
   font-size: 0.82rem;
   font-weight: var(--fw-medium);
 }
@@ -177,7 +177,7 @@
 .contact-section .contact-help-text {
   margin: 0;
   font-size: 0.84rem;
-  color: #64748b;
+  color: var(--color-muted);
 }
 
 .contact-section .contact-info {
@@ -199,7 +199,7 @@
   gap: 0.7rem;
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: #f8fbff;
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-bg));
   padding: 0.75rem;
 }
 
@@ -214,7 +214,7 @@
 .contact-section .contact-label {
   margin: 0;
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--color-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   font-weight: var(--fw-semibold);
@@ -235,7 +235,7 @@
 .contact-section .contact-visit {
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: #f8fbff;
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-bg));
   padding: 0.75rem;
 }
 
@@ -249,7 +249,7 @@
 .contact-section .visit-title {
   margin: 0;
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--color-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   font-weight: var(--fw-semibold);

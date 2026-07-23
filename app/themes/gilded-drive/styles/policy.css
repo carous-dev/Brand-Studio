@@ -3,7 +3,7 @@
 .policy-page {
   min-height: 100vh;
   padding: 60px 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(185, 146, 74, 0.02));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--text-on-dark-strong) 1%, transparent), color-mix(in srgb, var(--color-primary) 2%, transparent));
 }
 
 .policy-content {
@@ -14,7 +14,7 @@
 .policy-header {
   margin-bottom: 60px;
   text-align: center;
-  border-bottom: 2px solid rgba(185, 146, 74, 0.2);
+  border-bottom: 2px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
   padding-bottom: 40px;
 }
 
@@ -22,14 +22,14 @@
   font-size: clamp(32px, 6vw, 56px);
   font-weight: 800;
   margin: 0 0 12px;
-  color: #fff;
+  color: var(--text-on-dark-strong);
   font-family: var(--font-display, system-ui);
   letter-spacing: -0.02em;
 }
 
 .policy-header .last-updated {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 60%, transparent);
   margin: 0;
   font-family: var(--font-ui, system-ui);
 }
@@ -37,7 +37,7 @@
 .policy-section {
   margin-bottom: 48px;
   padding-bottom: 48px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
 }
 
 .policy-section:last-of-type {
@@ -50,7 +50,7 @@
   font-size: clamp(20px, 4vw, 32px);
   font-weight: 700;
   margin: 0 0 16px;
-  color: #fff;
+  color: var(--text-on-dark-strong);
   font-family: var(--font-base, system-ui);
   letter-spacing: -0.01em;
 }
@@ -59,14 +59,14 @@
   font-size: 18px;
   font-weight: 700;
   margin: 20px 0 12px;
-  color: #fff;
+  color: var(--text-on-dark-strong);
   font-family: var(--font-base, system-ui);
 }
 
 .policy-section p {
   font-size: 16px;
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.85);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 85%, transparent);
   margin: 0 0 16px;
   font-family: var(--font-ui, system-ui);
 }
@@ -84,7 +84,7 @@
 .policy-section ul li {
   font-size: 16px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.8);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 80%, transparent);
   margin-bottom: 8px;
   padding-left: 24px;
   position: relative;
@@ -95,12 +95,12 @@
   content: "→";
   position: absolute;
   left: 0;
-  color: var(--accent, #b9924a);
+  color: var(--accent);
   font-weight: bold;
 }
 
 .policy-section a {
-  color: var(--accent, #b9924a);
+  color: var(--accent);
   text-decoration: none;
   border-bottom: 1px solid currentColor;
   transition: opacity 180ms ease;
@@ -118,14 +118,14 @@
 
 .cookie-type {
   padding: 20px;
-  background: rgba(185, 146, 74, 0.05);
-  border-left: 4px solid var(--accent, #b9924a);
+  background: color-mix(in srgb, var(--color-primary) 5%, transparent);
+  border-left: 4px solid var(--accent);
   border-radius: 8px;
 }
 
 .cookie-type h3 {
   margin-top: 0;
-  color: var(--accent, #b9924a);
+  color: var(--accent);
 }
 
 .cookie-type p {
@@ -138,18 +138,18 @@
 
 .note {
   padding: 16px;
-  background: rgba(255, 193, 7, 0.08);
-  border-left: 4px solid #ffc107;
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  border-left: 4px solid var(--color-accent);
   border-radius: 6px;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.9);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);
 }
 
 .contact-info {
   padding: 16px;
-  background: rgba(255, 255, 255, 0.02);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
   margin: 16px 0;
 }
 
@@ -159,7 +159,7 @@
 }
 
 .contact-info a {
-  color: var(--accent, #b9924a);
+  color: var(--accent);
   text-decoration: none;
 }
 
@@ -170,13 +170,13 @@
 .policy-nav {
   margin-top: 60px;
   padding-top: 40px;
-  border-top: 2px solid rgba(185, 146, 74, 0.2);
+  border-top: 2px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
   display: flex;
   justify-content: space-between;
 }
 
 .policy-link {
-  color: var(--accent, #b9924a);
+  color: var(--accent);
   text-decoration: none;
   font-weight: 600;
   font-family: var(--font-base, system-ui);

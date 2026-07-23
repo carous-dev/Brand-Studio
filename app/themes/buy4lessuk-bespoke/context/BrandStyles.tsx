@@ -24,7 +24,10 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     "'Inter', 'Segoe UI', sans-serif";
   const fontBrand =
     resolveFontToken(fonts.brand, (fonts as any).heading, themeAny.fontBrand, themeAny.brandFont) ||
-    "'Playfair Display', 'Times New Roman', Georgia, serif";
+    "'Space Grotesk', 'Segoe UI', sans-serif";
+  const fontMono =
+    resolveFontToken(fonts.mono, themeAny.fontMono, themeAny.monoFont) ||
+    "'Space Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace";
 
   // Curated automotive fallback imagery from Unsplash CDN — used when neither
   // brand.images.<slot> nor brand.heroImage is set. These are real photos
@@ -66,54 +69,59 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   // theme.colors.*. header-text is omitted (the emitter derives it from
   // --color-text identically); header-bg/-muted are passed because their
   // defaults differ from background/muted.
+  // VECTOR — futuristic dark-console default palette. Near-black cool
+  // surfaces, electric-azure primary, aqua accent, violet supporting tint.
+  // These are DEFAULTS only: a brand record's theme.colors.* still overrides
+  // every core-8 token, so the site remains fully dashboard-recolourable.
   const vars = buildThemeTokens(theme.colors as any, {
     defaults: {
-      primaryColor: '#e11d2a',
-      secondaryColor: '#111317',
-      accentColor: '#facc15',
-      backgroundColor: '#f5f5f7',
-      surfaceColor: '#ffffff',
-      textColor: '#0f1623',
-      mutedColor: '#5b6573',
-      borderColor: '#e3e6ee',
-      primaryStrong: '#b71623',
-      headerBg: '#ffffff',
-      headerMuted: '#6b7280',
-      heroOverlayStart: 'rgba(8, 8, 10, 0.10)',
-      heroOverlayEnd: 'rgba(8, 8, 10, 0.62)',
+      primaryColor: '#3d7dff',
+      secondaryColor: '#7c5cff',
+      accentColor: '#25e6c5',
+      backgroundColor: '#060812',
+      surfaceColor: '#0e1424',
+      textColor: '#e8edfb',
+      mutedColor: '#8b96b5',
+      borderColor: '#1f294a',
+      primaryStrong: '#2b5fd9',
+      headerBg: '#080b18',
+      headerMuted: '#8b96b5',
+      heroOverlayStart: 'rgba(4, 6, 14, 0.20)',
+      heroOverlayEnd: 'rgba(4, 6, 14, 0.86)',
       heroTextMuted: 'rgba(255, 255, 255, 0.92)',
       heroReviewMuted: 'rgba(255, 255, 255, 0.85)',
-      reviewStar: '#facc15',
+      reviewStar: '#25e6c5',
     },
   });
 
   const extras: Record<string, string> = {
     // Extended surface / border / topbar / on-dark tokens — NOT part of the
-    // core-8 emitter contract; each stays dashboard-overridable.
-    '--color-surface-dark': c.surfaceDark || '#101216',
-    '--color-text-invert': c.textInvert || '#ffffff',
-    '--color-border-dark': c.borderDark || 'rgba(255, 255, 255, 0.12)',
-    '--color-topbar-bg': c.topbarBg || '#0f1216',
-    '--color-topbar-text': c.topbarText || 'rgba(255, 255, 255, 0.78)',
+    // core-8 emitter contract; each stays dashboard-overridable. Tuned dark
+    // for the VECTOR console aesthetic.
+    '--color-surface-dark': c.surfaceDark || '#05070f',
+    '--color-text-invert': c.textInvert || '#f2f6ff',
+    '--color-border-dark': c.borderDark || 'rgba(140, 170, 255, 0.14)',
+    '--color-topbar-bg': c.topbarBg || '#05070f',
+    '--color-topbar-text': c.topbarText || 'rgba(226, 233, 255, 0.72)',
     '--color-on-dark-strong': c.onDarkStrong || '#ffffff',
-    '--color-on-dark-muted': c.onDarkMuted || 'rgba(255, 255, 255, 0.78)',
+    '--color-on-dark-muted': c.onDarkMuted || 'rgba(226, 233, 255, 0.74)',
 
     // -----------------------------------------------------------------------
     // Fixed decorative hue tokens — colours that are intentionally NOT part of
-    // the 8-token brand palette (charcoal display bands, warm hero fallback,
+    // the 8-token brand palette (deep display bands, hero fallback gradient,
     // UK number-plate yellow, body-type category coding, the vehicle-detail
     // teal/slate carried over from the source layout). Defining them here (the
     // checker-exempt token source) keeps component CSS literal-free while
-    // preserving the exact default hues for pixel parity; each stays
-    // dashboard-overridable.
-    '--b4l-band-charcoal': c.bandCharcoal || '#1a1d22',
-    '--b4l-band-charcoal-2': c.bandCharcoal2 || '#25292f',
-    '--b4l-band-charcoal-3': c.bandCharcoal3 || '#2f343c',
-    '--b4l-band-night': c.bandNight || '#101723',
-    '--b4l-band-night-deep': c.bandNightDeep || '#06090d',
-    '--b4l-hero-fallback': c.heroFallback || '#f3f0ec',
-    '--b4l-hero-fallback-1': c.heroFallback1 || '#d8cfc4',
-    '--b4l-hero-fallback-2': c.heroFallback2 || '#b3a89b',
+    // preserving exact hues; each stays dashboard-overridable. Bands are now
+    // deep-navy/void to sit under the neon chrome.
+    '--b4l-band-charcoal': c.bandCharcoal || '#0b1120',
+    '--b4l-band-charcoal-2': c.bandCharcoal2 || '#0f1830',
+    '--b4l-band-charcoal-3': c.bandCharcoal3 || '#132146',
+    '--b4l-band-night': c.bandNight || '#070b16',
+    '--b4l-band-night-deep': c.bandNightDeep || '#03060d',
+    '--b4l-hero-fallback': c.heroFallback || '#070b16',
+    '--b4l-hero-fallback-1': c.heroFallback1 || '#0b1330',
+    '--b4l-hero-fallback-2': c.heroFallback2 || '#122a5c',
     '--b4l-plate-yellow': c.plateYellow || '#ffd400',
     '--b4l-btn-yellow': c.btnYellow || '#fbd826',
     '--b4l-plate-ink': c.plateInk || '#4b3d00',
@@ -121,8 +129,8 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--b4l-cat-orange': c.catOrange || '#f97316',
     '--b4l-cat-green': c.catGreen || '#16a34a',
     '--b4l-cat-sky': c.catSky || '#0ea5e9',
-    '--b4l-slug-accent': c.slugAccent || '#067a74',
-    '--b4l-slug-dark': c.slugDark || '#0f1b1a',
+    '--b4l-slug-accent': c.slugAccent || '#25e6c5',
+    '--b4l-slug-dark': c.slugDark || '#070d16',
 
     // Hero background image (resolves to brand.heroImage if set in dashboard)
     '--buy4lessuk-hero-image': `url("${escapeCssUrl(heroImage)}")`,
@@ -140,6 +148,7 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     // Font family overrides
     '--font-ui-family-override': fontUi,
     '--font-brand-family-override': fontBrand,
+    '--font-mono-family-override': fontMono,
   };
 
   return (

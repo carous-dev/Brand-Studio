@@ -59,7 +59,7 @@
 .status {
   margin-left: auto;
   font-size: 10px;
-  background: rgba(0, 0, 0, 0.08);
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
   color: var(--color-muted);
   padding: 4px 8px;
   border-radius: 999px;

@@ -44,7 +44,7 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(160deg, rgba(8, 11, 28, 0.4), transparent),
+    linear-gradient(160deg, rgba(8, 11, 28, 0.4), transparent), /* photo-scrim-ok */
     var(--brand-image-about, none),
     url('/themes/queensbury-cars-bespoke/images/about.jpg');
   background-size: auto, cover, cover;
@@ -57,7 +57,7 @@
   left: 14px;
   z-index: 2;
   background: var(--brand-primary);
-  color: #ffffff;
+  color: var(--brand-on-primary);
   padding: 5px 11px;
   border-radius: 4px;
   font-family: var(--font-brand-family-override, 'Saira', system-ui, sans-serif);

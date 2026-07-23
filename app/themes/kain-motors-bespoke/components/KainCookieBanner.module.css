@@ -139,7 +139,7 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-.linkBtn:hover { color: #ffffff; }
+.linkBtn:hover { color: var(--text-on-dark-strong); }
 .btn {
   appearance: none;
   border: 1px solid transparent;

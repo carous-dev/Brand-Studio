@@ -307,8 +307,8 @@ export async function FbmHomePage({ brand }: ThemePageProps) {
                 <div>
                   <span className={styles.visitPin}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-                      <path d="M12 21s-7-6-7-11a7 7 0 1114 0c0 5-7 11-7 11z" stroke="#ffffff" strokeWidth="1.6" />
-                      <circle cx="12" cy="10" r="2.5" stroke="#ffffff" strokeWidth="1.6" />
+                      <path d="M12 21s-7-6-7-11a7 7 0 1114 0c0 5-7 11-7 11z" style={{ stroke: 'var(--color-on-primary)' }} strokeWidth="1.6" />
+                      <circle cx="12" cy="10" r="2.5" style={{ stroke: 'var(--color-on-primary)' }} strokeWidth="1.6" />
                     </svg>
                   </span>
                   <p className={styles.visitMapHint}>Map appears here once you add the showroom address.</p>

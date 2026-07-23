@@ -7,10 +7,10 @@
   position: relative;
   overflow: hidden;
   background: var(--fbm-carbon-950);
-  color: #ffffff;
+  color: var(--color-bg);
   padding: 96px 0 80px;
   background-image:
-    linear-gradient(rgba(8, 12, 20, 0.78), rgba(8, 12, 20, 0.78)),
+    linear-gradient(rgba(8, 12, 20, 0.78), rgba(8, 12, 20, 0.78)), /* photo-scrim-ok */
     var(--brand-image-hero, var(--brand-image-sell-your-car));
   background-size: cover;
   background-position: center;
@@ -40,7 +40,7 @@
   font-weight: 700;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 55%, #ffffff);
+  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 55%, var(--color-bg));
 }
 .heroTitle {
   margin: 0;
@@ -49,14 +49,14 @@
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.05;
-  color: #ffffff;
+  color: var(--color-bg);
   text-wrap: balance;
 }
 .heroLead {
   margin: 0;
   font-size: clamp(1rem, 1.6vw, 1.125rem);
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.85);
+  color: color-mix(in srgb, var(--color-bg) 85%, transparent);
   text-wrap: pretty;
 }
 
@@ -73,9 +73,9 @@
 
 /* ─── Trust tail — 3 cards under the widget ─── */
 .tailSection {
-  background: #ffffff;
+  background: var(--color-surface);
   padding: 64px 0 96px;
-  border-top: 1px solid rgba(14, 20, 32, 0.06);
+  border-top: 1px solid color-mix(in srgb, var(--color-text) 6%, transparent);
 }
 .tailInner {
   max-width: 1180px;
@@ -89,8 +89,8 @@
   .tailInner { grid-template-columns: repeat(3, 1fr); gap: 24px; }
 }
 .tailCard {
-  background: #ffffff;
-  border: 1px solid rgba(14, 20, 32, 0.08);
+  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
   border-radius: 20px;
   padding: 28px;
   box-shadow: var(--fbm-shadow-card);

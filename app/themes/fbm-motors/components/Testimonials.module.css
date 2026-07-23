@@ -15,8 +15,8 @@
 .card {
   border-radius: 24px;
   padding: 28px;
-  background: rgba(255, 255, 255, 0.09);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: color-mix(in srgb, var(--color-bg) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-bg) 16%, transparent);
   backdrop-filter: blur(24px) saturate(1.1);
   -webkit-backdrop-filter: blur(24px) saturate(1.1);
   transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s, background 0.3s;
@@ -26,7 +26,7 @@
 }
 .cardActive {
   transform: scale(1.02);
-  background: rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--color-bg) 12%, transparent);
   border-color: color-mix(in srgb, var(--color-primary) 60%, transparent);
   box-shadow: var(--fbm-shadow-glow);
 }
@@ -35,27 +35,27 @@
   height: auto;
   /* Brand accent washed toward white — same trick as the hero gradient.
    * Pure brand-accent on dark goes near-black for deep brand palettes. */
-  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 50%, #ffffff);
+  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 50%, var(--color-bg));
   opacity: 1;
 }
 .quote {
   margin-top: 16px;
   font-size: 0.95rem;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.88);
+  color: color-mix(in srgb, var(--color-bg) 88%, transparent);
 }
 .figcaption { margin-top: 20px; }
 .name {
   font-family: var(--font-brand-family-override, 'Space Grotesk', sans-serif);
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-bg);
 }
 .title {
   font-size: 0.75rem;
   font-weight: 500;
   /* Same brand-accent → white mix so the "Google" / "Verified review" line
    * doesn't disappear when brand-accent is a dark hue. */
-  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 55%, #ffffff);
+  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 55%, var(--color-bg));
   margin-top: 2px;
   letter-spacing: 0.04em;
 }
@@ -70,7 +70,7 @@
   height: 6px;
   width: 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.25);
+  background: color-mix(in srgb, var(--color-bg) 25%, transparent);
   border: 0;
   cursor: pointer;
   transition: width 0.2s, background 0.2s;

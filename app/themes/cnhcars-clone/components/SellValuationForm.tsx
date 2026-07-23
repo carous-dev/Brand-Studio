@@ -92,7 +92,7 @@ export default function SellValuationForm() {
           {...getFieldProps('registration')}
         />
         {errors.registration && (
-          <p className="field-error" style={{ color: '#e11d48', marginTop: 4 }}>{errors.registration}</p>
+          <p className="field-error" style={{ color: 'var(--t-error)', marginTop: 4 }}>{errors.registration}</p>
         )}
       </div>
       <div className="form-group-compact">

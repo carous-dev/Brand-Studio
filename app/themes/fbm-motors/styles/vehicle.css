@@ -674,7 +674,7 @@ body[data-theme-id="fbm-motors"] .vehicle-summary-btn.btn-reserve {
 }
 
 body[data-theme-id="fbm-motors"] .vehicle-summary-btn.btn-reserve:hover {
-  background: color-mix(in srgb, var(--brand-secondary) 88%, #000);
+  background: color-mix(in srgb, var(--brand-secondary) 88%, var(--color-text));
 }
 
 body[data-theme-id="fbm-motors"] .vehicle-summary-btn.btn-mail {

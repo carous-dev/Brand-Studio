@@ -1,7 +1,7 @@
 /* Dedicated styles for single vehicle page (moved from inline styles) */
 .vehicle-page {
   font-family: var(--font-ui, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial);
-  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+  background: linear-gradient(135deg, var(--surface-bg-dark) 0%, var(--surface-card-dark) 50%, var(--surface-bg-dark) 100%);
   min-height: 100vh;
 }
 
@@ -12,10 +12,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 20%, rgba(184, 146, 74, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(209, 182, 122, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(139, 69, 19, 0.04) 0%, transparent 70%);
+  background:
+    radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--brand-primary) 8%, transparent) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(var(--accent-2-rgb, 209, 182, 122), 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--brand-primary-strong) 4%, transparent) 0%, transparent 70%);
   pointer-events: none;
   z-index: 1;
 }
@@ -56,7 +56,7 @@
   position: relative;
   border-radius: 20px;
   overflow: hidden;
-  background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+  background: linear-gradient(145deg, var(--surface-card-dark), var(--surface-bg-dark));
   width: 100%;
   margin: 0 auto;
 }
@@ -98,7 +98,7 @@
   display: inline-block;
   position: relative;
   border: 3px solid;
-  border-color: #FFF #FFF transparent transparent;
+  border-color: var(--text-on-dark-strong) var(--text-on-dark-strong) transparent transparent;
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
 }
@@ -114,7 +114,7 @@
   bottom: 0;
   margin: auto;
   border: 3px solid;
-  border-color: transparent transparent #FF3D00 #FF3D00;
+  border-color: transparent transparent var(--brand-primary) var(--brand-primary);
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -126,7 +126,7 @@
 .loader::before {
   width: 32px;
   height: 32px;
-  border-color: #FFF #FFF transparent transparent;
+  border-color: var(--text-on-dark-strong) var(--text-on-dark-strong) transparent transparent;
   animation: rotation 1.5s linear infinite;
 }
 
@@ -166,7 +166,7 @@
   display: flex;
   gap: 8px;
   padding: 6px 10px;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.48), rgba(0, 0, 0, 0.32));
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.48), rgba(0, 0, 0, 0.32)); /* photo-scrim-ok */
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
   z-index: 20;
   max-width: calc(100% - 1px);
@@ -207,7 +207,7 @@
   font-size: 28px;
   margin: 0;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-on-dark-strong);
   line-height: 1.2;
   letter-spacing: -0.02em;
 }
@@ -225,7 +225,7 @@
 
 .vehicle-desc {
   margin-top: 12px;
-  color: rgba(255, 255, 255, 0.95);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 95%, transparent);
   line-height: 1.6
 }
 
@@ -244,13 +244,13 @@
 
 /* futuristic vehicle card */
 .vehicle-card {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent));
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
   padding: 24px;
   border-radius: 20px;
-  box-shadow: 
-    0 16px 48px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow:
+    0 16px 48px color-mix(in srgb, var(--color-text) 20%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--text-on-dark-strong) 5%, transparent);
   backdrop-filter: blur(20px);
   display: flex;
   flex-direction: column;
@@ -277,13 +277,13 @@
 }
 
 .vehicle-derivative {
-  color: rgba(255, 255, 255, 0.6);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 60%, transparent);
   font-size: 13px;
   margin-top: 4px
 }
 
 .vehicle-subtitle {
-  color: rgba(255, 255, 255, 0.8);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 80%, transparent);
   font-size: 13px;
   margin-top: 6px
 }
@@ -296,12 +296,12 @@
 }
 
 .inline-feature {
-  background: rgba(255, 255, 255, 0.02);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
   padding: 6px 10px;
   border-radius: 999px;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.02)
+  color: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent)
 }
 
 /* Top-of-specs feature cards layout */
@@ -326,15 +326,15 @@
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.03);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent);
   color: var(--accent);
   flex: 0 0 44px;
 }
 
 .feature-card .feature-title {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.92);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 92%, transparent);
   line-height: 1.3;
   word-break: break-word;
 }
@@ -355,10 +355,10 @@
   gap: 10px;
   padding: 12px 14px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
   backdrop-filter: blur(8px) saturate(120%);
   -webkit-backdrop-filter: blur(8px) saturate(120%);
-  /* border: 1px solid rgba(255, 255, 255, 0.08); */
+  /* border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent); */
   box-shadow: 0 8px 28px rgba(2, 6, 23, 0.28);
   transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
   color: var(--accent);
@@ -371,7 +371,7 @@
 
 .feature-clamp-bar .btn.full-width:hover {
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
   box-shadow: 0 14px 40px rgba(2, 6, 23, 0.36);
 }
 
@@ -392,7 +392,7 @@
 /* small explanatory subtitle under section headings */
 .section-note {
   margin: 6px 0 10px;
-  color: rgba(255, 255, 255, 0.72);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 72%, transparent);
   font-size: 13px;
   line-height: 1.4
 }
@@ -407,10 +407,10 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--text-on-dark-strong) 5%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent));
   padding: 12px 16px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
   font-size: 14px;
   transition: all 0.3s ease;
   position: relative;
@@ -460,12 +460,12 @@
 .specs-chips .chip .chip-body strong {
   font-weight: 700;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.8)
+  color: color-mix(in srgb, var(--text-on-dark-strong) 80%, transparent)
 }
 
 .specs-chips .chip .chip-value {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.72);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 72%, transparent);
   margin-top: 2px
 }
 
@@ -495,10 +495,10 @@
 /* Primary button style & hover animation */
 .vehicle-card .card-actions .btn.primary {
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  color: #0a0a0a;
-  box-shadow: 
+  color: var(--t-action-fg);
+  box-shadow:
     0 8px 24px rgba(var(--accent-rgb), 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    inset 0 1px 0 color-mix(in srgb, var(--text-on-dark-strong) 20%, transparent);
   border: none;
   position: relative;
   overflow: hidden;
@@ -511,7 +511,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--text-on-dark-strong) 20%, transparent), transparent);
   transition: left 0.6s ease;
 }
 
@@ -531,9 +531,9 @@
 
 /* Ghost button: subtle border, fills on hover */
 .vehicle-card .card-actions .btn.ghost {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 1%, transparent));
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);
   position: relative;
   overflow: hidden;
 }
@@ -584,13 +584,13 @@
 }
 
 .vehicle-card .card-actions .btn.primary svg {
-  color: #060606;
+  color: var(--t-action-fg);
   fill: currentColor;
   stroke: currentColor
 }
 
 .vehicle-card .card-actions .btn.ghost svg {
-  color: rgba(255, 255, 255, 0.9);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);
   fill: currentColor;
   stroke: currentColor
 }
@@ -608,10 +608,10 @@
   position: fixed;
   z-index: 99999;
   padding: 8px 10px;
-  background: rgba(6, 6, 6, 0.92);
-  color: #fff;
+  background: color-mix(in srgb, var(--surface-bg-dark) 92%, transparent);
+  color: var(--text-on-dark-strong);
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
   font-size: 13px;
   line-height: 1.3;
   max-width: 320px;
@@ -634,12 +634,12 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+  background: linear-gradient(90deg, color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 1%, transparent));
   padding: 8px 12px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 5%, transparent);
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.96);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 96%, transparent);
 }
 
 .similar-vehicles .chip .chip-icon {
@@ -651,12 +651,12 @@
   color: var(--accent);
   flex: 0 0 34px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.02);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
 }
 
 /* Skeleton loaders */
 .skeleton {
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(90deg, color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent));
   border-radius: 8px;
   overflow: hidden;
   position: relative;
@@ -669,7 +669,7 @@
   top: 0;
   height: 100%;
   width: 150px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent), transparent);
   animation: skeleton-shimmer 1.2s infinite;
 }
 
@@ -741,7 +741,7 @@
 
 .similar-vehicles .chip .chip-body {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.9)
+  color: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent)
 }
 
 /* Slider styles for similar vehicles */
@@ -780,9 +780,9 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: linear-gradient(180deg, rgba(6, 8, 10, 0.6), rgba(6, 8, 10, 0.4));
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  color: #fff;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-bg-dark) 60%, transparent), color-mix(in srgb, var(--surface-bg-dark) 40%, transparent));
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 6%, transparent);
+  color: var(--text-on-dark-strong);
   padding: 10px 12px;
   border-radius: 10px;
   cursor: pointer;
@@ -891,7 +891,7 @@
 }
 
 .specs-grid li {
-  background: rgba(255, 255, 255, 0.02);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
   padding: 10px;
   border-radius: 8px;
   list-style: none
@@ -920,7 +920,7 @@
 }
 
 .futuristic-breadcrumb li {
-  color: rgba(255, 255, 255, 0.72);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 72%, transparent);
   font-size: 13px
 }
 
@@ -928,24 +928,24 @@
   content: '▸';
   display: inline-block;
   margin: 0 8px;
-  color: rgba(255, 255, 255, 0.14);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 14%, transparent);
   transform: translateY(-1px)
 }
 
 .futuristic-breadcrumb a {
-  color: rgba(255, 255, 255, 0.78);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 78%, transparent);
   text-decoration: none;
   padding: 6px 8px;
   border-radius: 6px
 }
 
 .futuristic-breadcrumb a:hover {
-  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.12), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.12), color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent));
   color: var(--accent)
 }
 
 .futuristic-breadcrumb .current {
-  color: #fff;
+  color: var(--text-on-dark-strong);
   font-weight: 700
 }
 
@@ -971,8 +971,8 @@
 
 .crumb-btn {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);
   padding: 12px;
   border-radius: 8px;
   cursor: pointer;
@@ -984,12 +984,12 @@
 }
 
 .crumb-btn:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
   color: var(--accent)
 }
 
 .crumb-btn[aria-pressed="true"] {
-  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.12), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.12), color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent));
   border-color: rgba(var(--accent-rgb), 0.18);
   color: var(--accent)
 }
@@ -1030,7 +1030,7 @@
     bottom: auto;
     margin-top: 12px;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.02);
+    background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
     border-radius: 8px;
     box-shadow: none;
     overflow-x: auto;
@@ -1091,7 +1091,7 @@
   /* Fixed gallery height on small screens to stabilise swipe transitions */
   .gallery-main {
     height: 260px;
-    background: #000;
+    background: var(--surface-bg-dark);
   }
 
   .gallery-main img {
@@ -1099,7 +1099,7 @@
     height: 100%;
     object-fit: cover;
     display: block;
-    background: #000; /* prevents white flash while image loads */
+    background: var(--surface-bg-dark); /* prevents white flash while image loads */
   }
 
   /* prevent decorative neon blobs from creating horizontal overflow */
@@ -1140,9 +1140,9 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.48);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.48); /* photo-scrim-ok */
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
+  color: var(--text-on-dark-strong);
   padding: 8px 10px;
   border-radius: 8px;
   cursor: pointer;
@@ -1158,7 +1158,7 @@
 }
 
 .gallery-nav:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
   color: var(--accent)
 }
 
@@ -1167,7 +1167,7 @@
   position: fixed;
   inset: 0;
   display: none;
-  background: linear-gradient(180deg, rgba(2, 6, 23, 0.92), rgba(2, 6, 23, 0.96));
+  background: linear-gradient(180deg, rgba(2, 6, 23, 0.92), rgba(2, 6, 23, 0.96)); /* photo-scrim-ok */
   z-index: 200000;
   padding: 24px
 }
@@ -1196,9 +1196,9 @@
   right: 16px;
   top: 12px;
   z-index: 300000;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.5); /* photo-scrim-ok */
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 8%, transparent);
+  color: var(--text-on-dark-strong);
   padding: 8px;
   border-radius: 8px;
   cursor: pointer;
@@ -1208,9 +1208,9 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.5); /* photo-scrim-ok */
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent);
+  color: var(--text-on-dark-strong);
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer
@@ -1244,7 +1244,7 @@
     min-height: 60vh;
     width: 100%;
     max-width: 1000px;
-    background: #000;
+    background: var(--surface-bg-dark);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1253,7 +1253,7 @@
   .vehicle-lightbox img {
     max-height: 100%;
     width: auto;
-    background: #000;
+    background: var(--surface-bg-dark);
   }
 }
 
@@ -1307,22 +1307,22 @@
 /* Full description section below gallery/card */
 .vehicle-details {
   margin-top: 40px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+  background: linear-gradient(145deg, color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 1%, transparent));
   padding: 32px;
   border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 
-    0 16px 48px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 5%, transparent);
+  box-shadow:
+    0 16px 48px color-mix(in srgb, var(--color-text) 20%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--text-on-dark-strong) 5%, transparent);
   backdrop-filter: blur(20px);
 }
 
 .vehicle-details .section-title {
   margin: 0 0 16px;
   font-size: 32px;
-  color: rgba(255, 255, 255, 0.95);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 95%, transparent);
   font-weight: 800;
-  background: linear-gradient(135deg, #ffffff, rgba(255, 255, 255, 0.8));
+  background: linear-gradient(135deg, var(--text-on-dark-strong), color-mix(in srgb, var(--text-on-dark-strong) 80%, transparent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1331,11 +1331,11 @@
 .vehicle-details .section-subtitle {
   margin: 14px 0 8px;
   font-size: 24px;
-  color: rgba(255, 255, 255, 0.86)
+  color: color-mix(in srgb, var(--text-on-dark-strong) 86%, transparent)
 }
 
 .vehicle-full-desc {
-  color: rgba(255, 255, 255, 0.9);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);
   line-height: 1.8;
   font-size: 16px;
   margin: 16px 0;
@@ -1375,12 +1375,12 @@
 }
 
 .vehicle-features li {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent));
   padding: 12px 16px;
   border-radius: 12px;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.86);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 86%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 5%, transparent);
   transition: all 0.3s ease;
 }
 
@@ -1403,14 +1403,14 @@
   cursor: pointer;
   padding: 10px 12px;
   border-radius: 10px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-  color: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 1%, transparent));
+  color: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);
   font-weight: 700;
-  border: 1px solid rgba(255, 255, 255, 0.03)
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 3%, transparent)
 }
 
 .feature-category[open] summary {
-  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.08), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.08), color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent));
   border-color: rgba(var(--accent-rgb), 0.12);
   color: var(--accent)
 }
@@ -1430,10 +1430,10 @@
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.006));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--text-on-dark-strong) 1%, transparent), color-mix(in srgb, var(--text-on-dark-strong) 0.6%, transparent));
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.02)
+  border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent)
 }
 
 .feature-card .f-icon {
@@ -1443,20 +1443,20 @@
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  background: rgba(255, 255, 255, 0.02);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
   border-radius: 8px
 }
 
 .feature-card .f-body strong {
   display: block;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.95)
+  color: color-mix(in srgb, var(--text-on-dark-strong) 95%, transparent)
 }
 
 .feature-card .f-body p {
   margin: 4px 0 0;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.78);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 78%, transparent);
   line-height: 1.3
 }
 
@@ -1478,8 +1478,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.02);
-  color: rgba(255, 255, 255, 0.9);
+  background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent);
+  color: color-mix(in srgb, var(--text-on-dark-strong) 90%, transparent);
   font-weight: 700;
   transition: background .15s ease, color .15s ease, transform .15s ease
 }
@@ -1768,14 +1768,14 @@
     height: 100%;
     margin: 0;
     padding: 0;
-    background: #000 !important;
+    background: var(--surface-bg-dark) !important;
   }
 
   main {
     width: 100%;
     margin: 0;
     padding: 0;
-    background: #000 !important;
+    background: var(--surface-bg-dark) !important;
   }
 
   .container {
@@ -1834,8 +1834,8 @@
   }
 
   .summary-content {
-    background: rgba(255, 255, 255, 0.02) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent) !important;
+    border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent) !important;
     padding: 20px !important;
     border-radius: 12px !important;
   }
@@ -1848,7 +1848,7 @@
     font-size: 24px;
     font-weight: 700;
     margin-bottom: 8px;
-    color: #fff !important;
+    color: var(--text-on-dark-strong) !important;
   }
 
   .summary-price {
@@ -1865,12 +1865,12 @@
   }
 
   .chip {
-    background: rgba(255, 255, 255, 0.04) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent) !important;
+    border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 10%, transparent) !important;
     padding: 8px 12px !important;
     border-radius: 6px !important;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.8) !important;
+    color: color-mix(in srgb, var(--text-on-dark-strong) 80%, transparent) !important;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -1894,7 +1894,7 @@
   }
 
   .vehicle-full-desc {
-    color: rgba(255, 255, 255, 0.85) !important;
+    color: color-mix(in srgb, var(--text-on-dark-strong) 85%, transparent) !important;
     line-height: 1.6;
     font-size: 14px;
     max-height: none !important;
@@ -1928,8 +1928,8 @@
   }
 
   .feature-card {
-    background: rgba(185, 146, 74, 0.08) !important;
-    border: 1px solid rgba(185, 146, 74, 0.15) !important;
+    background: color-mix(in srgb, var(--brand-primary) 8%, transparent) !important;
+    border: 1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent) !important;
     padding: 14px !important;
     border-radius: 6px !important;
     page-break-inside: avoid;
@@ -1945,7 +1945,7 @@
   }
 
   .feature-title {
-    color: #fff !important;
+    color: var(--text-on-dark-strong) !important;
     font-weight: 600;
     font-size: 13px;
     line-height: 1.4;
@@ -1991,10 +1991,10 @@
 
   details summary {
     display: block !important;
-    background: rgba(185, 146, 74, 0.12) !important;
+    background: color-mix(in srgb, var(--brand-primary) 12%, transparent) !important;
     padding: 12px !important;
     border-radius: 6px !important;
-    color: #fff !important;
+    color: var(--text-on-dark-strong) !important;
     font-weight: 600;
     font-size: 13px;
     cursor: default;
@@ -2033,7 +2033,7 @@
 
   .feature-card .f-body strong {
     display: block !important;
-    color: #fff !important;
+    color: var(--text-on-dark-strong) !important;
     font-size: 12px;
     font-weight: 600;
     margin-bottom: 4px;
@@ -2041,21 +2041,21 @@
 
   .feature-card .f-body p {
     display: block !important;
-    color: rgba(255, 255, 255, 0.8) !important;
+    color: color-mix(in srgb, var(--text-on-dark-strong) 80%, transparent) !important;
     font-size: 13px;
     margin: 0 !important;
   }
 
   .feature-item {
-    background: rgba(255, 255, 255, 0.02) !important;
-    border: 1px solid rgba(255, 255, 255, 0.04) !important;
+    background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent) !important;
+    border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent) !important;
     padding: 12px !important;
     border-radius: 6px !important;
   }
 
   .feature-item-label {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.5) !important;
+    color: color-mix(in srgb, var(--text-on-dark-strong) 50%, transparent) !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 4px;
@@ -2064,7 +2064,7 @@
   .feature-item-value {
     font-size: 13px;
     font-weight: 600;
-    color: #fff !important;
+    color: var(--text-on-dark-strong) !important;
   }
 
   .specs-grid {
@@ -2074,15 +2074,15 @@
   }
 
   .spec-item {
-    background: rgba(255, 255, 255, 0.02) !important;
-    border: 1px solid rgba(255, 255, 255, 0.04) !important;
+    background: color-mix(in srgb, var(--text-on-dark-strong) 2%, transparent) !important;
+    border: 1px solid color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent) !important;
     padding: 12px !important;
     border-radius: 6px !important;
   }
 
   .spec-label {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: color-mix(in srgb, var(--text-on-dark-strong) 60%, transparent) !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 4px;
@@ -2091,12 +2091,12 @@
   .spec-value {
     font-size: 14px;
     font-weight: 600;
-    color: #fff !important;
+    color: var(--text-on-dark-strong) !important;
   }
 
   /* Section dividers */
   .section-divider {
-    background: rgba(255, 255, 255, 0.04) !important;
+    background: color-mix(in srgb, var(--text-on-dark-strong) 4%, transparent) !important;
     height: 1px;
     margin: 20px 0;
     page-break-inside: avoid;
@@ -2112,7 +2112,7 @@
 
   .section-title,
   .section-subtitle {
-    color: #fff !important;
+    color: var(--text-on-dark-strong) !important;
     font-weight: 700;
     page-break-inside: avoid;
     margin-bottom: 16px;
@@ -2129,7 +2129,7 @@
   }
 
   .section-note {
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: color-mix(in srgb, var(--text-on-dark-strong) 60%, transparent) !important;
     font-size: 12px;
     margin-bottom: 12px;
     display: block !important;
