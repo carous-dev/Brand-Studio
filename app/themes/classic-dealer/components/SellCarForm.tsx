@@ -526,17 +526,21 @@ export const SellCarForm = ({ showHeroContent = true, className = "" }: SellCarF
 
   return (
     <>
+      {/* scs-* class names are deliberately theme-unique: the generic
+          .sell-hero/.sell-hero-inner names are also styled by gilded-drive's
+          sell-your-car CSS and leak across themes by source order. */}
       {showHeroContent ? (
-        <section className={`sell-hero ${className}`} style={heroStyle}>
-          <div className="sell-shell sell-hero-inner">
-            <h1 className="sell-title">{heroTitle}</h1>
-            <p className="sell-subtitle">{heroDescription}</p>
-            <div className="sell-hero-actions">
-              <a className="sell-hero-btn primary" href="#sell-form">
+        <section className={`scs-hero ${className}`} style={heroStyle} aria-label={heroTitle}>
+          <div className="sell-shell scs-hero-inner">
+            <p className="scs-hero-eyebrow">Dealer-backed valuation in {locationCity}</p>
+            <h1 className="scs-hero-title">{heroTitle}</h1>
+            <p className="scs-hero-lead">{heroDescription}</p>
+            <div className="scs-hero-actions">
+              <a className="scs-hero-btn primary" href="#sell-form">
                 Start valuation
               </a>
               {phone ? (
-                <a className="sell-hero-btn ghost" href={`tel:${phone}`}>
+                <a className="scs-hero-btn ghost" href={`tel:${phone}`}>
                   Call {phone}
                 </a>
               ) : null}

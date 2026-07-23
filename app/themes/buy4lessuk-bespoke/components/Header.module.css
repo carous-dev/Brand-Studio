@@ -1,12 +1,13 @@
 /* =============================================================================
  * HEADER — buy4lessuk-bespoke  ·  PRESTIGE classic dealer
- * White sticky bar under the navy topbar, border-bottom only (no box-shadow),
+ * White bar under the navy topbar (scrolls with the page), border-bottom only (no box-shadow),
  * bold uppercase nav, solid primary CTA. Mobile-first.
  * ============================================================================= */
 
 .header {
-  position: sticky;
-  top: 0;
+  /* In normal flow — scrolls away with the page (was sticky). z-index kept
+     for drawer/dropdown stacking while in view. */
+  position: relative;
   z-index: 60;
   background: var(--color-header-bg, var(--color-bg));
   border-bottom: 1px solid var(--color-border);

@@ -5,6 +5,8 @@ import { Header } from "./Header";
 import ServicesCta from "./ServicesCta";
 import Footer from "./Footer";
 import ThemeChrome from "@/app/themes/lib/ThemeChrome";
+import SmoothScroll from "./SmoothScroll";
+import BrowseByMake from "./BrowseByMake";
 import { useBrand } from "../context/BrandClientWrapper";
 import "../styles/header.css";
 import "../styles/footer.css";
@@ -33,12 +35,15 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
         brand={brand ?? null}
         classPrefix="classic"
         header={
-          <Suspense fallback={null}>
-            <Header />
-          </Suspense>
+          <>
+            <SmoothScroll />
+            <Suspense fallback={null}>
+              <Header />
+            </Suspense>
+          </>
         }
         footer={<Footer />}
-        belowMain={<ServicesCta />}
+        belowMain={<><BrowseByMake /><ServicesCta /></>}
         widgets={{ motionFx: false, scrollProgress: false }}
       >
         {children}

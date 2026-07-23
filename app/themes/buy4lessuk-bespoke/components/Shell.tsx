@@ -7,6 +7,7 @@ import TopBar from './TopBar'
 import Header from './Header'
 import Footer from './Footer'
 import FixedCtaBar from './FixedCtaBar'
+import SmoothScroll from './SmoothScroll'
 import ThemeChrome from '@/app/themes/lib/ThemeChrome'
 
 import '../styles/base.css'
@@ -26,7 +27,7 @@ export function Buy4lessukShell({ children }: { children: ReactNode }) {
       brand={brand ?? null}
       classPrefix="buy4lessuk"
       provider={GarageProvider}
-      header={<><TopBar /><Header /></>}
+      header={<><SmoothScroll /><TopBar /><Header /></>}
       footer={<><Footer /><FixedCtaBar /></>}
     >
       {children}

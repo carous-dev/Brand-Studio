@@ -75,7 +75,6 @@ export const Header: React.FC = () => {
     const phoneCta = 'Book Appointment'
 
     const [logoError, setLogoError] = useState(false)
-    const [isScrolled, setIsScrolled] = useState(false)
     const [open, setOpen] = useState(false)
     const [wishlistCount, setWishlistCount] = useState(0)
 
@@ -89,22 +88,6 @@ export const Header: React.FC = () => {
     useEffect(() => {
         setLogoError(false)
     }, [brandLogo])
-
-    /* Sticky-on-scroll affordance: collapses the utility strip and shrinks
-       the logo when the page is scrolled past the threshold. Passive listener
-       to avoid jank.
-       NOTE: We deliberately DON'T call onScroll() on mount. Some preview
-       iframes restore a non-zero scrollTop before mount, which would hide
-       the contact bar on first paint — that confused the user into thinking
-       the bar wasn't rendering at all. We let the user-initiated scroll
-       drive state instead. */
-    useEffect(() => {
-        const onScroll = () => {
-            setIsScrolled(window.scrollY > 96)
-        }
-        window.addEventListener('scroll', onScroll, { passive: true })
-        return () => window.removeEventListener('scroll', onScroll)
-    }, [])
 
     const normalizePath = (p: string | undefined) => {
         if (!p) return '/'
@@ -193,10 +176,7 @@ export const Header: React.FC = () => {
 
     return (
         <>
-            <header
-                className="modern-header"
-                data-scrolled={isScrolled ? 'true' : 'false'}
-            >
+            <header className="modern-header">
                 {/* Top utility strip */}
                 <div className="contact-bar">
                     <div className="contact-inner">

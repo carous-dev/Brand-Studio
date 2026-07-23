@@ -26,6 +26,25 @@
  * (header, footer, etc.) with --color-primary regardless of context. Style
  * links per-component instead. (See SKILL.md Quality Bar.) */
 
+[data-theme-id='springalls-classic'] .springalls-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+[data-theme-id='springalls-classic'] .springalls-skip-link:focus {
+  left: 12px;
+  top: 12px;
+  width: auto;
+  height: auto;
+  padding: 12px 16px;
+  background: var(--color-bg);
+  color: var(--color-primary);
+  z-index: 1000;
+}
+
 [data-theme-id='springalls-classic'] .springalls-main {
   display: block;
   min-height: calc(100vh - 200px);

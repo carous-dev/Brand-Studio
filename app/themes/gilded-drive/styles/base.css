@@ -19,6 +19,25 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+body[data-theme-id='gilded-drive'] .gilded-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+body[data-theme-id='gilded-drive'] .gilded-skip-link:focus {
+  left: 12px;
+  top: 12px;
+  width: auto;
+  height: auto;
+  padding: 12px 16px;
+  background: var(--color-bg);
+  color: var(--color-primary);
+  z-index: 1000;
+}
+
 .site-header .nav-links a {
   font-family: var(--font-ui);
 }

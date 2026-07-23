@@ -1,144 +1,183 @@
 /* ===================================
-   Recently Sold Hero Section
+   Recently Sold Hero — dark photo band
+   -----------------------------------
+   Mirrors the used-cars mini-hero: brand.heroImage under a uniform dark
+   scrim (built from --brand-text so it tracks the palette's dark pole),
+   white captions, one CTA, hairline assurance strip. Every fg pairs with
+   the scrimmed dark bg explicitly.
    =================================== */
-.recently-sold-hero {
+.rs-hero {
   position: relative;
-  min-height: 500px;
-  display: flex;
-  align-items: center;
+  isolation: isolate;
   overflow: hidden;
+  padding: clamp(56px, 8vw, 112px) 0;
   font-family: var(--font-ui);
+  /* Photo layer under the ::before scrim; gradient keeps the band dark
+     when the brand has no hero image or it 404s. */
+  background:
+    var(--rs-hero-bg-image, linear-gradient(135deg, rgba(var(--brand-text-rgb), 0.96), rgba(var(--brand-text-rgb), 0.88)))
+    center / cover no-repeat;
 }
 
-.recently-sold-hero .hero-background {
+.rs-hero::before {
+  content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, 
-    rgba(var(--brand-primary-rgb), 0.08) 0%, 
-    rgba(var(--brand-secondary-rgb), 0.12) 100%
-  );
-  z-index: 1;
-}
-
-.recently-sold-hero .hero-background::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(var(--brand-primary-rgb), 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(var(--brand-secondary-rgb), 0.1) 0%, transparent 50%);
-  animation: float 20s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-}
-
-.recently-sold-hero .hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(180deg, 
-    rgba(var(--brand-background-rgb), 0.8) 0%, 
-    rgba(var(--brand-background-rgb), 0.95) 100%
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(var(--brand-text-rgb), 0.82) 0%,
+    rgba(var(--brand-text-rgb), 0.74) 50%,
+    rgba(var(--brand-text-rgb), 0.88) 100%
   );
 }
 
-.recently-sold-hero .hero-content {
+.rs-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 170% at 14% -30%, rgba(var(--accent-primary-rgb), 0.22) 0%, rgba(var(--accent-primary-rgb), 0) 55%),
+    radial-gradient(120% 160% at 86% 120%, rgba(var(--accent-secondary-rgb), 0.18) 0%, rgba(var(--accent-secondary-rgb), 0) 58%);
+}
+
+.rs-hero .container {
   position: relative;
-  z-index: 2;
-  width: 100%;
-}
-
-.recently-sold-hero .hero-text {
-  text-align: center;
-  max-width: 800px;
+  z-index: 1;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 60px 20px;
+  padding: 0 clamp(16px, 3vw, 54px);
 }
 
-.recently-sold-hero .hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--accent-primary);
-  color: var(--brand-background);
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 24px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.recently-sold-hero .hero-title {
-  font-family: var(--font-brand);
-  font-size: clamp(36px, 5vw, 56px);
-  font-weight: 800;
-  line-height: 1.1;
-  margin: 0 0 24px;
-  color: var(--brand-text);
-}
-
-.recently-sold-hero .hero-subtitle {
-  font-size: clamp(18px, 2.5vw, 22px);
-  line-height: 1.6;
-  color: var(--brand-text);
-  opacity: 0.8;
-  margin: 0 0 48px;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.recently-sold-hero .hero-stats {
-  display: flex;
-  justify-content: center;
-  gap: 48px;
-  flex-wrap: wrap;
-}
-
-.recently-sold-hero .stat-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--brand-text);
-}
-
-.recently-sold-hero .stat-item svg {
-  color: var(--accent-primary);
-  flex-shrink: 0;
-}
-
-.recently-sold-hero .stat-content {
+.rs-hero-shell {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
 }
 
-.recently-sold-hero .stat-number {
-  font-family: var(--font-mono);
-  font-size: 24px;
+.rs-hero-eyebrow {
+  margin: 0;
+  font-size: 0.76rem;
   font-weight: 700;
-  color: var(--brand-text);
-  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(var(--brand-background-rgb), 0.85);
 }
 
-.recently-sold-hero .stat-label {
-  font-size: 14px;
-  color: var(--brand-text);
-  opacity: 0.7;
-  margin-top: 4px;
+.rs-hero-title {
+  margin: 0;
+  font-family: var(--font-brand);
+  font-size: clamp(1.9rem, 4vw, 3.2rem);
+  line-height: 1.08;
+  font-weight: 800;
+  text-wrap: balance;
+  color: var(--brand-background);
+}
+
+.rs-hero-lead {
+  margin: 0;
+  max-width: 56ch;
+  font-size: clamp(0.98rem, 1.3vw, 1.12rem);
+  line-height: 1.55;
+  text-wrap: pretty;
+  color: rgba(var(--brand-background-rgb), 0.9);
+}
+
+.rs-hero-actions {
+  margin-top: 6px;
+}
+
+.rs-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 22px;
+  border-radius: 50px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  background: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
+  color: var(--brand-background);
+  box-shadow: 0 10px 22px rgba(var(--brand-text-rgb), 0.24);
+  transition: transform 0.14s ease, background 0.14s ease, border-color 0.14s ease;
+}
+
+.rs-hero-btn:hover {
+  transform: translateY(-1px);
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+/* Hairline assurance strip — the hero's single ornament. */
+.rs-hero-assurance {
+  margin: clamp(20px, 3.5vw, 36px) 0 0;
+  padding-top: clamp(18px, 2.5vw, 26px);
+  border-top: 1px solid rgba(var(--brand-background-rgb), 0.22);
+  width: min(720px, 100%);
+  display: flex;
+  justify-content: center;
+}
+
+.rs-hero-assurance-item {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 clamp(10px, 2.5vw, 28px);
+}
+
+.rs-hero-assurance-item + .rs-hero-assurance-item {
+  border-left: 1px solid rgba(var(--brand-background-rgb), 0.22);
+}
+
+.rs-hero-assurance-value {
+  margin: 0;
+  font-family: var(--font-brand);
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--brand-background);
+}
+
+.rs-hero-assurance-label {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(var(--brand-background-rgb), 0.72);
+}
+
+@media (max-width: 640px) {
+  .rs-hero {
+    padding: 48px 0 40px;
+  }
+
+  .rs-hero-title {
+    font-size: clamp(1.5rem, 7.5vw, 1.9rem);
+  }
+
+  .rs-hero-title br {
+    display: none;
+  }
+
+  .rs-hero-lead {
+    font-size: 0.94rem;
+  }
+
+  .rs-hero-assurance-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.05em;
+  }
 }
 
 /* ===================================

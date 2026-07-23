@@ -37,6 +37,28 @@
   --text-muted-dark: var(--text-on-dark-muted);
   --border-dark: var(--border-on-dark);
 
+}
+
+body[data-theme-id='cnhcars-clone'] .cnhcars-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+body[data-theme-id='cnhcars-clone'] .cnhcars-skip-link:focus {
+  left: 12px;
+  top: 12px;
+  width: auto;
+  height: auto;
+  padding: 12px 16px;
+  background: var(--color-bg);
+  color: var(--color-primary);
+  z-index: 1000;
+}
+
+:root {
   /* Typography - Best fonts for a car dealership website */
   --font-heading: 'Montserrat', 'Arial', sans-serif;
   --font-body: 'Montserrat', 'Arial', sans-serif;
