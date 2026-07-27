@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import { ChevronLeft, ChevronRight, Cog, Fuel, Gauge, Heart, Palette } from 'lucide-react';
 import { getWishlistVehicleId, useWishlist } from '../context/WishlistContext';
 import { buildVehiclePermalink } from '../lib/vehicle-links';
+import { optimizeImageUrl } from '@/app/lib/imageOptimize';
 
 interface VehicleCardProps {
   vehicle: {
@@ -334,14 +335,15 @@ export default function VehicleCard({ vehicle, className = '' }: VehicleCardProp
               <img
                 key={currentImageSrc}
                 ref={imageElementRef}
-                src={currentImageSrc}
+                src={optimizeImageUrl(currentImageSrc, { width: 640 })}
                 alt={title}
+                width={640}
+                height={480}
                 className={`card-image ${isImageLoaded ? 'loaded' : ''}`}
                 onError={handleImageError}
                 onLoad={handleImageLoad}
                 loading="lazy"
                 decoding="async"
-                fetchPriority={imageIndex === 0 ? 'high' : 'auto'}
               />
             )}
           </a>
@@ -407,11 +409,13 @@ export default function VehicleCard({ vehicle, className = '' }: VehicleCardProp
                 <Fuel size={14} aria-hidden="true" /> {cleanText(vehicle.fuel) || 'Fuel on request'}
               </li>
               <li>
-                <Cog size={14} aria-hidden="true" /> {cleanText(vehicle.trans) || 'Transmission on request'}
+                <Cog size={14} aria-hidden="true" /> {cleanText(vehicle.trans) || 'Trans. TBC'}
               </li>
-              <li>
-                <Palette size={14} aria-hidden="true" /> {cleanText(vehicle.colour) || 'Colour on request'}
-              </li>
+              {cleanText(vehicle.colour) || cleanText(vehicle.body_type) ? (
+                <li>
+                  <Palette size={14} aria-hidden="true" /> {cleanText(vehicle.colour) || cleanText(vehicle.body_type)}
+                </li>
+              ) : null}
             </ul>
             <p className="inventory-price">
               <span>{monthlyEstimate}</span> {displayPrice}

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { CalendarDays, ChevronLeft, ChevronRight, Cog, Fuel, Gauge, Heart, Scale } from 'lucide-react'
+import { optimizeImageUrl } from '@/app/lib/imageOptimize'
 import '../styles/inventory-modern.css'
 
 type InventoryViewMode = 'grid' | 'list'
@@ -405,7 +406,9 @@ export default function InventoryCard({ vehicle, viewMode = 'grid' }: { vehicle:
                                 <img
                                     key={`${galleryImage}-${imageIndex}`}
                                     alt={`${title} image ${imageIndex + 1}`}
-                                    src={galleryImage}
+                                    src={optimizeImageUrl(galleryImage, { width: 640 })}
+                                    width={640}
+                                    height={400}
                                     loading="lazy"
                                     decoding="async"
                                 />

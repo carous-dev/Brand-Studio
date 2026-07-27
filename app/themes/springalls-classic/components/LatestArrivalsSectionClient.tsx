@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import styles from "./LatestArrivalsSection.module.css"
 import type { InventoryVehicle } from "../lib/inventory"
 import { buildVehiclePermalink } from "../lib/vehicle-links"
+import { optimizeImageUrl } from "@/app/lib/imageOptimize"
 
 type ArrivalItem = {
   id: string
@@ -260,7 +261,7 @@ export default function LatestArrivalsSectionClient({ vehicles }: { vehicles: In
                       className={styles.cardImage}
                       role="img"
                       aria-label={arrival.title}
-                      style={{ backgroundImage: `url(${arrival.image})` }}
+                      style={{ backgroundImage: `url(${optimizeImageUrl(arrival.image, { width: 640 })})` }}
                     >
                       <span className={styles.badge}>Latest Arrival</span>
                       <span className={styles.priceTag}>{arrival.price}</span>

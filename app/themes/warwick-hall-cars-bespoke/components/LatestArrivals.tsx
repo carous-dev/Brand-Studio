@@ -7,6 +7,7 @@ import { useBrand } from '../context/BrandClientWrapper'
 import { apiUrl } from '../lib/api'
 import { normalizeInventoryItem, type InventoryVehicle } from '../lib/inventory'
 import { buildVehiclePermalink } from '../lib/vehicle-links'
+import { optimizeImageUrl } from '@/app/lib/imageOptimize'
 import styles from './LatestArrivals.module.css'
 
 const ITEM_LIMIT = 8
@@ -223,7 +224,7 @@ function VehicleCard({ vehicle }: { vehicle: InventoryVehicle }) {
 
       <div
         className={`${styles.cardImage} ${hasImage ? '' : styles.cardImageEmpty}`}
-        style={hasImage ? { backgroundImage: `url("${vehicle.image}")` } : undefined}
+        style={hasImage ? { backgroundImage: `url("${optimizeImageUrl(vehicle.image, { width: 640 })}")` } : undefined}
         role="img"
         aria-label={hasImage ? `${vehicle.title} photograph` : 'Photo coming soon'}
       >

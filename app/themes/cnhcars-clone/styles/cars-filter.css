@@ -1,132 +1,228 @@
-/* Minimal futuristic filter bar for cars */
+/* =============================================================================
+ * Inventory filter toolbar — cnh-flt-* (theme-unique class names).
+ * Two rows: title + live count on the left, reset/toggle on the right;
+ * labeled field shells below. Flat contract colors, no gradients.
+ * ============================================================================= */
 
-.cars-filter-bar {
+.cnh-flt {
   background: var(--surface-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 2rem;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 1.1rem 1.25rem 1.25rem;
+  margin-bottom: 1.75rem;
+  box-shadow: var(--shadow-sm);
 }
 
-.filter-header {
+.cnh-flt-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.8rem;
   gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
 }
 
-.filter-header h2 {
-  font-size: var(--fs-xl, 1.25rem);
-  color: var(--text-heading);
+.cnh-flt-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.cnh-flt-title {
   margin: 0;
-  letter-spacing: 0.4px;
-  font-weight: 600;
-  flex: 1;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  color: var(--text-heading);
+  font-weight: var(--fw-bold);
 }
 
-.filter-header-right {
+.cnh-flt-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3ch;
+  padding: 0.24rem 0.65rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-bg));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  color: var(--color-primary);
+  font-size: 0.78rem;
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}
+
+.cnh-flt-actions {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
 
-.filter-toggle-mobile {
-  display: none;
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-body);
-  padding: 0.5rem;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.filter-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0.7rem;
-  margin-bottom: 0.8rem;
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.filter-group label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-heading);
-  text-transform: uppercase;
-  letter-spacing: 0.2px;
-}
-
-.filter-input {
-  padding: 0.5rem 0.7rem;
-  background: var(--color-bg);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  color: var(--text-body);
-  font-size: 0.85rem;
-  font-family: var(--font-brand-body-override, inherit);
-  transition: all 150ms ease;
-  cursor: pointer;
-}
-
-.filter-input:hover {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 2%, transparent);
-}
-
-.filter-input:focus {
-  outline: none;
-  border-color: var(--accent);
-  background: var(--color-bg);
-}
-
-.filter-input option {
-  background: var(--surface-card);
-  color: var(--text-body);
-}
-
-.filter-btn {
+.cnh-flt-reset,
+.cnh-flt-toggle {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.4rem 0.9rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
   background: var(--color-bg);
-  border: 1px solid var(--border);
-  color: var(--text-body);
-  font-weight: 600;
-  font-size: 0.85rem;
+  color: var(--text-heading);
+  font-size: 0.84rem;
+  font-weight: var(--fw-semibold);
   cursor: pointer;
-  transition: all 150ms ease;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
-.filter-btn:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--color-on-primary);
+.cnh-flt-reset svg,
+.cnh-flt-toggle svg {
+  width: 15px;
+  height: 15px;
 }
 
-.filter-btn i, .filter-btn svg {
-  width: 18px;
-  height: 18px;
+.cnh-flt-reset:hover,
+.cnh-flt-toggle:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border));
+  color: var(--color-primary);
 }
 
-.filter-results-count {
-  color: var(--primary);
-  font-size: 0.8rem;
-  font-weight: 500;
-  white-space: nowrap;
+.cnh-flt-toggle-chev {
+  transition: transform 0.2s ease;
+}
+
+.cnh-flt-toggle-chev.is-open {
+  transform: rotate(180deg);
+}
+
+/* Desktop: fields always visible, toggle hidden */
+@media (min-width: 768px) {
+  .cnh-flt-toggle {
+    display: none;
+  }
+}
+
+.cnh-flt-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+/* Field shell — label + control inside one bordered box */
+.cnh-flt-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  padding: 0.55rem 0.85rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-bg);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  min-width: 0;
+}
+
+.cnh-flt-field:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+
+.cnh-flt-field label {
+  font-size: 0.68rem;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.cnh-flt-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cnh-flt-control select,
+.cnh-flt-control input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--text-heading);
+  font-size: 0.92rem;
+  font-weight: var(--fw-semibold);
+  font-family: var(--font-brand-body-override, var(--font-body));
+  padding: 0;
+  cursor: pointer;
+  appearance: none;
+}
+
+.cnh-flt-control select {
+  padding-right: 1.4rem;
+}
+
+.cnh-flt-control input {
+  cursor: text;
+}
+
+.cnh-flt-control input::placeholder {
+  color: var(--color-muted);
+  font-weight: var(--fw-regular);
+}
+
+.cnh-flt-control select:focus,
+.cnh-flt-control input:focus {
+  outline: none;
+}
+
+.cnh-flt-control select option {
+  background: var(--color-bg);
+  color: var(--text-heading);
+}
+
+.cnh-flt-chev {
+  position: absolute;
+  right: 0;
+  width: 15px;
+  height: 15px;
+  color: var(--color-muted);
+  pointer-events: none;
+}
+
+@media (max-width: 1100px) {
+  .cnh-flt-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .cnh-flt {
+    padding: 0.9rem 1rem 1rem;
+  }
+
+  .cnh-flt-top {
+    margin-bottom: 0;
+  }
+
+  .cnh-flt-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: none;
+  }
+
+  .cnh-flt-grid.is-open {
+    display: grid;
+    margin-top: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cnh-flt-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Cars Grid */
 .cars-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 0.75rem;
+  gap: 1.25rem;
   animation: fadeInUp 0.5s ease-out;
 }
 

@@ -4,6 +4,7 @@ import React from 'react';
 import type { BrandConfig } from '@/brands/types';
 import { buildGoogleFontsImport } from '@/app/lib/googleFonts';
 import { buildThemeTokens, renderThemeStyle, escapeCssUrl, hexToRgb } from '@/app/themes/lib/theme-tokens';
+import { optimizeImageUrl } from '@/app/lib/imageOptimize';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -111,17 +112,19 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     // Missing-image placeholder fill.
     '--image-placeholder-bg': '#d8d8dc',
 
-    // 7 image slots — themes reference these via var(--brand-image-*).
-    '--brand-image-hero': `url("${escapeCssUrl(heroImageSlot)}")`,
-    '--brand-image-about': `url("${escapeCssUrl(aboutImage)}")`,
-    '--brand-image-services': `url("${escapeCssUrl(servicesImage)}")`,
-    '--brand-image-finance': `url("${escapeCssUrl(financeImage)}")`,
-    '--brand-image-part-exchange': `url("${escapeCssUrl(partExchangeImage)}")`,
-    '--brand-image-sell-your-car': `url("${escapeCssUrl(sellYourCarImage)}")`,
-    '--brand-image-recently-sold': `url("${escapeCssUrl(recentlySoldImage)}")`,
+    // 7 image slots — themes reference these via var(--brand-image-*). Routed
+    // through Next's optimizer (WebP/AVIF + resize); hero gets a wider (LCP)
+    // derivative, section images ~1280.
+    '--brand-image-hero': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--brand-image-about': `url("${escapeCssUrl(optimizeImageUrl(aboutImage, { width: 1280 }))}")`,
+    '--brand-image-services': `url("${escapeCssUrl(optimizeImageUrl(servicesImage, { width: 1280 }))}")`,
+    '--brand-image-finance': `url("${escapeCssUrl(optimizeImageUrl(financeImage, { width: 1280 }))}")`,
+    '--brand-image-part-exchange': `url("${escapeCssUrl(optimizeImageUrl(partExchangeImage, { width: 1280 }))}")`,
+    '--brand-image-sell-your-car': `url("${escapeCssUrl(optimizeImageUrl(sellYourCarImage, { width: 1280 }))}")`,
+    '--brand-image-recently-sold': `url("${escapeCssUrl(optimizeImageUrl(recentlySoldImage, { width: 1280 }))}")`,
 
     // Compat alias consumed by legacy widgets.
-    '--auto-hero-image': `url("${escapeCssUrl(heroImageSlot)}")`,
+    '--auto-hero-image': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
 
     // Font overrides.
     '--font-ui-family-override': fontUi,

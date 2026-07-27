@@ -3,6 +3,7 @@
 import React from 'react';
 import type { BrandConfig } from '@/brands/types';
 import { buildThemeTokens, renderThemeStyle, escapeCssUrl, hexToRgb } from '@/app/themes/lib/theme-tokens';
+import { optimizeImageUrl } from '@/app/lib/imageOptimize';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -153,7 +154,7 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--font-base': 'var(--font-ui-family)',
     '--font-display': 'var(--font-brand-family)',
     '--font-badge': 'var(--font-ui-family)',
-    '--classic-hero-image': `url("${escapeCssUrl(heroImage)}")`,
+    '--classic-hero-image': `url("${escapeCssUrl(optimizeImageUrl(heroImage, { width: 1920 }))}")`,
   };
 
   return (

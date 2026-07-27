@@ -96,7 +96,7 @@
 .home-hero-field select:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(63, 119, 239, 0.2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 20%, transparent);
   background-color: var(--color-surface);
 }
 
@@ -104,7 +104,9 @@
   min-height: 46px;
   border: 0;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-strong) 58%, var(--color-accent) 100%);
+  /* Flat contract fill — the old primary→accent gradient washed out under
+     light accent palettes and left the label unreadable at the tail. */
+  background: var(--color-primary);
   color: var(--color-on-primary);
   font-weight: 700;
   font-size: 1rem;
@@ -112,18 +114,18 @@
   padding: 0.76rem 1.25rem;
   cursor: pointer;
   white-space: nowrap;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .home-hero-search-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 12px 24px rgba(24, 65, 175, 0.38);
-  filter: saturate(1.05);
+  background: var(--color-primary-strong);
+  box-shadow: 0 12px 24px color-mix(in srgb, var(--color-primary) 38%, transparent);
 }
 
 .home-hero-search-btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(63, 119, 239, 0.32);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 32%, transparent);
 }
 
 .home-hero-trust {

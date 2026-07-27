@@ -4,6 +4,7 @@ import React from 'react';
 import type { BrandConfig } from '@/brands/types';
 import { buildGoogleFontsImport } from '@/app/lib/googleFonts';
 import { buildThemeTokens, renderThemeStyle, escapeCssUrl } from '@/app/themes/lib/theme-tokens';
+import { optimizeImageUrl } from '@/app/lib/imageOptimize';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -112,16 +113,16 @@ export function BrandStyles({ brand }: BrandStylesProps) {
 
     // Per-page image slots — every component references these via var(--brand-image-*).
     // Each slot independently falls back to its own theme-curated default (no cross-fall).
-    '--brand-image-hero': `url("${escapeCssUrl(heroImageSlot)}")`,
-    '--brand-image-about': `url("${escapeCssUrl(aboutImage)}")`,
-    '--brand-image-services': `url("${escapeCssUrl(servicesImage)}")`,
-    '--brand-image-finance': `url("${escapeCssUrl(financeImage)}")`,
-    '--brand-image-part-exchange': `url("${escapeCssUrl(partExchangeImage)}")`,
-    '--brand-image-sell-your-car': `url("${escapeCssUrl(sellYourCarImage)}")`,
-    '--brand-image-recently-sold': `url("${escapeCssUrl(recentlySoldImage)}")`,
+    '--brand-image-hero': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--brand-image-about': `url("${escapeCssUrl(optimizeImageUrl(aboutImage, { width: 1280 }))}")`,
+    '--brand-image-services': `url("${escapeCssUrl(optimizeImageUrl(servicesImage, { width: 1280 }))}")`,
+    '--brand-image-finance': `url("${escapeCssUrl(optimizeImageUrl(financeImage, { width: 1280 }))}")`,
+    '--brand-image-part-exchange': `url("${escapeCssUrl(optimizeImageUrl(partExchangeImage, { width: 1280 }))}")`,
+    '--brand-image-sell-your-car': `url("${escapeCssUrl(optimizeImageUrl(sellYourCarImage, { width: 1280 }))}")`,
+    '--brand-image-recently-sold': `url("${escapeCssUrl(optimizeImageUrl(recentlySoldImage, { width: 1280 }))}")`,
 
     // Legacy var kept for any leftover references during transition.
-    '--dual-hero-image': `url("${escapeCssUrl(heroImageSlot)}")`,
+    '--dual-hero-image': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
 
     // Font family overrides.
     '--font-ui-family-override': fontUi,

@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useGarage } from '../context/GarageContext'
 import { buildVehiclePermalink } from '../lib/vehicle-links'
+import { optimizeImageUrl } from '@/app/lib/imageOptimize'
 import styles from './VehicleCard.module.css'
 
 type Vehicle = {
@@ -102,7 +103,7 @@ export default function VehicleCard({ vehicle, variant = 'standard', sold = fals
       <div className={styles.media}>
         <Link href={href} className={styles.mediaLink} aria-label={title}>
           {img ? (
-            <img src={img} alt={title} loading="lazy" />
+            <img src={optimizeImageUrl(img, { width: 640 })} alt={title} width={640} height={480} loading="lazy" />
           ) : (
             <span className={styles.mediaPlaceholder} aria-hidden="true">Image coming soon</span>
           )}

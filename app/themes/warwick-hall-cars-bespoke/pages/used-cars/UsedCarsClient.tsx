@@ -28,6 +28,7 @@ import { apiUrl } from '../../lib/api'
 import { normalizeInventoryItem, type InventoryMeta, type InventoryVehicle } from '../../lib/inventory'
 import { buildVehiclePermalink } from '../../lib/vehicle-links'
 import { HeroBackdrop } from '../../components/HeroBackdrop'
+import { optimizeImageUrl } from '@/app/lib/imageOptimize'
 
 type Vehicle = InventoryVehicle
 
@@ -1010,7 +1011,7 @@ export default function UsedCarsClient({
                         <article key={vehicle.id} className={styles.card}>
                           <div
                             className={styles.cardImage}
-                            style={{ backgroundImage: `url(${vehicle.image})` }}
+                            style={{ backgroundImage: `url(${optimizeImageUrl(vehicle.image, { width: 640 })})` }}
                             role="img"
                             aria-label={vehicle.title}
                           >

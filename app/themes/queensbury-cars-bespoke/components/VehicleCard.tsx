@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useCallback, useMemo } from 'react'
 import { useGarage, type SavedVehicle } from '../context/GarageContext'
+import { optimizeImageUrl } from '@/app/lib/imageOptimize'
 import styles from './VehicleCard.module.css'
 
 export type VehicleCardData = {
@@ -134,7 +135,7 @@ export default function VehicleCard({ vehicle, variant = 'standard', className, 
 
       <div className={styles.media}>
         {vehicle.image ? (
-          <img src={vehicle.image} alt={vehicle.title} className={styles.image} loading="lazy" />
+          <img src={optimizeImageUrl(vehicle.image, { width: 640 })} alt={vehicle.title} width={640} height={480} className={styles.image} loading="lazy" />
         ) : (
           <div className={styles.imagePlaceholder} aria-hidden="true">
             <span>{(vehicle.make || vehicle.title || '?').slice(0, 1)}</span>

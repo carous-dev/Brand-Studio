@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Share2, Heart, Calendar, Gauge, Droplet, Sliders } from 'lucide-react'
+import { optimizeImageUrl } from '@/app/lib/imageOptimize'
 import LazyImage from './LazyImage'
 
 type Vehicle = {
@@ -61,7 +62,7 @@ export default function InventoryCard({ vehicle }: { vehicle: Vehicle }) {
             )}
             <a href={permalink} aria-label={`${vehicle.year ? vehicle.year + ' ' : ''}${vehicle.make} ${vehicle.model}`}>
                 <div className="media">
-                    <LazyImage alt={`${vehicle.year ? vehicle.year + ' ' : ''}${vehicle.make} ${vehicle.model}`} src={imageUrl} loading="lazy" decoding="async" fetchPriority="low" />
+                    <LazyImage alt={`${vehicle.year ? vehicle.year + ' ' : ''}${vehicle.make} ${vehicle.model}`} src={optimizeImageUrl(imageUrl, { width: 640 })} width={640} height={480} loading="lazy" decoding="async" fetchPriority="low" />
 
                     <div className="media-overlay">
                         <button type="button" className="icon-btn share-btn" title="Share">

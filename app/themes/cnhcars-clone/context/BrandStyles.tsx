@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react'
 import type { BrandConfig } from '@/brands/types'
 import { buildThemeTokens, renderThemeStyle, escapeCssUrl } from '@/app/themes/lib/theme-tokens'
+import { optimizeImageUrl } from '@/app/lib/imageOptimize'
 
 const THEME_ID = 'cnhcars-clone'
 const SCOPE = `[data-theme-id="${THEME_ID}"]`
@@ -31,7 +32,11 @@ export function BrandStyles({ brand }: { brand: BrandConfig }): ReactNode {
   const theme = brand?.theme
   const brandImages: Record<string, unknown> = (brand as any)?.images || {}
 
-  const toUrl = (img?: string) => (img ? `url("${escapeCssUrl(img)}")` : 'none')
+  // Route brand-uploaded images through Next's optimizer (WebP/AVIF + resize)
+  // so the CSS-background hero + section images aren't full-res originals.
+  // The hero is the LCP element, so it gets a wider derivative.
+  const toUrl = (img?: string, width = 1280) =>
+    img ? `url("${escapeCssUrl(optimizeImageUrl(img, { width }))}")` : 'none'
 
   const heroImage = pickString((brand as any)?.heroImage, brandImages['hero'])
   const aboutImage = pickString(brandImages['about'])
@@ -64,7 +69,7 @@ export function BrandStyles({ brand }: { brand: BrandConfig }): ReactNode {
   // Per-slot brand-image vars — kept verbatim (camelCase slot names) so the
   // theme's CSS `var(--brand-image-partExchange)` etc. keeps resolving.
   const extras: Record<string, string> = {
-    '--brand-image-hero': toUrl(heroImage),
+    '--brand-image-hero': toUrl(heroImage, 1920),
     '--brand-image-about': toUrl(aboutImage),
     '--brand-image-services': toUrl(servicesImage),
     '--brand-image-finance': toUrl(financeImage),

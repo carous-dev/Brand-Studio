@@ -4,6 +4,7 @@ import React from 'react';
 import type { BrandConfig } from '@/brands/types';
 import { buildGoogleFontsImport } from '@/app/lib/googleFonts';
 import { buildThemeTokens, renderThemeStyle, escapeCssUrl, hexToRgb } from '@/app/themes/lib/theme-tokens';
+import { optimizeImageUrl } from '@/app/lib/imageOptimize';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -122,24 +123,25 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--shadow-soft': '0 10px 35px -12px rgba(14, 20, 32, 0.12)',
     '--fbm-shadow-glow': `0 0 40px -8px color-mix(in srgb, ${primary} 45%, transparent)`,
 
-    // Hero/page imagery
-    '--fbm-hero-image': `url("${escapeCssUrl(heroImage)}")`,
-    '--brand-image-hero': `url("${escapeCssUrl(heroImageSlot)}")`,
-    '--brand-image-about': `url("${escapeCssUrl(aboutImage)}")`,
-    '--brand-image-services': `url("${escapeCssUrl(servicesImage)}")`,
-    '--brand-image-finance': `url("${escapeCssUrl(financeImage)}")`,
-    '--brand-image-part-exchange': `url("${escapeCssUrl(partExchangeImage)}")`,
-    '--brand-image-sell-your-car': `url("${escapeCssUrl(sellYourCarImage)}")`,
-    '--brand-image-recently-sold': `url("${escapeCssUrl(recentlySoldImage)}")`,
+    // Hero/page imagery — routed through Next's optimizer (WebP/AVIF + resize).
+    // Hero is the LCP element so it gets a wider derivative than the sections.
+    '--fbm-hero-image': `url("${escapeCssUrl(optimizeImageUrl(heroImage, { width: 1920 }))}")`,
+    '--brand-image-hero': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--brand-image-about': `url("${escapeCssUrl(optimizeImageUrl(aboutImage, { width: 1280 }))}")`,
+    '--brand-image-services': `url("${escapeCssUrl(optimizeImageUrl(servicesImage, { width: 1280 }))}")`,
+    '--brand-image-finance': `url("${escapeCssUrl(optimizeImageUrl(financeImage, { width: 1280 }))}")`,
+    '--brand-image-part-exchange': `url("${escapeCssUrl(optimizeImageUrl(partExchangeImage, { width: 1280 }))}")`,
+    '--brand-image-sell-your-car': `url("${escapeCssUrl(optimizeImageUrl(sellYourCarImage, { width: 1280 }))}")`,
+    '--brand-image-recently-sold': `url("${escapeCssUrl(optimizeImageUrl(recentlySoldImage, { width: 1280 }))}")`,
 
     // Image-URL strings (without url() wrapper) for <img src> usage
-    '--brand-image-hero-url': heroImageSlot,
-    '--brand-image-about-url': aboutImage,
-    '--brand-image-services-url': servicesImage,
-    '--brand-image-finance-url': financeImage,
-    '--brand-image-part-exchange-url': partExchangeImage,
-    '--brand-image-sell-your-car-url': sellYourCarImage,
-    '--brand-image-recently-sold-url': recentlySoldImage,
+    '--brand-image-hero-url': optimizeImageUrl(heroImageSlot, { width: 1920 }),
+    '--brand-image-about-url': optimizeImageUrl(aboutImage, { width: 1280 }),
+    '--brand-image-services-url': optimizeImageUrl(servicesImage, { width: 1280 }),
+    '--brand-image-finance-url': optimizeImageUrl(financeImage, { width: 1280 }),
+    '--brand-image-part-exchange-url': optimizeImageUrl(partExchangeImage, { width: 1280 }),
+    '--brand-image-sell-your-car-url': optimizeImageUrl(sellYourCarImage, { width: 1280 }),
+    '--brand-image-recently-sold-url': optimizeImageUrl(recentlySoldImage, { width: 1280 }),
 
     // Font family overrides
     '--font-ui-family-override': fontUi,

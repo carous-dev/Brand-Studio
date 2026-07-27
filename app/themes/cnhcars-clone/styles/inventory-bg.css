@@ -2,7 +2,7 @@
 
 .inventory-container {
   position: relative;
-  background: white;
+  background: var(--color-bg);
   background-attachment: fixed;
   padding: 2rem 0;
   overflow: hidden;
@@ -68,7 +68,7 @@
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .inventory-container {
-    background: white;
+    background: var(--color-bg);
   }
 }
 

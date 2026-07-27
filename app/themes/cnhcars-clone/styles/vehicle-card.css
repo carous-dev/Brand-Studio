@@ -2,11 +2,11 @@
   --inventory-status-badge-bg: color-mix(in srgb, var(--primary) 88%, var(--t-success) 12%);
   position: relative;
   background: var(--surface-card);
-  border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
-  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--primary) 14%, var(--border));
+  border-radius: 14px;
   overflow: hidden;
-  transition: transform 0.24s ease, border-color 0.24s ease;
-  box-shadow: none;
+  transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+  box-shadow: var(--shadow-sm);
 }
 
 .vehicle-card.inventory-card-modern.is-reserved::before {
@@ -104,42 +104,42 @@
   gap: 8px;
 }
 
+/* Action = transparent glyph over the photo — no plate, no border. */
 .vehicle-card.inventory-card-modern .inventory-card-action {
-  width: 34px;
-  height: 34px;
-  min-width: 34px;
-  min-height: 34px;
-  border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
-  border-radius: 999px;
-  background: color-mix(in srgb, white 94%, var(--surface-section) 6%);
-  color: var(--text-heading);
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
+  border: 0;
+  padding: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: color-mix(in srgb, var(--primary) 55%, var(--text-on-dark-strong));
+  filter: drop-shadow(0 1px 3px rgba(10, 14, 20, 0.55));
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .vehicle-card.inventory-card-modern .inventory-card-action:hover {
-  transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+  transform: scale(1.12);
 }
 
 .vehicle-card.inventory-card-modern .inventory-card-action:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--primary) 55%, white 45%);
+  outline: 2px solid var(--text-on-dark-strong);
   outline-offset: 2px;
 }
 
 .vehicle-card.inventory-card-modern .inventory-card-action.is-active,
 .vehicle-card.inventory-card-modern .inventory-card-action[aria-pressed='true'] {
-  border-color: var(--primary);
-  background: var(--primary);
-  color: var(--color-on-primary);
+  color: var(--t-error);
 }
 
 .vehicle-card.inventory-card-modern .inventory-card-action .heart-icon {
-  width: 15px;
-  height: 15px;
+  width: 22px;
+  height: 22px;
   stroke: currentColor;
   fill: none;
 }
@@ -389,11 +389,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--color-primary, var(--primary)) 4%, var(--color-surface)) 0%,
-    color-mix(in srgb, var(--color-primary, var(--primary)) 7%, var(--color-surface)) 100%
-  );
+  background: color-mix(in srgb, var(--color-primary, var(--primary)) 6%, var(--color-surface));
   border-top: 1px solid color-mix(in srgb, var(--color-primary, var(--primary)) 16%, var(--border));
   font-family: var(--font-brand-body-override, var(--font-heading));
   font-size: 1.45rem;
@@ -543,7 +539,7 @@
   .vehicle-card.inventory-card-modern:hover {
     transform: translateY(-5px);
     border-color: color-mix(in srgb, var(--primary) 36%, var(--border));
-    box-shadow: none;
+    box-shadow: var(--shadow-lg);
   }
 
   .vehicle-card.inventory-card-modern:hover .card-image {

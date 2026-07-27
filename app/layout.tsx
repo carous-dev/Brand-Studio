@@ -114,6 +114,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body data-theme-id={themeId}>
+        {/* Warm up the Google Fonts connection early. Every theme pulls fonts
+            from these two hosts (via @import or <link>); preconnecting saves the
+            DNS+TLS round-trip off the critical path. React 19 hoists these to
+            <head>. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {/* Inject brand-specific CSS variables */}
         <BrandStyles brand={brand} />
         {/* Client wrapper that provides brand to all components */}

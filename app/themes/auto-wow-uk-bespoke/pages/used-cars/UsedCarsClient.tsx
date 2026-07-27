@@ -21,6 +21,7 @@ import { useBrand } from '../../context/BrandClientWrapper'
 import { apiUrl } from '../../lib/api'
 import { normalizeInventoryItem, type InventoryMeta, type InventoryVehicle } from '../../lib/inventory'
 import { buildVehiclePermalink } from '../../lib/vehicle-links'
+import { optimizeImageUrl } from '@/app/lib/imageOptimize'
 import { InventoryFilters } from './InventoryFilters'
 import { InventoryToolbar } from './InventoryToolbar'
 
@@ -726,7 +727,7 @@ export default function UsedCarsClient({
                         <article key={vehicle.id} className={styles.card}>
                           <div
                             className={styles.cardImage}
-                            style={{ backgroundImage: `url(${vehicle.image})` }}
+                            style={{ backgroundImage: `url("${optimizeImageUrl(vehicle.image, { width: 640 })}")` }}
                             role="img"
                             aria-label={vehicle.title}
                           >

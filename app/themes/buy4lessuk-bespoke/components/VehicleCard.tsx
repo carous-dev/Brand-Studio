@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { ArrowRight, Camera, Gauge } from 'lucide-react'
 import type { InventoryVehicle } from '../lib/inventory'
 import { buildVehiclePermalink } from '../lib/vehicle-links'
+import { optimizeImageUrl } from '@/app/lib/imageOptimize'
 import styles from './VehicleCard.module.css'
 
 const gbp = (n: number) =>
@@ -17,7 +18,7 @@ export default function VehicleCard({ vehicle }: { vehicle: InventoryVehicle }) 
     <Link href={href} className={styles.card} aria-label={vehicle.title}>
       <div className={styles.imageWrap}>
         {hasImage ? (
-          <img src={vehicle.image} alt={vehicle.title} className={styles.image} loading="lazy" />
+          <img src={optimizeImageUrl(vehicle.image, { width: 640 })} alt={vehicle.title} width={640} height={480} className={styles.image} loading="lazy" />
         ) : (
           <div className={styles.placeholder} aria-hidden>
             <Camera size={32} strokeWidth={1.6} className={styles.placeholderIcon} />

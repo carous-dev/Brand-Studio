@@ -4,6 +4,7 @@ import React from 'react';
 import type { BrandConfig } from '@/brands/types';
 import { buildGoogleFontsImport } from '@/app/lib/googleFonts';
 import { buildThemeTokens, renderThemeStyle, escapeCssUrl } from '@/app/themes/lib/theme-tokens';
+import { optimizeImageUrl } from '@/app/lib/imageOptimize';
 
 interface BrandStylesProps {
   brand: BrandConfig;
@@ -52,7 +53,7 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   // brand-coloured panel via the Hero.module.css `background-color`
   // rather than a generic stock photo.
   const heroImageSource = pickString((brand as any).heroImage, brandImages['hero']);
-  const heroImageCss = heroImageSource ? `url("${escapeCssUrl(heroImageSource)}")` : 'none';
+  const heroImageCss = heroImageSource ? `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")` : 'none';
   // Per-page slots still need a non-empty fallback in their own var (the
   // about/services/etc. pages are designed around having a backdrop photo).
   const heroImageSlot = heroImageSource || themeDefault('hero');
@@ -89,18 +90,18 @@ export function BrandStyles({ brand }: BrandStylesProps) {
 
   const extras: Record<string, string> = {
     // Hero background image (resolves to brand.heroImage if set in dashboard)
-    '--warwick-hero-image': `url("${escapeCssUrl(heroImage)}")`,
+    '--warwick-hero-image': `url("${escapeCssUrl(optimizeImageUrl(heroImage, { width: 1920 }))}")`,
     // Per-page image slots — theme references these via var(--brand-image-*)
     // so dashboard edits to brand.images.* propagate without code changes.
     // Hero var resolves to `none` when no brand image is set so Hero.module.css
     // can fall back to background-color instead of a generic stock photo.
     '--brand-image-hero': heroImageCss,
-    '--brand-image-about': `url("${escapeCssUrl(aboutImage)}")`,
-    '--brand-image-services': `url("${escapeCssUrl(servicesImage)}")`,
-    '--brand-image-finance': `url("${escapeCssUrl(financeImage)}")`,
-    '--brand-image-part-exchange': `url("${escapeCssUrl(partExchangeImage)}")`,
-    '--brand-image-sell-your-car': `url("${escapeCssUrl(sellYourCarImage)}")`,
-    '--brand-image-recently-sold': `url("${escapeCssUrl(recentlySoldImage)}")`,
+    '--brand-image-about': `url("${escapeCssUrl(optimizeImageUrl(aboutImage, { width: 1280 }))}")`,
+    '--brand-image-services': `url("${escapeCssUrl(optimizeImageUrl(servicesImage, { width: 1280 }))}")`,
+    '--brand-image-finance': `url("${escapeCssUrl(optimizeImageUrl(financeImage, { width: 1280 }))}")`,
+    '--brand-image-part-exchange': `url("${escapeCssUrl(optimizeImageUrl(partExchangeImage, { width: 1280 }))}")`,
+    '--brand-image-sell-your-car': `url("${escapeCssUrl(optimizeImageUrl(sellYourCarImage, { width: 1280 }))}")`,
+    '--brand-image-recently-sold': `url("${escapeCssUrl(optimizeImageUrl(recentlySoldImage, { width: 1280 }))}")`,
     // Font family overrides
     '--font-ui-family-override': fontUi,
     '--font-brand-family-override': fontBrand,

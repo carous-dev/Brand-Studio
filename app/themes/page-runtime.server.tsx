@@ -640,7 +640,7 @@ export async function renderThemePage(options: ThemeRouteRuntimeOptions) {
   }
 
   const { brand, brandId } = brandResult
-  const ThemedPage = getThemePageForBrand(brand, options.pageId)
+  const ThemedPage = await getThemePageForBrand(brand, options.pageId)
 
   if (!ThemedPage) {
     notFound()

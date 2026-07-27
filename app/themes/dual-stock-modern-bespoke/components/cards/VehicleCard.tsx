@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useGarage } from '../../context/GarageContext'
 import type { InventoryVehicle } from '../../lib/inventory'
 import { buildVehicleHref } from '../../lib/vehicle-links'
+import { optimizeImageUrl } from '@/app/lib/imageOptimize'
 import styles from './VehicleCard.module.css'
 
 interface VehicleCardProps {
@@ -85,7 +86,7 @@ export default function VehicleCard({ vehicle, compact = false, sold = false, hi
       <div className={styles.media}>
         <div
           className={styles.mediaImage}
-          style={{ backgroundImage: `url('${vehicle.image}')` }}
+          style={{ backgroundImage: `url('${optimizeImageUrl(vehicle.image, { width: 640 })}')` }}
           role="img"
           aria-label={vehicle.title}
         />

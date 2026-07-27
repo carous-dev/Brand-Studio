@@ -75,7 +75,15 @@ const nextConfig = {
       { protocol: 'https', hostname: 'plus.unsplash.com', pathname: '/**' },
       { protocol: 'https', hostname: 'm-qa.atcdn.co.uk', pathname: '/**' },
       { protocol: 'https', hostname: 'static.wixstatic.com', pathname: '/**' }
-    ]
+    ],
+    // Serve modern formats; AVIF first then WebP fallback. Themes route <img> +
+    // hero backgrounds through /_next/image via app/lib/imageOptimize.ts.
+    formats: ['image/avif', 'image/webp'],
+    // Non-default qualities used by optimizeImageUrl must be whitelisted in
+    // Next 16+ or /_next/image 400s. Keep in sync with imageOptimize.ts.
+    qualities: [60, 70, 75, 80],
+    // Cache optimized derivatives for a day to spare the VPS CPU on repeat hits.
+    minimumCacheTTL: 86400
   },
 
   // Empty turbopack config: Next 16 uses Turbopack by default. The legacy

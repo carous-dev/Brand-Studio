@@ -27,17 +27,11 @@ export default function HeroSmall({
 }: HeroSmallProps) {
   if (variant === 'used-cars') {
     return (
-      <section className="inventory-list-hero inventory-hero inventory-hero-dark">
-        <div className="container">
-          <div className="inventory-hero-dark-shell">
-            <h1 className="inventory-hero-dark-title">{title}</h1>
-            <p className="inventory-hero-dark-lead">{subtitle}</p>
-            <div className="inventory-hero-dark-actions">
-              <a href="/sell-my-car" className="inventory-hero-dark-btn inventory-hero-dark-btn-secondary">
-                Looking to sell?
-              </a>
-            </div>
-          </div>
+      <section className="cnh-inv-hero">
+        <div className="cnh-inv-hero-inner">
+          <p className="cnh-inv-hero-eyebrow">Our showroom stock</p>
+          <h1 className="cnh-inv-hero-title">{title}</h1>
+          <p className="cnh-inv-hero-lead">{subtitle}</p>
         </div>
       </section>
     );

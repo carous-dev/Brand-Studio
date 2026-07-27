@@ -14,6 +14,7 @@ import {
   Settings2,
 } from 'lucide-react'
 import styles from './page.module.css'
+import { optimizeImageUrl } from '@/app/lib/imageOptimize'
 import type { InventoryVehicle } from '../../lib/inventory'
 
 type Props = {
@@ -66,7 +67,7 @@ export default function InventoryCard({
           <div
             key={`${vehicle.id}-img-${i}`}
             className={styles.cardImage}
-            style={{ backgroundImage: `url(${src})` }}
+            style={{ backgroundImage: `url("${optimizeImageUrl(src, { width: 640 })}")` }}
             role="img"
             aria-label={`${vehicle.title} photo ${i + 1}`}
           />

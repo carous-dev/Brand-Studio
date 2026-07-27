@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Calendar, Gauge, Palette, Fuel, Cog } from 'lucide-react'
 import type { InventoryVehicle } from '../lib/inventory'
 import { buildVehiclePermalink } from '../lib/vehicle-links'
+import { optimizeImageUrl } from '@/app/lib/imageOptimize'
 import styles from './CarCard.module.css'
 
 const FALLBACK_IMAGE = '/images/image.png'
@@ -39,7 +40,7 @@ export function CarCard({ vehicle }: CarCardProps) {
       <div className={styles.media}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={image}
+          src={optimizeImageUrl(image, { width: 640 })}
           alt={vehicle.title}
           loading="lazy"
           width={640}

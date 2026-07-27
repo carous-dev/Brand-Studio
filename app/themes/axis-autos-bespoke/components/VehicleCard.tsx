@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Heart, GitCompare, Fuel, Gauge, Settings } from 'lucide-react'
 import { useGarage, type SavedVehicle } from '../context/GarageContext'
 import { buildVehiclePermalink } from '../lib/vehicle-links'
+import { optimizeImageUrl } from '@/app/lib/imageOptimize'
 import styles from './VehicleCard.module.css'
 
 type Vehicle = {
@@ -84,7 +85,7 @@ export default function VehicleCard({
     >
       <div className={styles.media}>
         {img ? (
-          <div className={styles.mediaImage} style={{ backgroundImage: `url("${img}")` }} role="presentation" />
+          <div className={styles.mediaImage} style={{ backgroundImage: `url("${optimizeImageUrl(img, { width: 640 })}")` }} role="presentation" />
         ) : (
           <div className={styles.mediaPlaceholder} aria-hidden="true">No image</div>
         )}
