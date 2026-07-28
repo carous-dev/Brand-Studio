@@ -43,20 +43,15 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  /* Defensive layered background: brand-uploaded hero on TOP, theme curated
-     default UNDERNEATH. If the brand URL 404s (broken upload, stale path,
-     cross-environment URL) the browser silently fails the top layer and
-     the curated default shows through. The CSS `var(name, fallback)`
-     idiom doesn't help here because BrandStyles always emits the var as
-     a non-empty url() â€” fallback only fires when the var is UNDECLARED.
-     See SKILL Quality Bar Â§"Brand-uploaded images" + memory
-     `feedback_brand_image_plumbing.md`. */
-  background-image:
-    var(--brand-image-hero, none),
-    url('/themes/auto-wow-uk-bespoke/images/hero.jpg');
-  background-size: cover, cover;
-  background-position: center 32%, center 32%;
-  background-repeat: no-repeat, no-repeat;
+  /* Brand-uploaded hero only. When no brand hero is set BrandStyles emits
+     --brand-image-hero as `none`, so this layer paints nothing and the
+     brand-coloured panel below (background-color) shows through instead of
+     a generic theme-default stock photo. */
+  background-color: var(--color-bg);
+  background-image: var(--brand-image-hero, none);
+  background-size: cover;
+  background-position: center 32%;
+  background-repeat: no-repeat;
   filter: saturate(0.95) contrast(1.05);
 }
 
@@ -238,7 +233,7 @@
     padding: var(--hero-pad-top) 16px var(--hero-pad-bottom);
   }
   .heroImage {
-    background-position: center top, center top;
+    background-position: center top;
   }
   .heroOverlay {
     /* Mobile keeps the same dark-scrim approach as desktop */

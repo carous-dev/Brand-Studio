@@ -27,6 +27,9 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     resolveFontToken(fonts.brand, (fonts as any).heading, themeAny.fontBrand, themeAny.brandFont) ||
     "'Oswald', 'Montserrat', 'Segoe UI', sans-serif";
 
+  // Per-page slot fallback keeps a non-empty image (about/services/etc. pages
+  // are designed around a backdrop photo). The HERO BACKGROUND is handled
+  // separately below and does NOT use logo/placeholder.
   const heroImage = brand.heroImage || brand.logo || '/images/hero-placeholder.jpg';
 
   // Per-page imagery (7 slots) — sourced by tools/fetch-theme-images.mjs and
@@ -39,6 +42,20 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     return typeof v === 'string' && v.trim() ? v : fallback;
   };
   const heroImageSlot = imageOr('hero', heroImage);
+
+  // HERO BACKGROUND: real brand hero only (brand.heroImage → brand.images.hero)
+  // → NONE. Theme-curated default dropped so dealer-record previews without an
+  // uploaded hero fall back to the brand-colour panel + gradient in
+  // page.module.css `.hero` rather than a generic stock photo / the logo.
+  const heroImageSource =
+    typeof brand.heroImage === 'string' && brand.heroImage.trim()
+      ? brand.heroImage.trim()
+      : (typeof brandImages['hero'] === 'string' && (brandImages['hero'] as string).trim()
+          ? (brandImages['hero'] as string).trim()
+          : '');
+  const heroImageCss = heroImageSource
+    ? `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")`
+    : 'none';
   const aboutImage = imageOr('about', heroImageSlot);
   const servicesImage = imageOr('services', heroImageSlot);
   const financeImage = imageOr('finance', heroImageSlot);
@@ -84,12 +101,13 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--spec-hue-green': '#16a34a',
     '--spec-hue-sky': '#0ea5e9',
 
-    // Hero background image (resolves to brand.heroImage if set in dashboard)
-    '--springalls-hero-image': `url("${escapeCssUrl(optimizeImageUrl(heroImage, { width: 1920 }))}")`,
+    // Hero background image — `none` when no real brand hero, so the homepage
+    // hero falls back to brand-colour + gradient (no theme-default photo).
+    '--springalls-hero-image': heroImageCss,
 
     // Per-page image slots — every theme references these via var(--brand-image-*)
     // so dashboard edits to brand.images.* propagate without code changes.
-    '--brand-image-hero': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--brand-image-hero': heroImageCss,
     '--brand-image-about': `url("${escapeCssUrl(optimizeImageUrl(aboutImage, { width: 1280 }))}")`,
     '--brand-image-services': `url("${escapeCssUrl(optimizeImageUrl(servicesImage, { width: 1280 }))}")`,
     '--brand-image-finance': `url("${escapeCssUrl(optimizeImageUrl(financeImage, { width: 1280 }))}")`,

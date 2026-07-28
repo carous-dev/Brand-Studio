@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { Facebook, Instagram, Linkedin, Twitter, Youtube } from 'lucide-react'
 import styles from './Footer.module.css'
 import { useBrand } from '../context/BrandClientWrapper'
@@ -71,7 +70,7 @@ export default function Footer() {
       <div className={styles.footerInner}>
         <section className={styles.brand}>
           <div className={styles.brandMark}>
-            <Image
+            <img
               className={styles.brandLogo}
               src={logo}
               alt={brandName}

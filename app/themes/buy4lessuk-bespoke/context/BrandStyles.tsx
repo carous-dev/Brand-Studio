@@ -56,11 +56,20 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     return typeof v === 'string' && v.trim() ? v : fallback;
   };
   // Hero: brand.heroImage is the dashboard source of truth; images.hero is
-  // often stale, so it's only a fallback when heroImage is unset.
-  const heroImage =
-    (typeof brand.heroImage === 'string' && brand.heroImage.trim() ? brand.heroImage : '') ||
-    imageOr('hero', FALLBACKS.hero);
-  const heroImageSlot = heroImage;
+  // often stale, so it's only a fallback when heroImage is unset. NO theme
+  // default — an image-less hero resolves to `none` so HomeHero.module.css
+  // falls back to the brand-colour gradient panel rather than a stock photo
+  // (per Difatha; matches warwick-hall-cars-bespoke).
+  const heroPick = (...candidates: Array<unknown>): string => {
+    for (const candidate of candidates) {
+      if (typeof candidate === 'string' && candidate.trim()) return candidate.trim();
+    }
+    return '';
+  };
+  const heroImageSource = heroPick(brand.heroImage, brandImages['hero']);
+  const heroImageCss = heroImageSource
+    ? `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")`
+    : 'none';
   const aboutImage = imageOr('about', FALLBACKS.about);
   const servicesImage = imageOr('services', FALLBACKS.services);
   const financeImage = imageOr('finance', FALLBACKS.finance);
@@ -140,11 +149,11 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     // Hero background image (resolves to brand.heroImage if set in dashboard).
     // Routed through Next's optimizer (WebP/AVIF + resize); hero is the LCP
     // element so it gets a wider derivative, section slots ~1280.
-    '--buy4lessuk-hero-image': `url("${escapeCssUrl(optimizeImageUrl(heroImage, { width: 1920 }))}")`,
+    '--buy4lessuk-hero-image': heroImageCss,
 
     // Per-page image slots — every theme references these via var(--brand-image-*)
     // so dashboard edits to brand.images.* propagate without code changes.
-    '--brand-image-hero': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--brand-image-hero': heroImageCss,
     '--brand-image-about': `url("${escapeCssUrl(optimizeImageUrl(aboutImage, { width: 1280 }))}")`,
     '--brand-image-services': `url("${escapeCssUrl(optimizeImageUrl(servicesImage, { width: 1280 }))}")`,
     '--brand-image-finance': `url("${escapeCssUrl(optimizeImageUrl(financeImage, { width: 1280 }))}")`,

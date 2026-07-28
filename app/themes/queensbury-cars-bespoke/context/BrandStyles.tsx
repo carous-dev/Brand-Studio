@@ -49,8 +49,7 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   //       brand.images.hero (often stale alias) -> theme default. No cross-fall.
   // Other slots: brand.images.<slot> -> their OWN theme default. Never the hero.
   const brandImages: Record<string, unknown> = (brand as any)?.images || {};
-  const heroImageSlot =
-    pickString((brand as any).heroImage, brandImages['hero']) || themeDefault('hero');
+  const heroImageSource = pickString((brand as any).heroImage, brandImages['hero']);
   const resolveSlot = (slotKey: string, slotFile: string): string =>
     pickString(brandImages[slotKey]) || themeDefault(slotFile);
 
@@ -102,7 +101,9 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     // Per-page imagery — emitted unconditionally, ALWAYS resolves to either an
     // operator upload or this theme's curated default. Components consume via
     // var(--brand-image-<slot>) layered above the theme default.
-    '--brand-image-hero': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--brand-image-hero': heroImageSource
+      ? `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")`
+      : 'none',
     '--brand-image-about': `url("${escapeCssUrl(optimizeImageUrl(aboutImage, { width: 1280 }))}")`,
     '--brand-image-services': `url("${escapeCssUrl(optimizeImageUrl(servicesImage, { width: 1280 }))}")`,
     '--brand-image-finance': `url("${escapeCssUrl(optimizeImageUrl(financeImage, { width: 1280 }))}")`,

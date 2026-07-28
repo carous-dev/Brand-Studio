@@ -574,6 +574,18 @@
   .hamburger { display: none; }
   .sellCta { display: inline-flex; align-items: center; }
 }
+/* Nav is hidden below 1024px, leaving only brand + actions in the grid.
+   Collapse the 3-col template to two tracks across the whole tablet/phone
+   range so the action cluster hugs the right edge instead of auto-placing
+   into the middle 1fr track and stranding a gap on the right. */
+@media (max-width: 1023px) {
+  .headerInner {
+    grid-template-columns: 1fr auto;
+  }
+  .brand { justify-self: start; }
+  .headerActions { justify-self: end; }
+}
+
 @media (max-width: 640px) {
   /* Announcement strip — single centered chip on mobile:
    *   ⚡  Finance from £99/mo  →

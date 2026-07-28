@@ -44,12 +44,13 @@
 .mediaImage {
   position: absolute;
   inset: 0;
-  background-image:
-    var(--brand-image-hero, none),
-    url('/themes/axis-autos-bespoke/images/hero.jpg');
-  background-size: cover, cover;
-  background-position: center, center;
-  background-repeat: no-repeat, no-repeat;
+  /* No theme-default photo — brands without an uploaded hero get the brand
+     colour + blend gradient (var resolves to 'none'). */
+  background-color: color-mix(in srgb, var(--brand-primary) 12%, var(--surface-card-light));
+  background-image: var(--brand-image-hero, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   transform: scale(1.02);
 }
 

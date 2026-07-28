@@ -292,6 +292,9 @@
 @media (max-width: 860px) {
   .topbarWrap { display: none !important; }
   .nav { display: none !important; }
+  /* With the flex:1 nav removed, nothing stretches the row — pin the cluster
+     to the right edge so it doesn't collapse against the logo. */
+  .rightCluster { margin-left: auto; }
   .menuToggle { display: inline-flex; }
   .phoneNumbers { display: none; }
   .financeCta {

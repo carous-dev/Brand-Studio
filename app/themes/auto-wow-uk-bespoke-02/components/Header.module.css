@@ -219,9 +219,15 @@
 
 @media (max-width: 1080px) {
   .nav { display: none; }
+  /* Nav is removed from the grid when hidden, leaving only brand + actions.
+     Collapse to two tracks (brand fills, actions pinned right) so the action
+     cluster hugs the right edge instead of auto-placing into the middle track
+     and leaving a dead gap on the right. */
   .navbarInner {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1fr auto;
   }
+  .brand { justify-self: start; }
+  .actions { justify-self: end; }
   .hamburger { display: inline-flex; }
 }
 

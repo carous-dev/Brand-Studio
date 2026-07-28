@@ -48,6 +48,10 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     themeAny.monoFont
   ) || "'JetBrains Mono', Consolas, monospace";
   const heroImage = brand.heroImage || brand.logo || '/favicon.svg';
+  // Homepage hero (.hero-futuristic) uses ONLY an authoritative brand hero — no
+  // logo/favicon/theme-default fallback. Image-less brands get gradient/brand
+  // colour instead of a generic photo. Inner-page heroes keep --classic-hero-image.
+  const homeHeroImage = brand.heroImage;
 
   // Brand colours with the SAME fallbacks the theme has always used. These feed
   // both the legacy alias values below and the core-8 `defaults` passed to the
@@ -155,6 +159,9 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--font-display': 'var(--font-brand-family)',
     '--font-badge': 'var(--font-ui-family)',
     '--classic-hero-image': `url("${escapeCssUrl(optimizeImageUrl(heroImage, { width: 1920 }))}")`,
+    '--gilded-home-hero-image': homeHeroImage
+      ? `url("${escapeCssUrl(optimizeImageUrl(homeHeroImage, { width: 1920 }))}")`
+      : 'none',
   };
 
   return (

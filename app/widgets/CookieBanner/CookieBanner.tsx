@@ -50,8 +50,8 @@ export type CookieBannerProps = {
 export default function CookieBanner({
   brandSlug,
   cookiePolicyHref = '/cookie-policy',
-  title = 'Your privacy, your choice',
-  summary = 'We use essential cookies to make our site work and optional cookies to improve your experience. You can update your preferences at any time.',
+  title = 'Cookies',
+  summary = 'We use cookies to keep the site running and improve your visit.',
 }: CookieBannerProps) {
   const storageKey = `${brandSlug || 'brand'}_cookie_consent`
 
@@ -121,50 +121,46 @@ export default function CookieBanner({
         >
           <div className={styles.cookieHeader}>
             <div className={styles.cookieIcon} aria-hidden="true">
-              <Cookie size={22} strokeWidth={1.7} />
+              <Cookie size={20} strokeWidth={1.8} />
             </div>
-            <div>
-              <h4 className={styles.cookieTitle}>{title}</h4>
-              <p className={styles.cookieText}>
-                {memoSummary}{' '}
-                <a
-                  className={styles.cookieLink}
-                  href={cookiePolicyHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Cookie policy
-                </a>
-                .
-              </p>
-            </div>
+            <p className={styles.cookieText}>
+              <span className={styles.cookieTitle}>{title}</span>
+              {memoSummary}{' '}
+              <a
+                className={styles.cookieLink}
+                href={cookiePolicyHref}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Cookie policy
+              </a>
+              .
+            </p>
           </div>
 
           <div className={styles.cookieActions}>
-            <div className={styles.buttonRow}>
-              <button
-                type="button"
-                className={styles.buttonSecondary}
-                onClick={() => setPanelOpen(true)}
-              >
-                <Settings2 size={16} strokeWidth={2} />
-                Settings
-              </button>
-              <button
-                type="button"
-                className={styles.buttonPrimary}
-                onClick={acceptAll}
-              >
-                Accept all cookies
-              </button>
-              <button
-                type="button"
-                className={styles.buttonGhost}
-                onClick={declineAll}
-              >
-                Decline
-              </button>
-            </div>
+            <button
+              type="button"
+              className={styles.buttonSecondary}
+              onClick={() => setPanelOpen(true)}
+            >
+              <Settings2 size={15} strokeWidth={2} />
+              Settings
+            </button>
+            <button
+              type="button"
+              className={styles.buttonGhost}
+              onClick={declineAll}
+            >
+              Decline
+            </button>
+            <button
+              type="button"
+              className={styles.buttonPrimary}
+              onClick={acceptAll}
+            >
+              Accept all
+            </button>
           </div>
         </div>
       </div>

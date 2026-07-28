@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useBrand } from '../context/BrandClientWrapper'
 import { useGarage } from '../context/GarageContext'
@@ -178,13 +177,12 @@ export default function Header() {
         <div className={styles.headerInner}>
           <Link href="/" className={styles.brand} aria-label={brandName}>
             {logoSrc ? (
-              <Image
+              <img
                 src={logoSrc}
                 alt={brandName}
                 width={120}
                 height={56}
                 className={styles.brandLogo}
-                priority
               />
             ) : (
               <span className={styles.brandWordmark}>

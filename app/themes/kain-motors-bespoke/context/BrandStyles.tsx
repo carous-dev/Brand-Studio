@@ -47,8 +47,7 @@ export function BrandStyles({ brand }: BrandStylesProps) {
 
   const brandImages: Record<string, unknown> = (brand as any)?.images || {};
 
-  const heroImageSlot =
-    pickString((brand as any).heroImage, brandImages['hero']) || themeDefault('hero');
+  const heroImageSource = pickString((brand as any).heroImage, brandImages['hero']);
 
   const resolveSlot = (slotKey: string, slotFile: string): string =>
     pickString(brandImages[slotKey]) || themeDefault(slotFile);
@@ -121,7 +120,9 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     // Per-page image slots — 3-tier fallback chain (SKILL row 38c). Hero reads
     // brand.heroImage FIRST (authoritative), then brand.images.hero, then the
     // theme default. Other slots: brand.images.<slot> → theme default.
-    '--brand-image-hero': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--brand-image-hero': heroImageSource
+      ? `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")`
+      : 'none',
     '--brand-image-about': `url("${escapeCssUrl(optimizeImageUrl(aboutImage, { width: 1280 }))}")`,
     '--brand-image-services': `url("${escapeCssUrl(optimizeImageUrl(servicesImage, { width: 1280 }))}")`,
     '--brand-image-finance': `url("${escapeCssUrl(optimizeImageUrl(financeImage, { width: 1280 }))}")`,
@@ -130,7 +131,9 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--brand-image-recently-sold': `url("${escapeCssUrl(optimizeImageUrl(recentlySoldImage, { width: 1280 }))}")`,
 
     // Legacy alias for older base.css references
-    '--kain-hero-image': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--kain-hero-image': heroImageSource
+      ? `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")`
+      : 'none',
 
     // Font family overrides
     '--font-ui-family-override': fontUi,

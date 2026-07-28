@@ -67,12 +67,17 @@ header.cnh-site-header::after {
     justify-self: center;
 }
 
-/* Mobile: grid collapses to two columns (logo + actions); the hidden nav
-   between them just becomes a zero-width spacer. */
+/* Mobile: the middle nav is `display:none` at ≤768, so it's removed from the
+   grid entirely (not a zero-width spacer). Collapse to two real tracks — logo
+   fills, actions pinned right — or the actions auto-place into the middle 1fr
+   track and strand a dead gap on the right. */
 @media (max-width: 768px) {
     .header-container {
-        grid-template-columns: auto 1fr auto;
+        grid-template-columns: 1fr auto;
         column-gap: 0.5rem;
+    }
+    .header-container > .header-actions {
+        justify-self: end;
     }
 }
 

@@ -45,8 +45,12 @@ export function BrandStyles({ brand }: BrandStylesProps) {
 
   const brandImages: Record<string, unknown> = (brand as any)?.images || {};
 
-  const heroImageSlot =
-    pickString((brand as any).heroImage, brandImages['hero']) || themeDefault('hero');
+  // Hero has NO theme-default fallback — a brand without an uploaded hero
+  // renders the gradient/overlay/brand-color hero (var resolves to 'none').
+  const heroImageSource = pickString((brand as any).heroImage, brandImages['hero']);
+  const heroImageValue = heroImageSource
+    ? `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")`
+    : 'none';
 
   const resolveSlot = (slotKey: string, slotFile: string): string =>
     pickString(brandImages[slotKey]) || themeDefault(slotFile);
@@ -110,7 +114,7 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     // 7 image slots — themes reference these via var(--brand-image-*). Routed
     // through Next's optimizer (WebP/AVIF + resize); hero gets a wider (LCP)
     // derivative, section images ~1280.
-    '--brand-image-hero': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--brand-image-hero': heroImageValue,
     '--brand-image-about': `url("${escapeCssUrl(optimizeImageUrl(aboutImage, { width: 1280 }))}")`,
     '--brand-image-services': `url("${escapeCssUrl(optimizeImageUrl(servicesImage, { width: 1280 }))}")`,
     '--brand-image-finance': `url("${escapeCssUrl(optimizeImageUrl(financeImage, { width: 1280 }))}")`,
@@ -119,7 +123,7 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--brand-image-recently-sold': `url("${escapeCssUrl(optimizeImageUrl(recentlySoldImage, { width: 1280 }))}")`,
 
     // Compat alias.
-    '--axis-hero-image': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--axis-hero-image': heroImageValue,
 
     // Font overrides.
     '--font-ui-family-override': fontUi,

@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import { motion } from "framer-motion"
 import { Car, Users, Headphones, Key } from "lucide-react"
 import { useBrand } from '../context/BrandClientWrapper'
@@ -36,12 +35,11 @@ const Services = () => {
         <div className="services-why-media" aria-hidden="true">
           <div className="services-why-panel" />
           <div className="services-why-image">
-            <Image
+            <img
               src="https://images.unsplash.com/photo-1727893344848-2ec8eba4bacd?auto=format&fit=crop&w=2200&q=80"
               alt="Premium vehicle in showroom"
-              fill
-              priority
               sizes="(max-width: 768px) 100vw, 50vw"
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
             />
           </div>
         </div>

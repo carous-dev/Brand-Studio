@@ -667,8 +667,8 @@
                 <!-- Colors Tab -->
                 <div class="tab-pane" id="colors-tab">
                     <div class="form-section">
-                        <h3>🎨 Brand Colors</h3>
-                        <p class="form-section-hint">Pick your 4 brand colors. Text, border, muted and surface are auto-tuned from these for contrast — no need to set them by hand.</p>
+                        <h3>🎨 Brand Color</h3>
+                        <p class="form-section-hint">Pick your primary brand color — that's it. Everything else (secondary, accent, background, text, surface, border and muted) is generated from it automatically with colour-theory and WCAG contrast rules.</p>
                         <div class="color-swatch-grid">
                             <!-- Primary Color Swatch -->
                             <div class="color-swatch-card" data-color="primaryColor">
@@ -697,213 +697,49 @@
                                 <input type="color" class="color-picker-hidden" id="primaryColorPicker" value="{{ brand_data.theme.colors.primaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.primaryColor else '#2563eb' }}">
                             </div>
 
-                            <!-- Secondary Color Swatch -->
-                            <div class="color-swatch-card" data-color="secondaryColor">
-                                <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.secondaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.secondaryColor else '#64748b' }}">
-                                    <div class="swatch-overlay">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                        <span>Click to change</span>
-                                    </div>
-                                </div>
-                                <div class="swatch-info">
-                                    <div class="swatch-header">
-                                        <h4>Secondary Color</h4>
-                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('secondaryColor')">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <p class="color-value">{{ brand_data.theme.colors.secondaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.secondaryColor else '#64748b' }}</p>
-                                    <span class="color-description">Secondary brand color</span>
-                                </div>
-                                <input type="hidden" id="secondaryColor" name="secondaryColor" value="{{ brand_data.theme.colors.secondaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.secondaryColor else '#64748b' }}">
-                                <input type="color" class="color-picker-hidden" id="secondaryColorPicker" value="{{ brand_data.theme.colors.secondaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.secondaryColor else '#64748b' }}">
-                            </div>
-
-                            <!-- Accent Color Swatch -->
-                            <div class="color-swatch-card" data-color="accentColor">
-                                <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.accentColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.accentColor else '#f59e0b' }}">
-                                    <div class="swatch-overlay">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                        <span>Click to change</span>
-                                    </div>
-                                </div>
-                                <div class="swatch-info">
-                                    <div class="swatch-header">
-                                        <h4>Accent Color</h4>
-                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('accentColor')">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <p class="color-value">{{ brand_data.theme.colors.accentColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.accentColor else '#f59e0b' }}</p>
-                                    <span class="color-description">Highlight color</span>
-                                </div>
-                                <input type="hidden" id="accentColor" name="accentColor" value="{{ brand_data.theme.colors.accentColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.accentColor else '#f59e0b' }}">
-                                <input type="color" class="color-picker-hidden" id="accentColorPicker" value="{{ brand_data.theme.colors.accentColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.accentColor else '#f59e0b' }}">
-                            </div>
-
-                            <!-- Background Color Swatch -->
-                            <div class="color-swatch-card" data-color="backgroundColor">
-                                <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.backgroundColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.backgroundColor else '#ffffff' }}">
-                                    <div class="swatch-overlay">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                        <span>Click to change</span>
-                                    </div>
-                                </div>
-                                <div class="swatch-info">
-                                    <div class="swatch-header">
-                                        <h4>Background Color</h4>
-                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('backgroundColor')">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <p class="color-value">{{ brand_data.theme.colors.backgroundColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.backgroundColor else '#ffffff' }}</p>
-                                    <span class="color-description">Main background</span>
-                                </div>
-                                <input type="hidden" id="backgroundColor" name="backgroundColor" value="{{ brand_data.theme.colors.backgroundColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.backgroundColor else '#ffffff' }}">
-                                <input type="color" class="color-picker-hidden" id="backgroundColorPicker" value="{{ brand_data.theme.colors.backgroundColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.backgroundColor else '#ffffff' }}">
-                            </div>
                         </div>
                         <div id="contrastWarnings" class="contrast-warnings"></div>
                     </div>
 
                     <div class="form-section">
                         <div class="derived-colors-header">
-                            <h3>✨ Auto-tuned Colors</h3>
-                            <label class="auto-tune-toggle" for="colorsAutoToggle">
-                                <input type="checkbox" id="colorsAutoToggle" {{ 'checked' if brand_data.theme and brand_data.theme.colorsAuto }}>
-                                <span class="auto-tune-track"><span class="auto-tune-thumb"></span></span>
-                                <span class="auto-tune-label">Auto-tune from brand colors</span>
-                            </label>
+                            <h3>✨ Generated palette</h3>
+                            <span class="auto-generated-badge">Auto-generated from your primary</span>
                         </div>
-                        <p class="form-section-hint">When auto-tune is on, these four update automatically as you change the brand colors above. Switch it off to customise them by hand.</p>
-                        <input type="hidden" id="colorsAuto" name="colorsAuto" value="{{ 'true' if brand_data.theme and brand_data.theme.colorsAuto else 'false' }}">
+                        <p class="form-section-hint">Secondary, accent, background and the supporting text / surface / border / muted colors are generated from your primary with colour-theory and WCAG contrast rules. They refresh live as you change the primary above — no manual tuning needed.</p>
+                        <input type="hidden" id="colorsAuto" name="colorsAuto" value="true">
                         <div class="color-swatch-grid">
-                            <!-- Text Color Swatch -->
-                            <div class="color-swatch-card derived-swatch" data-color="textColor">
+                            {% set generated_swatches = [
+                                ('secondaryColor', 'Secondary Color', 'Supporting brand tone', '#471f25'),
+                                ('accentColor', 'Accent Color', 'Highlights, links, badges', '#199f45'),
+                                ('backgroundColor', 'Background Color', 'Main page background', '#fdf8f9'),
+                                ('textColor', 'Text Color', 'Main text color', '#1d1725'),
+                                ('surfaceColor', 'Surface Color', 'Card / panel background', '#ffffff'),
+                                ('borderColor', 'Border Color', 'Card / divider borders', '#e2dde0'),
+                                ('mutedColor', 'Muted Color', 'Secondary text / labels', '#77717a')
+                            ] %}
+                            {% for key, label, desc, default in generated_swatches %}
+                            {% set value = brand_data.theme.colors[key] if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors[key] else default %}
+                            <div class="color-swatch-card derived-swatch auto-locked" data-color="{{ key }}">
                                 <span class="auto-badge">Auto</span>
-                                <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.textColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.textColor else '#1f2937' }}">
-                                    <div class="swatch-overlay">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                        <span>Click to change</span>
-                                    </div>
-                                </div>
+                                <div class="swatch-preview" style="background-color: {{ value }}"></div>
                                 <div class="swatch-info">
                                     <div class="swatch-header">
-                                        <h4>Text Color</h4>
-                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('textColor')">
+                                        <h4>{{ label }}</h4>
+                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('{{ key }}')">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                                                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                                             </svg>
                                         </button>
                                     </div>
-                                    <p class="color-value">{{ brand_data.theme.colors.textColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.textColor else '#1f2937' }}</p>
-                                    <span class="color-description">Main text color</span>
+                                    <p class="color-value">{{ value }}</p>
+                                    <span class="color-description">{{ desc }}</span>
                                 </div>
-                                <input type="hidden" id="textColor" name="textColor" value="{{ brand_data.theme.colors.textColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.textColor else '#1f2937' }}">
-                                <input type="color" class="color-picker-hidden" id="textColorPicker" value="{{ brand_data.theme.colors.textColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.textColor else '#1f2937' }}">
+                                <input type="hidden" id="{{ key }}" name="{{ key }}" value="{{ value }}">
+                                <input type="color" class="color-picker-hidden" id="{{ key }}Picker" value="{{ value }}">
                             </div>
-
-                            <!-- Border Color Swatch -->
-                            <div class="color-swatch-card derived-swatch" data-color="borderColor">
-                                <span class="auto-badge">Auto</span>
-                                <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.borderColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.borderColor else '#e5e7eb' }}">
-                                    <div class="swatch-overlay">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                        <span>Click to change</span>
-                                    </div>
-                                </div>
-                                <div class="swatch-info">
-                                    <div class="swatch-header">
-                                        <h4>Border Color</h4>
-                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('borderColor')">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <p class="color-value">{{ brand_data.theme.colors.borderColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.borderColor else '#e5e7eb' }}</p>
-                                    <span class="color-description">Card / divider borders</span>
-                                </div>
-                                <input type="hidden" id="borderColor" name="borderColor" value="{{ brand_data.theme.colors.borderColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.borderColor else '#e5e7eb' }}">
-                                <input type="color" class="color-picker-hidden" id="borderColorPicker" value="{{ brand_data.theme.colors.borderColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.borderColor else '#e5e7eb' }}">
-                            </div>
-
-                            <!-- Muted Color Swatch -->
-                            <div class="color-swatch-card derived-swatch" data-color="mutedColor">
-                                <span class="auto-badge">Auto</span>
-                                <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.mutedColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.mutedColor else '#6b7280' }}">
-                                    <div class="swatch-overlay">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                        <span>Click to change</span>
-                                    </div>
-                                </div>
-                                <div class="swatch-info">
-                                    <div class="swatch-header">
-                                        <h4>Muted Color</h4>
-                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('mutedColor')">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <p class="color-value">{{ brand_data.theme.colors.mutedColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.mutedColor else '#6b7280' }}</p>
-                                    <span class="color-description">Secondary text / labels</span>
-                                </div>
-                                <input type="hidden" id="mutedColor" name="mutedColor" value="{{ brand_data.theme.colors.mutedColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.mutedColor else '#6b7280' }}">
-                                <input type="color" class="color-picker-hidden" id="mutedColorPicker" value="{{ brand_data.theme.colors.mutedColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.mutedColor else '#6b7280' }}">
-                            </div>
-
-                            <!-- Surface Color Swatch -->
-                            <div class="color-swatch-card derived-swatch" data-color="surfaceColor">
-                                <span class="auto-badge">Auto</span>
-                                <div class="swatch-preview" style="background-color: {{ brand_data.theme.colors.surfaceColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.surfaceColor else '#ffffff' }}">
-                                    <div class="swatch-overlay">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                        <span>Click to change</span>
-                                    </div>
-                                </div>
-                                <div class="swatch-info">
-                                    <div class="swatch-header">
-                                        <h4>Surface Color</h4>
-                                        <button type="button" class="copy-icon-btn" title="Copy color" onclick="copySwatchColor('surfaceColor')">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <p class="color-value">{{ brand_data.theme.colors.surfaceColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.surfaceColor else '#ffffff' }}</p>
-                                    <span class="color-description">Card / panel background</span>
-                                </div>
-                                <input type="hidden" id="surfaceColor" name="surfaceColor" value="{{ brand_data.theme.colors.surfaceColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.surfaceColor else '#ffffff' }}">
-                                <input type="color" class="color-picker-hidden" id="surfaceColorPicker" value="{{ brand_data.theme.colors.surfaceColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.surfaceColor else '#ffffff' }}">
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -1620,53 +1456,18 @@
     flex-wrap: wrap;
 }
 
-.auto-tune-toggle {
+.auto-generated-badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    user-select: none;
-}
-
-.auto-tune-toggle input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.auto-tune-track {
-    width: 38px;
-    height: 22px;
-    border-radius: 999px;
-    background: var(--bg-tertiary, #334155);
-    border: 1px solid var(--border-primary);
-    position: relative;
-    transition: background var(--transition-normal);
-    flex: 0 0 auto;
-}
-
-.auto-tune-thumb {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #ffffff;
-    transition: transform var(--transition-normal);
-}
-
-.auto-tune-toggle input:checked + .auto-tune-track {
-    background: var(--primary);
-}
-
-.auto-tune-toggle input:checked + .auto-tune-track .auto-tune-thumb {
-    transform: translateX(16px);
-}
-
-.auto-tune-label {
-    font-size: 0.85rem;
+    gap: 0.4rem;
+    font-size: 0.78rem;
     font-weight: 600;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+    color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+    user-select: none;
 }
 
 /* Contrast warning chips */
@@ -3354,13 +3155,14 @@ function populateFormFields(brand) {
     // Theme Colors — all 8, then re-apply the auto-tune state (auto mode
     // re-derives text/surface/border/muted from the 4 brand inputs)
     if (brand.theme && brand.theme.colors) {
-        BRAND_COLOR_INPUTS.concat(DERIVED_COLOR_KEYS).forEach(key => {
+        [PRIMARY_COLOR_INPUT].concat(GENERATED_COLOR_KEYS).forEach(key => {
             if (brand.theme.colors[key]) {
                 setFieldValue(key, brand.theme.colors[key]);
                 syncColorInputs(key, brand.theme.colors[key]);
             }
         });
-        setColorsAutoState(brand.theme.colorsAuto === true || brand.theme.colorsAuto === 'true');
+        // Regenerate from the loaded primary — single-primary mode is always on.
+        setColorsAutoState();
         updateContrastWarnings();
     }
 
@@ -3602,11 +3404,9 @@ function initializeColorSwatches() {
                     colorValue.textContent = newColor;
                 }
 
-                // Brand color changed: refresh auto-tuned colors + warnings
-                if (BRAND_COLOR_INPUTS.includes(colorName)) {
-                    if (isColorsAutoOn()) {
-                        applyDerivedColors();
-                    }
+                // Primary changed: regenerate the whole palette + warnings.
+                if (colorName === PRIMARY_COLOR_INPUT) {
+                    applyGeneratedPalette();
                     updateContrastWarnings();
                 }
             });
@@ -3621,12 +3421,8 @@ function initializeColorSwatches() {
         }
     });
 
-    // Auto-tune toggle for derived colors
-    const autoToggle = document.getElementById('colorsAutoToggle');
-    if (autoToggle) {
-        autoToggle.addEventListener('change', () => setColorsAutoState(autoToggle.checked));
-    }
-    setColorsAutoState(isColorsAutoOn());
+    // Single-primary mode: generate the whole palette from the primary on init.
+    setColorsAutoState();
     updateContrastWarnings();
 }
 
@@ -3639,28 +3435,22 @@ function updateSwatchColor(card, color) {
 
 // ---- Auto-tuned palette (mirror of backend/services/color_derive.py) ----
 
-const BRAND_COLOR_INPUTS = ['primaryColor', 'secondaryColor', 'accentColor', 'backgroundColor'];
-const DERIVED_COLOR_KEYS = ['textColor', 'surfaceColor', 'borderColor', 'mutedColor'];
-
-function isColorsAutoOn() {
-    const hidden = document.getElementById('colorsAuto');
-    return !!hidden && hidden.value === 'true';
-}
+const PRIMARY_COLOR_INPUT = 'primaryColor';
+// The dealer picks ONLY the primary; everything else is generated from it
+// (mirror of color_derive.derive_from_primary via ColorUtils.deriveFromPrimary).
+const GENERATED_COLOR_KEYS = ['secondaryColor', 'accentColor', 'backgroundColor', 'textColor', 'surfaceColor', 'borderColor', 'mutedColor'];
 
 function getBrandColorValue(id) {
     const el = document.getElementById(id);
     return el ? el.value : '';
 }
 
-function applyDerivedColors() {
+function applyGeneratedPalette() {
     if (!window.ColorUtils) return;
-    const derived = window.ColorUtils.derivePalette(
-        getBrandColorValue('primaryColor'),
-        getBrandColorValue('secondaryColor'),
-        getBrandColorValue('accentColor'),
-        getBrandColorValue('backgroundColor')
-    );
-    DERIVED_COLOR_KEYS.forEach(key => {
+    const derived = window.ColorUtils.deriveFromPrimary(getBrandColorValue('primaryColor'));
+    // Fill every swatch from the generated set — including the primary swatch,
+    // so its display stays in sync (e.g. after loading a brand).
+    Object.keys(derived).forEach(key => {
         const hex = derived[key];
         const hidden = document.getElementById(key);
         if (hidden) hidden.value = hex;
@@ -3689,22 +3479,22 @@ function updateContrastWarnings() {
     ).join('');
 }
 
-function setColorsAutoState(on) {
+// Single-primary mode is always on: the palette is always generated from the
+// primary and the generated swatches stay locked (no manual intervention).
+function setColorsAutoState() {
     const hidden = document.getElementById('colorsAuto');
-    if (hidden) hidden.value = on ? 'true' : 'false';
-    const toggle = document.getElementById('colorsAutoToggle');
-    if (toggle) toggle.checked = on;
+    if (hidden) hidden.value = 'true';
     document.querySelectorAll('.derived-swatch').forEach(card => {
-        card.classList.toggle('auto-locked', on);
+        card.classList.add('auto-locked');
     });
-    if (on) applyDerivedColors();
+    applyGeneratedPalette();
 }
 window.setColorsAutoState = setColorsAutoState;
 
 // Safety net: if the ColorUtils module loads after init, re-apply once ready
 document.addEventListener('colorutils-ready', () => {
     if (document.readyState !== 'loading' && document.getElementById('colorsAuto')) {
-        setColorsAutoState(isColorsAutoOn());
+        setColorsAutoState();
         updateContrastWarnings();
     }
 });

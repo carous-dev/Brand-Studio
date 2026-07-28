@@ -46,6 +46,16 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     return typeof v === 'string' && v.trim() ? v : fallback;
   };
   const heroImageSlot = imageOr('hero', heroImage);
+  // HERO background: only a REAL uploaded brand hero counts (brand.heroImage or
+  // the recipe `images.hero` slot). No cross-fall to logo / placeholder — a
+  // brand without a hero gets the theme's dark carbon anchor + overlay, not a
+  // stock/logo photo. The hero CSS vars below resolve to `none`/'' when empty.
+  const heroImageSource =
+    (typeof brand.heroImage === 'string' && brand.heroImage.trim())
+      ? brand.heroImage.trim()
+      : (typeof brandImages['hero'] === 'string' && (brandImages['hero'] as string).trim()
+          ? (brandImages['hero'] as string).trim()
+          : '');
   const aboutImage = imageOr('about', heroImageSlot);
   const servicesImage = imageOr('services', heroImageSlot);
   const financeImage = imageOr('finance', heroImageSlot);
@@ -125,8 +135,8 @@ export function BrandStyles({ brand }: BrandStylesProps) {
 
     // Hero/page imagery — routed through Next's optimizer (WebP/AVIF + resize).
     // Hero is the LCP element so it gets a wider derivative than the sections.
-    '--fbm-hero-image': `url("${escapeCssUrl(optimizeImageUrl(heroImage, { width: 1920 }))}")`,
-    '--brand-image-hero': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--fbm-hero-image': heroImageSource ? `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")` : 'none',
+    '--brand-image-hero': heroImageSource ? `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")` : 'none',
     '--brand-image-about': `url("${escapeCssUrl(optimizeImageUrl(aboutImage, { width: 1280 }))}")`,
     '--brand-image-services': `url("${escapeCssUrl(optimizeImageUrl(servicesImage, { width: 1280 }))}")`,
     '--brand-image-finance': `url("${escapeCssUrl(optimizeImageUrl(financeImage, { width: 1280 }))}")`,
@@ -135,7 +145,7 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--brand-image-recently-sold': `url("${escapeCssUrl(optimizeImageUrl(recentlySoldImage, { width: 1280 }))}")`,
 
     // Image-URL strings (without url() wrapper) for <img src> usage
-    '--brand-image-hero-url': optimizeImageUrl(heroImageSlot, { width: 1920 }),
+    '--brand-image-hero-url': heroImageSource ? optimizeImageUrl(heroImageSource, { width: 1920 }) : '',
     '--brand-image-about-url': optimizeImageUrl(aboutImage, { width: 1280 }),
     '--brand-image-services-url': optimizeImageUrl(servicesImage, { width: 1280 }),
     '--brand-image-finance-url': optimizeImageUrl(financeImage, { width: 1280 }),

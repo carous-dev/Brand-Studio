@@ -60,9 +60,15 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     return null;
   };
 
-  // Hero — prefer top-level brand.heroImage (authoritative) over brand.images.hero (can be stale).
-  const heroImageSlot =
-    pickString(brand.heroImage, brandImages['hero']) || themeDefault('hero');
+  // Hero — prefer top-level brand.heroImage (authoritative) over brand.images.hero
+  // (can be stale). Theme-curated default photo dropped per Difatha 2026-07-28 —
+  // dealer-record previews without an uploaded hero now fall back to a
+  // brand-coloured panel via the Hero.module.css `background-color` rather than a
+  // generic stock photo. The hero background vars resolve to `none` when unset.
+  const heroImageSource = pickString(brand.heroImage, brandImages['hero']); // may be null
+  const heroImageCss = heroImageSource
+    ? `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")`
+    : 'none';
 
   // Other slots — brand.images.<slot> → theme default.
   const resolveSlot = (slotKey: string, slotFile: string): string =>
@@ -74,8 +80,6 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   const partExchangeImage = resolveSlot('partExchange', 'partExchange');
   const sellYourCarImage = resolveSlot('sellYourCar', 'sellYourCar');
   const recentlySoldImage = resolveSlot('recentlySold', 'recentlySold');
-  // Legacy reference for any code that reads --auto-hero-image directly.
-  const heroImage = heroImageSlot;
 
   // Canonical token block via the shared emitter. Auto Wow's bespoke palette is
   // passed as `defaults`; brand records override any core token via
@@ -110,14 +114,16 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--t-whatsapp': '#25d366',
     '--t-whatsapp-ink': '#1f8b46',
 
-    // Hero background image (resolves to brand.heroImage if set in dashboard).
+    // Hero background image (resolves to brand.heroImage if set in dashboard,
+    // else `none` so Hero.module.css falls back to a brand-coloured panel).
     // Routed through Next's optimizer (WebP/AVIF + resize); hero is the LCP
     // element so it gets a wider derivative, section images ~1280.
-    '--auto-hero-image': `url("${escapeCssUrl(optimizeImageUrl(heroImage, { width: 1920 }))}")`,
+    '--auto-hero-image': heroImageCss,
 
     // Per-page image slots — every theme references these via var(--brand-image-*)
     // so dashboard edits to brand.images.* propagate without code changes.
-    '--brand-image-hero': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    // Hero var resolves to `none` when no brand image is set.
+    '--brand-image-hero': heroImageCss,
     '--brand-image-about': `url("${escapeCssUrl(optimizeImageUrl(aboutImage, { width: 1280 }))}")`,
     '--brand-image-services': `url("${escapeCssUrl(optimizeImageUrl(servicesImage, { width: 1280 }))}")`,
     '--brand-image-finance': `url("${escapeCssUrl(optimizeImageUrl(financeImage, { width: 1280 }))}")`,

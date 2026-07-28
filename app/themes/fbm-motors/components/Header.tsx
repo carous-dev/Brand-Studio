@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useBrand } from '../context/BrandClientWrapper'
@@ -115,7 +114,8 @@ export default function Header() {
         <div className={styles.mainBarInner}>
           <Link href="/" className={styles.brand} aria-label={brandName}>
             {logo ? (
-              <Image src={logo} alt={brandName} width={240} height={56} className={styles.brandLogo} />
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={logo} alt={brandName} width={240} height={56} className={styles.brandLogo} />
             ) : (
               <span className={styles.wordmark}>
                 {wordmarkLead}

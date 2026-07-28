@@ -50,10 +50,11 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     themeAny.fontMono,
     themeAny.monoFont
   ) || "'JetBrains Mono', Consolas, monospace";
-  const heroImage =
-    brand.heroImage ||
-    brand.images?.hero ||
-    'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=2400&q=80';
+  // Only a REAL brand hero drives the hero image var — no theme-default photo.
+  // When unset, the var is omitted entirely: the homepage hero falls back to
+  // its brand-color + overlay, and the about/contact heroes fall back to their
+  // designed `var(--classic-hero-image, <brand gradient>)` fallback.
+  const heroImageSource = brand.heroImage || brand.images?.hero || null;
 
   // Canonical --color-* token block via the shared emitter. classic-dealer's
   // legacy palette is mapped onto the core-8 `defaults`; brand records override
@@ -127,8 +128,11 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--font-base': 'var(--font-ui-family)',
     '--font-display': 'var(--font-brand-family)',
     '--font-badge': 'var(--font-ui-family)',
-    '--classic-hero-image': `url("${escapeCssUrl(optimizeImageUrl(heroImage, { width: 1920 }))}")`,
   };
+
+  if (heroImageSource) {
+    extras['--classic-hero-image'] = `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")`;
+  }
 
   return (
     <style

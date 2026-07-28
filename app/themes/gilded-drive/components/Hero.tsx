@@ -3,7 +3,6 @@
 import React from 'react'
 import { motion, Variants } from 'framer-motion'
 import "../styles/futuristic-homepage.css";
-import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Zap, Car, Headphones, ArrowRight, Star, Shield, Truck } from 'lucide-react';
 import Link from 'next/link';
 import { useBrand } from '../context/BrandClientWrapper'
@@ -58,7 +57,7 @@ export const Hero: React.FC = () => {
                 <div className="brands-grid">
                   {['Ford', 'Vauxhall', 'BMW', 'Audi', 'Toyota', 'Mercedes', 'Nissan', 'Volkswagen'].map((brand) => (
                     <div key={brand} className="brand-item-futuristic">
-                      <Image 
+                      <img
                         src={`https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/${brand.toLowerCase()}.svg`}
                         alt={`${brand} logo`}
                         width={40}

@@ -56,9 +56,9 @@ export function BrandStyles({ brand }: BrandStylesProps) {
 
   const brandImages: Record<string, unknown> = (brand as any)?.images || {};
 
-  // HERO: brand.heroImage (authoritative top-level) → brand.images.hero (may be stale) → theme default.
-  const heroImageSlot =
-    pickString((brand as any).heroImage, brandImages['hero']) || themeDefault('hero');
+  // HERO: brand.heroImage (authoritative top-level) → brand.images.hero (may be stale).
+  // NO theme default — a brand with no uploaded hero shows the theme gradient/overlay only.
+  const heroImageSource = pickString((brand as any).heroImage, brandImages['hero']);
 
   // Other slots: brand.images.<slot> → theme default. No cross-fall to hero.
   const resolveSlot = (slotKey: string, slotFile: string): string =>
@@ -113,7 +113,9 @@ export function BrandStyles({ brand }: BrandStylesProps) {
 
     // Per-page image slots — every component references these via var(--brand-image-*).
     // Each slot independently falls back to its own theme-curated default (no cross-fall).
-    '--brand-image-hero': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--brand-image-hero': heroImageSource
+      ? `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")`
+      : 'none',
     '--brand-image-about': `url("${escapeCssUrl(optimizeImageUrl(aboutImage, { width: 1280 }))}")`,
     '--brand-image-services': `url("${escapeCssUrl(optimizeImageUrl(servicesImage, { width: 1280 }))}")`,
     '--brand-image-finance': `url("${escapeCssUrl(optimizeImageUrl(financeImage, { width: 1280 }))}")`,
@@ -122,7 +124,9 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--brand-image-recently-sold': `url("${escapeCssUrl(optimizeImageUrl(recentlySoldImage, { width: 1280 }))}")`,
 
     // Legacy var kept for any leftover references during transition.
-    '--dual-hero-image': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--dual-hero-image': heroImageSource
+      ? `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")`
+      : 'none',
 
     // Font family overrides.
     '--font-ui-family-override': fontUi,

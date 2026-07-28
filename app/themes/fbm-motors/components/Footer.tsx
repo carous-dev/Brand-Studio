@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { Facebook, Instagram, Twitter, Youtube, Linkedin } from 'lucide-react'
 import { useBrand } from '../context/BrandClientWrapper'
 import { getBrandContactInfo } from '../lib/contact'
@@ -63,7 +62,8 @@ export default function Footer() {
       <div className={styles.grid}>
         <div className={styles.column}>
           {logo ? (
-            <Image src={logo} alt={brandName} width={200} height={48} className={styles.brandLogo} />
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logo} alt={brandName} width={200} height={48} className={styles.brandLogo} />
           ) : (
             <p className={styles.brand}>
               {wordmarkLead}

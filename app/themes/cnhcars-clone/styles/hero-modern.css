@@ -8,9 +8,8 @@
   padding: 2.75rem 1rem 3rem;
   text-align: center;
   color: var(--text-on-dark-strong);
-  background-image:
-    var(--brand-image-hero, none),
-    url('/themes/cnhcars-clone/images/hero.jpg');
+  background-color: var(--color-primary);
+  background-image: var(--brand-image-hero, none);
   background-size: cover;
   background-position: center;
   overflow: hidden;

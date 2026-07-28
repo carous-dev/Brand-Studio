@@ -51,9 +51,9 @@ export function BrandStyles({ brand }: BrandStylesProps) {
 
   const brandImages: Record<string, unknown> = (brand as any)?.images || {};
 
-  // HERO: brand.heroImage (authoritative) → brand.images.hero (may be stale) → theme default.
-  const heroImageSlot =
-    pickString((brand as any).heroImage, brandImages['hero']) || themeDefault('hero');
+  // HERO: brand.heroImage (authoritative) → brand.images.hero (may be stale).
+  // NO theme default — an image-less brand hero renders on gradient/brand color only.
+  const heroImageSource = pickString((brand as any).heroImage, brandImages['hero']);
 
   // Other slots: brand.images.<slot> → theme default. NO cross-fall to hero.
   const resolveSlot = (slotKey: string, slotFile: string): string =>
@@ -115,7 +115,9 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     // 7 image slots — themes reference these via var(--brand-image-*). Routed
     // through Next's optimizer (WebP/AVIF + resize); hero gets a wider (LCP)
     // derivative, section images ~1280.
-    '--brand-image-hero': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--brand-image-hero': heroImageSource
+      ? `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")`
+      : 'none',
     '--brand-image-about': `url("${escapeCssUrl(optimizeImageUrl(aboutImage, { width: 1280 }))}")`,
     '--brand-image-services': `url("${escapeCssUrl(optimizeImageUrl(servicesImage, { width: 1280 }))}")`,
     '--brand-image-finance': `url("${escapeCssUrl(optimizeImageUrl(financeImage, { width: 1280 }))}")`,
@@ -124,7 +126,9 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     '--brand-image-recently-sold': `url("${escapeCssUrl(optimizeImageUrl(recentlySoldImage, { width: 1280 }))}")`,
 
     // Compat alias consumed by legacy widgets.
-    '--auto-hero-image': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--auto-hero-image': heroImageSource
+      ? `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")`
+      : 'none',
 
     // Font overrides.
     '--font-ui-family-override': fontUi,

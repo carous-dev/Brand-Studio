@@ -13,10 +13,11 @@
 .media {
   position: absolute;
   inset: -10% 0 -10% 0;
-  background-image: var(--brand-image-hero, none), url('/themes/kain-motors-bespoke/images/hero.jpg');
-  background-size: cover, cover;
-  background-position: center, center;
-  background-repeat: no-repeat, no-repeat;
+  background-color: var(--color-bg-dark);
+  background-image: var(--brand-image-hero, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   z-index: -3;
   filter: saturate(0.9) contrast(1.05);
   will-change: transform;
@@ -344,7 +345,7 @@
   }
   .media {
     inset: 0;
-    background-position: center top, center top;
+    background-position: center top;
   }
   .overlay {
     background: linear-gradient(180deg, rgba(8, 11, 17, 0.92) 0%, rgba(8, 11, 17, 0.76) 52%, rgba(8, 11, 17, 0.94) 100%); /* photo-scrim-ok */

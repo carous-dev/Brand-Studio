@@ -1,15 +1,25 @@
-"""Palette derivation engine — 4 input colors in, full 8-color set out.
+"""Palette derivation engine — 1 or 4 input colors in, full 8-color set out.
 
-The dashboard collects Primary, Secondary, Accent, Background. This module
-derives Text, Surface, Border, Muted from them using WCAG contrast rules so
-every persistence path stores the full 8-color contract that themes consume
-(--color-primary ... --color-border). Natural roles are preserved: background
-is always the page background, text is always the foreground — no inversion.
+Two entry points feed the same 8-color contract themes consume
+(--color-primary ... --color-border):
 
-Mirrored in static/modules/color-utils.js (derivePalette) for live preview in
-the dashboard. Both implementations must stay in lockstep: same constants,
-same integer step loops, same half-up rounding. If you change a rule here,
-change it there.
+1. Single-primary (dashboard default): the dealer picks ONLY a primary color
+   and derive_from_primary() generates Secondary, Accent and Background with
+   color-theory rules, then Text/Surface/Border/Muted with WCAG contrast rules.
+   No manual intervention — one hex in, a full contrast-safe palette out.
+
+2. Four-input (AI drafts, preview endpoints): Primary/Secondary/Accent/
+   Background are supplied and only Text/Surface/Border/Muted are derived.
+
+Natural roles are preserved everywhere: background is always the page
+background, text is always the foreground — no inversion. The generated
+background is always a light near-white tint of the primary, so text derives
+dark and the palette reads as a professional light-mode dealer site.
+
+Mirrored in static/modules/color-utils.js (derivePalette / deriveFromPrimary)
+for live preview in the dashboard. Both implementations must stay in lockstep:
+same constants, same integer step loops, same half-up rounding. If you change
+a rule here, change it there.
 
 WCAG math matches tools/check-palette-policy.mjs (0.03928 sRGB threshold).
 """
@@ -33,6 +43,18 @@ SURFACE_LIFT_DARK = 0.07  # dark mode: surface = bg lightened by this
 SURFACE_DIP_LIGHT = 0.03  # light mode on white bg: surface = bg dipped toward text
 BORDER_MIX = 0.12        # border = text mixed this much into bg
 MUTED_MIX_START = 60     # muted starts at text 60% / bg 40%, steps of 5 toward text
+
+# --- Single-primary generation (color theory) ---
+BG_TINT = 0.03           # background = primary mixed this much into white (light)
+# Secondary: a deep, slightly-desaturated monochromatic tone of the primary hue
+SECONDARY_SAT_FACTOR = 0.55
+SECONDARY_SAT_MIN, SECONDARY_SAT_MAX = 16, 42
+SECONDARY_L_FACTOR = 0.42
+SECONDARY_L_MIN, SECONDARY_L_MAX = 20, 32
+# Accent: split-complementary pop, lightness walked down until it clears bg contrast
+ACCENT_HUE_SHIFT = 150
+ACCENT_SAT_MIN, ACCENT_SAT_MAX = 62, 90
+ACCENT_L_START, ACCENT_L_FLOOR, ACCENT_L_STEP = 56, 24, 4
 
 DERIVED_KEYS = ("textColor", "surfaceColor", "borderColor", "mutedColor")
 INPUT_KEYS = ("primaryColor", "secondaryColor", "accentColor", "backgroundColor")
@@ -131,6 +153,90 @@ def _derive_muted(text, bg):
     return text
 
 
+def _clamp(value, lo, hi):
+    return max(lo, min(hi, value))
+
+
+def hex_to_hsl(hex_color):
+    """#rrggbb -> (h, s, l) integers (h 0-360, s/l 0-100). Mirrors JS hexToHsl."""
+    r, g, b = (c / 255.0 for c in _hex_to_rgb(hex_color))
+    mx, mn = max(r, g, b), min(r, g, b)
+    l = (mx + mn) / 2.0
+    if mx == mn:
+        h = s = 0.0
+    else:
+        d = mx - mn
+        s = d / (2 - mx - mn) if l > 0.5 else d / (mx + mn)
+        if mx == r:
+            h = ((g - b) / d + (6 if g < b else 0)) / 6.0
+        elif mx == g:
+            h = ((b - r) / d + 2) / 6.0
+        else:
+            h = ((r - g) / d + 4) / 6.0
+    return (_round_half_up(h * 360), _round_half_up(s * 100), _round_half_up(l * 100))
+
+
+def hsl_to_hex(h, s, l):
+    """(h, s, l) -> #rrggbb. Mirrors JS hslToHex exactly (same channel rounding)."""
+    s = s / 100.0
+    l = l / 100.0
+    a = s * min(l, 1 - l)
+
+    def f(n):
+        k = (n + h / 30.0) % 12
+        color = l - a * max(-1, min(k - 3, 9 - k, 1))
+        return _round_half_up(255 * color)
+
+    return _rgb_to_hex((f(0), f(8), f(4)))
+
+
+def _derive_background(primary):
+    """A light near-white background carrying a faint tint of the primary hue."""
+    return mix_hex(primary, "#ffffff", BG_TINT)
+
+
+def _derive_secondary(h, s, l):
+    """Deep, slightly-desaturated monochromatic companion of the primary hue."""
+    sec_s = _clamp(_round_half_up(s * SECONDARY_SAT_FACTOR), SECONDARY_SAT_MIN, SECONDARY_SAT_MAX)
+    sec_l = _clamp(_round_half_up(l * SECONDARY_L_FACTOR), SECONDARY_L_MIN, SECONDARY_L_MAX)
+    return hsl_to_hex(h, sec_s, sec_l)
+
+
+def _derive_accent(h, s, bg):
+    """Split-complementary pop; darken until it clears the UI contrast target on bg."""
+    acc_h = (h + ACCENT_HUE_SHIFT) % 360
+    acc_s = _clamp(s, ACCENT_SAT_MIN, ACCENT_SAT_MAX)
+    for lightness in range(ACCENT_L_START, ACCENT_L_FLOOR - 1, -ACCENT_L_STEP):
+        candidate = hsl_to_hex(acc_h, acc_s, lightness)
+        if contrast_ratio(candidate, bg) >= UI_TARGET:
+            return candidate
+    return hsl_to_hex(acc_h, acc_s, ACCENT_L_FLOOR)
+
+
+def derive_from_primary(primary=None):
+    """Full 8-color dict generated from a single primary color.
+
+    Secondary/Accent/Background come from color-theory rules; Text/Surface/
+    Border/Muted from the same WCAG rules as the 4-input path. Invalid/missing
+    primary falls back to DEFAULTS.
+    """
+    p = normalize_hex(primary) or DEFAULTS["primaryColor"]
+    h, s, l = hex_to_hsl(p)
+    bg = _derive_background(p)
+    light = is_light_background(bg)
+    text = _derive_text(p, bg, light)
+    return {
+        "primaryColor": p,
+        "secondaryColor": _derive_secondary(h, s, l),
+        "accentColor": _derive_accent(h, s, bg),
+        "backgroundColor": bg,
+        "textColor": text,
+        "surfaceColor": _derive_surface(bg, text, light),
+        "borderColor": mix_hex(text, bg, BORDER_MIX),
+        "mutedColor": _derive_muted(text, bg),
+    }
+
+
 def derive_palette(primary=None, secondary=None, accent=None, background=None):
     """Full 8-color dict (form field names) from up to 4 inputs.
 
@@ -157,11 +263,16 @@ def derive_palette(primary=None, secondary=None, accent=None, background=None):
     }
 
 
-def resolve_colors(colors, auto=False):
+def resolve_colors(colors, auto=False, from_primary=False):
     """Normalize a theme.colors dict against the derivation engine.
 
+    from_primary=True -> regenerate the ENTIRE palette (secondary/accent/
+                  background + text/surface/border/muted) from primaryColor
+                  alone via color-theory rules. This is the dashboard's
+                  single-input mode; any stored secondary/accent/background is
+                  intentionally overridden. Takes precedence over `auto`.
     auto=True  -> re-derive text/surface/border/muted from the 4 inputs,
-                  overriding whatever was sent/stored (dashboard Auto mode).
+                  overriding whatever was sent/stored (4-input auto mode).
     auto=False -> keep explicit valid derived values, fill only absent or
                   invalid ones (non-destructive: /new-theme payloads and
                   legacy records with hand-tuned palettes stay untouched).
@@ -175,6 +286,11 @@ def resolve_colors(colors, auto=False):
     """
     colors = dict(colors or {})
     if not any(normalize_hex(colors.get(key)) for key in INPUT_KEYS):
+        return colors
+    if from_primary and normalize_hex(colors.get("primaryColor")):
+        derived = derive_from_primary(colors.get("primaryColor"))
+        for key in INPUT_KEYS + DERIVED_KEYS:
+            colors[key] = derived[key]
         return colors
     derived = derive_palette(
         colors.get("primaryColor"),

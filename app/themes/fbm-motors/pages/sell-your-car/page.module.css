@@ -11,7 +11,7 @@
   padding: 96px 0 80px;
   background-image:
     linear-gradient(rgba(8, 12, 20, 0.78), rgba(8, 12, 20, 0.78)), /* photo-scrim-ok */
-    var(--brand-image-hero, var(--brand-image-sell-your-car));
+    var(--brand-image-sell-your-car);
   background-size: cover;
   background-position: center;
 }

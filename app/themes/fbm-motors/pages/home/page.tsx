@@ -6,7 +6,6 @@ import {
   carToVehicle,
   makes as seedMakes,
   resolveTestimonials,
-  heroImage as defaultHero,
   showroomImage as defaultShowroom,
 } from '../../lib/cars'
 import { loadHomeData } from '../../lib/home-data.server'
@@ -61,7 +60,10 @@ export async function FbmHomePage({ brand }: ThemePageProps) {
   const visitTitle = resolveText(brand, 'visitTitle')
   const visitFallbackLead = resolveText(brand, 'visitLead')
 
-  const heroBg = brand.heroImage || brand.images?.hero || defaultHero
+  // Only render a hero photo when the dealer actually uploaded one. Without a
+  // brand hero the section falls back to the theme's dark carbon anchor +
+  // gradient + overlay (see .hero in page.module.css) — no stock default.
+  const heroBg = brand.heroImage || brand.images?.hero || ''
   // Forecourt band wants a workshop / inspection scene specifically. Only
   // take a custom upload when the dealer wired the dedicated `forecourt`
   // slot — falling back to `brand.images.about` here was making every

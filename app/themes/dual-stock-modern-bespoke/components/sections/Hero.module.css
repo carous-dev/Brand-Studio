@@ -2,6 +2,7 @@
   position: relative;
   min-height: clamp(440px, 60vh, 680px);
   color: var(--color-on-dark);
+  background-color: var(--color-surface-dark);
   isolation: isolate;
   overflow: hidden;
   padding: clamp(2.5rem, 8vw, 6rem) clamp(1rem, 4vw, 3rem) clamp(3.5rem, 8vw, 7rem);
@@ -13,12 +14,10 @@
   position: absolute;
   inset: 0;
   z-index: -3;
-  background-image:
-    var(--brand-image-hero, none),
-    url('/themes/dual-stock-modern-bespoke/images/hero.jpg');
-  background-size: cover, cover;
-  background-position: center, center;
-  background-repeat: no-repeat, no-repeat;
+  background-image: var(--brand-image-hero, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 .heroOverlay {
   position: absolute;
@@ -267,7 +266,7 @@
     align-items: flex-end;
   }
   .heroImage {
-    background-position: center top, center top;
+    background-position: center top;
   }
   .heroOverlay {
     background-image: linear-gradient(180deg, var(--color-hero-overlay-start) 0%, rgba(3, 10, 26, 0.78) 54%, rgba(3, 10, 26, 0.94) 100%); /* photo-scrim-ok */

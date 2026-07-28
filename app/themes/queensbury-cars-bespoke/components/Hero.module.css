@@ -14,17 +14,15 @@
   isolation: isolate;
 }
 
-/* 3-layer brand image: brand URL → theme default → solid surface fallback */
+/* Brand hero image only (no theme-default photo) → solid surface fallback */
 .backdrop {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background-image:
-    var(--brand-image-hero, none),
-    url('/themes/queensbury-cars-bespoke/images/hero.jpg');
-  background-size: cover, cover;
-  background-position: center 30%, center 30%;
-  background-repeat: no-repeat, no-repeat;
+  background-image: var(--brand-image-hero, none);
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
   background-color: var(--surface-bg-dark);
 }
 

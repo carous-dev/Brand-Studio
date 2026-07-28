@@ -410,6 +410,21 @@ export const ColorUtils = {
   BORDER_MIX: 0.12,
   MUTED_MIX_START: 60,
 
+  // Single-primary generation (color theory) — mirrors color_derive.py
+  BG_TINT: 0.03,
+  SECONDARY_SAT_FACTOR: 0.55,
+  SECONDARY_SAT_MIN: 16,
+  SECONDARY_SAT_MAX: 42,
+  SECONDARY_L_FACTOR: 0.42,
+  SECONDARY_L_MIN: 20,
+  SECONDARY_L_MAX: 32,
+  ACCENT_HUE_SHIFT: 150,
+  ACCENT_SAT_MIN: 62,
+  ACCENT_SAT_MAX: 90,
+  ACCENT_L_START: 56,
+  ACCENT_L_FLOOR: 24,
+  ACCENT_L_STEP: 4,
+
   normalizeHex(value) {
     if (typeof value !== 'string') return null;
     let raw = value.trim().toLowerCase();
@@ -507,6 +522,46 @@ export const ColorUtils = {
       primaryColor: p,
       secondaryColor: s,
       accentColor: a,
+      backgroundColor: bg,
+      textColor: text,
+      surfaceColor: this.deriveSurface(bg, text, light),
+      borderColor: this.mixHex(text, bg, this.BORDER_MIX),
+      mutedColor: this.deriveMuted(text, bg)
+    };
+  },
+
+  deriveSecondary(hsl) {
+    const s = Math.max(this.SECONDARY_SAT_MIN, Math.min(this.SECONDARY_SAT_MAX, Math.round(hsl.s * this.SECONDARY_SAT_FACTOR)));
+    const l = Math.max(this.SECONDARY_L_MIN, Math.min(this.SECONDARY_L_MAX, Math.round(hsl.l * this.SECONDARY_L_FACTOR)));
+    return this.hslToHex(hsl.h, s, l);
+  },
+
+  deriveAccent(hsl, bg) {
+    const h = (hsl.h + this.ACCENT_HUE_SHIFT) % 360;
+    const s = Math.max(this.ACCENT_SAT_MIN, Math.min(this.ACCENT_SAT_MAX, hsl.s));
+    for (let l = this.ACCENT_L_START; l >= this.ACCENT_L_FLOOR; l -= this.ACCENT_L_STEP) {
+      const candidate = this.hslToHex(h, s, l);
+      if (this.contrastRatio(candidate, bg) >= this.UI_TARGET) return candidate;
+    }
+    return this.hslToHex(h, s, this.ACCENT_L_FLOOR);
+  },
+
+  /**
+   * Full 8-color set generated from a single primary color. Secondary/Accent/
+   * Background come from color-theory rules; Text/Surface/Border/Muted from the
+   * same WCAG rules as derivePalette. Canonical mirror: color_derive.py
+   * derive_from_primary(). Both must stay in lockstep.
+   */
+  deriveFromPrimary(primary) {
+    const p = this.normalizeHex(primary) || this.DERIVE_DEFAULTS.primaryColor;
+    const hsl = this.hexToHsl(p);
+    const bg = this.mixHex(p, '#ffffff', this.BG_TINT);
+    const light = this.isLightBackground(bg);
+    const text = this.deriveText(p, bg, light);
+    return {
+      primaryColor: p,
+      secondaryColor: this.deriveSecondary(hsl),
+      accentColor: this.deriveAccent(hsl, bg),
       backgroundColor: bg,
       textColor: text,
       surfaceColor: this.deriveSurface(bg, text, light),

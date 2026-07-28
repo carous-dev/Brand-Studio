@@ -5,6 +5,7 @@ import { useBrand } from '../context/BrandClientWrapper'
 import { GarageProvider } from '../context/GarageContext'
 import Header from './Header'
 import Footer from './Footer'
+import SmoothScroll from './SmoothScroll'
 import ThemeChrome from '@/app/themes/lib/ThemeChrome'
 
 import '../styles/base.css'
@@ -19,6 +20,8 @@ import '../styles/color-policy.css'
 export function AutoShell({ children }: { children: ReactNode }) {
   const brand = useBrand()
   return (
+    <>
+    <SmoothScroll />
     <ThemeChrome
       brand={brand ?? null}
       classPrefix="auto"
@@ -32,6 +35,7 @@ export function AutoShell({ children }: { children: ReactNode }) {
     >
       {children}
     </ThemeChrome>
+    </>
   )
 }
 

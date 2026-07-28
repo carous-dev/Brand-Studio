@@ -46,9 +46,9 @@ export function BrandStyles({ brand }: BrandStylesProps) {
 
   // HERO slot: brand.heroImage is authoritative (dashboard keeps it fresh on
   // every save). brand.images.hero is a derived alias that often goes stale.
-  // Theme default is the terminal fallback.
-  const heroImageSlot =
-    pickString(brand.heroImage, brandImages['hero']) || themeDefault('hero');
+  // No theme-default fallback — a brand with no uploaded hero shows just the
+  // theme gradient/brand-color/overlay (--brand-image-hero resolves to 'none').
+  const heroImageSource = pickString(brand.heroImage, brandImages['hero']);
 
   // Other slots: brand.images.<slot> first, then theme default. NEVER cross-fall
   // to hero — each slot falls back to its own curated theme default so
@@ -93,7 +93,9 @@ export function BrandStyles({ brand }: BrandStylesProps) {
     // dashboard edits to brand.images.* propagate without code changes. Pair
     // with multi-layer CSS background-image patterns in base.css so a 404 on
     // the brand URL still reveals the theme default underneath.
-    '--brand-image-hero': `url("${escapeCssUrl(optimizeImageUrl(heroImageSlot, { width: 1920 }))}")`,
+    '--brand-image-hero': heroImageSource
+      ? `url("${escapeCssUrl(optimizeImageUrl(heroImageSource, { width: 1920 }))}")`
+      : 'none',
     '--brand-image-about': `url("${escapeCssUrl(optimizeImageUrl(aboutImage, { width: 1280 }))}")`,
     '--brand-image-services': `url("${escapeCssUrl(optimizeImageUrl(servicesImage, { width: 1280 }))}")`,
     '--brand-image-finance': `url("${escapeCssUrl(optimizeImageUrl(financeImage, { width: 1280 }))}")`,

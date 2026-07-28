@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useBrand } from '../context/BrandClientWrapper'
 import { getBrandContactInfo } from '../lib/contact'
 import styles from './Footer.module.css'
@@ -67,7 +66,7 @@ export default function Footer() {
           <section className={styles.col}>
             <h3 className={styles.colTitle}>
               {logoSrc ? (
-                <Image
+                <img
                   src={logoSrc}
                   alt={brandName}
                   width={120}

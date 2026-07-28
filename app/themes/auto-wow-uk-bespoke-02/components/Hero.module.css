@@ -10,7 +10,9 @@
   align-items: center;
 }
 
-/* Layer 1: photo background — multi-layer with theme-default fallback.
+/* Layer 1: photo background — brand hero only, NO theme-default fallback.
+   When a brand has no uploaded hero, --brand-image-hero is `none` and the hero
+   reads as the dark brand surface + scrim (intentional, image-less).
    Clean, non-foggy scrim: a centered spotlight keeps the headline block dark
    enough to read while the photo stays crisp and bright toward the edges, plus
    a bottom fade that hands off cleanly into the stock strip below. */
@@ -19,6 +21,7 @@
   position: absolute;
   inset: 0;
   z-index: -3;
+  background-color: var(--surface-bg-dark);
   background-image:
     /* photo-scrim-ok — centered readability spotlight */
     radial-gradient(
@@ -34,11 +37,10 @@
       rgba(6, 12, 22, 0.3) 55%, /* photo-scrim-ok */
       rgba(6, 12, 22, 0.82) 100% /* photo-scrim-ok */
     ),
-    var(--brand-image-hero, none),
-    url('/themes/auto-wow-uk-bespoke-02/images/hero.jpg');
-  background-size: cover, cover, cover, cover;
-  background-position: center, center, center, center;
-  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+    var(--brand-image-hero, none);
+  background-size: cover, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
 }
 
 /* Layer 2: faint brand-tinted grid — signature dealer-floor texture, but now a

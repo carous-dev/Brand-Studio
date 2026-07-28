@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Clock, Heart, MapPin, Menu, X } from 'lucide-react'
@@ -72,12 +71,11 @@ export default function Header() {
       <div className={styles.siteHeaderInner}>
         <div className={styles.brand}>
           <span className={styles.brandBadge} aria-hidden="true">
-            <Image
+            <img
               src={logo}
               alt=""
               width={160}
               height={48}
-              priority
             />
           </span>
         </div>

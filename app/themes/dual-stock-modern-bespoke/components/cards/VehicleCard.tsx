@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useGarage } from '../../context/GarageContext'
 import type { InventoryVehicle } from '../../lib/inventory'
 import { buildVehicleHref } from '../../lib/vehicle-links'

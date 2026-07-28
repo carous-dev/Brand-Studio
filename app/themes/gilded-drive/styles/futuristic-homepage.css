@@ -16,7 +16,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: var(--classic-hero-image, url('/images/hero-home.webp'));
+  background-image: var(--gilded-home-hero-image, none);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

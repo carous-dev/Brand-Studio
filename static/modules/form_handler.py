@@ -245,9 +245,12 @@ def create_brand_config(data, slug, keywords):
         data.get('aaApprovedDealer', data.get('aa_approved_dealer'))
     )
 
-    # Get colors from form data. In Auto mode the derivation engine recomputes
-    # text/surface/border/muted from the 4 brand inputs; otherwise explicit
-    # values are kept and only missing ones are filled.
+    # Get colors from form data. The dashboard now collects a single primary
+    # color and the derivation engine generates the whole palette from it
+    # (secondary/accent/background + text/surface/border/muted) — that is the
+    # from_primary path, gated on colorsAuto. When colorsAuto is off (legacy
+    # records / explicit palettes) the non-destructive path keeps whatever
+    # colors were sent or stored and only fills missing ones.
     colors_auto = parse_bool_flag(data.get('colorsAuto', theme.get('colorsAuto')))
     resolved_colors = resolve_colors({
         'primaryColor': data.get('primaryColor') or theme_colors.get('primaryColor') or '#c41e3a',
@@ -258,7 +261,7 @@ def create_brand_config(data, slug, keywords):
         'borderColor': data.get('borderColor') or theme_colors.get('borderColor'),
         'mutedColor': data.get('mutedColor') or theme_colors.get('mutedColor'),
         'surfaceColor': data.get('surfaceColor') or theme_colors.get('surfaceColor'),
-    }, auto=colors_auto)
+    }, auto=colors_auto, from_primary=colors_auto)
     primary_color = resolved_colors['primaryColor']
     secondary_color = resolved_colors['secondaryColor']
     accent_color = resolved_colors['accentColor']
