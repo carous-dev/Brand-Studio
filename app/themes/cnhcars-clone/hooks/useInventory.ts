@@ -59,7 +59,7 @@ export function useInventory(
 
   const requestKey = useMemo(
     () => buildInventorySearchParams(filters, pagination).toString(),
-    [filters.make, filters.model, filters.year, filters.price, filters.transmission, pagination.page, pagination.per_page],
+    [filters.make, filters.model, filters.year, filters.price, filters.transmission, filters.sort, pagination.page, pagination.per_page],
   );
 
   const refetch = useCallback(() => {

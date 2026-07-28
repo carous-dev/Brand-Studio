@@ -690,8 +690,10 @@
                                             </svg>
                                         </button>
                                     </div>
-                                    <p class="color-value">{{ brand_data.theme.colors.primaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.primaryColor else '#2563eb' }}</p>
-                                    <span class="color-description">Main brand color</span>
+                                    <div class="swatch-meta">
+                                        <p class="color-value">{{ brand_data.theme.colors.primaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.primaryColor else '#2563eb' }}</p>
+                                        <span class="color-description">Main brand color</span>
+                                    </div>
                                 </div>
                                 <input type="hidden" id="primaryColor" name="primaryColor" value="{{ brand_data.theme.colors.primaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.primaryColor else '#2563eb' }}">
                                 <input type="color" class="color-picker-hidden" id="primaryColorPicker" value="{{ brand_data.theme.colors.primaryColor if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors.primaryColor else '#2563eb' }}">
@@ -733,8 +735,10 @@
                                             </svg>
                                         </button>
                                     </div>
-                                    <p class="color-value">{{ value }}</p>
-                                    <span class="color-description">{{ desc }}</span>
+                                    <div class="swatch-meta">
+                                        <p class="color-value">{{ value }}</p>
+                                        <span class="color-description">{{ desc }}</span>
+                                    </div>
                                 </div>
                                 <input type="hidden" id="{{ key }}" name="{{ key }}" value="{{ value }}">
                                 <input type="color" class="color-picker-hidden" id="{{ key }}Picker" value="{{ value }}">
@@ -1379,26 +1383,29 @@
 
 .color-swatch-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    margin-top: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 0.55rem;
+    margin-top: 0.8rem;
 }
 
 .color-swatch-card {
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    align-items: center;
+    gap: 0.65rem;
     background: var(--bg-secondary);
     border: 1px solid var(--border-primary);
-    border-radius: var(--radius-lg);
-    padding: 1rem;
+    border-radius: var(--radius-md);
+    padding: 0.55rem 0.65rem;
     cursor: pointer;
-    transition: all var(--transition-normal);
+    transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
     position: relative;
     overflow: hidden;
     width: 100%;
 }
 
 .color-swatch-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-md);
     border-color: var(--primary);
 }
 
@@ -1411,13 +1418,14 @@
 .derived-swatch .auto-badge {
     display: none;
     position: absolute;
-    top: 1.35rem;
-    right: 1.35rem;
+    top: 0.5rem;
+    left: 0.5rem;
     z-index: 2;
-    padding: 0.15rem 0.5rem;
-    font-size: 0.65rem;
+    padding: 0.06rem 0.32rem;
+    font-size: 0.55rem;
+    line-height: 1.5;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     border-radius: 999px;
     background: var(--primary);
@@ -1425,7 +1433,9 @@
 }
 
 .derived-swatch.auto-locked .auto-badge {
-    display: inline-flex;
+    /* redundant per-card tag — the section header already says
+       "Auto-generated from your primary"; kept hidden to stay compact */
+    display: none;
 }
 
 .derived-swatch.auto-locked {
@@ -1493,19 +1503,19 @@
 }
 
 .swatch-preview {
-    width: 100%;
-    height: 80px;
-    border-radius: var(--radius-md);
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-sm);
     position: relative;
     overflow: hidden;
-    margin-bottom: 0.75rem;
-    border: 2px solid var(--border-primary);
-    transition: all var(--transition-normal);
+    margin-bottom: 0;
+    border: 1px solid var(--border-primary);
+    transition: border-color var(--transition-normal);
+    flex: 0 0 auto;
 }
 
 .color-swatch-card:hover .swatch-preview {
     border-color: var(--primary);
-    transform: scale(1.02);
 }
 
 .swatch-overlay {
@@ -1534,30 +1544,43 @@
 }
 
 .swatch-overlay span {
-    font-size: 0.875rem;
-    font-weight: 500;
+    display: none;
+}
+
+.swatch-overlay svg {
+    width: 16px;
+    height: 16px;
+}
+
+.swatch-info {
+    min-width: 0;
 }
 
 .swatch-info h4 {
-    font-size: 0.95rem;
+    font-size: 0.82rem;
     font-weight: 600;
     color: var(--text-primary);
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .swatch-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.5rem;
+    gap: 0.4rem;
+    margin-bottom: 0.28rem;
 }
 
 .copy-icon-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 22px;
+    height: 22px;
+    flex: 0 0 auto;
     background: transparent;
     border: 1px solid var(--border-primary);
     border-radius: var(--radius-sm);
@@ -1584,23 +1607,34 @@
     color: white;
 }
 
+.swatch-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+}
+
 .color-value {
     font-family: var(--font-family-mono);
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 600;
     color: var(--primary);
     background: var(--bg-primary);
-    padding: 0.2rem 0.4rem;
+    padding: 0.1rem 0.35rem;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border-primary);
-    margin: 0 0 0.25rem 0;
-    display: inline-block;
+    margin: 0;
+    flex: 0 0 auto;
 }
 
 .color-description {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-muted);
     font-weight: 400;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .color-picker-hidden {
@@ -1610,26 +1644,10 @@
     pointer-events: none;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .color-swatch-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.75rem;
-    }
-}
-
+/* Responsive Design — the auto-fill grid reflows on its own; just tighten gaps */
 @media (max-width: 768px) {
     .color-swatch-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-    }
-    
-    .color-swatch-card {
-        padding: 0.75rem;
-    }
-    
-    .swatch-preview {
-        height: 60px;
+        gap: 0.45rem;
     }
 }
 

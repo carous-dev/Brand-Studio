@@ -16,9 +16,7 @@
 body[data-theme-id='cnhcars-clone'] .contact-bar {
   background: color-mix(in srgb, var(--color-primary) 14%, var(--color-text));
   border-bottom: 1px solid var(--border-on-dark);
-  position: sticky;
-  top: calc(var(--brandstudio-preview-banner-height, 0px) - 1px);
-  z-index: 50;
+  position: relative;
   overflow-x: clip;
 }
 

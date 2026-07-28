@@ -264,7 +264,11 @@
   transform: translateY(-2px);
 }
 
-.brand-logo {
+/* Scoped to .brand-item-futuristic: `.brand-logo` is a shared class name across
+   themes (cnhcars-clone uses it for its marque marquee). A bare `.brand-logo`
+   rule here leaked into other themes' bundles and turned their logos white
+   (brightness(0) invert(1)) → invisible. See feedback_cross_theme_css_leakage. */
+.brand-item-futuristic .brand-logo {
   filter: brightness(0) invert(1);
   opacity: 0.8;
   transition: all 0.3s ease;

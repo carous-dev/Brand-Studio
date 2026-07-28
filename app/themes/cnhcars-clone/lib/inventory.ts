@@ -24,6 +24,7 @@ export interface InventoryFilters {
   year: string;
   price: string;
   transmission: string;
+  sort?: string;
 }
 
 export interface InventoryPagination {
@@ -53,6 +54,7 @@ export const DEFAULT_INVENTORY_FILTERS: InventoryFilters = {
   year: '',
   price: '',
   transmission: '',
+  sort: '',
 };
 
 export const DEFAULT_INVENTORY_PAGINATION: InventoryPagination = {
@@ -100,6 +102,7 @@ export function buildInventorySearchParams(
   }
 
   if (filters.transmission) params.set('transmission', filters.transmission);
+  if (filters.sort) params.set('sort', filters.sort);
 
   return params;
 }

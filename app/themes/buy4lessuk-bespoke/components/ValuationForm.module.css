@@ -48,8 +48,8 @@
   min-height: 48px;
 }
 .regFlag {
-  background: var(--b4l-cat-blue);
-  color: var(--b4l-plate-yellow);
+  background: var(--color-primary);
+  color: var(--color-on-dark-strong);
   display: inline-flex;
   align-items: center;
   justify-content: center;

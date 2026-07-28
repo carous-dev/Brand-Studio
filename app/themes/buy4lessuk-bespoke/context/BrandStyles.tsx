@@ -111,40 +111,48 @@ export function BrandStyles({ brand }: BrandStylesProps) {
   const extras: Record<string, string> = {
     // Extended surface / border / topbar / on-dark tokens — NOT part of the
     // core-8 emitter contract; each stays dashboard-overridable. The dark
-    // values live on the full-width navy bands only (topbar, search band,
-    // value-props band, footer).
-    '--color-surface-dark': c.surfaceDark || '#0b1d3a',
-    '--color-text-invert': c.textInvert || '#f5f8fd',
-    '--color-border-dark': c.borderDark || 'rgba(160, 185, 225, 0.18)',
-    '--color-topbar-bg': c.topbarBg || '#0b1d3a',
-    '--color-topbar-text': c.topbarText || 'rgba(226, 233, 248, 0.85)',
-    '--color-on-dark-strong': c.onDarkStrong || '#ffffff',
-    '--color-on-dark-muted': c.onDarkMuted || 'rgba(226, 233, 248, 0.75)',
+    // values live on the full-width dark bands only (topbar, search band,
+    // value-props band, footer) and are DERIVED from the palette
+    // (brand-tinted dark = color-mix over --color-primary + --color-text) so
+    // they re-tint with any brand instead of forcing a fixed navy.
+    '--color-surface-dark': c.surfaceDark || 'color-mix(in srgb, var(--color-primary) 16%, var(--color-text))',
+    '--color-text-invert': c.textInvert || 'var(--color-bg)',
+    '--color-border-dark': c.borderDark || 'color-mix(in srgb, var(--color-text-invert) 18%, transparent)',
+    '--color-topbar-bg': c.topbarBg || 'color-mix(in srgb, var(--color-primary) 16%, var(--color-text))',
+    '--color-topbar-text': c.topbarText || 'color-mix(in srgb, var(--color-text-invert) 82%, transparent)',
+    '--color-on-dark-strong': c.onDarkStrong || 'var(--color-bg)',
+    '--color-on-dark-muted': c.onDarkMuted || 'color-mix(in srgb, var(--color-text-invert) 72%, transparent)',
 
     // -----------------------------------------------------------------------
-    // Fixed decorative hue tokens — colours that are intentionally NOT part of
-    // the 8-token brand palette (deep navy display bands, hero fallback
-    // gradient, UK number-plate yellow, body-type category coding). Defining
-    // them here (the checker-exempt token source) keeps component CSS
-    // literal-free while preserving exact hues; each stays
-    // dashboard-overridable.
-    '--b4l-band-charcoal': c.bandCharcoal || '#10294f',
-    '--b4l-band-charcoal-2': c.bandCharcoal2 || '#132f5b',
-    '--b4l-band-charcoal-3': c.bandCharcoal3 || '#1a3a6e',
-    '--b4l-band-night': c.bandNight || '#0b1d3a',
-    '--b4l-band-night-deep': c.bandNightDeep || '#081630',
-    '--b4l-hero-fallback': c.heroFallback || '#dde6f2',
-    '--b4l-hero-fallback-1': c.heroFallback1 || '#c6d5ea',
-    '--b4l-hero-fallback-2': c.heroFallback2 || '#9fb8dc',
-    '--b4l-plate-yellow': c.plateYellow || '#ffd400',
-    '--b4l-btn-yellow': c.btnYellow || '#fbd826',
-    '--b4l-plate-ink': c.plateInk || '#4b3d00',
-    '--b4l-cat-blue': c.catBlue || '#2563eb',
-    '--b4l-cat-orange': c.catOrange || '#f97316',
-    '--b4l-cat-green': c.catGreen || '#16a34a',
-    '--b4l-cat-sky': c.catSky || '#0ea5e9',
-    '--b4l-slug-accent': c.slugAccent || '#25e6c5',
-    '--b4l-slug-dark': c.slugDark || '#070d16',
+    // Decorative hue tokens — the deep display bands, hero-fallback gradient,
+    // reg-plate motif, body-type category coding and vehicle-detail accents.
+    // Every value is DERIVED from the 8-token brand palette via color-mix, so
+    // a brand with a red/green/etc. primary recolours these too — no foreign
+    // hues survive an override. Each still stays dashboard-overridable.
+    //
+    // Bands: brand-tinted dark, ascending primary tint over --color-text.
+    '--b4l-band-charcoal': c.bandCharcoal || 'color-mix(in srgb, var(--color-primary) 24%, var(--color-text))',
+    '--b4l-band-charcoal-2': c.bandCharcoal2 || 'color-mix(in srgb, var(--color-primary) 30%, var(--color-text))',
+    '--b4l-band-charcoal-3': c.bandCharcoal3 || 'color-mix(in srgb, var(--color-primary) 38%, var(--color-text))',
+    '--b4l-band-night': c.bandNight || 'color-mix(in srgb, var(--color-primary) 16%, var(--color-text))',
+    '--b4l-band-night-deep': c.bandNightDeep || 'color-mix(in srgb, var(--color-primary) 10%, var(--color-text))',
+    // Hero fallback: light brand tints over --color-bg for the image-less panel.
+    '--b4l-hero-fallback': c.heroFallback || 'color-mix(in srgb, var(--color-primary) 10%, var(--color-bg))',
+    '--b4l-hero-fallback-1': c.heroFallback1 || 'color-mix(in srgb, var(--color-primary) 20%, var(--color-bg))',
+    '--b4l-hero-fallback-2': c.heroFallback2 || 'color-mix(in srgb, var(--color-primary) 36%, var(--color-bg))',
+    // Reg-plate motif: accent-driven (the brand's bright interaction hue).
+    '--b4l-plate-yellow': c.plateYellow || 'var(--color-accent)',
+    '--b4l-btn-yellow': c.btnYellow || 'color-mix(in srgb, var(--color-accent) 18%, var(--color-bg))',
+    '--b4l-plate-ink': c.plateInk || 'var(--color-text)',
+    // Body-type category coding: four distinguishable variants within the
+    // primary↔accent range (secondary is never a foreground, per policy).
+    '--b4l-cat-blue': c.catBlue || 'var(--color-primary)',
+    '--b4l-cat-orange': c.catOrange || 'var(--color-accent)',
+    '--b4l-cat-green': c.catGreen || 'color-mix(in srgb, var(--color-primary) 55%, var(--color-accent))',
+    '--b4l-cat-sky': c.catSky || 'color-mix(in srgb, var(--color-accent) 65%, var(--color-primary))',
+    // Vehicle-detail (slug) accents.
+    '--b4l-slug-accent': c.slugAccent || 'var(--color-primary)',
+    '--b4l-slug-dark': c.slugDark || 'color-mix(in srgb, var(--color-primary) 12%, var(--color-text))',
 
     // Hero background image (resolves to brand.heroImage if set in dashboard).
     // Routed through Next's optimizer (WebP/AVIF + resize); hero is the LCP

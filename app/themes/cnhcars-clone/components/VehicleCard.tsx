@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
-import { ChevronLeft, ChevronRight, Cog, Fuel, Gauge, Heart, Palette } from 'lucide-react';
+import { CalendarDays, Car, ChevronLeft, ChevronRight, Cog, DoorClosed, Fuel, Gauge, Heart, Palette } from 'lucide-react';
 import { getWishlistVehicleId, useWishlist } from '../context/WishlistContext';
 import { buildVehiclePermalink } from '../lib/vehicle-links';
 import { optimizeImageUrl } from '@/app/lib/imageOptimize';
@@ -33,8 +33,12 @@ interface VehicleCardProps {
     description?: string;
     slug?: string;
     stock_status?: string;
+    doors?: number | string;
+    first_reg_date?: string;
+    first_registration_date?: string;
   };
   className?: string;
+  viewMode?: 'grid' | 'list';
 }
 
 interface StockBadge {
@@ -92,6 +96,32 @@ function formatMileage(value: number | null): string {
   return `${value.toLocaleString('en-GB')} miles`;
 }
 
+function formatYear(value: number | null): string {
+  if (value === null || !Number.isFinite(value)) return 'Year on request';
+  return String(Math.trunc(value));
+}
+
+function formatDoors(value: unknown): string {
+  const doors = toNumericValue(value);
+  if (doors === null) return 'On request';
+  return `${Math.trunc(doors)} doors`;
+}
+
+function getFirstRegistrationDate(raw: string | undefined): string {
+  const value = cleanText(raw);
+  if (!value) return 'On request';
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+  return new Intl.DateTimeFormat('en-GB').format(parsed);
+}
+
+function getListPreviewText(value: unknown, maxLength = 220): string {
+  const text = cleanText(value);
+  if (!text) return 'Contact us for the full specification and a walkaround.';
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength).trimEnd()}...`;
+}
+
 function getCardBadge(status: string | undefined): StockBadge | null {
   const normalized = cleanText(status).toLowerCase();
   if (!normalized) return null;
@@ -122,7 +152,8 @@ function getVisibleIndicatorIndices(totalImages: number, currentIndex: number): 
   return Array.from({ length: MAX_VISIBLE_SLIDER_INDICATORS }, (_, offset) => start + offset);
 }
 
-export default function VehicleCard({ vehicle, className = '' }: VehicleCardProps) {
+export default function VehicleCard({ vehicle, className = '', viewMode = 'grid' }: VehicleCardProps) {
+  const isListView = viewMode === 'list';
   const galleryImages = useMemo(
     () => buildOrderedGalleryImages(vehicle),
     [vehicle.gallery, vehicle.media, vehicle.images, vehicle.image]
@@ -301,6 +332,7 @@ export default function VehicleCard({ vehicle, className = '' }: VehicleCardProp
     <article className={[
       'vehicle-card',
       'inventory-card-modern',
+      isListView ? 'is-list-view' : '',
       badge?.variant === 'reserved' ? 'is-reserved' : '',
       className
     ].filter(Boolean).join(' ')}>
@@ -398,30 +430,80 @@ export default function VehicleCard({ vehicle, className = '' }: VehicleCardProp
           ) : null}
         </div>
 
-        <a href={getVehicleUrl()} className="inventory-card-content-link" aria-label={`View details for ${title}`}>
-          <div className="inventory-card-body">
-            <h3>{title}</h3>
-            <ul className="inventory-specs">
-              <li>
-                <Gauge size={14} aria-hidden="true" /> {formatMileage(mileageValue)}
-              </li>
-              <li>
-                <Fuel size={14} aria-hidden="true" /> {cleanText(vehicle.fuel) || 'Fuel on request'}
-              </li>
-              <li>
-                <Cog size={14} aria-hidden="true" /> {cleanText(vehicle.trans) || 'Trans. TBC'}
-              </li>
-              {cleanText(vehicle.colour) || cleanText(vehicle.body_type) ? (
+        {isListView ? (
+          <a href={getVehicleUrl()} className="inventory-card-content-link" aria-label={`View details for ${title}`}>
+            <div className="inventory-card-body inventory-card-body-list">
+              <div className="inventory-list-head">
+                <h3>{title}</h3>
+                <p className="inventory-list-price">{displayPrice}</p>
+              </div>
+
+              <dl className="inventory-list-meta">
+                <div>
+                  <dt><CalendarDays size={14} aria-hidden="true" /> Year</dt>
+                  <dd>{formatYear(yearValue)}</dd>
+                </div>
+                <div>
+                  <dt><Gauge size={14} aria-hidden="true" /> Mileage</dt>
+                  <dd>{formatMileage(mileageValue)}</dd>
+                </div>
+                <div>
+                  <dt><Palette size={14} aria-hidden="true" /> Colour</dt>
+                  <dd>{cleanText(vehicle.colour) || 'On request'}</dd>
+                </div>
+                <div>
+                  <dt><Cog size={14} aria-hidden="true" /> Transmission</dt>
+                  <dd>{cleanText(vehicle.trans) || 'On request'}</dd>
+                </div>
+                <div>
+                  <dt><Fuel size={14} aria-hidden="true" /> Fuel Type</dt>
+                  <dd>{cleanText(vehicle.fuel) || 'On request'}</dd>
+                </div>
+                <div>
+                  <dt><Car size={14} aria-hidden="true" /> Body Style</dt>
+                  <dd>{cleanText(vehicle.body_type) || 'On request'}</dd>
+                </div>
+                <div>
+                  <dt><DoorClosed size={14} aria-hidden="true" /> Doors</dt>
+                  <dd>{formatDoors(vehicle.doors)}</dd>
+                </div>
+                <div>
+                  <dt><CalendarDays size={14} aria-hidden="true" /> First Reg</dt>
+                  <dd>{getFirstRegistrationDate(vehicle.first_reg_date || vehicle.first_registration_date)}</dd>
+                </div>
+              </dl>
+
+              <p className="inventory-list-description">
+                {getListPreviewText(vehicle.description)} <span className="inventory-list-view-more">View More</span>
+              </p>
+            </div>
+          </a>
+        ) : (
+          <a href={getVehicleUrl()} className="inventory-card-content-link" aria-label={`View details for ${title}`}>
+            <div className="inventory-card-body">
+              <h3>{title}</h3>
+              <ul className="inventory-specs">
                 <li>
-                  <Palette size={14} aria-hidden="true" /> {cleanText(vehicle.colour) || cleanText(vehicle.body_type)}
+                  <Gauge size={14} aria-hidden="true" /> {formatMileage(mileageValue)}
                 </li>
-              ) : null}
-            </ul>
-            <p className="inventory-price">
-              <span>{monthlyEstimate}</span> {displayPrice}
-            </p>
-          </div>
-        </a>
+                <li>
+                  <Fuel size={14} aria-hidden="true" /> {cleanText(vehicle.fuel) || 'Fuel on request'}
+                </li>
+                <li>
+                  <Cog size={14} aria-hidden="true" /> {cleanText(vehicle.trans) || 'Trans. TBC'}
+                </li>
+                {cleanText(vehicle.colour) || cleanText(vehicle.body_type) ? (
+                  <li>
+                    <Palette size={14} aria-hidden="true" /> {cleanText(vehicle.colour) || cleanText(vehicle.body_type)}
+                  </li>
+                ) : null}
+              </ul>
+              <p className="inventory-price">
+                <span>{monthlyEstimate}</span> {displayPrice}
+              </p>
+            </div>
+          </a>
+        )}
       </div>
     </article>
   );
