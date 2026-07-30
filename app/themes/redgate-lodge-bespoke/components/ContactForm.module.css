@@ -1,0 +1,279 @@
+/* Contact enquiry form — ledger-underline inputs (spec §"Unique move"). No boxed
+   input shells: every field is a serif-caps caption label over a value line whose
+   only border is a bottom hairline that thickens to 2px primary on focus, like
+   writing on a ruled page. The submit is the only solid element.
+
+   Every colour is a token / color-mix (+ the --t-error/--t-success status
+   tokens), so the card reads on the claret palette AND a light throwaway brand;
+   no rule assumes primary is dark or bg is white. Mobile-first: base is the 360
+   single-column stack with a full-width submit; min-width queries add the 1024
+   surface-card frame + right-aligned auto-width submit. Radius scale
+   (design-language §5): 4px on inputs/submit, 6px on the card. No shadows, no
+   gradients. Type scale: caption 0.8125rem (labels, errors), body 1rem
+   (values), the title clamp. */
+
+/* ---------- Card (paired surface) ------------------------------------------ */
+.card {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* ---------- Card title (serif, sentence case) ------------------------------ */
+.title {
+  margin: 0 0 clamp(1.5rem, 4vw, 2rem);
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.18;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+/* ---------- Form + fields (base: one field per row, full width) ------------ */
+.form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.5rem, 4vw, 1.875rem);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Serif-caps caption label — the "ruled page" heading over each value line.
+   Echoes the wordmark; shifts to primary while the field is focused (below). */
+.label {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  transition: color 160ms ease;
+}
+
+/* Control wrapper — hosts the ledger value line + the growing focus underline.
+   The visible SOLID hairline lives on the input itself (always present); a
+   primary 2px rule grows over it from the left on :focus-within, like a nib
+   drawing across a ruled page. Decorative grow layer only — the real border
+   never disappears, so the field stays legible even mid-animation. */
+.control {
+  position: relative;
+  display: block;
+}
+
+/* Refined focus grow: scales in ≤180ms from the left, token-driven primary.
+   pointer-events:none so it never blocks the textarea resize handle. */
+.control::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.field:focus-within .control::after {
+  transform: scaleX(1);
+}
+
+/* Ledger-underline value line: transparent shell, ONLY a bottom hairline.
+   16px font floor = no iOS zoom; ≥48px tall touch target. */
+.input,
+.textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.6rem 0;
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-brand-body-override, 'Lato', system-ui, sans-serif);
+  font-size: 1rem;
+  line-height: 1.6;
+  border-style: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  transition: border-color 160ms ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.textarea {
+  min-height: 7.5rem;
+  resize: vertical;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: color-mix(in srgb, var(--color-text) 45%, transparent);
+}
+
+/* Focus: the solid hairline warms toward primary (stays 1px — no reflow), while
+   the .control::after 2px rule grows in as the animated affordance. No box
+   outline; the growing underline + warmed label carry focus visibly. */
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-bottom-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+}
+
+.field:focus-within .label {
+  color: var(--color-primary);
+}
+
+/* ---------- Error state ---------------------------------------------------- */
+/* Form-level status line for a submit that failed without a field to blame
+   (network / rate-limit). Tinted plate paired with its foreground. */
+.formError {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-brand-body-override, 'Lato', system-ui, sans-serif);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--t-error);
+  background: color-mix(in srgb, var(--t-error) 8%, var(--color-bg));
+  border-left: 3px solid var(--t-error);
+  border-radius: 4px;
+}
+
+.hasError .input,
+.hasError .textarea {
+  border-bottom-color: var(--t-error);
+}
+
+.error {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-brand-body-override, 'Lato', system-ui, sans-serif);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--t-error);
+}
+
+/* ---------- Submit (the only solid element; full-width on mobile) ---------- */
+.actions {
+  display: flex;
+}
+
+.submit {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.85rem 1.75rem;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-brand-body-override, 'Lato', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 160ms ease;
+}
+
+.submit:hover {
+  background: color-mix(in srgb, var(--color-primary) 88%, var(--color-text));
+  color: var(--color-on-primary);
+}
+
+.submit:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-text) 55%, transparent);
+  outline-offset: 3px;
+}
+
+.submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---------- Success block (swaps in for the form) -------------------------- */
+.success {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: clamp(1.25rem, 4vw, 1.75rem) 0;
+  border-top: 1px solid var(--t-success);
+}
+
+.successTitle {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.18;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.successBody {
+  margin: 0;
+  font-family: var(--font-brand-body-override, 'Lato', system-ui, sans-serif);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--color-text);
+  text-wrap: pretty;
+}
+
+.reset {
+  margin-top: 0.5rem;
+  min-height: 44px;
+  padding: 0.6rem 1.5rem;
+  background: transparent;
+  color: var(--color-primary);
+  font-family: var(--font-brand-body-override, 'Lato', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 1rem;
+  border: 1px solid var(--color-primary);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.reset:hover {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.reset:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-text) 55%, transparent);
+  outline-offset: 3px;
+}
+
+/* ---------- 1024: surface card with a 1px border, submit right-aligned ------ */
+@media (min-width: 1024px) {
+  .card {
+    background: var(--color-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: clamp(2rem, 3vw, 2.75rem);
+  }
+
+  .actions {
+    justify-content: flex-end;
+  }
+
+  .submit {
+    width: auto;
+  }
+}
+
+/* ---------- Reduced motion: collapse the >0ms hover/focus transitions ------ */
+/* The .control::after underline still snaps to scaleX(1) on focus (no transition
+   = instant, not hidden), so the focus affordance survives without motion. */
+@media (prefers-reduced-motion: reduce) {
+  .input,
+  .textarea,
+  .label,
+  .submit,
+  .reset,
+  .control::after {
+    transition: none;
+  }
+}

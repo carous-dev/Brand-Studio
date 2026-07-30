@@ -69,6 +69,12 @@
       "status": "experimental"
     },
     {
+      "id": "redgate-lodge-bespoke",
+      "name": "Redgate Lodge Motor Group",
+      "description": "Bespoke theme for Redgate Lodge Motor Group — warm-premium claret-and-ivory serif design with a numbered proof ledger and hospitality-toned aftercare storytelling.",
+      "status": "experimental"
+    },
+    {
       "id": "showroom-shine-cars-bespoke",
       "name": "Showroom Shine",
       "description": "Bespoke theme for independent dealers with bold motoring signage, deep crimson on white, and condensed-bold display type.",

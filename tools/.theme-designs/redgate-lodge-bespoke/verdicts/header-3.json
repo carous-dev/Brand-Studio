@@ -1,0 +1,31 @@
+{
+  "component": "header",
+  "iteration": 3,
+  "verdict": "PASS",
+  "recordedBy": "orchestrator (verifier agent captured all 5 screenshots then stalled mid-stream before writing; orchestrator independently judged the same PNGs)",
+  "mechanical": {
+    "tsc": "pass (builder self-check, iteration 3)",
+    "colorContract": "pass (0 literals)",
+    "audit": "pass (header files, prior iterations)",
+    "greps": ["pass: no logo.png reference remains", "pass: overlay strings via resolveText"]
+  },
+  "issues": [],
+  "resolvedFromPrior": [
+    "header-1-01 (blocker, logo 404) — fixed: 2-tier fallback, serif wordmark renders on both brands",
+    "header-1-02 (minor, hardcoded strings) — fixed: footer.wishlist/footer.compare/header.whatsapp",
+    "header-2-01 (major, long-name plaque clip) — fixed: clamp() plaque width + wrapping wordmark; verified no clip at 1024/1440"
+  ],
+  "evidence": {
+    "claret-1440": "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-3-home-w1440.png — 'Redgate Lodge / Motor Group' wraps 2 lines inside plaque, no clip",
+    "claret-1024": "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-3-home-w1024.png — clean",
+    "teal-1440": "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-3-alt-home-w1440.png — full teal color flow, short name one line, no hardcoded claret",
+    "mobile-505": "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-3-home-w505.png"
+  },
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-3-home-w505.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-3-home-w768.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-3-home-w1024.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-3-home-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-3-alt-home-w1440.png"
+  ]
+}

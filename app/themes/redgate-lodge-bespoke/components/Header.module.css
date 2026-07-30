@@ -1,0 +1,479 @@
+/* =============================================================================
+ * Header — redgate-lodge-bespoke
+ * Contact strip (static) + sticky nav row + a full-height "house plaque" that
+ * spans both rows from 768 up. Mobile-first: base = 360px, min-width upward.
+ * No drop shadows anywhere — hairlines only (border-bottom on the nav row).
+ * ========================================================================== */
+
+/* ---- Contact strip (primary ribbon; static, scrolls away) ---------------- */
+.contactStrip {
+  position: relative;
+  z-index: 60;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  height: 32px;
+}
+
+.contactInner {
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 100%;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.contactContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.contactLeft,
+.contactRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.contactChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-on-primary);
+  font-size: 0.8125rem;
+  line-height: 1;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.contactChip > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statusChip {
+  padding: 0.28rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-on-primary) 14%, transparent);
+  color: var(--color-on-primary);
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-on-primary) 45%, transparent);
+  flex: 0 0 auto;
+}
+.statusDot[data-online] {
+  background: var(--color-on-primary);
+}
+
+.contactPhone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-on-primary);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 160ms ease;
+}
+.contactPhone:hover { opacity: 0.82; }
+
+.socials {
+  display: none;
+  align-items: center;
+  gap: 0.35rem;
+}
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  color: var(--color-on-primary);
+  border-radius: 4px;
+  transition: opacity 160ms ease;
+}
+.socialLink:hover { opacity: 0.82; }
+
+/* Plaque hidden on mobile — the nav-row logo owns identity below 768. */
+.plaque { display: none; }
+
+/* Mobile: phone left, status right; hide location + socials. */
+.locationChip { display: none; }
+.phoneDesktop { display: none; }
+.phoneMobile { display: inline-flex; }
+
+/* ---- Sticky nav row (bg; border-bottom only; NO logo on desktop) --------- */
+.navRow {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+  height: 60px;
+}
+
+.navInner {
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 100%;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.navLogo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  min-width: 0;
+}
+
+/* Desktop nav + right cluster hidden until 1024. */
+.nav { display: none; }
+.navRight { display: none; }
+
+.hamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  margin-right: -6px;
+  background: transparent;
+  color: var(--color-text);
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* ---- Full-screen mobile overlay ------------------------------------------ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: var(--color-bg);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 1rem 1.5rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.overlay[hidden] { display: none !important; }
+
+.overlayHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  border-bottom: 1px solid var(--color-border);
+}
+.overlayLogo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+.overlayClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -6px;
+  background: transparent;
+  color: var(--color-text);
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.overlayNav {
+  display: flex;
+  flex-direction: column;
+}
+.overlayLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 56px;
+  padding: 0 0.25rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.overlayLinkActive {
+  color: var(--color-primary);
+}
+
+.overlayFoot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.overlayPhone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 52px;
+  padding: 0 1rem;
+  border-radius: 4px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 160ms ease;
+}
+.overlayPhone:hover {
+  background: color-mix(in srgb, var(--color-primary) 85%, var(--color-text));
+  color: var(--color-on-primary);
+}
+.overlayWhatsapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+.overlayWhatsapp:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+.overlaySocials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+.overlaySocials .socialLink {
+  width: 44px;
+  height: 44px;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+.overlaySocials .socialLink:hover {
+  opacity: 1;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* ---- Shared count pill --------------------------------------------------- */
+.countPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-bg));
+  color: var(--color-text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ---- Focus-visible (every interactive element) --------------------------- */
+.contactPhone:focus-visible,
+.socialLink:focus-visible,
+.navLogo:focus-visible,
+.navLink:focus-visible,
+.iconLink:focus-visible,
+.cta:focus-visible,
+.hamburger:focus-visible,
+.plaque:focus-visible,
+.overlayLogo:focus-visible,
+.overlayClose:focus-visible,
+.overlayLink:focus-visible,
+.overlayPhone:focus-visible,
+.overlayWhatsapp:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+/* On the primary strip the outline reads better in the on-primary tone
+   (overlay socials keep the primary outline against the bg surface). */
+.contactStrip .contactPhone:focus-visible,
+.contactStrip .socialLink:focus-visible {
+  outline-color: var(--color-on-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contactPhone,
+  .socialLink,
+  .overlayPhone,
+  .overlayWhatsapp { transition: none; }
+}
+
+/* =============================================================================
+ * 768 — plaque appears spanning both rows; contact strip gains chips
+ * ========================================================================== */
+@media (min-width: 768px) {
+  /* Shared plaque width: a clamp() range (not a hard 180px) gives a long serif
+     wordmark more room while staying compact. Both the contact strip and the
+     nav row read it so the plaque and the content offsets never drift apart. */
+  .contactStrip { --plaque-w: clamp(184px, 16vw, 216px); height: 36px; }
+  .navRow { --plaque-w: clamp(184px, 16vw, 216px); }
+  .contactInner { padding: 0 clamp(1rem, 3vw, 2.5rem); }
+
+  /* The spanning plaque: one element, one hairline right border, 36+64=100px.
+     Height stays a fixed 100px (the adjacency handoff to the hero); only the
+     width flexes, and the wordmark wraps inside it — never clips. */
+  .plaque {
+    position: absolute;
+    top: 0;
+    left: clamp(1rem, 3vw, 2.5rem);
+    z-index: 70;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--plaque-w);
+    height: 100px;
+    padding: 0 0.9rem;
+    background: var(--color-bg);
+    color: var(--color-text);
+    border-right: 1px solid var(--color-border);
+    text-decoration: none;
+  }
+
+  .contactContent { margin-left: calc(var(--plaque-w) + 1.5rem); }
+
+  .locationChip { display: inline-flex; }
+  .phoneMobile { display: none; }
+  .phoneDesktop { display: inline-flex; }
+
+  .navRow { height: 64px; }
+  .navInner {
+    padding-left: calc(var(--plaque-w) + 1.5rem + clamp(1rem, 3vw, 2.5rem));
+    padding-right: clamp(1rem, 3vw, 2.5rem);
+  }
+  .navLogo { display: none; }
+}
+
+/* =============================================================================
+ * 1024 — full assembly: desktop nav + right cluster; socials in strip
+ * ========================================================================== */
+@media (min-width: 1024px) {
+  .socials { display: inline-flex; }
+
+  .hamburger { display: none; }
+  .navLogo { display: none; }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 1.8vw, 2rem);
+    flex: 1 1 auto;
+  }
+  .navLink {
+    position: relative;
+    color: var(--color-text);
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 6px 0;
+    white-space: nowrap;
+    transition: color 160ms ease;
+  }
+  .navLink:hover { color: var(--color-primary); }
+  .navLinkActive {
+    color: var(--color-text);
+    font-weight: 700;
+  }
+  .navLinkActive::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 2px;
+    background: var(--color-primary);
+  }
+
+  .navRight {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 0 0 auto;
+  }
+  .iconLink {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: var(--color-text);
+    border-radius: 4px;
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+  .iconLink:hover { color: var(--color-primary); }
+  .iconLink .countPill {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    font-size: 0.68rem;
+  }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 1.1rem;
+    border-radius: 4px;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 160ms ease;
+  }
+  .cta:hover {
+    background: color-mix(in srgb, var(--color-primary) 85%, var(--color-text));
+    color: var(--color-on-primary);
+  }
+}
+
+/* =============================================================================
+ * 1440 — inner already caps at max-width 1400; clamp pins to 2.5rem and the
+ * plaque width is fixed (180px), so paddings and plaque stop growing here
+ * without further rules.
+ * ========================================================================== */

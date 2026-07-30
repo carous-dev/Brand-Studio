@@ -19,6 +19,7 @@
   "scripts": {
     "theme:sync": "node tools/sync-theme-contracts.mjs",
     "check:contract": "node tools/check-theme-contract.mjs",
+    "check:images": "node tools/check-image-contract.mjs",
     "dev": "npm run theme:sync && next dev",
     "build": "npm run theme:sync && next build",
     "start": "next start",

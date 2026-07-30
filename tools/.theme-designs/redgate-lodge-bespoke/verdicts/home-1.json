@@ -1,0 +1,72 @@
+{
+  "component": "home-page",
+  "mode": "full-page",
+  "route": "/",
+  "iteration": 1,
+  "verdict": "FAIL",
+  "brands": {
+    "claret": "redgate-lodge-bespoke-qa",
+    "light": "redgate-lodge-bespoke-qa-alt (teal)"
+  },
+  "mechanical": {
+    "tsc": "pass",
+    "colorContract": "pass (0 literals in 0 files)",
+    "audit": "pass (0 blockers, 38 advisories — all on NON-homepage pages: used-cars, used-cars/[slug], services, sell-your-car, wishlist; homepage-section files clean)",
+    "greps": [
+      "pass: no box-shadow in Header.module.css",
+      "pass: no bare header/footer/section/a element selectors in styles/*",
+      "pass: PxInvite CTA + Header CTA href = /sell-my-car (not /sell-your-car)",
+      "pass: FeaturedStock uses getBrandSlugFromRequest + limit=6 + href /used-cars",
+      "pass: ProofLedger has 0 <a>/<button> (non-interactive band)",
+      "pass: Reviews has no carousel/button/onClick (matches are comments only)",
+      "pass: VisitLodge uses getBrandContactInfo, no <iframe>, hours_fallback path present (no false 'Closed'); address not rendered raw",
+      "pass: Hero layers background-image brand.heroImage first, theme default last; text-wrap:balance on h1; no <input>/<select>",
+      "fail: shell.tsx passes no belowMain to ThemeChrome — BrowseByMake band absent from DOM on / (zero browse markers in rendered HTML)"
+    ]
+  },
+  "issues": [
+    {
+      "id": "home-1-01",
+      "severity": "blocker",
+      "owner": "shell",
+      "criterion": "design-language §7 section-flow contract (shell order: Header -> route sections -> BrowseByMake band [shell-owned, surface, satisfies homepage directory slot] -> Footer) + build-rules §12 (BrowseByMake lives in the SHELL between <main> and <Footer>, 4 cols >=1024)",
+      "route": "/",
+      "width": "all (505,768,1024,1440)",
+      "evidence": "app/themes/redgate-lodge-bespoke/shell.tsx renders <ThemeChrome header={<Header/>} footer={<Footer/>} ...> with NO belowMain prop. ThemeChrome.tsx line 109 renders {belowMain} between </main> and {footer}; with belowMain undefined the band never mounts. curl of / shows zero browse-by-make markers in the DOM. Screenshots: C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/home-1-tall-home-w1440.png (visit-lodge hands straight toward the footer with no directory band). Reproduced identically on the teal brand: home-1-alt-tall-home-w1440.png.",
+      "fix_hint": "Add a shell-owned BrowseByMake band and pass it as belowMain to ThemeChrome (data from meta.available.makes, on surface, 4 cols >=1024, separated from visit-lodge by the same-token hairline visit-lodge already emits). Affects every route, not just /."
+    }
+  ],
+  "notes": [
+    "FOOTER (component 10) — verified via DOM + CSS, NOT a defect. Rendered HTML contains the full deep-plate footer (doubleRule, centered monogram, blurb+4 socials, Showroom/Explore/Contact columns incl About/Contact/Privacy/Cookie links, fine-print). Footer.module.css plate = color-mix(in srgb, var(--color-primary) 85%, var(--color-text)) paired with on-primary, full-opacity social links. Could not frame a clean painted screenshot: styles/base.css .redgate-main has min-height: calc(100vh - 200px), a sticky-footer pattern; in tall capture windows main stretches to (window-200) and parks the footer at the very bottom edge behind the fixed cookie banner. This is an INFRA/capture-geometry limitation (footer sits directly after content in a real browser at normal viewport heights), not a component failure.",
+    "VISIT-LODGE (component 09) — hours row renders the safe fallback 'Call us to arrange a time that suits you' (no false 'Closed', AC5 ok). The QA brands carry sparse contact data, so the details list shows mainly the Hours row; address/phone/email rows degrade gracefully when absent. Not counted as an issue (data, not markup).",
+    "FEATURED-STOCK (component 05) — QA brand HAS inventory (6 cards render 3x2 at 1024). One card (2016 Nissan Pulsar) shows the graceful 'Image not available' fallback because that vehicle lacks a photo — correct empty-image handling, not a defect.",
+    "TEAL-BRAND (light-palette) check — PASS. Every claret element is token-driven: contact strip, ledger numerals 01-04, hero eyebrow, primary/ghost CTAs, aftercare bookmark tabs, px-invite band (renders TEAL, not hardcoded claret), card wishlist/compare glyphs, review open-quote + star score, all '-> ' links. No dark-theme assumption breaks on the light palette; nothing hardcoded claret on the teal brand at 505 or 1440."
+  ],
+  "section_table": {
+    "header (01)": "PASS",
+    "hero (02)": "PASS",
+    "proof-ledger (04)": "PASS",
+    "featured-stock (05)": "PASS",
+    "aftercare-suite (06)": "PASS",
+    "px-invite (07)": "PASS",
+    "reviews (08)": "PASS",
+    "visit-lodge (09)": "PASS",
+    "footer (10)": "PASS (DOM/CSS verified; visual capture blocked by INFRA)",
+    "browse-by-make band (shell)": "FAIL — absent from every route"
+  },
+  "surface_flow_observed": "bg(hero) -> surface(proof-ledger, double-hairline top / single bottom) -> bg(featured) -> surface(aftercare) -> primary(px-invite, single primary band, hue break both sides) -> bg(reviews) -> surface(visit-lodge, closing hairline) -> [MISSING browse-by-make surface band] -> footer plate. Alternation + hairline handoffs + single-primary-band all correct; only the directory band is missing.",
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/home-1-home-w505.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/home-1-home-w768.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/home-1-home-w1024.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/home-1-home-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/home-1-tall-home-w505.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/home-1-tall-home-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/home-1-alt-home-w505.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/home-1-alt-home-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/home-1-alt-tall-home-w505.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/home-1-alt-tall-home-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/foot-check-cookie-policy-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/foot2-cookie-policy-w1440.png"
+  ]
+}

@@ -1,0 +1,376 @@
+/* Vehicle card — redgate-lodge-bespoke (warm-premium "guest house for cars").
+   Surface grammar per design-language §5: 6px radius, 1px hairline border, NO
+   shadows. The signature move is the ledger footline — a hairline-topped row
+   with a serif price left + serif-caps "View" right, echoing the proof-ledger.
+   Every colour is a token / color-mix so the card holds on the claret palette
+   AND a light throwaway brand. Mobile-first: base is the full-width 360 layout;
+   min-width queries add the hover state. */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  /* Visible so the focus outline on .cardLink isn't clipped; inner corners are
+     rounded per-element instead of via overflow:hidden on the article. */
+  overflow: visible;
+  /* Refined hover-lift: warm the border toward claret + a 3px rise, colour/
+     transform only (hairline-depth theme — NO grey drop-shadow). Both ≤200ms. */
+  transition: border-color 160ms ease, transform 160ms ease;
+  /* GPU-hint the lift without inviting a shadow layer. */
+  will-change: transform;
+}
+
+/* ---------- Media (4/3 photo with a LIGHT surface fallback + muted glyph) --- */
+.media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 6px 6px 0 0;
+  background: var(--color-surface);
+  color: var(--color-muted);
+}
+
+.mediaGlyph {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  color: var(--color-muted);
+}
+
+/* Photo sits above the glyph; a 404/empty photo is transparent so the fallback
+   glyph shows through. cover/center/no-repeat stops thumbnails tiling. */
+.photo {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-color: transparent;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* Furnishing (luxury→refined): a slow gentle ken-burns scale on hover, echoing
+     the hero/visit framed photos. transform-origin center keeps it clipped by the
+     media's overflow:hidden. Guarded off ≤720px + reduced-motion below. */
+  transform-origin: center;
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Wishlist + compare glyphs (top-left, transparent, primary) ------ */
+.actions {
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 22x22 glyph, ~44x44 tap target (build-rules §9 / mobile §8). */
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: color 160ms ease;
+}
+
+.actionGlyph {
+  width: 22px;
+  height: 22px;
+  /* Smooth the fill-in when toggled + the pointer press/hover feedback. */
+  transition: fill 180ms ease, transform 160ms ease;
+}
+
+/* Pointer feedback: a subtle grow on hover, a quick press-in on active — glyph
+   only, no plate/background (design rule: transparent icons over the photo). */
+@media (hover: hover) {
+  .actionBtn:hover .actionGlyph {
+    transform: scale(1.12);
+  }
+}
+
+.actionBtn:active .actionGlyph {
+  transform: scale(0.92);
+}
+
+/* Active wishlist/compare glyph fills solid primary. */
+.actionBtn.active .actionGlyph {
+  fill: var(--color-primary);
+}
+
+.actionBtn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---------- Sold plate (rotated, primary band) ------------------------------ */
+.soldStamp {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  z-index: 2;
+  transform: rotate(-4deg);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.card.sold .photo,
+.card.sold .mediaGlyph {
+  filter: grayscale(1);
+}
+
+/* ---------- Body: title + 2-col spec grid ----------------------------------- */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.9rem 1rem 0.8rem;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 1.1875rem;
+  line-height: 1.25;
+  color: var(--color-text);
+  /* Single-line ellipsis keeps card heights equal across grid siblings. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardSpecs {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem 1rem;
+}
+
+/* Fixed 4-fact grid — hard cap so a stray extra never unbalances a sibling. */
+.cardSpecs > .spec:nth-child(n + 5) {
+  display: none;
+}
+
+.spec {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  color: var(--color-muted);
+}
+
+.specIcon {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  color: var(--color-muted);
+}
+
+.specValue {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Ledger footline (the unique move) ------------------------------- */
+.footline {
+  margin-top: auto;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem 0.8rem;
+  border-top: 1px solid var(--color-border);
+  border-radius: 0 0 6px 6px;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.price {
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.1;
+  color: var(--color-text);
+}
+
+.card.sold .price {
+  text-decoration: line-through;
+  color: var(--color-muted);
+}
+
+.view {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.32rem;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+/* Refined footline tell: a thin arrow after "View" that eases right on card
+   hover — the luxury equivalent of a link sweep. Decorative, so it carries no
+   text meaning; scoped to non-sold below (a Sold footline gets no arrow). */
+.card:not(.sold) .view::after {
+  content: '\2192';
+  letter-spacing: 0;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Stretched whole-card link --------------------------------------- */
+.cardLink {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 6px;
+  /* Empty anchor: aria-label carries the accessible name; keep it invisible. */
+  font-size: 0;
+  text-decoration: none;
+}
+
+.cardLink:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ---------- Compact/rail variant (tighter, same content) -------------------- */
+.card.compact .body {
+  padding: 0.75rem 0.85rem 0.65rem;
+  gap: 0.5rem;
+}
+
+.card.compact .title {
+  font-size: 1.0625rem;
+}
+
+.card.compact .footline {
+  padding: 0.6rem 0.85rem 0.7rem;
+}
+
+.card.compact .price {
+  font-size: 1.15rem;
+}
+
+/* ---------- Skeleton (loading) — surface/border tokens only ----------------- */
+.skeleton {
+  pointer-events: none;
+}
+
+.skelMedia {
+  aspect-ratio: 4 / 3;
+  border-radius: 6px 6px 0 0;
+  background: color-mix(in srgb, var(--color-muted) 16%, var(--color-surface));
+}
+
+.skelBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.9rem 1rem;
+}
+
+.skelFoot {
+  border-top: 1px solid var(--color-border);
+  padding: 0.7rem 1rem 0.8rem;
+}
+
+.skelBar {
+  height: 0.85rem;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-muted) 16%, var(--color-surface));
+}
+
+.skelBar.wide {
+  width: 80%;
+}
+
+.skelBar.short {
+  width: 55%;
+}
+
+/* ---------- Hover state (≥1024, pointer devices) ----------------------------
+   Sold cards are excluded from EVERY hover gesture (:not(.sold)) — a sold unit
+   stays static + grayscale so it never reads as buyable. */
+@media (min-width: 1024px) {
+  .card:not(.sold):hover {
+    /* Warm the hairline toward claret + a subtle 3px rise. No shadow. */
+    border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
+    transform: translateY(-3px);
+  }
+
+  .card:not(.sold):hover .photo {
+    /* Gentle cinematic ken-burns, clipped by the media overflow. */
+    transform: scale(1.05);
+  }
+
+  .card:not(.sold):hover .view::after {
+    transform: translateX(3px);
+  }
+}
+
+/* Reduced motion: collapse every >200ms / transform effect — colour fades only. */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: border-color 160ms ease;
+  }
+
+  .card:not(.sold):hover {
+    transform: none;
+  }
+
+  .photo,
+  .actionGlyph,
+  .card:not(.sold) .view::after {
+    transition: none;
+  }
+
+  .card:not(.sold):hover .photo,
+  .actionBtn:hover .actionGlyph,
+  .card:not(.sold):hover .view::after {
+    transform: none;
+  }
+}
+
+/* Ken-burns + lift are desktop-pointer gestures only; keep tablets/phones calm
+   (the hover block is already ≥1024, this belt-and-braces guard matches the
+   hero/visit ≤720 floor). */
+@media (max-width: 720px) {
+  .card:not(.sold):hover .photo,
+  .card:not(.sold):hover {
+    transform: none;
+  }
+}

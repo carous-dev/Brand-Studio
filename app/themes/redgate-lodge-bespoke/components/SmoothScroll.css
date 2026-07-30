@@ -1,0 +1,16 @@
+/* redgate-lodge-bespoke smooth-scroll override sheet — extra rules not in
+ * lenis/dist/lenis.css. Mirrors the cnhcars-clone / classic-dealer / fbm-motors
+ * companion sheet.
+ *
+ * Native browser smooth-scroll and a pinned html/body height both fight
+ * Lenis's RAF-driven scrollTop updates. Force them off when Lenis is active.
+ */
+
+html.lenis {
+  scroll-behavior: auto !important;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto !important;
+}

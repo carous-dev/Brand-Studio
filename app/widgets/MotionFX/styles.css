@@ -249,6 +249,51 @@
 }
 
 /* ---------------------------------------------------------------------------
+ * SPOTLIGHT — cursor-reactive radial highlight. AnimateOnScroll's global
+ * pointer tracker writes --mfx-mx / --mfx-my (px, element-relative) on the
+ * hovered element; a brand-tinted radial glow follows the cursor. Defaults to
+ * a centered static glow before the first pointer move (and on touch). The
+ * element must be position:relative; the glow paints in an ::after overlay.
+ * ------------------------------------------------------------------------- */
+
+@property --mfx-mx {
+  syntax: '<length-percentage>';
+  inherits: false;
+  initial-value: 50%;
+}
+@property --mfx-my {
+  syntax: '<length-percentage>';
+  inherits: false;
+  initial-value: 50%;
+}
+
+:where(.mfx-spotlight) {
+  --mfx-mx: 50%;
+  --mfx-my: 50%;
+  position: relative;
+}
+
+:where(.mfx-spotlight)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 260ms ease;
+  background: radial-gradient(
+    22rem 22rem at var(--mfx-mx) var(--mfx-my),
+    color-mix(in srgb, var(--color-primary) 22%, transparent),
+    transparent 60%
+  );
+}
+
+:where(.mfx-spotlight:hover)::after,
+:where(.mfx-spotlight:focus-within)::after {
+  opacity: 1;
+}
+
+/* ---------------------------------------------------------------------------
  * SCROLL-TIED — for use with <ScrollProgress />
  *
  * Themes register a section with `data-mfx-scroll="parallax"` (or other
@@ -296,6 +341,10 @@
     animation: none !important;
   }
 
+  :where(.mfx-spotlight)::after {
+    display: none !important;
+  }
+
   :where([data-mfx-scroll]) {
     --mfx-progress: 0 !important;
   }
@@ -327,6 +376,10 @@
   :where(.mfx-shimmer:hover)::after,
   :where(.mfx-shimmer.is-active)::after {
     animation: none !important;
+  }
+
+  :where(.mfx-spotlight)::after {
+    display: none !important;
   }
 
   :where([data-mfx-scroll]) {

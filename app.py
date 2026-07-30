@@ -3308,6 +3308,89 @@ def get_theme_text_recipe(theme_id):
     return jsonify(recipe), 200
 
 
+# ---------------------------------------------------------------------------
+# Image contract — mirrors the text-recipe contract above, for page/section
+# images. A theme's `recipes/image-recipe.json` declares its image slots; the
+# dashboard Page Images tab renders one upload/replace control per slot, and the
+# save handlers below discover the slot list from here instead of a hardcoded
+# tuple. See app/themes/lib/theme-images.ts for the runtime side.
+# ---------------------------------------------------------------------------
+
+# Back-compat: the historical 7-slot vocabulary. Themes without an
+# image-recipe.json fall back to this so their dashboard shows the legacy
+# controls and their uploads keep persisting exactly as before.
+LEGACY_IMAGE_SLOTS = [
+    {'key': 'hero', 'label': 'Home hero', 'page': 'Home', 'role': 'hero',
+     'where': 'Home hero', 'caption': 'Wide forecourt or lead vehicle'},
+    {'key': 'about', 'label': 'About', 'page': 'About',
+     'where': 'About page hero', 'caption': 'Photo of the team, premises, or signature vehicle'},
+    {'key': 'services', 'label': 'Services', 'page': 'Services',
+     'where': 'Services page hero', 'caption': 'Service-bay, MOT bay, or detailing photo'},
+    {'key': 'finance', 'label': 'Finance', 'page': 'Finance',
+     'where': 'Finance page hero', 'caption': 'Hand-shake / signing / showroom desk imagery'},
+    {'key': 'partExchange', 'label': 'Part Exchange', 'page': 'Part Exchange',
+     'where': 'Part Exchange page hero', 'caption': 'Two cars side-by-side or keys-being-handed photo'},
+    {'key': 'sellYourCar', 'label': 'Sell Your Car', 'page': 'Sell My Car',
+     'where': 'Sell Your Car page hero', 'caption': 'Owner stood next to their car / car-keys close-up'},
+    {'key': 'recentlySold', 'label': 'Recently Sold', 'page': 'Recently Sold',
+     'where': 'Recently Sold page hero', 'caption': 'Sold-stamp, happy-buyer, or hero stock shot'},
+]
+
+
+def load_theme_image_slots(theme_id):
+    """
+    Return the ordered image-slot dicts for a theme, read from
+    `app/themes/<theme>/recipes/image-recipe.json`. Falls back to
+    LEGACY_IMAGE_SLOTS when the theme ships no manifest (the 13 not-yet-migrated
+    themes). Never raises — a malformed manifest logs and falls back. Each slot
+    dict carries at least a 'key'; the dashboard/template use label/page/aspect/
+    caption when present.
+    """
+    safe = _validate_theme_id(theme_id) if theme_id else None
+    if not safe:
+        return list(LEGACY_IMAGE_SLOTS)
+    recipe_path = os.path.join(_theme_folder_path(safe), 'recipes', 'image-recipe.json')
+    if not os.path.exists(recipe_path):
+        return list(LEGACY_IMAGE_SLOTS)
+    try:
+        with open(recipe_path, 'r', encoding='utf-8') as fh:
+            recipe = json.load(fh)
+        slots = recipe.get('slots') if isinstance(recipe, dict) else None
+        if isinstance(slots, list) and slots:
+            return [s for s in slots if isinstance(s, dict) and s.get('key')]
+    except Exception:
+        app.logger.exception("Failed to read image-recipe for theme=%s", safe)
+    return list(LEGACY_IMAGE_SLOTS)
+
+
+def image_slot_url_field(key):
+    """Form field name for a slot's remote-URL input: image<Key>Url (camel-safe)."""
+    return f'image{key[0].upper()}{key[1:]}Url' if key else 'imageUrl'
+
+
+@app.route('/api/themes/<theme_id>/image-recipe', methods=['GET'])
+@auth_manager.login_required
+def get_theme_image_recipe(theme_id):
+    """
+    Return the per-theme image manifest — the dashboard /create and /update pages
+    read this to render the Page Images tab (one upload control per slot). Static
+    JSON at `app/themes/<theme>/recipes/image-recipe.json`.
+
+    Themes with no manifest get the legacy 7-slot set so their controls render
+    exactly as before (back-compat shim).
+    """
+    safe = _validate_theme_id(theme_id)
+    if not safe:
+        return jsonify({'error': 'Invalid theme id'}), 400
+    if not os.path.exists(_theme_folder_path(safe)):
+        return jsonify({'error': f'Theme {safe} not found'}), 404
+    slots = load_theme_image_slots(safe)
+    legacy = slots is LEGACY_IMAGE_SLOTS or all(
+        s.get('key') in {x['key'] for x in LEGACY_IMAGE_SLOTS} for s in slots
+    )
+    return jsonify({'themeId': safe, 'slots': slots, 'legacy': legacy}), 200
+
+
 @app.route('/api/themes/<theme_id>/usage', methods=['GET'])
 @auth_manager.login_required
 def get_theme_usage(theme_id):
@@ -3646,12 +3729,15 @@ def create_brand():
         # partExchange, sellYourCar, recentlySold). Each is optional; uploads
         # land at /public/images/<slug>-<slot>.<ext> and the resulting path
         # populates brand.images[<slot>].
-        PAGE_IMAGE_SLOTS = (
-            'about', 'services', 'finance',
-            'partExchange', 'sellYourCar', 'recentlySold',
-        )
+        # Slot list is THEME-DECLARED (recipes/image-recipe.json via
+        # load_theme_image_slots); adding a slot to a theme's manifest surfaces
+        # its upload here automatically. Hero excluded (saved via heroImageFile).
+        _page_image_keys = [
+            s['key'] for s in load_theme_image_slots(request.values.get('themeId') or '')
+            if s.get('key') and s.get('role') != 'hero' and s.get('key') != 'hero'
+        ]
         uploaded_page_image_paths = {}
-        for slot in PAGE_IMAGE_SLOTS:
+        for slot in _page_image_keys:
             field_name = f'{slot}ImageFile'
             if field_name not in request.files:
                 continue
@@ -3703,9 +3789,8 @@ def create_brand():
             images_dict = dict(prior_images)
             if brand.get('heroImage'):
                 images_dict['hero'] = brand['heroImage']
-            for slot in PAGE_IMAGE_SLOTS:
-                url_field = f'image{slot[0].upper()}{slot[1:]}Url'
-                url_val = data.get(url_field)
+            for slot in _page_image_keys:
+                url_val = data.get(image_slot_url_field(slot))
                 if isinstance(url_val, str) and url_val.strip():
                     images_dict[slot] = url_val.strip()
                 if slot in uploaded_page_image_paths:
@@ -4808,12 +4893,15 @@ def update_brand(slug):
         # partExchange, sellYourCar, recentlySold). Each is optional; uploads
         # land at /public/images/<slug>-<slot>.<ext> and the resulting path
         # populates brand.images[<slot>].
-        PAGE_IMAGE_SLOTS = (
-            'about', 'services', 'finance',
-            'partExchange', 'sellYourCar', 'recentlySold',
-        )
+        # Slot list is THEME-DECLARED (recipes/image-recipe.json via
+        # load_theme_image_slots); adding a slot to a theme's manifest surfaces
+        # its upload here automatically. Hero excluded (saved via heroImageFile).
+        _page_image_keys = [
+            s['key'] for s in load_theme_image_slots(request.values.get('themeId') or '')
+            if s.get('key') and s.get('role') != 'hero' and s.get('key') != 'hero'
+        ]
         uploaded_page_image_paths = {}
-        for slot in PAGE_IMAGE_SLOTS:
+        for slot in _page_image_keys:
             field_name = f'{slot}ImageFile'
             if field_name not in request.files:
                 continue
@@ -4859,9 +4947,9 @@ def update_brand(slug):
             # that read brand.images.hero (Columbus, ELE) — keep them in sync.
             if brand_from_form.get('heroImage'):
                 images_dict['hero'] = brand_from_form['heroImage']
-            for slot in PAGE_IMAGE_SLOTS:
-                url_field = f'image{slot[0].upper()}{slot[1:]}Url'
-                url_val = (prepared.get(url_field) or '').strip() if isinstance(prepared.get(url_field), str) else None
+            for slot in _page_image_keys:
+                _uf = image_slot_url_field(slot)
+                url_val = (prepared.get(_uf) or '').strip() if isinstance(prepared.get(_uf), str) else None
                 if url_val:
                     images_dict[slot] = url_val
                 if slot in uploaded_page_image_paths:

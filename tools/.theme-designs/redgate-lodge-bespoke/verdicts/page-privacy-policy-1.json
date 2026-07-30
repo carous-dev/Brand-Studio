@@ -1,0 +1,19 @@
+{
+  "component": "page-privacy-policy",
+  "mode": "full-page",
+  "route": "/privacy-policy",
+  "iteration": 1,
+  "verdict": "PASS",
+  "brands": { "claret": "redgate-lodge-bespoke-qa", "light": "redgate-lodge-bespoke-qa-alt (teal)" },
+  "mechanical": { "tsc": "pass", "colorContract": "pass", "audit": "pass (0 blockers)" },
+  "issues": [],
+  "notes": [
+    "Flow matches §7: page-ribbon slim(surface) -> prose ~720px measure(bg; h2s subtitle-size with hairline underlines) -> browse-by-make -> footer. This route is the clean full-page evidence for the sitewide BrowseByMake band + footer on BOTH brands (fp-claret / fp-teal). TEAL fully legible: teal-tinted chip initials, teal title underline, teal footer plate with white text, no invisible text, no hardcoded claret.",
+    "Cookie banner overlays mid-content in the full-page screenshot — that is a fixed-element + fullPage capture artifact, not a layout defect."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/fp-claret-privacy-policy-full.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/fp-teal-privacy-policy-full.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-privacy-policy-w505.png"
+  ]
+}

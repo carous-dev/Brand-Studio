@@ -40,7 +40,26 @@ const PROJECT_ROOT = path.resolve(TOOLS_DIR, '..')
 const CATALOGUE_PATH = path.join(TOOLS_DIR, 'theme-image-catalogue.json')
 const OUT_DIR = path.join(TOOLS_DIR, '.theme-images')
 
+// Legacy default slot list. When a theme ships recipes/image-recipe.json the
+// slot list (+ per-slot unsplashHint) is read from there instead, so a new slot
+// declared in a theme's manifest is auto-sourced for prospect previews.
 const SLOTS = ['hero', 'about', 'services', 'finance', 'partExchange', 'sellYourCar', 'recentlySold']
+
+/** Read {slots, hints} from a theme's image-recipe.json, or null (legacy). */
+async function manifestSlots(themeId) {
+  try {
+    const p = path.join(PROJECT_ROOT, 'app', 'themes', themeId, 'recipes', 'image-recipe.json')
+    const recipe = JSON.parse(await fs.readFile(p, 'utf8'))
+    const list = Array.isArray(recipe.slots) ? recipe.slots : []
+    const slots = list.map((s) => s.key).filter(Boolean)
+    if (!slots.length) return null
+    const hints = {}
+    for (const s of list) if (s.key && s.unsplashHint) hints[s.key] = s.unsplashHint
+    return { slots, hints }
+  } catch {
+    return null
+  }
+}
 
 // Default search terms per (archetype × slot). Used when the live Unsplash
 // API mode is enabled. Tailored toward UK-car-dealer aesthetics.
@@ -185,6 +204,12 @@ async function main() {
   const catalogue = await readJson(CATALOGUE_PATH, {})
 
   const publicImagesRoot = path.join(PROJECT_ROOT, 'public', 'themes', themeId, 'images')
+  // Manifest-driven slot list when the theme ships recipes/image-recipe.json,
+  // else the legacy 7-slot default — so a slot added to a theme's manifest is
+  // auto-sourced here without editing this tool.
+  const manifest = await manifestSlots(themeId)
+  const slotList = manifest ? manifest.slots : SLOTS
+  const slotHints = manifest ? manifest.hints : {}
   const result = {
     themeId,
     archetype,
@@ -193,7 +218,7 @@ async function main() {
     warnings: [],
   }
 
-  for (const slot of SLOTS) {
+  for (const slot of slotList) {
     let sourceUrl = null
     let attribution = null
     try {

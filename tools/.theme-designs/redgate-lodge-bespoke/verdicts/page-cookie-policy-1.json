@@ -1,0 +1,17 @@
+{
+  "component": "page-cookie-policy",
+  "mode": "full-page",
+  "route": "/cookie-policy",
+  "iteration": 1,
+  "verdict": "PASS",
+  "brands": { "claret": "redgate-lodge-bespoke-qa", "light": "redgate-lodge-bespoke-qa-alt (teal)" },
+  "mechanical": { "tsc": "pass", "colorContract": "pass", "audit": "pass (0 blockers)" },
+  "issues": [],
+  "notes": [
+    "Structurally identical to /privacy-policy (shared PolicyPage prose). Flow matches §7: page-ribbon slim 'Cookie policy'(surface) -> prose 720px measure with hairline-underlined h2s (What cookies are / How we use cookies / Managing cookies / Getting in touch)(bg) -> browse-by-make -> footer. Mobile 505 single-column."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-cookie-policy-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-cookie-policy-w505.png"
+  ]
+}

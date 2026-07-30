@@ -1,0 +1,88 @@
+{
+  "themeId": "redgate-lodge-bespoke",
+  "version": 1,
+  "description": "Declarative image contract for redgate-lodge-bespoke. Every theme image is a slot here; the dashboard Page Images tab renders one upload/replace control per slot automatically, and components resolve them via themeImageCss/themeImageUrl. brand.images[<key>] overrides the theme default. Nothing is a hardcoded path.",
+  "slots": [
+    {
+      "key": "hero",
+      "label": "Home hero",
+      "page": "Home",
+      "role": "hero",
+      "aspect": "16:9",
+      "width": 1920,
+      "default": "/themes/redgate-lodge-bespoke/hero-default.jpg",
+      "aiHint": "wide forecourt or a single lead vehicle, calm premium tone",
+      "unsplashHint": "luxury car dealership forecourt"
+    },
+    {
+      "key": "about",
+      "label": "About hero",
+      "page": "About",
+      "aspect": "4:3",
+      "width": 1280,
+      "default": "/themes/redgate-lodge-bespoke/images/about.jpg",
+      "aiHint": "the team, premises, or a signature vehicle",
+      "unsplashHint": "car dealership team showroom"
+    },
+    {
+      "key": "visitLocation",
+      "label": "Showroom exterior (Visit band)",
+      "page": "Home — Visit the lodge",
+      "aspect": "4:3",
+      "width": 1280,
+      "default": "/themes/redgate-lodge-bespoke/images/visit.jpg",
+      "aiHint": "the dealership building / forecourt from outside",
+      "unsplashHint": "car showroom building exterior"
+    },
+    {
+      "key": "services",
+      "label": "Services hero",
+      "page": "Services",
+      "aspect": "4:3",
+      "width": 1280,
+      "default": "/themes/redgate-lodge-bespoke/images/services.jpg",
+      "aiHint": "service bay, MOT bay, or detailing",
+      "unsplashHint": "car service workshop mechanic"
+    },
+    {
+      "key": "finance",
+      "label": "Finance hero",
+      "page": "Finance",
+      "aspect": "4:3",
+      "width": 1280,
+      "default": "/themes/redgate-lodge-bespoke/images/finance.jpg",
+      "aiHint": "handshake, signing, or a showroom desk",
+      "unsplashHint": "car finance signing desk"
+    },
+    {
+      "key": "partExchange",
+      "label": "Part Exchange hero",
+      "page": "Part Exchange",
+      "aspect": "4:3",
+      "width": 1280,
+      "default": "/themes/redgate-lodge-bespoke/images/part-exchange.jpg",
+      "aiHint": "two cars side-by-side or keys being handed over",
+      "unsplashHint": "car keys handover part exchange"
+    },
+    {
+      "key": "sellYourCar",
+      "label": "Sell Your Car hero",
+      "page": "Sell My Car",
+      "aspect": "4:3",
+      "width": 1280,
+      "default": "/themes/redgate-lodge-bespoke/images/sell-your-car.jpg",
+      "aiHint": "owner stood next to their car / car-keys close-up",
+      "unsplashHint": "owner selling car keys"
+    },
+    {
+      "key": "recentlySold",
+      "label": "Recently Sold hero",
+      "page": "Recently Sold",
+      "aspect": "4:3",
+      "width": 1280,
+      "default": "/themes/redgate-lodge-bespoke/images/recently-sold.jpg",
+      "aiHint": "sold stamp, happy buyer, or a hero stock shot",
+      "unsplashHint": "happy car buyer sold"
+    }
+  ]
+}

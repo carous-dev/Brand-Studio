@@ -1,0 +1,18 @@
+{
+  "component": "page-sell-my-car",
+  "mode": "full-page",
+  "route": "/sell-my-car",
+  "iteration": 1,
+  "verdict": "PASS",
+  "brands": { "claret": "redgate-lodge-bespoke-qa", "light": "redgate-lodge-bespoke-qa-alt (teal)" },
+  "mechanical": { "tsc": "pass", "colorContract": "pass", "audit": "pass (0 blockers; advisory motion-aos-min-count on sell-your-car/page.tsx — non-blocking)" },
+  "issues": [],
+  "notes": [
+    "Route resolves at canonical /sell-my-car (folder sell-your-car). Flow matches §7: page-ribbon 'Sell your car to us' sell-copy variant(surface) -> sell form + ledger-steps 01-03(bg) -> reviews(bg) -> footer chain. Same benign underline-input treatment as finance/part-exchange (minor, tracked there).",
+    "AOS-min-count advisory shared with services verdict — polish, non-blocking."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-sell-my-car-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-sell-my-car-w505.png"
+  ]
+}

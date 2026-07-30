@@ -1,0 +1,18 @@
+{
+  "component": "page-recently-sold",
+  "mode": "full-page",
+  "route": "/recently-sold",
+  "iteration": 1,
+  "verdict": "PASS",
+  "brands": { "claret": "redgate-lodge-bespoke-qa", "light": "redgate-lodge-bespoke-qa-alt (teal)" },
+  "mechanical": { "tsc": "pass", "colorContract": "pass", "audit": "pass (0 blockers; advisory motion-aos-min-count — non-blocking)" },
+  "issues": [],
+  "notes": [
+    "Flow matches §7: page-ribbon warm valediction 'Recently found new homes'(surface) -> showroom grid of SOLD-variant cards(bg, wide) -> px-invite copy variant 'Yours could be the next one sold'(primary) -> browse-by-make -> footer.",
+    "Sold treatment correct (memory): grayscale thumbs + red SOLD stamp + struck-through price + action replaced by 'SOLD' (no reserve on sold cars). Single primary band."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/fp-claret-recently-sold-full.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-recently-sold-w505.png"
+  ]
+}

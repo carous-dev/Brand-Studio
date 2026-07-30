@@ -1,0 +1,59 @@
+{
+  "component": "vehicle-detail",
+  "iteration": 2,
+  "verdict": "PASS",
+  "mode": "full-page-reverify",
+  "note": "Re-verify after 2026-07-30 vehicle-detail redesign. Test cars: Ford C-Max (AC3 noise-filter target) + Audi A5 (first /used-cars vehicle), both brands.",
+  "mechanical": {
+    "tsc": "pass (pre-run by orchestrator, not re-run)",
+    "colorContract": "pass (0 literals, pre-run)",
+    "audit": "pass (0 blockers, 34 advisory, pre-run)",
+    "imageContract": "pass (pre-run)",
+    "greps": [
+      "pass: h1 count = 1 on detail page (AC11)",
+      "pass: no rendered dealer phone / 'Please call' / 'bank transfer' leak in About/Highlights (AC3) — noise appears only in serialized raw prop with literal \\n\\n, never rendered",
+      "pass: no '—' empty spec-band cell, no empty ENGINE column (AC2)",
+      "pass: stickyBar DOM = Price + Enquire only (AC6)",
+      "pass: overflow-x:hidden present; no [WARN x-overflow] on iphone13/androidS device emulation (AC6)",
+      "pass: specsBand/specCol/on-primary paired; CanvasFX aurora + mfx-shimmer + mfx-spotlight + 5 data-aos=fade / 11 fade-up wired (AC7/AC10)",
+      "pass: px-invite absent on route (grep) (AC9)",
+      "pass: no box-shadow in Header.module.css; no bare header/footer element selectors in theme styles"
+    ]
+  },
+  "issues": [
+    {
+      "id": "vehicle-detail-2-01",
+      "severity": "minor",
+      "criterion": "AC5",
+      "route": "/used-cars/[slug]",
+      "brand": "both",
+      "screen": "all (1440 mosaic pill + iphone13 carousel pill)",
+      "evidence": "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/real-pri-used-cars-ford-c-max-1-6-tdci-titanium-euro-5-5dr-109-000-miles-2690-109000-202511238087920-w1440.png ; DOM grep returns literal 'Gallery ()'",
+      "description": "Gallery pill renders empty parens 'Gallery ()' instead of the photo count (32 available). The detail.gallery_pill {count} token resolves to nothing. Non-fatal: the desktop '+28' overlay and mobile '1/32' counter both convey the count and the pill still opens the lightbox. Owner: builder (vehicle-detail)."
+    },
+    {
+      "id": "vehicle-detail-2-02",
+      "severity": "minor",
+      "criterion": "AC3 (parseVehicleDescription quality)",
+      "route": "/used-cars/[slug]",
+      "brand": "both",
+      "screen": "all",
+      "evidence": "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/alt-used-cars-audi-a5-2-0-tdi-black-edition-euro-5-s-s-2dr-118-000-miles-5990-118000-202512258798253-w1440.png",
+      "description": "About-this-car prose clips the leading token of the derivative: renders '6 TDCi Titanium.' (Ford, should be '1.6') and '0 TDI Black Edition .' (Audi, should be '2.0', with a stray space before the period). Cosmetic parseVehicleDescription artifact in an optional prose block; page still reads fine. Owner: builder (vehicle-detail / parseDescription.ts)."
+    }
+  ],
+  "context_not_failing": [
+    "Registration renders the 15-digit listing id (e.g. 202511238087920) in the masthead subline, Key facts, and Specification because the inventory feed carries no real UK plate. Platform-wide data quirk, not a theme defect.",
+    "Next.js dev overlay shows '1 Issue' bottom-left on homepage (dev-mode console indicator; aligns with the 34 advisory audit findings). Not a production/theme visual defect."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/real-pri-used-cars-ford-c-max-1-6-tdci-titanium-euro-5-5dr-109-000-miles-2690-109000-202511238087920-w505.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/real-pri-used-cars-ford-c-max-1-6-tdci-titanium-euro-5-5dr-109-000-miles-2690-109000-202511238087920-w768.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/real-pri-used-cars-ford-c-max-1-6-tdci-titanium-euro-5-5dr-109-000-miles-2690-109000-202511238087920-w1024.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/real-pri-used-cars-ford-c-max-1-6-tdci-titanium-euro-5-5dr-109-000-miles-2690-109000-202511238087920-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/alt-used-cars-audi-a5-2-0-tdi-black-edition-euro-5-s-s-2dr-118-000-miles-5990-118000-202512258798253-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/alt-used-cars-audi-a5-2-0-tdi-black-edition-euro-5-s-s-2dr-118-000-miles-5990-118000-202512258798253-w505.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/dev-used-cars-ford-c-max-1-6-tdci-titanium-euro-5-5dr-109-000-miles-2690-109000-202511238087920-iphone13.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/devrm-used-cars-ford-c-max-1-6-tdci-titanium-euro-5-5dr-109-000-miles-2690-109000-202511238087920-iphone13-rm.png"
+  ]
+}

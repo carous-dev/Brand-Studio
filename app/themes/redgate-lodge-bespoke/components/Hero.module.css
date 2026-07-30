@@ -1,0 +1,240 @@
+/* Home hero — split with a claret-matted framed photo (locked signature move).
+   Text never sits on the photo, so no scrim; every surface derives from the
+   dashboard tokens, so it renders correctly on the claret palette AND a light
+   throwaway brand. Mobile-first: single column base, min-width queries widen.
+   Radius scale (design-language §5): 0 on the photo + mat, 4px on buttons. */
+
+.hero {
+  position: relative; /* anchors the aurora CanvasFX backdrop */
+  overflow: hidden;
+  background: var(--color-bg);
+  color: var(--color-text);
+  /* Top padding clears the sticky nav row; bottom lands clean on `bg` so the
+     proof-ledger's double hairline reads as a deliberate rule, not a crash. */
+  padding: clamp(2.5rem, 6vw, 4.5rem) 0;
+}
+
+/* Furnishing: the aurora light sits behind everything, softened. It self-guards
+   (static token wash ≤640px / reduced-motion), so no *-decor-mobile-hide needed. */
+.aurora {
+  opacity: 0.85;
+}
+
+.inner {
+  position: relative;
+  z-index: 1; /* content rides above the aurora backdrop */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 6vw, 3rem);
+}
+
+/* ---- Content column ---- */
+.content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.4vw, 1.4rem);
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.title {
+  margin: 0;
+  /* Display slot — clamp is the ONLY width control (no max-width). */
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: clamp(2.1rem, 5.2vw, 3.4rem);
+  line-height: 1.12;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.lead {
+  margin: 0;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--color-muted);
+  text-wrap: pretty;
+  max-width: 46ch;
+}
+
+/* ---- CTAs ---- */
+.ctaRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.primaryCta,
+.ghostCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 1.5rem;
+  border-radius: 4px;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+.primaryCta {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border: 1px solid var(--color-primary);
+  width: 100%;
+}
+
+.primaryCta:hover {
+  background: color-mix(in srgb, var(--color-primary) 85%, var(--color-text));
+  border-color: color-mix(in srgb, var(--color-primary) 85%, var(--color-text));
+  color: var(--color-on-primary);
+}
+
+.ghostCta {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.ghostCta:hover {
+  border-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+.primaryCta:focus-visible,
+.ghostCta:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Ghost CTA hidden on the smallest screens — one route in on a phone. */
+@media (max-width: 480px) {
+  .ghostCta { display: none; }
+}
+
+/* ---- Framed photo (the signature move) ---- */
+.figure {
+  position: relative;
+  margin: 0;
+  min-width: 0;
+}
+
+/* Claret-tint mat panel, offset down-right behind the frame. 8px at mobile
+   (reduced but still visible), 16px from 768 up. Decorative — aria-hidden. */
+.mat {
+  position: absolute;
+  inset: 0;
+  transform: translate(8px, 8px);
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-bg));
+  z-index: 0;
+  pointer-events: none;
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Refined micro-interaction: the mat deepens on hover for a subtle lift. */
+.figure:hover .mat {
+  transform: translate(14px, 14px);
+}
+
+.frame {
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  /* Light fallback behind the photo; paired muted placeholder for empty state. */
+  background: var(--color-surface);
+  color: var(--color-muted);
+}
+
+/* Placeholder line sits beneath the photo layer; a 404 photo is transparent,
+   so this shows through and the empty state reads as an intentional panel. */
+.placeholder {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  text-align: center;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-size: 0.8125rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-color: transparent;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* Furnishing: slow cinematic ken-burns drift (luxury-refined, not neon).
+     Overscan from scale keeps the frame covered; guarded below. */
+  transform-origin: center;
+  animation: hero-kenburns 24s ease-in-out infinite alternate;
+}
+
+@keyframes hero-kenburns {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.09) translate(1.4%, -1%); }
+}
+
+/* Furnishing floors: no motion under reduced-motion or on phones. */
+@media (prefers-reduced-motion: reduce) {
+  .photo { animation: none; }
+  .mat,
+  .figure:hover .mat { transition: none; }
+}
+
+@media (max-width: 720px) {
+  .photo { animation: none; }
+}
+
+/* ---- 768: two columns (text 55 / photo 45), ghost CTA inline, mat 16px ---- */
+@media (min-width: 768px) {
+  .inner {
+    grid-template-columns: 55fr 45fr;
+    align-items: center;
+    padding: 0 1.25rem;
+  }
+
+  .ctaRow {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .primaryCta { width: auto; min-width: 220px; }
+  .ghostCta { min-width: 160px; }
+
+  .mat { transform: translate(16px, 16px); }
+  .figure:hover .mat { transform: translate(22px, 22px); }
+}
+
+/* ---- 1024: taller photo, text vertically centered ---- */
+@media (min-width: 1024px) {
+  .frame { aspect-ratio: auto; min-height: 420px; }
+  .content { gap: 1.4rem; }
+}

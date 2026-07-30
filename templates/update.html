@@ -668,7 +668,7 @@
                 <div class="tab-pane" id="colors-tab">
                     <div class="form-section">
                         <h3>🎨 Brand Color</h3>
-                        <p class="form-section-hint">Pick your primary brand color — that's it. Everything else (secondary, accent, background, text, surface, border and muted) is generated from it automatically with colour-theory and WCAG contrast rules.</p>
+                        <p class="form-section-hint">Pick your primary — the rest of the palette is generated from it with WCAG-safe contrast.</p>
                         <div class="color-swatch-grid">
                             <!-- Primary Color Swatch -->
                             <div class="color-swatch-card" data-color="primaryColor">
@@ -704,27 +704,39 @@
                     </div>
 
                     <div class="form-section">
+                        {% set colors_auto_raw = brand_data.theme.colorsAuto if brand_data.theme and (brand_data.theme.colorsAuto is defined) else true %}
+                        {% set colors_auto = colors_auto_raw not in [false, 'false', 0, '0', 'False', 'no', 'off'] %}
                         <div class="derived-colors-header">
                             <h3>✨ Generated palette</h3>
-                            <span class="auto-generated-badge">Auto-generated from your primary</span>
+                            <label class="auto-tune-toggle" for="colorsAutoToggle">
+                                <input type="checkbox" id="colorsAutoToggle" {% if colors_auto %}checked{% endif %}>
+                                <span class="auto-tune-track"><span class="auto-tune-thumb"></span></span>
+                                <span class="auto-tune-label">Auto from primary</span>
+                            </label>
                         </div>
-                        <p class="form-section-hint">Secondary, accent, background and the supporting text / surface / border / muted colors are generated from your primary with colour-theory and WCAG contrast rules. They refresh live as you change the primary above — no manual tuning needed.</p>
-                        <input type="hidden" id="colorsAuto" name="colorsAuto" value="true">
+                        <p class="form-section-hint">Derived from your primary. Click any swatch to override — that switches auto off so your pick sticks.</p>
+                        <input type="hidden" id="colorsAuto" name="colorsAuto" value="{{ 'true' if colors_auto else 'false' }}">
                         <div class="color-swatch-grid">
                             {% set generated_swatches = [
-                                ('secondaryColor', 'Secondary Color', 'Supporting brand tone', '#471f25'),
-                                ('accentColor', 'Accent Color', 'Highlights, links, badges', '#199f45'),
-                                ('backgroundColor', 'Background Color', 'Main page background', '#fdf8f9'),
-                                ('textColor', 'Text Color', 'Main text color', '#1d1725'),
-                                ('surfaceColor', 'Surface Color', 'Card / panel background', '#ffffff'),
-                                ('borderColor', 'Border Color', 'Card / divider borders', '#e2dde0'),
-                                ('mutedColor', 'Muted Color', 'Secondary text / labels', '#77717a')
+                                ('secondaryColor', 'Secondary', 'Supporting brand tone', '#471f25'),
+                                ('accentColor', 'Accent', 'Highlights, links, badges', '#199f45'),
+                                ('backgroundColor', 'Background', 'Main page background', '#fdf8f9'),
+                                ('textColor', 'Text', 'Main text color', '#1d1725'),
+                                ('surfaceColor', 'Surface', 'Card / panel background', '#ffffff'),
+                                ('borderColor', 'Border', 'Card / divider borders', '#e2dde0'),
+                                ('mutedColor', 'Muted', 'Secondary text / labels', '#77717a')
                             ] %}
                             {% for key, label, desc, default in generated_swatches %}
                             {% set value = brand_data.theme.colors[key] if brand_data.theme and brand_data.theme.colors and brand_data.theme.colors[key] else default %}
-                            <div class="color-swatch-card derived-swatch auto-locked" data-color="{{ key }}">
+                            <div class="color-swatch-card derived-swatch" data-color="{{ key }}">
                                 <span class="auto-badge">Auto</span>
-                                <div class="swatch-preview" style="background-color: {{ value }}"></div>
+                                <div class="swatch-preview" style="background-color: {{ value }}">
+                                    <div class="swatch-overlay">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                    </div>
+                                </div>
                                 <div class="swatch-info">
                                     <div class="swatch-header">
                                         <h4>{{ label }}</h4>
@@ -810,102 +822,8 @@
                         <h3>🖼️ Per-page Images</h3>
                         <p class="form-section-hint">Each card maps to a specific page band in the live theme. Upload a file (drag-drop supported) or paste a CDN URL — uploads always win. The "Where it shows" caption tells you exactly which bespoke-theme page area inherits the image.</p>
 
-                        {% set page_image_slots = [
-                            ('about', 'About', 'About page hero', 'Photo of the team, premises, or signature vehicle'),
-                            ('services', 'Services', 'Services page hero', 'Service-bay, MOT bay, or detailing photo'),
-                            ('finance', 'Finance', 'Finance page hero', 'Hand-shake / signing / showroom desk imagery'),
-                            ('partExchange', 'Part Exchange', 'Part Exchange page hero', 'Two cars side-by-side or keys-being-handed photo'),
-                            ('sellYourCar', 'Sell Your Car', 'Sell Your Car page hero', 'Owner stood next to their car / car-keys close-up'),
-                            ('recentlySold', 'Recently Sold', 'Recently Sold page hero', 'Sold-stamp, happy-buyer, or hero stock shot'),
-                        ] %}
-                        <div class="page-image-grid">
-                            {% for slot, label, where, caption in page_image_slots %}
-                            {% set current = brand_data.images[slot] if brand_data.images and brand_data.images[slot] else '' %}
-                            {% set url_field = 'image' ~ slot[0]|upper ~ slot[1:] ~ 'Url' %}
-                            {% set is_remote = current and (current.startswith('http://') or current.startswith('https://')) %}
-                            <div class="page-image-card" data-page-image-card data-slot="{{ slot }}" data-has-image="{{ 'true' if current else 'false' }}">
-                                <div class="page-image-card__head">
-                                    <div class="page-image-card__icon" aria-hidden="true">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                            <polyline points="21,15 16,10 5,21"></polyline>
-                                        </svg>
-                                    </div>
-                                    <div class="page-image-card__heading">
-                                        <span class="page-image-card__title">{{ label }}</span>
-                                        <span class="page-image-card__where">Shows in <strong>{{ where }}</strong></span>
-                                    </div>
-                                    <span class="page-image-card__status" data-page-image-status>{{ 'Set' if current else 'Default' }}</span>
-                                </div>
-
-                                <div class="page-image-card__preview">
-                                    <div class="file-upload-area" data-field="{{ slot }}ImageFile">
-                                        <input type="file" id="{{ slot }}ImageFile" name="{{ slot }}ImageFile" accept="image/png,image/jpeg,image/gif,image/svg+xml,image/webp" hidden data-file-type="{{ slot }}Image">
-                                        <div class="file-upload-content">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                                <polyline points="17,8 12,3 7,8"></polyline>
-                                                <line x1="12" y1="3" x2="12" y2="15"></line>
-                                            </svg>
-                                            <p class="file-upload-text">Drop an image or click to browse</p>
-                                            <p class="file-upload-subtitle">{{ caption }}</p>
-                                        </div>
-                                        <div class="file-upload-preview" id="{{ slot }}ImagePreview" style="{% if current %}display: flex;{% else %}display: none;{% endif %}">
-                                            <img src="{{ asset_url(current) }}" alt="{{ label }} preview" class="preview-image">
-                                            <button type="button" class="remove-file" data-page-image-remove="{{ slot }}" onclick="clearFile('{{ slot }}ImageFile')">×</button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="page-image-card__body">
-                                    <div class="page-image-card__tabs" role="tablist" aria-label="{{ label }} image source">
-                                        <button type="button" class="page-image-card__tab" role="tab"
-                                                data-page-image-tab="upload"
-                                                aria-selected="{{ 'false' if is_remote else 'true' }}"
-                                                aria-controls="{{ slot }}UploadPanel">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17,8 12,3 7,8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                                            Upload
-                                        </button>
-                                        <button type="button" class="page-image-card__tab" role="tab"
-                                                data-page-image-tab="url"
-                                                aria-selected="{{ 'true' if is_remote else 'false' }}"
-                                                aria-controls="{{ slot }}UrlPanel">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                                            URL
-                                        </button>
-                                    </div>
-
-                                    <div class="page-image-card__panel" id="{{ slot }}UploadPanel" data-page-image-panel="upload" role="tabpanel" {% if is_remote %}hidden{% endif %}>
-                                        <div class="page-image-card__upload-panel">
-                                            <div class="page-image-card__file-meta" data-page-image-filemeta hidden>
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                                <span data-page-image-filename>—</span>
-                                            </div>
-                                            <p class="page-image-card__hint">PNG · JPG · WEBP · SVG · GIF — up to 16MB. Aspect ratio 16:9 looks best.</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="page-image-card__panel" id="{{ slot }}UrlPanel" data-page-image-panel="url" role="tabpanel" {% if not is_remote %}hidden{% endif %}>
-                                        <div class="page-image-card__url-row">
-                                            <input type="url" id="{{ url_field }}" name="{{ url_field }}"
-                                                   value="{{ current if is_remote else '' }}"
-                                                   placeholder="https://cdn.example.com/photo.jpg"
-                                                   data-page-image-url>
-                                            <button type="button" class="page-image-card__url-clear" data-page-image-url-clear>Clear</button>
-                                        </div>
-                                    </div>
-
-                                    <div class="page-image-card__footer">
-                                        <span class="page-image-card__source-tag" data-page-image-source>{% if is_remote %}remote URL{% elif current %}uploaded{% else %}theme default{% endif %}</span>
-                                        <button type="button" class="page-image-card__reset" data-page-image-reset hidden>
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
-                                            Reset to default
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
+                        <div data-page-image-host data-page-images-existing='{{ (brand_data.images|default({}))|tojson }}'>
+                            <p class="form-section-hint" data-page-image-status-msg>Loading page images for this theme…</p>
                         </div>
                     </div>
                 </div>
@@ -1254,12 +1172,20 @@
 }
 
 .form-section h3 {
-    font-size: 1.125rem;
+    font-size: 1.05rem;
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
+    margin-bottom: 0.9rem;
+    padding-bottom: 0.6rem;
     border-bottom: 1px solid var(--border-primary);
+}
+
+.form-section-hint {
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: var(--text-secondary, #94a3b8);
+    margin: -0.35rem 0 0.4rem;
+    max-width: 68ch;
 }
 
 .form-grid {
@@ -1432,29 +1358,35 @@
     color: #ffffff;
 }
 
+/* Generated swatches stay fully pickable in both states; the header toggle is
+   the single source of truth for auto vs. manual, so the per-card badge stays
+   hidden to keep the grid compact. Clicking a swatch overrides it (auto off). */
 .derived-swatch.auto-locked .auto-badge {
-    /* redundant per-card tag — the section header already says
-       "Auto-generated from your primary"; kept hidden to stay compact */
     display: none;
 }
 
+/* Override brand-form.css: auto-tracking swatches are still clickable, so keep
+   the hover affordance (star overlay + elevation) that base CSS suppresses. */
 .derived-swatch.auto-locked {
-    cursor: default;
+    cursor: pointer;
 }
 
 .derived-swatch.auto-locked:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary);
     transform: none;
-    box-shadow: none;
-    border-color: var(--border-primary);
 }
 
 .derived-swatch.auto-locked .swatch-overlay {
-    display: none;
+    display: flex;
+}
+
+.derived-swatch.auto-locked:hover .swatch-overlay {
+    opacity: 1;
 }
 
 .derived-swatch.auto-locked:hover .swatch-preview {
-    border-color: var(--border-primary);
-    transform: none;
+    border-color: var(--primary);
 }
 
 /* Auto-tune toggle */
@@ -1464,20 +1396,63 @@
     justify-content: space-between;
     gap: 1rem;
     flex-wrap: wrap;
+    margin-bottom: 0.35rem;
 }
 
-.auto-generated-badge {
+.derived-colors-header h3 {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.auto-tune-toggle {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    font-size: 0.78rem;
-    font-weight: 600;
-    padding: 0.28rem 0.7rem;
-    border-radius: 999px;
-    color: var(--primary);
-    background: color-mix(in srgb, var(--primary) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+    gap: 0.5rem;
+    cursor: pointer;
     user-select: none;
+}
+
+.auto-tune-toggle input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.auto-tune-track {
+    width: 38px;
+    height: 22px;
+    border-radius: 999px;
+    background: var(--bg-tertiary, #334155);
+    border: 1px solid var(--border-primary);
+    position: relative;
+    transition: background var(--transition-normal);
+    flex: 0 0 auto;
+}
+
+.auto-tune-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    transition: transform var(--transition-normal);
+}
+
+.auto-tune-toggle input:checked + .auto-tune-track {
+    background: var(--primary);
+}
+
+.auto-tune-toggle input:checked + .auto-tune-track .auto-tune-thumb {
+    transform: translateX(16px);
+}
+
+.auto-tune-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
 }
 
 /* Contrast warning chips */
@@ -2054,6 +2029,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize Component Text tab — loads recipe for current theme and re-loads on theme change
     initializeComponentTextTab();
+
+    // Initialize Page Images tab — loads the image manifest for current theme and re-loads on theme change
+    initializePageImageTab();
 
     // Enable autosave for update form
     const updateForm = document.getElementById('updateBrandForm');
@@ -2797,6 +2775,178 @@ function initializeComponentTextTab() {
     });
 }
 
+// Page Images tab — data-driven from the per-theme image manifest
+// (GET /api/themes/<id>/image-recipe), mirroring initializeComponentTextTab().
+// Renders one .page-image-card per non-hero slot, then delegates all
+// upload/URL/preview/reset behavior to initializePageImagePicker().
+function initializePageImageTab() {
+    const host = document.querySelector('[data-page-image-host]');
+    if (!host) return;
+    const themeSelect = document.getElementById('themeId');
+    if (!themeSelect) return;
+
+    let existingValues = {};
+    try {
+        existingValues = JSON.parse(host.getAttribute('data-page-images-existing') || '{}') || {};
+        if (!existingValues || typeof existingValues !== 'object') existingValues = {};
+    } catch (_) {
+        existingValues = {};
+    }
+
+    function escapeHtml(value) {
+        return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function resolveAssetUrl(path) {
+        if (!path) return '';
+        if (/^(https?:|data:)/i.test(path)) return path;
+        const origin = String(window.__BRAND_ASSET_ORIGIN__ || '').replace(/\/+$/, '');
+        if (origin && path.charAt(0) === '/') return origin + path;
+        return path;
+    }
+
+    function urlFieldName(key) {
+        return key ? 'image' + key.charAt(0).toUpperCase() + key.slice(1) + 'Url' : 'imageUrl';
+    }
+
+    function renderEmpty(reason) {
+        host.innerHTML =
+            '<p class="form-section-hint" data-page-image-status-msg>' +
+            escapeHtml(reason || 'This theme has no customizable page images yet.') +
+            '</p>';
+    }
+
+    function cardHtml(slot) {
+        const key = slot.key;
+        const label = slot.label || key;
+        const where = slot.page || slot.where || '';
+        const caption = slot.caption || slot.aiHint || '';
+        const aspect = slot.aspect ? String(slot.aspect) : '';
+        const urlField = urlFieldName(key);
+        const current = Object.prototype.hasOwnProperty.call(existingValues, key)
+            ? (existingValues[key] || '')
+            : '';
+        const isRemote = /^https?:\/\//i.test(current);
+        const previewSrc = resolveAssetUrl(current);
+        const eKey = escapeHtml(key);
+        const eLabel = escapeHtml(label);
+        const eUrlField = escapeHtml(urlField);
+        const aspectHint = aspect
+            ? 'Aspect ratio ' + escapeHtml(aspect) + ' looks best.'
+            : 'Aspect ratio 16:9 looks best.';
+        return '' +
+'<div class="page-image-card" data-page-image-card data-slot="' + eKey + '" data-has-image="' + (current ? 'true' : 'false') + '">' +
+  '<div class="page-image-card__head">' +
+    '<div class="page-image-card__icon" aria-hidden="true">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>' +
+        '<circle cx="8.5" cy="8.5" r="1.5"></circle>' +
+        '<polyline points="21,15 16,10 5,21"></polyline>' +
+      '</svg>' +
+    '</div>' +
+    '<div class="page-image-card__heading">' +
+      '<span class="page-image-card__title">' + eLabel + '</span>' +
+      '<span class="page-image-card__where">Shows in <strong>' + escapeHtml(where) + '</strong></span>' +
+    '</div>' +
+    '<span class="page-image-card__status" data-page-image-status>' + (current ? 'Set' : 'Default') + '</span>' +
+  '</div>' +
+  '<div class="page-image-card__preview">' +
+    '<div class="file-upload-area" data-field="' + eKey + 'ImageFile">' +
+      '<input type="file" id="' + eKey + 'ImageFile" name="' + eKey + 'ImageFile" accept="image/png,image/jpeg,image/gif,image/svg+xml,image/webp" hidden data-file-type="' + eKey + 'Image">' +
+      '<div class="file-upload-content">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
+          '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>' +
+          '<polyline points="17,8 12,3 7,8"></polyline>' +
+          '<line x1="12" y1="3" x2="12" y2="15"></line>' +
+        '</svg>' +
+        '<p class="file-upload-text">Drop an image or click to browse</p>' +
+        '<p class="file-upload-subtitle">' + escapeHtml(caption) + '</p>' +
+      '</div>' +
+      '<div class="file-upload-preview" id="' + eKey + 'ImagePreview" style="' + (current ? 'display: flex;' : 'display: none;') + '">' +
+        '<img src="' + escapeHtml(previewSrc) + '" alt="' + eLabel + ' preview" class="preview-image">' +
+        '<button type="button" class="remove-file" data-page-image-remove="' + eKey + '" onclick="clearFile(\'' + eKey + 'ImageFile\')">×</button>' +
+      '</div>' +
+    '</div>' +
+  '</div>' +
+  '<div class="page-image-card__body">' +
+    '<div class="page-image-card__tabs" role="tablist" aria-label="' + eLabel + ' image source">' +
+      '<button type="button" class="page-image-card__tab" role="tab" data-page-image-tab="upload" aria-selected="' + (isRemote ? 'false' : 'true') + '" aria-controls="' + eKey + 'UploadPanel">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17,8 12,3 7,8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>' +
+        'Upload' +
+      '</button>' +
+      '<button type="button" class="page-image-card__tab" role="tab" data-page-image-tab="url" aria-selected="' + (isRemote ? 'true' : 'false') + '" aria-controls="' + eKey + 'UrlPanel">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>' +
+        'URL' +
+      '</button>' +
+    '</div>' +
+    '<div class="page-image-card__panel" id="' + eKey + 'UploadPanel" data-page-image-panel="upload" role="tabpanel"' + (isRemote ? ' hidden' : '') + '>' +
+      '<div class="page-image-card__upload-panel">' +
+        '<div class="page-image-card__file-meta" data-page-image-filemeta hidden>' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+          '<span data-page-image-filename>—</span>' +
+        '</div>' +
+        '<p class="page-image-card__hint">PNG · JPG · WEBP · SVG · GIF — up to 16MB. ' + aspectHint + '</p>' +
+      '</div>' +
+    '</div>' +
+    '<div class="page-image-card__panel" id="' + eKey + 'UrlPanel" data-page-image-panel="url" role="tabpanel"' + (isRemote ? '' : ' hidden') + '>' +
+      '<div class="page-image-card__url-row">' +
+        '<input type="url" id="' + eUrlField + '" name="' + eUrlField + '" value="' + escapeHtml(isRemote ? current : '') + '" placeholder="https://cdn.example.com/photo.jpg" data-page-image-url>' +
+        '<button type="button" class="page-image-card__url-clear" data-page-image-url-clear>Clear</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="page-image-card__footer">' +
+      '<span class="page-image-card__source-tag" data-page-image-source>' + (isRemote ? 'remote URL' : (current ? 'uploaded' : 'theme default')) + '</span>' +
+      '<button type="button" class="page-image-card__reset" data-page-image-reset hidden>' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>' +
+        'Reset to default' +
+      '</button>' +
+    '</div>' +
+  '</div>' +
+'</div>';
+    }
+
+    function renderRecipe(recipe) {
+        const slots = (recipe && Array.isArray(recipe.slots)) ? recipe.slots : [];
+        const pageSlots = slots.filter((s) => s && s.key && s.role !== 'hero');
+        if (!pageSlots.length) {
+            renderEmpty('This theme has no customizable page images yet.');
+            return;
+        }
+        host.innerHTML = '<div class="page-image-grid">' + pageSlots.map(cardHtml).join('') + '</div>';
+        // Rebind upload / URL-tab / preview / reset / remove behavior to the
+        // freshly injected cards — the picker is fully DOM-driven.
+        if (typeof initializePageImagePicker === 'function') initializePageImagePicker();
+    }
+
+    function loadRecipe(themeId) {
+        if (!themeId) {
+            renderEmpty('Select a theme above to see its page images.');
+            return;
+        }
+        host.innerHTML =
+            '<p class="form-section-hint" data-page-image-status-msg>Loading page images for <code>' +
+            escapeHtml(themeId) + '</code>…</p>';
+        fetch('/api/themes/' + encodeURIComponent(themeId) + '/image-recipe', {
+            credentials: 'same-origin',
+            headers: { 'Accept': 'application/json' }
+        })
+            .then((res) => res.ok ? res.json() : Promise.reject(res.statusText))
+            .then((recipe) => renderRecipe(recipe))
+            .catch((err) => {
+                renderEmpty('Could not load the page-image manifest for this theme. ' + (err || ''));
+            });
+    }
+
+    loadRecipe(themeSelect.value);
+    themeSelect.addEventListener('change', () => {
+        // Theme switched — refresh manifest so the image cards mirror the new theme.
+        loadRecipe(themeSelect.value);
+    });
+}
+
 function initializePageImagePicker() {
     const cards = document.querySelectorAll('[data-page-image-card]');
     if (!cards.length) return;
@@ -3179,8 +3329,9 @@ function populateFormFields(brand) {
                 syncColorInputs(key, brand.theme.colors[key]);
             }
         });
-        // Regenerate from the loaded primary — single-primary mode is always on.
-        setColorsAutoState();
+        // Honour the loaded record's auto flag (missing flag → auto on).
+        const loadedAuto = brand.theme.colorsAuto;
+        setColorsAutoState(!(loadedAuto === false || loadedAuto === 'false'));
         updateContrastWarnings();
     }
 
@@ -3395,10 +3546,9 @@ function initializeColorSwatches() {
         const preview = card.querySelector('.swatch-preview');
         const colorValue = card.querySelector('.color-value');
         
-        // Click on swatch card to open color picker (but not on copy button,
-        // and not while the card is auto-tuned)
+        // Click anywhere on a swatch (except the copy button / hex value) opens
+        // its picker — generated swatches are pickable too.
         card.addEventListener('click', (e) => {
-            if (card.classList.contains('auto-locked')) return;
             if (!e.target.closest('.copy-icon-btn') && !e.target.closest('.color-value')) {
                 if (colorPicker) {
                     colorPicker.click();
@@ -3422,9 +3572,13 @@ function initializeColorSwatches() {
                     colorValue.textContent = newColor;
                 }
 
-                // Primary changed: regenerate the whole palette + warnings.
                 if (colorName === PRIMARY_COLOR_INPUT) {
-                    applyGeneratedPalette();
+                    // Primary changed: only re-derive while auto is on.
+                    if (isColorsAutoOn()) applyGeneratedPalette();
+                    updateContrastWarnings();
+                } else if (GENERATED_COLOR_KEYS.includes(colorName)) {
+                    // A generated swatch was hand-picked → drop auto so it sticks.
+                    if (isColorsAutoOn()) setColorsAutoState(false);
                     updateContrastWarnings();
                 }
             });
@@ -3439,8 +3593,12 @@ function initializeColorSwatches() {
         }
     });
 
-    // Single-primary mode: generate the whole palette from the primary on init.
-    setColorsAutoState();
+    // Auto-tune toggle: on → re-derive from primary and re-lock; off → manual.
+    const autoToggle = document.getElementById('colorsAutoToggle');
+    if (autoToggle) {
+        autoToggle.addEventListener('change', () => setColorsAutoState(autoToggle.checked));
+    }
+    setColorsAutoState(isColorsAutoOn());
     updateContrastWarnings();
 }
 
@@ -3457,6 +3615,11 @@ const PRIMARY_COLOR_INPUT = 'primaryColor';
 // The dealer picks ONLY the primary; everything else is generated from it
 // (mirror of color_derive.derive_from_primary via ColorUtils.deriveFromPrimary).
 const GENERATED_COLOR_KEYS = ['secondaryColor', 'accentColor', 'backgroundColor', 'textColor', 'surfaceColor', 'borderColor', 'mutedColor'];
+
+function isColorsAutoOn() {
+    const hidden = document.getElementById('colorsAuto');
+    return !!hidden && hidden.value === 'true';
+}
 
 function getBrandColorValue(id) {
     const el = document.getElementById(id);
@@ -3497,22 +3660,24 @@ function updateContrastWarnings() {
     ).join('');
 }
 
-// Single-primary mode is always on: the palette is always generated from the
-// primary and the generated swatches stay locked (no manual intervention).
-function setColorsAutoState() {
+// Auto ON: generated swatches track the primary (badge shown, re-derived live).
+// Auto OFF: they keep whatever hex is in the inputs so hand-picks are respected.
+function setColorsAutoState(on) {
     const hidden = document.getElementById('colorsAuto');
-    if (hidden) hidden.value = 'true';
+    if (hidden) hidden.value = on ? 'true' : 'false';
+    const toggle = document.getElementById('colorsAutoToggle');
+    if (toggle) toggle.checked = on;
     document.querySelectorAll('.derived-swatch').forEach(card => {
-        card.classList.add('auto-locked');
+        card.classList.toggle('auto-locked', on);
     });
-    applyGeneratedPalette();
+    if (on) applyGeneratedPalette();
 }
 window.setColorsAutoState = setColorsAutoState;
 
 // Safety net: if the ColorUtils module loads after init, re-apply once ready
 document.addEventListener('colorutils-ready', () => {
     if (document.readyState !== 'loading' && document.getElementById('colorsAuto')) {
-        setColorsAutoState();
+        setColorsAutoState(isColorsAutoOn());
         updateContrastWarnings();
     }
 });

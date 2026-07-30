@@ -1,0 +1,65 @@
+{
+  "component": "header",
+  "iteration": 1,
+  "verdict": "FAIL",
+  "mechanical": {
+    "tsc": "pass",
+    "colorContract": "pass (0 literals in 0 files)",
+    "audit": "pass-for-header (Header.tsx + Header.module.css produced 0 findings). CONTEXT (not header-owned): styles/base.css:36 std-link-color-blanket BLOCKER (:where(a) blanket color rule) — belongs to the global-styles/base component; plus advisories on used-cars/[slug], services, sell-your-car, wishlist pages (other components).",
+    "greps": [
+      "pass: no box-shadow in Header.module.css",
+      "pass: no bare element selectors (CSS module; <header> styled via .navRow)",
+      "pass: all <Link href> whitelisted (/, /used-cars, /recently-sold, /services, /finance, /part-exchange, /sell-my-car, /wishlist, /compare) — sell-my-car correct, no Home/About/Contact nav items",
+      "pass: no max-width media queries (only min-width + prefers-reduced-motion)",
+      "pass: paired background/color on every rule (decorative .statusDot has bg without color but is aria-hidden and inherits color from .statusChip — acceptable)",
+      "pass: no 'use client' in a page wrapper (Header.tsx is a component)",
+      "pass: no hardcoded dealer strings — getBrandContactInfo + resolveText used; status fallback avoids 'Closed'",
+      "note: overlay hardcodes UI labels 'Wishlist'/'Compare'/'WhatsApp us' instead of resolveText (generic, not dealer-specific)"
+    ]
+  },
+  "issues": [
+    {
+      "id": "header-1-01",
+      "severity": "blocker",
+      "criterion": "build-rules §5 (brand logo 3-tier fallback; ship /themes/<id>/logo.png) + spec Layout 'logo (3-tier fallback)' + AC1 (plaque shows the logo)",
+      "route": "/ and /used-cars",
+      "screen": "505, 768, 1024, 1440",
+      "evidence": "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/crop-header-1-used-cars-w1440.png ; C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-1-home-w505.png ; C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-1-home-w1440.png",
+      "description": "The header brand identity renders as a broken-image placeholder + raw alt text ('Redgate Lodge Motor Group') on every route and width, including inside the plaque (the component's unique move, AC1). Root cause confirmed: this brand has no brand.logo, so BrandLogo falls to tier-2 THEME_LOGO '/themes/redgate-lodge-bespoke/logo.png' — which returns HTTP 404 (public/themes/redgate-lodge-bespoke/ ships no asset). Build-rules §5 requires that theme default logo.png be shipped. Secondary defect: when both image tiers fail, BrandLogo's onError should degrade to the styled <span> wordmark, but the wordmark does NOT render in the captured (post-networkidle) page — the broken <img>+alt persists. Fix: ship /themes/redgate-lodge-bespoke/logo.png AND verify the onError->wordmark fallback actually paints so a logo-less brand degrades cleanly."
+    },
+    {
+      "id": "header-1-02",
+      "severity": "minor",
+      "criterion": "build-rules §12 (every rendered string via resolveText)",
+      "route": "mobile overlay (code-verified; open-state not screenshottable from a static shot)",
+      "screen": "505",
+      "evidence": "app/themes/redgate-lodge-bespoke/components/Header.tsx:224,228,243",
+      "description": "The full-screen overlay hardcodes the UI labels 'Wishlist', 'Compare' and 'WhatsApp us' instead of routing them through resolveText(brand, key). Generic (not dealer-specific), so no preview-leak risk — polish only. text-recipe.json already defines footer.wishlist/footer.compare that could be reused."
+    }
+  ],
+  "context_notes": [
+    "This QA brand has no phone number and no city/county (getBrandContactInfo returned 'undefined, undefined'), so the contact-strip location chip and phone link are correctly hidden by defensive rendering (contact.locationLabel && / contact.phoneTel &&). Left side of the strip is therefore empty on mobile and desktop — data-driven, not a header bug. Status chip correctly shows the 'By appointment & walk-in' fallback (never 'Closed'), satisfying the States requirement.",
+    "The white gradient on the right edge of every screenshot is a theme-shots capture artifact (right-edge fade), not a header shadow or a blank CTA. The primary CTA label 'Sell my car' is confirmed present in the served HTML with the correct .cta{background:--color-primary;color:--color-on-primary} pair — AC4/CTA render is fine; the button only looked blank because it sits under that fade.",
+    "AC3 (no box-shadow): Header.module.css contains zero box-shadow declarations, so no shadow can paint under the sticky nav row at any scroll position; nav row uses border-bottom:1px var(--color-border) only.",
+    "AC1 (unique move): at 768/1024/1440 the single .plaque element spans both rows (36px strip + 64px nav = 100px) with one hairline right border touching strip and nav — one element, not a per-row logo. Verified visually and in markup.",
+    "AC2 (mobile): at 505 the header is one 32px nowrap contact row (status chip) + one 60px sticky logo/hamburger row; socials hidden, no city/county text, desktop CTA cluster hidden, hamburger 44x44. Satisfied (aside from the broken logo image in header-1-01).",
+    "AC5/AC6: nav is lean (no Home/About/Contact); on /used-cars the 'Used cars' item shows the 2px primary underline + aria-current (DOM), and isActiveRoute uses startsWith(href+'/') so /used-cars/<slug> keeps it active.",
+    "AC7: overlay markup verified in Header.tsx — rows min-height:56px, visible 44x44 ✕ close button, and .overlay[hidden]{display:none!important} present.",
+    "AC8: header nav-row bottom is a clean 1px --color-border hairline handing off to the home stub (bg) and to the used-cars page-ribbon — no gap, no shadow, no double border.",
+    "OUT OF SCOPE for header, flag for other reviewers: (a) styles/base.css std-link-color-blanket BLOCKER (global-styles component); (b) /used-cars page-ribbon renders as a claret PRIMARY band, whereas design-language §7 specifies the used-cars page-ribbon on `surface` — page-ribbon component's concern; (c) used-cars inventory grid shows horizontal overflow / clipped cards at 1024 (inventory component)."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-1-home-w505.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-1-home-w768.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-1-home-w1024.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-1-home-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-1-used-cars-w505.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-1-used-cars-w768.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-1-used-cars-w1024.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-1-used-cars-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/crop-header-1-used-cars-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/crop-header-1-used-cars-w1024.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/cta2-1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/strip-505.png"
+  ]
+}

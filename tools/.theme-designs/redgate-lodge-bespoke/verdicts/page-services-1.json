@@ -1,0 +1,28 @@
+{
+  "component": "page-services",
+  "mode": "full-page",
+  "route": "/services",
+  "iteration": 1,
+  "verdict": "PASS",
+  "brands": { "claret": "redgate-lodge-bespoke-qa", "light": "redgate-lodge-bespoke-qa-alt (teal)" },
+  "mechanical": { "tsc": "pass", "colorContract": "pass", "audit": "pass (0 blockers; advisory motion-aos-min-count on this page — non-blocking, see minor)" },
+  "issues": [
+    {
+      "id": "page-services-1-01",
+      "severity": "minor",
+      "owner": "services-page",
+      "criterion": "build-rules motion Quality-Bar (>=2 staggered data-aos entries per page) / design-language §6 (fade-up on sections)",
+      "route": "/services",
+      "width": "n/a",
+      "evidence": "audit-theme.mjs advisory: services/page.tsx has 0 data-aos attributes. Page renders correctly but has no staggered entry motion. Same advisory on recently-sold, sell-your-car, wishlist.",
+      "fix_hint": "Add data-aos=\"fade-up\" (+ small data-aos-delay stagger) to the aftercare cards and ledger-steps, consistent with §6 (fade-up only, 400ms, disabled <=720px)."
+    }
+  ],
+  "notes": [
+    "Flow matches §7: page-ribbon(surface) -> aftercare-suite EXPANDED 6 cards (workshop/bodyshop/car spa/warranties/breakdown/EV & hybrid)(bg) -> how-it-works ledger-steps 01-03(surface) -> px-invite primary band -> browse-by-make -> footer. Single primary band; ledger appears once."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-services-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-services-w505.png"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "component": "page-used-cars",
+  "mode": "full-page",
+  "route": "/used-cars",
+  "iteration": 1,
+  "verdict": "PASS",
+  "brands": { "claret": "redgate-lodge-bespoke-qa", "light": "redgate-lodge-bespoke-qa-alt (teal)" },
+  "mechanical": { "tsc": "pass", "colorContract": "pass", "audit": "pass (0 blockers; advisory raw <img> only in [slug] GalleryMosaic, not this route)" },
+  "issues": [],
+  "notes": [
+    "Flow matches §7: page-ribbon slim 'Cars in stock / 29 cars ready to view'(surface) -> 2-row toolbar (IN STOCK 29 + Filters/Wishlist/Compare chips; search + All makes/All body types/Price selects) + showroom grid wide container(bg) -> px-invite primary band -> browse-by-make -> footer.",
+    "Cards: 4:3 image, wishlist+compare glyphs top-left, single-line title, 2-col specs, price + VIEW; light 'Image not available' fallback for photoless cars (correct). Grid 3-col at 1440 (4-col reserved for >=1600).",
+    "TEAL PASS: toolbar accents, active pagination, card glyphs, px-invite band all teal-safe and legible (fp-teal-used-cars-full.png). Mobile 505: toolbar becomes scroll-snap rail, single-column cards."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/fp-claret-used-cars-full.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/fp-teal-used-cars-full.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-used-cars-w505.png"
+  ]
+}

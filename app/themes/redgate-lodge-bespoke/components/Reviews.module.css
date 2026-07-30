@@ -1,0 +1,302 @@
+/* Reviews — the guest-book spread (design-language §5 "hairline surface
+   grammar", §7 homepage `bg` pause between the primary px-invite band and the
+   `surface` visit-lodge band). One featured serif quote given title-size weight,
+   flanked (desktop) by two quiet supporting quotes, with vertical hairline rules
+   between columns. Hairlines only — no cards, no shadows, no gradients.
+
+   Every colour is a token / color-mix so the section reads on the claret palette
+   AND a light throwaway brand. Primary appears ONLY on the open-quote glyph and
+   the score-accent stars (AC3).
+
+   Mobile-first: base is the 360 stack (featured full-width + score line, then the
+   two supports stacked, separated by horizontal hairlines). min-width queries add
+   the 768 two-up supporting pair and the 1024 three-column spread.
+
+   Type scale (AC5): 4 distinct font-sizes only — 0.8125rem (caption: eyebrow,
+   attributions, score text), 1.1875rem (subtitle: section heading), the title
+   clamp (featured quote), and 1rem (body: supporting quotes + star row). */
+
+/* ---------- Section shell (paired surface) --------------------------------- */
+.section {
+  position: relative; /* anchors the aurora CanvasFX backdrop */
+  padding: clamp(3.25rem, 7vw, 6rem) 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  overflow: hidden; /* clips the hanging quote overhang AND the aurora wash */
+}
+
+/* Furnishing (luxury→refined): the same aurora-light the hero + visit-lodge
+   carry, dialled the faintest of the three so the guest-book quotes stay the
+   focus. It self-guards (static token wash ≤640px / reduced-motion), so no
+   *-decor-mobile-hide is needed. Decorative + aria-hidden via CanvasFX. */
+.aurora {
+  opacity: 0.35;
+}
+
+.inner {
+  position: relative;
+  z-index: 1; /* content rides above the aurora backdrop */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ---------- Ledger-style heading line -------------------------------------- */
+.head {
+  margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+/* Eyebrow is `muted` here — NOT primary (AC3 keeps primary to the glyph + stars).
+   Serif-caps letterspaced, echoing the wordmark (design-language §3). */
+.eyebrow {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Quiet section heading (subtitle-size serif) so the featured QUOTE is the loud
+   voice, not the section label — the guest-book reading. */
+.title {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 1.1875rem;
+  line-height: 1.18;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+/* ---------- The spread (base: single column stack) ------------------------- */
+.spread {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+/* ---------- Featured quote (title-size serif voice) ------------------------ */
+.featured {
+  margin: 0;
+  padding: 0 0 clamp(1.75rem, 4vw, 2.5rem);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Hanging open-quote: padding-left reserves the room, negative text-indent pulls
+   the primary glyph out into it so it hangs to the left of the text block. */
+.featuredQuote {
+  margin: 0;
+  padding-left: 1.15em;
+  text-indent: -1.15em;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.28;
+  color: var(--color-text);
+  text-wrap: pretty;
+}
+
+/* The open-quote glyph — the ONLY primary mark besides the score stars. Inherits
+   the quote's font-size (no new size introduced). Carries ONE quiet living
+   touch: the shared `mfx-float` primitive, slowed to a very gentle breathing
+   drift (the class sets a 4s cycle; this scoped override stretches it to 7s so
+   it reads refined, not restless). mfx-float is reduced-motion-guarded in the
+   MotionFX stylesheet, so no local guard is required. The float stays inline so
+   the primary glyph never detaches into "decor" — it's still the quote's mark. */
+.mark {
+  display: inline-block;
+  color: var(--color-primary);
+  padding-right: 0.1em;
+  animation-duration: 7s;
+  will-change: transform;
+}
+
+/* Small-caps serif attribution (design-language §3), right-aligned on mobile. */
+.featuredCite {
+  margin: 0.9rem 0 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  line-height: 1.3;
+  text-align: right;
+  color: var(--color-muted);
+}
+
+/* ---------- Aggregate score line (text + primary star shapes) -------------- */
+.score {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: clamp(1.25rem, 3vw, 1.75rem);
+  font-size: 0.8125rem;
+}
+
+/* Star SHAPES tinted with the primary score accent — decorative (aria-hidden).
+   Meaning lives in .scoreText, so removing colour never removes the rating. */
+.stars {
+  font-size: 1rem;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  color: var(--color-primary);
+}
+
+.scoreText {
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  color: var(--color-text);
+}
+
+/* ---------- Supporting quotes (body-size, muted, stacked on mobile) -------- */
+.support {
+  margin: 0;
+  padding: clamp(1.5rem, 3.5vw, 2rem) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.support:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.supportQuote {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--color-muted);
+  text-wrap: pretty;
+  /* Refined hover micro-interaction: a quiet warming of the quote colour toward
+     `text` (colour-only, ≤200ms, no layout shift) — the guest-book page reacting
+     to attention without breaking calm. Reduced-motion safe (colour fade). */
+  transition: color 180ms ease;
+}
+
+/* The supporting voice deepens from muted toward full `text` on hover, and its
+   attribution warms toward the claret accent — the same restrained, colour-only
+   gesture the visit-lodge ledger rows use, so the theme reads coherent. */
+.support:hover .supportQuote {
+  color: color-mix(in srgb, var(--color-text) 82%, var(--color-muted));
+}
+
+.support:hover .supportCite {
+  color: color-mix(in srgb, var(--color-primary) 55%, var(--color-muted));
+}
+
+.supportCite {
+  margin: 0.75rem 0 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  line-height: 1.3;
+  text-align: right;
+  color: var(--color-muted);
+  transition: color 180ms ease;
+}
+
+/* ---------- 768: featured full-width; supporting pair side-by-side --------- */
+@media (min-width: 768px) {
+  .inner {
+    padding: 0 1.25rem;
+  }
+
+  .spread {
+    grid-template-columns: 1fr 1fr;
+    column-gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .featured {
+    grid-column: 1 / -1;
+  }
+
+  /* Both supports lose the horizontal rule; a single VERTICAL hairline sits
+     between them via the right support's border-left. */
+  .support {
+    border-bottom: none;
+    padding: clamp(1.75rem, 3.5vw, 2.25rem) 0 0;
+  }
+
+  .support:last-child {
+    padding-bottom: 0;
+  }
+
+  .support[data-slot='right'] {
+    padding-left: clamp(1.5rem, 3vw, 2.5rem);
+    border-left: 1px solid var(--color-border);
+  }
+}
+
+/* ---------- 1024: three-column guest-book spread --------------------------- */
+@media (min-width: 1024px) {
+  .spread {
+    grid-template-columns: 1fr 2fr 1fr;
+    column-gap: 0;
+    align-items: start;
+  }
+
+  /* Featured is the dominant centre column; vertical hairlines flank it. */
+  .featured {
+    order: 2;
+    grid-column: auto;
+    padding: 0 clamp(1.75rem, 3vw, 2.75rem);
+    border-bottom: none;
+    border-left: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
+    text-align: center;
+  }
+
+  /* Centred pull-quote: drop the hanging indent so the block stays optically
+     centred; the primary open-quote leads the sentence inline. */
+  .featuredQuote {
+    padding-left: 0;
+    text-indent: 0;
+  }
+
+  .featuredCite {
+    text-align: center;
+  }
+
+  .score {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .support[data-slot='left'] {
+    order: 1;
+    padding: 0 clamp(1.5rem, 3vw, 2.5rem) 0 0;
+    border-left: none;
+  }
+
+  .support[data-slot='right'] {
+    order: 3;
+    padding: 0 0 0 clamp(1.5rem, 3vw, 2.5rem);
+    border-left: none;
+  }
+}
+
+/* ---------- 1440: container already caps at 1200px ------------------------- */
+@media (min-width: 1440px) {
+  .featured {
+    padding: 0 clamp(2rem, 3vw, 3rem);
+  }
+}
+
+/* ---------- Furnishing floors: reduced-motion collapses the hover fades ----- */
+/* The `mfx-float` glyph drift is already collapsed by the MotionFX stylesheet;
+   here we drop the supporting-quote hover colour transitions to none so the
+   guest book stays perfectly still for motion-sensitive readers. */
+@media (prefers-reduced-motion: reduce) {
+  .supportQuote,
+  .supportCite {
+    transition: none;
+  }
+}

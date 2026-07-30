@@ -1,0 +1,320 @@
+/* AftercareSuite — the theme differentiator (warm-premium "guest house for
+   cars"). Home variant sits on `--color-surface` with `--color-bg` card
+   plates; the /services variant inverts (section `bg`, cards `surface`).
+   Every colour is a token / color-mix so the section reads on the claret
+   palette AND a light throwaway brand. Surface grammar (design-language §5):
+   hairlines only — no shadows, no gradients; card radius 6px.
+
+   Unique move: each card's top edge carries a 32px primary "bookmark" bar
+   that slides to full card width on hover (≥1024). Mobile-first: base is the
+   360 single-column stack; min-width queries add the connecting rule, the
+   multi-column grids and the hover behaviour. */
+
+/* ---------- Section shell + surface inversion ------------------------------- */
+.section {
+  position: relative; /* anchors the aurora CanvasFX backdrop */
+  padding: clamp(3.25rem, 7vw, 6rem) 0;
+  overflow-x: clip;
+}
+
+/* Furnishing (luxury→refined): the aurora light sits behind the whole band,
+   held fainter than the hero (0.85) and visit-lodge (0.55) so the bookmark-tab
+   cards stay the focus. It self-guards (static token wash ≤640px /
+   reduced-motion), so no *-decor-mobile-hide is needed here. */
+.aurora {
+  opacity: 0.4;
+}
+
+/* Home: `surface` band (alternates against featured-stock `bg` above). */
+.home {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+/* /services: `bg` band (design-language §7). */
+.services {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.inner {
+  position: relative;
+  z-index: 1; /* content rides above the aurora backdrop */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ---------- Connecting-rule title line (shared featured-stock motif) --------- */
+.head {
+  margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.titleRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.18;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+/* Hidden ≤640 (a 1px rule reads as clutter beside a stacked mobile header). */
+.rule {
+  display: none;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.viewAll {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--color-primary);
+  transition: color 160ms ease;
+}
+
+.viewAll:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.viewAll:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.arrow {
+  font-size: 1.05em;
+  line-height: 1;
+  /* Refined micro-interaction: the arrow slides forward on hover (≤200ms,
+     transform-only). Guarded off under reduced-motion below. */
+  transition: transform 160ms ease;
+}
+
+/* "See all services →" arrow nudges forward when its link is hovered. */
+.viewAll:hover .arrow {
+  transform: translateX(3px);
+}
+
+/* ---------- Cards: mobile single-column stack ------------------------------- */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  /* Tighter padding on mobile; opens up from 768 (spec §8). */
+  padding: 1.25rem;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  /* Home plates: `bg` on the `surface` band. */
+  background: var(--color-bg);
+  color: var(--color-text);
+  /* Refined hover: colour-warm border + a 2px lift (transform), both ≤200ms.
+     No grey drop-shadow — this theme is hairline-depth, so the "lift" is a
+     claret-warmed hairline, not a shadow (design-language §5/§8). */
+  transition: border-color 160ms ease, transform 180ms ease;
+}
+
+/* /services plates invert to `surface` on the `bg` band. */
+.services .card {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+/* The bookmark bar — decorative (no text). 32px at the top-left edge; slides
+   to full width on hover ≥1024. Sits inside the card's rounded corners
+   (card `overflow: hidden`). */
+.tab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 32px;
+  background: var(--color-primary);
+}
+
+.cardTitle {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 1.1875rem;
+  line-height: 1.25;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.cardBody {
+  margin: 0;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--color-muted);
+  text-wrap: pretty;
+}
+
+/* "Learn more →" — the visible affordance AND the stretched whole-card link.
+   Its ::after covers the card so the whole plate is the tap target (≥44px). */
+.cardLink {
+  margin-top: auto;
+  padding-top: 0.35rem;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  color: var(--color-primary);
+}
+
+.cardLink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.card:hover .cardLink {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Focus ring rides the stretched link's full-card ::after box (spec §States:
+   "2px primary outline on the stretched link"), so the whole plate shows focus. */
+.cardLink:focus-visible {
+  outline: none;
+}
+
+.cardLink:focus-visible::after {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  border-radius: 6px;
+}
+
+/* ---------- 768: multi-column grids (home 3-up · services 2-up) ------------- */
+@media (min-width: 768px) {
+  .inner {
+    padding: 0 1.25rem;
+  }
+
+  .titleRow {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .rule {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 2rem;
+    align-self: center;
+  }
+
+  .grid {
+    gap: 1.5rem;
+  }
+
+  .home .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .services .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+}
+
+/* ---------- 1024: both variants 3-up, equal heights, hover on --------------- */
+@media (min-width: 1024px) {
+  .home .grid,
+  .services .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* The unique move: the bookmark bar slides 32px → full card width. */
+  .tab {
+    transition: width 240ms ease;
+  }
+
+  .card:hover {
+    border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
+    /* Subtle lift — pairs with the border warm; no shadow (hairline depth). */
+    transform: translateY(-2px);
+  }
+
+  .card:hover .tab {
+    width: 100%;
+  }
+
+  /* "Learn more →" arrow slides forward as the card lifts. */
+  .card:hover .arrow {
+    transform: translateX(3px);
+  }
+}
+
+/* ---------- 1440: container already caps at 1200px -------------------------- */
+
+/* Reduced motion: the bar never slides (>200ms effect collapses to none);
+   the border-color warm (160ms) is retained per grammar. */
+@media (prefers-reduced-motion: reduce) {
+  .tab {
+    transition: none;
+  }
+
+  .card:hover .tab {
+    width: 32px;
+  }
+
+  /* The lift + arrow slide (transform effects >0) collapse to none; the
+     border-color warm (colour-only, ≤200ms) is retained per the grammar. */
+  .arrow,
+  .card {
+    transition: border-color 160ms ease;
+  }
+
+  .card:hover,
+  .card:hover .arrow,
+  .viewAll:hover .arrow {
+    transform: none;
+  }
+}

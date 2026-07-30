@@ -1,0 +1,394 @@
+{
+  "themeId": "redgate-lodge-bespoke",
+  "version": 1,
+  "description": "Per-component text fields for the redgate-lodge-bespoke theme (warm-premium 'guest house for cars'). The dashboard /create + /update pages render form inputs per field. The AI brand generator reads this recipe to know what copy to emit. The theme runtime reads brand.text[<key>] first, then the recipe default below (with token interpolation). Voice: warm — first-person plural, hospitable, concrete; no exclamation marks, no 'luxury'/'exclusive', no urgency pressure.",
+  "tokens": {
+    "{brandName}": "Resolved brand name (or 'the showroom')",
+    "{city}": "Brand city — empty if absent",
+    "{county}": "Brand county",
+    "{cityish}": "city || county || 'the showroom'",
+    "{streetLine}": "line1 + line2 of address",
+    "{postcode}": "Brand postcode",
+    "{year}": "Current year",
+    "{tagline}": "brand.tagline"
+  },
+  "sections": [
+    {
+      "id": "header",
+      "label": "Header — contact strip & nav",
+      "fields": [
+        { "key": "header.cta", "label": "Header CTA button", "type": "short", "default": "Sell my car", "maxLength": 24 },
+        { "key": "header.status_open", "label": "Open-status chip (open)", "type": "short", "default": "Open today", "maxLength": 30 },
+        { "key": "header.status_fallback", "label": "Open-status chip (fallback)", "type": "short", "default": "By appointment & walk-in", "maxLength": 40, "aiHint": "Neutral status shown when opening hours are unknown — never say 'Closed'." },
+        { "key": "nav.used_cars", "label": "Nav — used cars", "type": "short", "default": "Used cars", "maxLength": 24 },
+        { "key": "nav.recently_sold", "label": "Nav — recently sold", "type": "short", "default": "Recently sold", "maxLength": 24 },
+        { "key": "nav.services", "label": "Nav — services", "type": "short", "default": "Services", "maxLength": 24 },
+        { "key": "nav.finance", "label": "Nav — finance", "type": "short", "default": "Finance", "maxLength": 24 },
+        { "key": "nav.part_exchange", "label": "Nav — part exchange", "type": "short", "default": "Part exchange", "maxLength": 24 },
+        { "key": "nav.sell", "label": "Nav — sell my car", "type": "short", "default": "Sell my car", "maxLength": 24 },
+        { "key": "header.whatsapp", "label": "Mobile menu — WhatsApp row", "type": "short", "default": "WhatsApp us", "maxLength": 24 }
+      ]
+    },
+    {
+      "id": "hero",
+      "label": "Home — hero",
+      "fields": [
+        { "key": "hero.eyebrow", "label": "Hero eyebrow", "type": "short", "default": "Independent used cars", "maxLength": 40, "aiHint": "Serif-caps eyebrow — what kind of dealer this is, in a few words." },
+        { "key": "hero.title", "label": "Hero title", "type": "short", "default": "A warmer way to buy your next car", "maxLength": 60, "aiHint": "Sentence-case serif display line, ≤2 lines. Warm and confident, not shouty." },
+        { "key": "hero.lead", "label": "Hero lead paragraph", "type": "long", "default": "Hundreds of prepared, workshop-checked cars — with the team, servicing and aftercare to look after you long after you drive away.", "maxLength": 240, "aiHint": "1-2 warm sentences stating the main promise: prepared stock plus aftercare." },
+        { "key": "hero.cta_primary", "label": "Hero primary CTA", "type": "short", "default": "Browse the showroom", "maxLength": 24 },
+        { "key": "hero.cta_secondary", "label": "Hero secondary CTA", "type": "short", "default": "Book a visit", "maxLength": 24 }
+      ]
+    },
+    {
+      "id": "proof-ledger",
+      "label": "Home / About — proof ledger",
+      "fields": [
+        { "key": "ledger.title_sr", "label": "Ledger heading (screen-reader)", "type": "short", "default": "Why buy from us", "maxLength": 40 },
+        { "key": "ledger.1_label", "label": "Entry 1 — label", "type": "short", "default": "Award-winning", "maxLength": 40 },
+        { "key": "ledger.1_detail", "label": "Entry 1 — detail", "type": "long", "default": "Recognised by the motor trade for how we look after our customers.", "maxLength": 120 },
+        { "key": "ledger.2_label", "label": "Entry 2 — label", "type": "short", "default": "Rated by drivers", "maxLength": 40 },
+        { "key": "ledger.2_detail", "label": "Entry 2 — detail", "type": "long", "default": "Thousands of verified reviews from happy owners.", "maxLength": 120 },
+        { "key": "ledger.3_label", "label": "Entry 3 — label", "type": "short", "default": "Real choice", "maxLength": 40 },
+        { "key": "ledger.3_detail", "label": "Entry 3 — detail", "type": "long", "default": "A forecourt full of prepared, workshop-checked cars at every budget.", "maxLength": 120 },
+        { "key": "ledger.4_label", "label": "Entry 4 — label", "type": "short", "default": "Aftercare on site", "maxLength": 40 },
+        { "key": "ledger.4_detail", "label": "Entry 4 — detail", "type": "long", "default": "Servicing, bodywork and valeting under the same roof.", "maxLength": 120 }
+      ]
+    },
+    {
+      "id": "featured-stock",
+      "label": "Home — featured stock",
+      "fields": [
+        { "key": "featured.eyebrow", "label": "Featured eyebrow", "type": "short", "default": "Just arrived", "maxLength": 40 },
+        { "key": "featured.title", "label": "Featured title", "type": "short", "default": "The latest cars to join us", "maxLength": 60 },
+        { "key": "featured.view_all", "label": "View-all link", "type": "short", "default": "View all cars", "maxLength": 30 },
+        { "key": "featured.empty", "label": "Empty-inventory note", "type": "long", "default": "New arrivals are being prepared — check back shortly.", "maxLength": 160 }
+      ]
+    },
+    {
+      "id": "aftercare-suite",
+      "label": "Home / Services — aftercare suite",
+      "fields": [
+        { "key": "aftercare.eyebrow", "label": "Aftercare eyebrow", "type": "short", "default": "Aftercare, under one roof", "maxLength": 40 },
+        { "key": "aftercare.title", "label": "Aftercare title", "type": "short", "default": "We look after the car, and you", "maxLength": 60 },
+        { "key": "aftercare.view_all", "label": "View-all link", "type": "short", "default": "See all services", "maxLength": 30 },
+        { "key": "aftercare.card_link", "label": "Card link label", "type": "short", "default": "Learn more", "maxLength": 24 },
+        { "key": "aftercare.1_title", "label": "Card 1 — title", "type": "short", "default": "The workshop", "maxLength": 40 },
+        { "key": "aftercare.1_body", "label": "Card 1 — body", "type": "long", "default": "Servicing, MOT and diagnostics by our own technicians.", "maxLength": 120 },
+        { "key": "aftercare.2_title", "label": "Card 2 — title", "type": "short", "default": "The bodyshop", "maxLength": 40 },
+        { "key": "aftercare.2_body", "label": "Card 2 — body", "type": "long", "default": "Accident repairs and paintwork, handled in-house.", "maxLength": 120 },
+        { "key": "aftercare.3_title", "label": "Card 3 — title", "type": "short", "default": "The car spa", "maxLength": 40 },
+        { "key": "aftercare.3_body", "label": "Card 3 — body", "type": "long", "default": "Valeting and protection to keep it feeling brand new.", "maxLength": 120 },
+        { "key": "aftercare.4_title", "label": "Card 4 — title (services)", "type": "short", "default": "Warranties", "maxLength": 40 },
+        { "key": "aftercare.4_body", "label": "Card 4 — body (services)", "type": "long", "default": "Extended cover and service plans, explained simply.", "maxLength": 120 },
+        { "key": "aftercare.5_title", "label": "Card 5 — title (services)", "type": "short", "default": "Breakdown assistance", "maxLength": 40 },
+        { "key": "aftercare.5_body", "label": "Card 5 — body (services)", "type": "long", "default": "Support that travels with you.", "maxLength": 120 },
+        { "key": "aftercare.6_title", "label": "Card 6 — title (services)", "type": "short", "default": "EV & hybrid care", "maxLength": 40 },
+        { "key": "aftercare.6_body", "label": "Card 6 — body (services)", "type": "long", "default": "Trained hands for electrified cars.", "maxLength": 120 }
+      ]
+    },
+    {
+      "id": "px-invite",
+      "label": "Part-exchange invite band",
+      "fields": [
+        { "key": "px.title", "label": "PX invite title", "type": "short", "default": "Change your car the easy way", "maxLength": 60 },
+        { "key": "px.body", "label": "PX invite body", "type": "long", "default": "Tell us about your current car — we'll value it fairly and handle the paperwork.", "maxLength": 160 },
+        { "key": "px.cta", "label": "PX invite CTA", "type": "short", "default": "Value my car", "maxLength": 24 },
+        { "key": "px.title_sold", "label": "PX invite title (recently-sold variant)", "type": "short", "default": "Yours could be the next one sold", "maxLength": 60 },
+        { "key": "px.body_sold", "label": "PX invite body (recently-sold variant)", "type": "long", "default": "We're always looking for good cars. Selling yours takes minutes.", "maxLength": 160 }
+      ]
+    },
+    {
+      "id": "reviews",
+      "label": "Home — reviews",
+      "fields": [
+        { "key": "reviews.eyebrow", "label": "Reviews eyebrow", "type": "short", "default": "From the guest book", "maxLength": 40 },
+        { "key": "reviews.title", "label": "Reviews title", "type": "short", "default": "What our customers say", "maxLength": 60 },
+        { "key": "reviews.score_line", "label": "Aggregate score line", "type": "short", "default": "Rated excellent by thousands of verified drivers", "maxLength": 80 },
+        { "key": "reviews.featured_quote", "label": "Featured quote", "type": "long", "default": "From the first phone call to driving away, nothing felt like a hard sell — just genuinely helpful people.", "maxLength": 240 },
+        { "key": "reviews.featured_name", "label": "Featured attribution", "type": "short", "default": "A happy customer", "maxLength": 40 },
+        { "key": "reviews.quote_2", "label": "Supporting quote 2", "type": "long", "default": "The car was immaculate and exactly as described.", "maxLength": 160 },
+        { "key": "reviews.quote_2_name", "label": "Supporting quote 2 — attribution", "type": "short", "default": "Verified buyer", "maxLength": 40 },
+        { "key": "reviews.quote_3", "label": "Supporting quote 3", "type": "long", "default": "They collected my old car and sorted everything. Effortless.", "maxLength": 160 },
+        { "key": "reviews.quote_3_name", "label": "Supporting quote 3 — attribution", "type": "short", "default": "Verified buyer", "maxLength": 40 }
+      ]
+    },
+    {
+      "id": "visit-lodge",
+      "label": "Home / Contact — visit us",
+      "fields": [
+        { "key": "visit.eyebrow", "label": "Visit eyebrow", "type": "short", "default": "Come and see us", "maxLength": 40 },
+        { "key": "visit.title", "label": "Visit title", "type": "short", "default": "Visit the showroom", "maxLength": 60 },
+        { "key": "visit.label_address", "label": "Row label — address", "type": "short", "default": "Address", "maxLength": 24 },
+        { "key": "visit.label_phone", "label": "Row label — phone", "type": "short", "default": "Phone", "maxLength": 24 },
+        { "key": "visit.label_email", "label": "Row label — email", "type": "short", "default": "Email", "maxLength": 24 },
+        { "key": "visit.label_hours", "label": "Row label — hours", "type": "short", "default": "Hours", "maxLength": 24 },
+        { "key": "visit.hours_fallback", "label": "Hours fallback line", "type": "short", "default": "Call us to arrange a time that suits you", "maxLength": 80, "aiHint": "Shown when opening hours are unknown — never render 'Closed'." },
+        { "key": "visit.note", "label": "Hospitality note", "type": "long", "default": "Travelling a long way to collect your car? Tell us — we'll make the trip worth it and have everything ready when you arrive.", "maxLength": 240 },
+        { "key": "visit.directions", "label": "Directions link", "type": "short", "default": "Get directions", "maxLength": 24 }
+      ]
+    },
+    {
+      "id": "footer",
+      "label": "Footer",
+      "fields": [
+        { "key": "footer.blurb", "label": "Footer blurb", "type": "long", "default": "A family-run independent, looking after drivers and their cars for the long run.", "maxLength": 200 },
+        { "key": "footer.col_showroom", "label": "Column heading — showroom", "type": "short", "default": "Showroom", "maxLength": 24 },
+        { "key": "footer.col_explore", "label": "Column heading — explore", "type": "short", "default": "Explore", "maxLength": 24 },
+        { "key": "footer.col_contact", "label": "Column heading — contact", "type": "short", "default": "Contact", "maxLength": 24 },
+        { "key": "footer.rights", "label": "Rights line", "type": "short", "default": "All rights reserved.", "maxLength": 60 },
+        { "key": "footer.about", "label": "Link — about", "type": "short", "default": "About us", "maxLength": 24 },
+        { "key": "footer.contact", "label": "Link — contact", "type": "short", "default": "Contact us", "maxLength": 24 },
+        { "key": "footer.privacy", "label": "Link — privacy", "type": "short", "default": "Privacy policy", "maxLength": 30 },
+        { "key": "footer.cookies", "label": "Link — cookies", "type": "short", "default": "Cookie policy", "maxLength": 30 },
+        { "key": "footer.compare", "label": "Link — compare", "type": "short", "default": "Compare", "maxLength": 24 },
+        { "key": "footer.wishlist", "label": "Link — wishlist", "type": "short", "default": "Wishlist", "maxLength": 24 }
+      ]
+    },
+    {
+      "id": "page-ribbon",
+      "label": "Inner pages — heading ribbons",
+      "fields": [
+        { "key": "ribbon.eyebrow", "label": "Inner pages — shared eyebrow", "type": "short", "default": "{brandName}", "maxLength": 40, "aiHint": "Letterspaced serif-caps eyebrow shown above every inner-page title. Defaults to the brand name; keep it short — a category or the brand name works." },
+        { "key": "ribbon.used_cars_eyebrow", "label": "Used cars — eyebrow", "type": "short", "default": "The showroom", "maxLength": 40 },
+        { "key": "ribbon.used_cars_title", "label": "Used cars — title", "type": "short", "default": "Cars in stock", "maxLength": 60 },
+        { "key": "ribbon.count_line", "label": "Used cars — count line", "type": "short", "default": "{count} cars ready to view", "maxLength": 60, "aiHint": "The component substitutes {count} with the live number." },
+        { "key": "ribbon.used_cars_lead", "label": "Used cars — lead", "type": "long", "default": "Every car here is prepared and checked in our own workshop. Browse at your pace.", "maxLength": 160 },
+        { "key": "ribbon.about_title", "label": "About — title", "type": "short", "default": "About us", "maxLength": 60 },
+        { "key": "ribbon.about_lead", "label": "About — lead", "type": "long", "default": "A family-run independent built on doing right by the people who buy from us.", "maxLength": 160 },
+        { "key": "ribbon.services_title", "label": "Services — title", "type": "short", "default": "Services & aftercare", "maxLength": 60 },
+        { "key": "ribbon.services_lead", "label": "Services — lead", "type": "long", "default": "Servicing, repairs, valeting and more — everything to look after your car under one roof.", "maxLength": 160 },
+        { "key": "ribbon.finance_title", "label": "Finance — title", "type": "short", "default": "Car finance, explained simply", "maxLength": 60 },
+        { "key": "ribbon.finance_lead", "label": "Finance — lead", "type": "long", "default": "Straightforward options and honest numbers, with a soft search that won't affect your credit.", "maxLength": 160 },
+        { "key": "ribbon.px_title", "label": "Part exchange — title", "type": "short", "default": "Part exchange", "maxLength": 60 },
+        { "key": "ribbon.px_lead", "label": "Part exchange — lead", "type": "long", "default": "Bring your old car with you. We'll value it while you look around.", "maxLength": 160 },
+        { "key": "ribbon.sell_title", "label": "Sell — title", "type": "short", "default": "Sell your car to us", "maxLength": 60 },
+        { "key": "ribbon.sell_lead", "label": "Sell — lead", "type": "long", "default": "A fair valuation from people who price cars every day — paperwork handled for you.", "maxLength": 160 },
+        { "key": "ribbon.sold_title", "label": "Recently sold — title", "type": "short", "default": "Recently found new homes", "maxLength": 60 },
+        { "key": "ribbon.sold_lead", "label": "Recently sold — lead", "type": "long", "default": "A look at some of the cars that have recently gone to happy new owners.", "maxLength": 160 },
+        { "key": "ribbon.contact_title", "label": "Contact — title", "type": "short", "default": "Contact us", "maxLength": 60 },
+        { "key": "ribbon.contact_lead", "label": "Contact — lead", "type": "long", "default": "Call, email or drop us a message — the kettle's on and we're happy to help.", "maxLength": 160 },
+        { "key": "ribbon.compare_title", "label": "Compare — title", "type": "short", "default": "Compare cars", "maxLength": 60 },
+        { "key": "ribbon.compare_lead", "label": "Compare — lead", "type": "long", "default": "Line up the cars you're weighing up, side by side.", "maxLength": 160 },
+        { "key": "ribbon.wishlist_title", "label": "Wishlist — title", "type": "short", "default": "Your wishlist", "maxLength": 60 },
+        { "key": "ribbon.wishlist_lead", "label": "Wishlist — lead", "type": "long", "default": "The cars you've saved to come back to.", "maxLength": 160 },
+        { "key": "ribbon.privacy_title", "label": "Privacy — title", "type": "short", "default": "Privacy policy", "maxLength": 60 },
+        { "key": "ribbon.privacy_lead", "label": "Privacy — lead", "type": "long", "default": "How we look after your information.", "maxLength": 160 },
+        { "key": "ribbon.cookie_title", "label": "Cookie — title", "type": "short", "default": "Cookie policy", "maxLength": 60 },
+        { "key": "ribbon.cookie_lead", "label": "Cookie — lead", "type": "long", "default": "The cookies we use and why.", "maxLength": 160 }
+      ]
+    },
+    {
+      "id": "inventory",
+      "label": "Used cars — toolbar & grid",
+      "fields": [
+        { "key": "inventory.count_label", "label": "Count label", "type": "short", "default": "In stock", "maxLength": 24 },
+        { "key": "inventory.filters", "label": "Filters toggle", "type": "short", "default": "Filters", "maxLength": 24 },
+        { "key": "inventory.reset", "label": "Reset button", "type": "short", "default": "Reset", "maxLength": 24 },
+        { "key": "inventory.search_placeholder", "label": "Search placeholder", "type": "short", "default": "Search make or model", "maxLength": 40 },
+        { "key": "inventory.sort_label", "label": "Sort label", "type": "short", "default": "Sort", "maxLength": 24 },
+        { "key": "inventory.sort_newest", "label": "Sort option — newest", "type": "short", "default": "Newest first", "maxLength": 30 },
+        { "key": "inventory.sort_price_low", "label": "Sort option — price low", "type": "short", "default": "Price: low to high", "maxLength": 30 },
+        { "key": "inventory.sort_price_high", "label": "Sort option — price high", "type": "short", "default": "Price: high to low", "maxLength": 30 },
+        { "key": "inventory.empty", "label": "Empty results note", "type": "long", "default": "Nothing matches just yet — try widening your search, or call us: new cars arrive every week.", "maxLength": 200 },
+        { "key": "inventory.clear", "label": "Clear-filters action", "type": "short", "default": "Clear filters", "maxLength": 30 }
+      ]
+    },
+    {
+      "id": "vehicle-card",
+      "label": "Vehicle card",
+      "fields": [
+        { "key": "card.view", "label": "View affordance", "type": "short", "default": "View", "maxLength": 20 },
+        { "key": "card.sold", "label": "Sold label", "type": "short", "default": "Sold", "maxLength": 20 },
+        { "key": "card.poa", "label": "Price-on-request label", "type": "short", "default": "Price on request", "maxLength": 30 }
+      ]
+    },
+    {
+      "id": "vehicle-detail",
+      "label": "Vehicle detail page",
+      "fields": [
+        { "key": "detail.enquire", "label": "Enquire CTA", "type": "short", "default": "Enquire about this car", "maxLength": 40 },
+        { "key": "detail.call", "label": "Call link", "type": "short", "default": "Call us", "maxLength": 24 },
+        { "key": "detail.finance_line", "label": "Finance-from line", "type": "short", "default": "Finance available — ask us for a quote", "maxLength": 60 },
+        { "key": "detail.price_label", "label": "Price eyebrow", "type": "short", "default": "Price", "maxLength": 20 },
+        { "key": "detail.highlights_title", "label": "Highlights heading", "type": "short", "default": "Highlights", "maxLength": 30 },
+        { "key": "detail.about_title", "label": "About-this-car heading", "type": "short", "default": "About this car", "maxLength": 40 },
+        { "key": "detail.spec_title", "label": "Specification heading", "type": "short", "default": "Specification", "maxLength": 40 },
+        { "key": "detail.key_facts", "label": "Key facts heading", "type": "short", "default": "Key facts", "maxLength": 30 },
+        { "key": "detail.similar_title", "label": "Similar rail heading", "type": "short", "default": "More like this", "maxLength": 40 },
+        { "key": "detail.photos_soon", "label": "No-photos placeholder", "type": "short", "default": "Photos coming soon", "maxLength": 40 },
+        { "key": "detail.gallery_pill", "label": "Gallery pill", "type": "short", "default": "Gallery ({count})", "maxLength": 30, "aiHint": "The component substitutes {count} with the photo count." },
+        { "key": "detail.sold_chip", "label": "Sold chip", "type": "short", "default": "Recently sold", "maxLength": 30 },
+        { "key": "detail.spec_mileage", "label": "Spec label — mileage", "type": "short", "default": "Mileage", "maxLength": 20 },
+        { "key": "detail.spec_year", "label": "Spec label — year", "type": "short", "default": "Year", "maxLength": 20 },
+        { "key": "detail.spec_fuel", "label": "Spec label — fuel", "type": "short", "default": "Fuel", "maxLength": 20 },
+        { "key": "detail.spec_gearbox", "label": "Spec label — gearbox", "type": "short", "default": "Gearbox", "maxLength": 20 },
+        { "key": "detail.spec_engine", "label": "Spec label — engine", "type": "short", "default": "Engine", "maxLength": 20 },
+        { "key": "detail.spec_body", "label": "Spec label — body", "type": "short", "default": "Body", "maxLength": 20 }
+      ]
+    },
+    {
+      "id": "enquiry-form",
+      "label": "Enquiry modal & contact form",
+      "fields": [
+        { "key": "enquiry.title", "label": "Modal title", "type": "short", "default": "Ask us about this car", "maxLength": 40 },
+        { "key": "enquiry.contact_title", "label": "Contact form title", "type": "short", "default": "Send us a message", "maxLength": 40 },
+        { "key": "enquiry.label_name", "label": "Field label — name", "type": "short", "default": "Your name", "maxLength": 24 },
+        { "key": "enquiry.label_phone", "label": "Field label — phone", "type": "short", "default": "Phone", "maxLength": 24 },
+        { "key": "enquiry.label_email", "label": "Field label — email", "type": "short", "default": "Email", "maxLength": 24 },
+        { "key": "enquiry.label_message", "label": "Field label — message", "type": "short", "default": "Message", "maxLength": 24 },
+        { "key": "enquiry.placeholder_message", "label": "Message placeholder", "type": "long", "default": "Tell us what you'd like to know — or when you'd like to pop in.", "maxLength": 120 },
+        { "key": "enquiry.submit", "label": "Submit button", "type": "short", "default": "Send enquiry", "maxLength": 24 },
+        { "key": "enquiry.sending", "label": "Submitting label", "type": "short", "default": "Sending…", "maxLength": 24 },
+        { "key": "enquiry.success_title", "label": "Success title", "type": "short", "default": "Thank you — we've got it", "maxLength": 40 },
+        { "key": "enquiry.success_body", "label": "Success body", "type": "long", "default": "One of the team will come back to you shortly. If it's urgent, give us a ring.", "maxLength": 160 },
+        { "key": "enquiry.success_reset", "label": "Success — send another", "type": "short", "default": "Send another message", "maxLength": 30 },
+        { "key": "enquiry.error", "label": "Validation error", "type": "short", "default": "Please check this field", "maxLength": 40 }
+      ]
+    },
+    {
+      "id": "sell-px-form",
+      "label": "Sell / part-exchange form & ledger steps",
+      "fields": [
+        { "key": "sell.title", "label": "Sell form title", "type": "short", "default": "Tell us about your car", "maxLength": 40 },
+        { "key": "sell.steps_title_sr", "label": "Steps heading (screen-reader)", "type": "short", "default": "How it works", "maxLength": 40 },
+        { "key": "sell.label_reg", "label": "Field label — registration", "type": "short", "default": "Registration", "maxLength": 24 },
+        { "key": "sell.placeholder_reg", "label": "Reg placeholder", "type": "short", "default": "YOUR REG", "maxLength": 12 },
+        { "key": "sell.label_mileage", "label": "Field label — mileage", "type": "short", "default": "Mileage", "maxLength": 24 },
+        { "key": "sell.submit", "label": "Submit button", "type": "short", "default": "Get my valuation", "maxLength": 24 },
+        { "key": "sell.step_1_title", "label": "Step 1 — title", "type": "short", "default": "Tell us about it", "maxLength": 40 },
+        { "key": "sell.step_1_body", "label": "Step 1 — body", "type": "long", "default": "Your reg and mileage are all we need to start.", "maxLength": 120 },
+        { "key": "sell.step_2_title", "label": "Step 2 — title", "type": "short", "default": "Get a fair offer", "maxLength": 40 },
+        { "key": "sell.step_2_body", "label": "Step 2 — body", "type": "long", "default": "A real valuation from people who price cars every day.", "maxLength": 120 },
+        { "key": "sell.step_3_title", "label": "Step 3 — title", "type": "short", "default": "Paperwork done for you", "maxLength": 40 },
+        { "key": "sell.step_3_body", "label": "Step 3 — body", "type": "long", "default": "Bank transfer and documents handled the same day.", "maxLength": 120 },
+        { "key": "px_form.title", "label": "PX form title", "type": "short", "default": "Value your part exchange", "maxLength": 40 },
+        { "key": "px_form.step_3_body_px", "label": "PX step 3 — body", "type": "long", "default": "Drive your old car in, drive the new one home.", "maxLength": 120 }
+      ]
+    },
+    {
+      "id": "browse-by-make",
+      "label": "Directory band — browse by make",
+      "fields": [
+        { "key": "browse.eyebrow", "label": "Browse eyebrow", "type": "short", "default": "Browse by maker", "maxLength": 40 },
+        { "key": "browse.title", "label": "Browse title", "type": "short", "default": "Find your next car by manufacturer", "maxLength": 60 }
+      ]
+    },
+    {
+      "id": "garage",
+      "label": "Wishlist & compare — garage controls",
+      "fields": [
+        { "key": "garage.saved_count", "label": "Wishlist count suffix", "type": "short", "default": "cars saved", "maxLength": 24 },
+        { "key": "garage.compared_count", "label": "Compare count suffix", "type": "short", "default": "cars to compare", "maxLength": 24 },
+        { "key": "garage.remove", "label": "Remove control", "type": "short", "default": "Remove", "maxLength": 20 },
+        { "key": "garage.clear", "label": "Clear-all control", "type": "short", "default": "Clear all", "maxLength": 20 },
+        { "key": "garage.browse", "label": "Browse-stock link", "type": "short", "default": "Browse the showroom", "maxLength": 30 },
+        { "key": "garage.wishlist_empty_title", "label": "Wishlist empty — title", "type": "short", "default": "Your wishlist is empty", "maxLength": 40 },
+        { "key": "garage.wishlist_empty_body", "label": "Wishlist empty — body", "type": "long", "default": "Tap the heart on any car to save it here and come back to it later.", "maxLength": 160 },
+        { "key": "garage.compare_empty_title", "label": "Compare empty — title", "type": "short", "default": "Nothing to compare yet", "maxLength": 40 },
+        { "key": "garage.compare_empty_body", "label": "Compare empty — body", "type": "long", "default": "Add a few cars with the compare button and we'll line them up side by side.", "maxLength": 160 }
+      ]
+    },
+    {
+      "id": "compare-rows",
+      "label": "Compare table — row labels",
+      "fields": [
+        { "key": "compare.row_price", "label": "Row — price", "type": "short", "default": "Price", "maxLength": 20 },
+        { "key": "compare.row_mileage", "label": "Row — mileage", "type": "short", "default": "Mileage", "maxLength": 20 },
+        { "key": "compare.row_year", "label": "Row — year", "type": "short", "default": "Year", "maxLength": 20 },
+        { "key": "compare.row_fuel", "label": "Row — fuel", "type": "short", "default": "Fuel", "maxLength": 20 },
+        { "key": "compare.row_transmission", "label": "Row — transmission", "type": "short", "default": "Gearbox", "maxLength": 20 },
+        { "key": "compare.row_body", "label": "Row — body", "type": "short", "default": "Body", "maxLength": 20 }
+      ]
+    },
+    {
+      "id": "recently-sold",
+      "label": "Recently sold — grid",
+      "fields": [
+        { "key": "sold.empty", "label": "Empty note", "type": "long", "default": "Sold cars will appear here as they find new homes — check back soon.", "maxLength": 160 },
+        { "key": "sold.cta", "label": "See-current-stock link", "type": "short", "default": "See current stock", "maxLength": 30 }
+      ]
+    },
+    {
+      "id": "about-story",
+      "label": "About — story split",
+      "fields": [
+        { "key": "about.eyebrow", "label": "Story eyebrow", "type": "short", "default": "Our story", "maxLength": 40 },
+        { "key": "about.title", "label": "Story title", "type": "short", "default": "People first, cars second", "maxLength": 60, "aiHint": "Sentence-case serif line summarising what the dealer stands for." },
+        { "key": "about.body_1", "label": "Story paragraph 1", "type": "long", "default": "We're a family-run independent who believe buying a car should feel welcoming, not pressured. Every car on the forecourt is one we'd happily put a friend in — prepared and checked in our own workshop before it goes up for sale.", "maxLength": 320, "aiHint": "Warm first-person-plural paragraph about the dealer's approach." },
+        { "key": "about.body_2", "label": "Story paragraph 2", "type": "long", "default": "When you buy from us the relationship doesn't end at the door. Servicing, bodywork and valeting all happen under the same roof, so we're here to look after your car for as long as you own it.", "maxLength": 320, "aiHint": "Second warm paragraph — aftercare and the long-term relationship." }
+      ]
+    },
+    {
+      "id": "services-steps",
+      "label": "Services — how it works",
+      "fields": [
+        { "key": "services_steps.eyebrow", "label": "How-it-works eyebrow", "type": "short", "default": "How it works", "maxLength": 40 },
+        { "key": "services_steps.title", "label": "How-it-works title", "type": "short", "default": "Booking your car in is simple", "maxLength": 60 },
+        { "key": "services_steps.title_sr", "label": "How-it-works heading (screen-reader)", "type": "short", "default": "How booking works", "maxLength": 40 },
+        { "key": "services_steps.step_1_title", "label": "Step 1 — title", "type": "short", "default": "Tell us what you need", "maxLength": 40 },
+        { "key": "services_steps.step_1_body", "label": "Step 1 — body", "type": "long", "default": "Call or message us and we'll find a slot that suits you.", "maxLength": 120 },
+        { "key": "services_steps.step_2_title", "label": "Step 2 — title", "type": "short", "default": "We take a look", "maxLength": 40 },
+        { "key": "services_steps.step_2_body", "label": "Step 2 — body", "type": "long", "default": "Our own technicians carry out the work and keep you posted.", "maxLength": 120 },
+        { "key": "services_steps.step_3_title", "label": "Step 3 — title", "type": "short", "default": "Back on the road", "maxLength": 40 },
+        { "key": "services_steps.step_3_body", "label": "Step 3 — body", "type": "long", "default": "We explain what we did in plain English — no surprises.", "maxLength": 120 }
+      ]
+    },
+    {
+      "id": "finance",
+      "label": "Finance — intro, steps & assurance",
+      "fields": [
+        { "key": "finance.eyebrow", "label": "Finance eyebrow", "type": "short", "default": "How finance works", "maxLength": 40 },
+        { "key": "finance.intro_title", "label": "Finance intro title", "type": "short", "default": "Sensible options, explained plainly", "maxLength": 60 },
+        { "key": "finance.intro_lead", "label": "Finance intro lead", "type": "long", "default": "We work with trusted lenders to find a plan that fits your budget. A soft search to get you a quote won't affect your credit score.", "maxLength": 200 },
+        { "key": "finance.title_sr", "label": "Finance steps heading (screen-reader)", "type": "short", "default": "How finance works", "maxLength": 40 },
+        { "key": "finance.step_1_title", "label": "Step 1 — title", "type": "short", "default": "Tell us your budget", "maxLength": 40 },
+        { "key": "finance.step_1_body", "label": "Step 1 — body", "type": "long", "default": "Share a rough monthly figure and any deposit you have in mind.", "maxLength": 120 },
+        { "key": "finance.step_2_title", "label": "Step 2 — title", "type": "short", "default": "We find your quote", "maxLength": 40 },
+        { "key": "finance.step_2_body", "label": "Step 2 — body", "type": "long", "default": "A soft search gives you honest numbers with no impact on your credit.", "maxLength": 120 },
+        { "key": "finance.step_3_title", "label": "Step 3 — title", "type": "short", "default": "Drive away", "maxLength": 40 },
+        { "key": "finance.step_3_body", "label": "Step 3 — body", "type": "long", "default": "Happy with the figures? We'll sort the paperwork and hand over the keys.", "maxLength": 120 },
+        { "key": "finance.rep_eyebrow", "label": "Representative example — eyebrow", "type": "short", "default": "Representative example", "maxLength": 40 },
+        { "key": "finance.rep_title", "label": "Representative example — title", "type": "short", "default": "Ask us for a personalised quote", "maxLength": 60 },
+        { "key": "finance.rep_body", "label": "Representative example — body", "type": "long", "default": "Rates depend on the car, the term and your circumstances. We'll always show you the full cost before you commit to anything.", "maxLength": 200 },
+        { "key": "finance.disclaimer", "label": "Finance disclaimer", "type": "long", "default": "Finance is subject to status and affordability. We are a credit broker, not a lender, and may receive a commission from lenders for introducing you to them. Written details available on request.", "maxLength": 320, "aiHint": "Generic FCA-style credit-broker disclaimer — keep neutral and non-specific." }
+      ]
+    },
+    {
+      "id": "privacy-policy",
+      "label": "Privacy policy — prose",
+      "fields": [
+        { "key": "privacy.intro", "label": "Intro paragraph", "type": "long", "default": "This policy explains what information we collect when you use our website or get in touch, why we collect it, and the choices you have. We only ask for what we genuinely need to help you.", "maxLength": 320 },
+        { "key": "privacy.updated", "label": "Last-updated line", "type": "short", "default": "This policy is reviewed regularly. Please check back for the latest version.", "maxLength": 120 },
+        { "key": "privacy.1_title", "label": "Section 1 — title", "type": "short", "default": "Information we collect", "maxLength": 60 },
+        { "key": "privacy.1_body", "label": "Section 1 — body", "type": "long", "default": "When you make an enquiry we collect the details you provide, such as your name, phone number, email address and anything you tell us about the car you're interested in. We may also collect basic technical information about how you use the site.", "maxLength": 400 },
+        { "key": "privacy.2_title", "label": "Section 2 — title", "type": "short", "default": "How we use your information", "maxLength": 60 },
+        { "key": "privacy.2_body", "label": "Section 2 — body", "type": "long", "default": "We use your details to respond to your enquiry, arrange appointments, provide quotes and look after you as a customer. We will never sell your information to third parties.", "maxLength": 400 },
+        { "key": "privacy.3_title", "label": "Section 3 — title", "type": "short", "default": "Keeping your information safe", "maxLength": 60 },
+        { "key": "privacy.3_body", "label": "Section 3 — body", "type": "long", "default": "We take reasonable steps to protect your information and only keep it for as long as we need it to help you or to meet our legal obligations.", "maxLength": 400 },
+        { "key": "privacy.4_title", "label": "Section 4 — title", "type": "short", "default": "Your rights", "maxLength": 60 },
+        { "key": "privacy.4_body", "label": "Section 4 — body", "type": "long", "default": "You have the right to ask what information we hold about you, to have it corrected or deleted, and to withdraw consent at any time. Just get in touch and we'll help.", "maxLength": 400 },
+        { "key": "privacy.5_title", "label": "Section 5 — title", "type": "short", "default": "Cookies", "maxLength": 60 },
+        { "key": "privacy.5_body", "label": "Section 5 — body", "type": "long", "default": "Our website uses cookies to work properly and to help us understand how it's used. You can read more in our cookie policy.", "maxLength": 400 },
+        { "key": "privacy.6_title", "label": "Section 6 — title", "type": "short", "default": "Getting in touch", "maxLength": 60 },
+        { "key": "privacy.6_body", "label": "Section 6 — body", "type": "long", "default": "If you have any questions about how we handle your information, please contact us and a member of the team will be happy to help.", "maxLength": 400 }
+      ]
+    },
+    {
+      "id": "cookie-policy",
+      "label": "Cookie policy — prose",
+      "fields": [
+        { "key": "cookie.intro", "label": "Intro paragraph", "type": "long", "default": "This policy explains what cookies are, how our website uses them, and how you can manage them. Cookies help the site work smoothly and let us remember the cars you're interested in.", "maxLength": 320 },
+        { "key": "cookie.updated", "label": "Last-updated line", "type": "short", "default": "This policy is reviewed regularly. Please check back for the latest version.", "maxLength": 120 },
+        { "key": "cookie.1_title", "label": "Section 1 — title", "type": "short", "default": "What cookies are", "maxLength": 60 },
+        { "key": "cookie.1_body", "label": "Section 1 — body", "type": "long", "default": "Cookies are small text files stored on your device when you visit a website. They help the site remember your preferences and how you use it.", "maxLength": 400 },
+        { "key": "cookie.2_title", "label": "Section 2 — title", "type": "short", "default": "How we use cookies", "maxLength": 60 },
+        { "key": "cookie.2_body", "label": "Section 2 — body", "type": "long", "default": "We use essential cookies to keep the site working, and analytics cookies to understand which pages are useful so we can keep improving. We also use cookies to remember the cars you save.", "maxLength": 400 },
+        { "key": "cookie.3_title", "label": "Section 3 — title", "type": "short", "default": "Managing cookies", "maxLength": 60 },
+        { "key": "cookie.3_body", "label": "Section 3 — body", "type": "long", "default": "You can control and delete cookies through your browser settings. Turning off some cookies may affect how parts of the site work.", "maxLength": 400 },
+        { "key": "cookie.4_title", "label": "Section 4 — title", "type": "short", "default": "Getting in touch", "maxLength": 60 },
+        { "key": "cookie.4_body", "label": "Section 4 — body", "type": "long", "default": "If you have any questions about our use of cookies, please contact us and we'll be glad to explain.", "maxLength": 400 }
+      ]
+    }
+  ]
+}

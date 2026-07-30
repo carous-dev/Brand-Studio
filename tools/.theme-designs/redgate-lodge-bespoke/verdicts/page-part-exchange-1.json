@@ -1,0 +1,29 @@
+{
+  "component": "page-part-exchange",
+  "mode": "full-page",
+  "route": "/part-exchange",
+  "iteration": 1,
+  "verdict": "PASS",
+  "brands": { "claret": "redgate-lodge-bespoke-qa", "light": "redgate-lodge-bespoke-qa-alt (teal)" },
+  "mechanical": { "tsc": "pass", "colorContract": "pass", "audit": "pass (0 blockers)" },
+  "issues": [
+    {
+      "id": "page-part-exchange-1-01",
+      "severity": "minor",
+      "owner": "SellForm/ContactForm",
+      "criterion": "build-rules [visual] visible boxed inputs / §5 inputs radius 4px",
+      "route": "/part-exchange",
+      "width": "1440",
+      "evidence": "full-claret-part-exchange-w1440.png: 'Value your part exchange' valuation form uses underline-style inputs (REGISTRATION plate field is boxed, MILEAGE/NAME/PHONE/EMAIL are underline). Same benign deviation as /finance — visible + labeled + legible.",
+      "fix_hint": "Same as finance — acceptable; box the inputs only if strict §5 compliance is required."
+    }
+  ],
+  "notes": [
+    "Probe warning during shot was transient — page renders healthy.",
+    "Flow matches §7: page-ribbon PX-copy variant 'Bring your old car with you' (surface) -> sell/PX form + ledger-steps 01-03(bg) -> footer chain. No px-invite band (correct)."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-part-exchange-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-part-exchange-w505.png"
+  ]
+}

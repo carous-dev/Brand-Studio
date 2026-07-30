@@ -1,0 +1,744 @@
+/* /used-cars — inventory toolbar + showroom grid (redgate-lodge-bespoke).
+   Warm-premium "guest house for cars": the toolbar is a ledger line — a
+   serif-caps "In stock" label, an EB Garamond primary count numeral, a hairline
+   rule running to the Filters/Wishlist/Compare chip cluster, then the grid of
+   ledger-footline VehicleCards. Surface grammar §5: 4px chip/input radius, 1px
+   hairlines, NO shadows except the floating filter sheet. Mobile-first: 360px
+   base, min-width queries widen. Every colour is a token / color-mix so it holds
+   on the claret palette AND a light throwaway brand. */
+
+.section {
+  background: var(--color-bg);
+  color: var(--color-text);
+  padding-block: clamp(2rem, 4vw, 3.5rem) clamp(3.25rem, 7vw, 6rem);
+}
+
+/* Wide container — the list route is full-bleed (design-language §4). */
+.wideInner {
+  max-width: none;
+  margin: 0 auto;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+/* ---- Inventory hero (build-rules §10) ------------------------------------- */
+.hero {
+  position: relative; /* anchors the aurora CanvasFX backdrop */
+  overflow: hidden;
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding-block: clamp(1.5rem, 4vw, 2.75rem);
+  border-top: 1px solid var(--color-border);
+}
+/* Furnishing: the aurora light sits behind the framed band, softened. It
+   self-guards (static token wash ≤640px / reduced-motion, pauses off-screen),
+   so no *-decor-mobile-hide is needed. */
+.aurora {
+  opacity: 0.8;
+}
+.heroInner {
+  position: relative;
+  z-index: 1; /* framed band rides above the aurora backdrop */
+  max-width: none;
+  margin: 0 auto;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+}
+.heroFrame {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-primary);
+}
+.heroHeading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.heroEyebrow {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.heroTitle {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: clamp(1.6rem, 4vw, 2.5rem);
+  line-height: 1.18;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+.heroFigure {
+  margin: 0.25rem 0 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.55rem;
+}
+.heroFigureNumeral {
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: clamp(2.4rem, 6vw, 3.4rem);
+  line-height: 1;
+  color: var(--color-primary);
+}
+.heroFigureLabel {
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.heroSearchZone {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+/* Make chip fills its column inside the hero. */
+.heroSearchZone .selectChip {
+  width: 100%;
+  justify-content: space-between;
+}
+
+/* ---------------------------------------------------------------- Toolbar --- */
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* Row 1 — the ledger line. */
+.ledgerRow {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+/* Small live count caption that replaces the toolbar's big numeral. */
+.resultsCaption {
+  margin: 0;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--color-muted);
+}
+
+.resultsCaption strong {
+  color: var(--color-text);
+}
+
+/* The connecting hairline — the rule motif that carries the eye to the chips. */
+.rule {
+  flex: 1 1 auto;
+  min-width: 1.25rem;
+  height: 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 0 0 auto;
+}
+
+/* Wishlist/Compare live in the row-1 cluster on wide screens only. */
+.clusterChip {
+  display: none;
+}
+
+/* Row 2 — search + control rail. */
+.controlsRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Two-tone search shell — primary icon block + flat input; no gradient. */
+.search {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--color-bg);
+  color: var(--color-text);
+  transition: border-color 160ms ease;
+}
+
+.search:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border));
+}
+
+.searchIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2.75rem;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.searchField {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  padding: 0.7rem 0.85rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 1rem;
+}
+
+.searchField::placeholder {
+  color: var(--color-muted);
+}
+
+.searchField:focus-visible {
+  outline: none;
+}
+
+.search:focus-within {
+  border-color: var(--color-primary);
+}
+
+/* Control rail — scroll-snapping on mobile, inline on wide screens. */
+.fieldRail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.15rem;
+  scrollbar-width: none;
+}
+
+.fieldRail::-webkit-scrollbar {
+  display: none;
+}
+
+/* make/body selects hide on mobile (they live in the sheet); shown ≥768. */
+.railSelect {
+  display: none;
+}
+
+/* Mobile-only Wishlist/Compare chips in the row-2 rail. */
+.railChip {
+  display: inline-flex;
+}
+
+/* ------------------------------------------------------------------ Chips --- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+.chip:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface));
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.chipActive {
+  border-color: var(--color-primary);
+}
+
+.chipIcon {
+  flex: 0 0 auto;
+  color: var(--color-primary);
+}
+
+.chipCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-bg));
+  color: var(--color-text);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+/* ------------------------------------------------- Overlaid-select chip ----- */
+.selectChip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.selectChip:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface));
+}
+
+.selectChip:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-color: var(--color-primary);
+}
+
+.selectChipIcon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  color: var(--color-primary);
+}
+
+.selectChipValue {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.selectChipChevron {
+  flex: 0 0 auto;
+  color: var(--color-muted);
+}
+
+/* The real, keyboard-operable native control — stretched invisible over the
+   chip (spec AC7). opacity 0 keeps it functional but visually the chip wins. */
+.selectChipNative {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* -------------------------------------------------------------- Card grid --- */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+/* Staggered-reveal wrapper — a grid-stretch cell so the shared (already
+   furnished) VehicleCard still fills its slot. Carries the data-aos entrance;
+   AnimateOnScroll self-guards under reduced-motion / ≤720px. */
+.cardReveal {
+  display: grid;
+  min-width: 0;
+}
+
+.cardReveal > * {
+  min-width: 0;
+}
+
+/* ---------------------------------------------------------------- Empty ----- */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  padding: clamp(2.5rem, 6vw, 4.5rem) 1rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.emptyGlyph {
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-bg));
+  color: var(--color-primary);
+}
+
+.emptyText {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  text-wrap: pretty;
+}
+
+.clearButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--color-primary);
+  border-radius: 4px;
+  background: var(--color-bg);
+  color: var(--color-primary);
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.clearButton:hover {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.clearButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------ Pagination --- */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding-top: 0.5rem;
+}
+
+.pageButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+.pageButton:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
+}
+
+.pageButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.pageButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.pageButtonActive {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+
+.pageEllipsis {
+  padding: 0 0.35rem;
+  color: var(--color-muted);
+  font-weight: 700;
+}
+
+/* ------------------------------------------------------- Filter sheet ------ */
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sheet[hidden] {
+  display: none !important;
+}
+
+.sheetScrim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  background: color-mix(in srgb, var(--color-text) 45%, transparent);
+  color: transparent;
+  cursor: pointer;
+}
+
+.sheetPanel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: -2px 0 16px color-mix(in srgb, var(--color-text) 14%, transparent);
+}
+
+.sheetHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sheetTitle {
+  margin: 0;
+  flex: 1 1 auto;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 1.375rem;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.sheetReset {
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary);
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sheetReset:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.sheetClose {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.sheetClose:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.sheetBody {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding: 1.1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.fieldLabel {
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-muted);
+}
+
+.fieldSelect {
+  width: 100%;
+  padding: 0.7rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 1rem;
+}
+
+.fieldSelect:focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.sheetFooter {
+  flex: 0 0 auto;
+  padding: 1rem 1.1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.sheetApply {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 0;
+  border-radius: 4px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sheetApply:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------- Utilities --- */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ------------------------------------------------------------ Breakpoints -- */
+@media (min-width: 768px) {
+  .heroFrame {
+    flex-direction: row;
+    align-items: stretch;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .heroHeading {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  .heroSearchZone {
+    flex: 0 0 22rem;
+    max-width: 22rem;
+    justify-content: center;
+    padding-left: clamp(1.5rem, 3vw, 2.5rem);
+    border-left: 1px solid var(--color-border);
+  }
+
+  .controlsRow {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .fieldRail {
+    flex: 1 1 auto;
+    overflow: visible;
+  }
+
+  /* Row 2 becomes three equal selects (make, body, sort). */
+  .railSelect {
+    display: inline-flex;
+  }
+
+  .fieldRail .selectChip {
+    flex: 1 1 0;
+    justify-content: space-between;
+  }
+
+  /* Wishlist/Compare move up to the row-1 cluster; hidden in the rail. */
+  .railChip {
+    display: none;
+  }
+
+  .clusterChip {
+    display: inline-flex;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .sheet {
+    justify-content: flex-end;
+  }
+
+  .sheetPanel {
+    width: 24rem;
+    max-width: 90vw;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1600px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Reduced motion: drop all hover/transition effects >0ms of concern. */
+@media (prefers-reduced-motion: reduce) {
+  .chip,
+  .selectChip,
+  .search,
+  .pageButton,
+  .clearButton {
+    transition: none;
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "component": "page-vehicle-detail",
+  "mode": "full-page",
+  "route": "/used-cars/[slug]",
+  "iteration": 1,
+  "verdict": "PASS",
+  "brands": { "claret": "redgate-lodge-bespoke-qa", "light": "redgate-lodge-bespoke-qa-alt (teal)" },
+  "mechanical": { "tsc": "pass", "colorContract": "pass", "audit": "pass (0 blockers; advisories: raw <img> in GalleryMosaic [gallery stays local, accepted]; inv-detail-no-similar-vehicles + inv-detail-no-makes-seo are FALSE NEGATIVES — both sections render, see notes)" },
+  "issues": [
+    {
+      "id": "page-used-cars-detail-1-01",
+      "severity": "minor",
+      "owner": "vehicle-detail",
+      "criterion": "inventory 'More like this' rail should present 3-4 vehicles",
+      "route": "/used-cars/[slug]",
+      "width": "1440",
+      "evidence": "fp-claret-...gla...-full.png: 'More like this' rail shows a single card (2008 Mercedes-Benz B Class) for this Mercedes slug — data-limited same-make stock, so it reads sparse in the left third. Data-driven, not a markup bug.",
+      "fix_hint": "Optionally broaden the similar query (fall back to body-type or price band) when same-make count < 3, so the rail always shows 3-4 cards."
+    }
+  ],
+  "notes": [
+    "Slug used: mercedes-benz-gla-...-202510217306757.",
+    "Structure matches §7 + memory: title strip ABOVE gallery(bg) -> mosaic gallery 1+4(bg, wide) -> claret specs band 6 icons (Mileage/Year/Fuel/Gearbox/Engine/Body)(primary) -> content + sticky sidebar (price + Enquire CTA + Key facts)(bg) -> 'More like this' similar rail(surface) -> browse-by-make -> footer. Single primary band.",
+    "KEY TEAL RISK PASS: fp-teal-...gla...-full.png — the specs band renders TEAL with white text, fully LEGIBLE; no dark-locked assumption. Sidebar price, Enquire CTA, wishlist/compare glyphs all teal-safe.",
+    "Description text 'Fairfield Cars (Bedford)' comes from the vehicle feed's own description field (inventory data), NOT a theme-hardcoded dealer string — not a violation.",
+    "Mobile 505: gallery-first (image + thumb rail + N/36), title below, specs band 2-col, then content; sticky bottom action bar is CSS-backed (page.module.css:573, an allowed floating-chrome shadow) and sits behind the cookie strip in the tall capture."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/fp-claret-used-cars-mercedes-benz-gla-2-1-gla220d-amg-line-premium-plus-7g-dct-4matic-euro-6-s-s-5dr-132-000-miles-10690-132000-202510217306757-full.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/fp-teal-used-cars-mercedes-benz-gla-2-1-gla220d-amg-line-premium-plus-7g-dct-4matic-euro-6-s-s-5dr-132-000-miles-10690-132000-202510217306757-full.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-used-cars-mercedes-benz-gla-2-1-gla220d-amg-line-premium-plus-7g-dct-4matic-euro-6-s-s-5dr-132-000-miles-10690-132000-202510217306757-w505.png"
+  ]
+}

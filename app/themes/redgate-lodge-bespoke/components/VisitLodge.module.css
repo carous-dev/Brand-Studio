@@ -1,0 +1,364 @@
+/* Visit lodge — the "arrival card" homepage closer (design-language §7: last
+   `/` section, on `surface`, before the shell BrowseByMake band). Laid out like
+   a hotel welcome sheet: a hairline-ruled details list left, a claret-matted
+   framed photo + italic hospitality note right. Typography and rules only — no
+   map embed, no icon grid, no shadows, no gradients.
+
+   Every colour is a token / color-mix so the card reads on the claret palette
+   AND a light throwaway brand. Mobile-first: base is the 360 single-column stack
+   (photo hidden ≤640, note below the list); min-width queries add the 768 two-up
+   split and the 1024 roomier rows. Radius scale (design-language §5): 0 on the
+   photo + mat.
+
+   Type scale: 4 distinct sizes only — caption 0.8125rem (eyebrow, row labels,
+   hours), body 1rem (values, note), subtitle 1.1875rem (unused here), the title
+   clamp (section h2). */
+
+/* ---------- Section shell (paired surface) --------------------------------- */
+.section {
+  position: relative; /* anchors the aurora CanvasFX backdrop */
+  padding: clamp(3.25rem, 7vw, 6rem) 0;
+  background: var(--color-surface);
+  color: var(--color-text);
+  /* Closing full-width hairline: same-token separator before the BrowseByMake
+     band (also `surface`) per design-language §7 (AC3). */
+  border-bottom: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+/* Furnishing (luxury→refined): the aurora light sits behind the arrival card,
+   softened further than the hero so the ruled ledger stays the focus. It
+   self-guards (static token wash ≤640px / reduced-motion), so no
+   *-decor-mobile-hide is needed here. */
+.aurora {
+  opacity: 0.55;
+}
+
+/* Bare variant (/contact right column): transparent wrapper, no band, no rule. */
+.bare {
+  background: transparent;
+  color: var(--color-text);
+}
+
+.inner {
+  position: relative;
+  z-index: 1; /* content rides above the aurora backdrop */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.bare .inner {
+  max-width: none;
+  padding: 0;
+}
+
+/* ---------- Heading line --------------------------------------------------- */
+.head {
+  margin-bottom: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+/* Serif-caps letterspaced eyebrow — the warm claret accent, echoing the
+   wordmark (design-language §3). */
+.eyebrow {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.title {
+  margin: 0;
+  /* Title slot — clamp is the ONLY width control (no max-width). Sentence case. */
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.18;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+/* ---------- Layout (base: single column) ----------------------------------- */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.detailsCol {
+  min-width: 0;
+}
+
+/* ---------- Details list (a real <dl> of label-value rows) ------------------ */
+.details {
+  margin: 0;
+  /* Top hairline so the list reads as a ruled ledger even before the first row. */
+  border-top: 1px solid var(--color-border);
+}
+
+/* Genuinely paired label/value → 2-col grid is allowed even on mobile
+   (build-rules §8). Label 40% / value 60%; hairline under each row; ≥44px tall
+   so tappable phone/email rows meet the touch-target floor (AC2). */
+.row {
+  display: grid;
+  grid-template-columns: 40% 60%;
+  align-items: baseline;
+  gap: 0.75rem;
+  min-height: 44px;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+  /* Refined hover micro-interaction: the row hairline warms toward the claret
+     accent (see .row:hover below). ≤200ms, colour-only — no layout shift. */
+  transition: border-color 180ms ease;
+}
+
+/* On hover the label caption warms from muted toward the claret primary and the
+   row hairline picks up the same accent — a quiet ledger-line highlight that
+   reads as attentive, not busy. Colour fade only, so it's reduced-motion safe. */
+.row:hover {
+  border-bottom-color: color-mix(in srgb, var(--color-primary) 42%, var(--color-border));
+}
+
+.row:hover .label {
+  color: color-mix(in srgb, var(--color-primary) 68%, var(--color-muted));
+}
+
+.label {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  transition: color 180ms ease;
+}
+
+.value {
+  margin: 0;
+  min-width: 0;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.addressText {
+  display: block;
+}
+
+/* Tappable value links (phone/email + directions). Primary; underline on hover
+   /focus; the anchor fills a ≥44px tap target. */
+.link,
+.directions {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.directions {
+  min-height: 32px;
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+}
+
+.link:hover,
+.directions:hover {
+  text-decoration: underline;
+}
+
+.link:focus-visible,
+.directions:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ---------- Hours (guarded list OR fallback line) -------------------------- */
+.hoursList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.hoursItem {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
+  justify-content: space-between;
+}
+
+.hoursDay {
+  color: var(--color-muted);
+}
+
+.hoursValue {
+  color: var(--color-text);
+  text-align: right;
+}
+
+.hoursFallback {
+  display: block;
+  color: var(--color-text);
+}
+
+/* ---------- Aside (photo + hospitality note) ------------------------------- */
+.aside {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 3vw, 1.5rem);
+}
+
+/* Framed photo reuses the hero mat treatment at a smaller offset. Hidden ≤640
+   (spec §Layout) — the note carries the right column on mobile. */
+.figure {
+  position: relative;
+  margin: 0;
+  min-width: 0;
+  display: none;
+}
+
+/* Claret-tint mat panel, offset down-right behind the frame (12px at ≥768). */
+.mat {
+  position: absolute;
+  inset: 0;
+  transform: translate(12px, 12px);
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-bg));
+  z-index: 0;
+  pointer-events: none;
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Refined micro-interaction: the mat deepens on hover for a subtle lift — the
+   same restrained gesture the hero frame got, so the theme reads coherent. */
+.figure:hover .mat {
+  transform: translate(18px, 18px);
+}
+
+.frame {
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  /* Light fallback behind the photo + paired muted placeholder (empty state). */
+  background: var(--color-bg);
+  color: var(--color-muted);
+}
+
+/* Placeholder sits beneath the photo; a 404 photo layer is transparent so this
+   shows through and the empty state reads as an intentional matted panel. */
+.placeholder {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  text-align: center;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-size: 0.8125rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-color: transparent;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* Furnishing: slow cinematic ken-burns drift (luxury-refined, not neon) — the
+     same treatment the hero frame carries. Overscan from scale keeps the frame
+     covered; guarded off under reduced-motion / ≤720px below. */
+  transform-origin: center;
+  animation: visit-kenburns 26s ease-in-out infinite alternate;
+}
+
+@keyframes visit-kenburns {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.08) translate(-1.2%, 1%); }
+}
+
+/* Hospitality "travelling far?" note — italic-leaning, muted, warm voice. */
+.note {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-size: 1rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--color-muted);
+  text-wrap: pretty;
+}
+
+/* ---------- 768: two columns (details 55 / photo+note 45) ------------------ */
+@media (min-width: 768px) {
+  .inner {
+    padding: 0 1.25rem;
+  }
+
+  .bare .inner {
+    padding: 0;
+  }
+
+  .layout {
+    grid-template-columns: 55fr 45fr;
+    align-items: start;
+    gap: clamp(2rem, 4vw, 3rem);
+  }
+
+  /* Bare variant is a single column (it already sits in the contact split). */
+  .bare .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .figure {
+    display: block;
+  }
+}
+
+/* ---------- 1024: roomier rows -------------------------------------------- */
+@media (min-width: 1024px) {
+  .row {
+    padding: 1rem 0;
+    gap: 1rem;
+  }
+}
+
+/* ---------- 1440: container already caps at 1200px ------------------------- */
+@media (min-width: 1440px) {
+  .inner {
+    padding: 0 1.25rem;
+  }
+}
+
+/* ---------- Furnishing floors: no motion under reduced-motion or on phones -- */
+@media (prefers-reduced-motion: reduce) {
+  .photo { animation: none; }
+  .mat,
+  .figure:hover .mat { transition: none; }
+}
+
+/* Photo drift is desktop-only — the figure itself is already hidden ≤640, and
+   the ≤720 guard matches the hero so tablets stay calm too. */
+@media (max-width: 720px) {
+  .photo { animation: none; }
+}

@@ -1,0 +1,18 @@
+{
+  "component": "page-about",
+  "mode": "full-page",
+  "route": "/about",
+  "iteration": 1,
+  "verdict": "PASS",
+  "brands": { "claret": "redgate-lodge-bespoke-qa", "light": "redgate-lodge-bespoke-qa-alt (teal)" },
+  "mechanical": { "tsc": "pass", "colorContract": "pass", "audit": "pass (0 blockers)" },
+  "issues": [],
+  "notes": [
+    "Flow matches design-language §7: page-ribbon(surface) -> story split 'People first, cars second' + framed photo reusing hero-mat treatment(bg) -> proof-ledger 01-04 REUSED(surface) -> aftercare-suite 3 cards(surface, separated by ledger bottom hairline) -> px-invite primary band -> browse-by-make -> footer. Numbered-ledger appears once (proof-ledger only) per do-not #5. Single primary band.",
+    "BrowseByMake + footer render below (fp-claret-about-full.png)."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/fp-claret-about-full.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-about-w505.png"
+  ]
+}

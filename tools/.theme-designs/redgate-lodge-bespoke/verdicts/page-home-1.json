@@ -1,0 +1,33 @@
+{
+  "component": "page-home",
+  "mode": "full-page",
+  "route": "/",
+  "iteration": 1,
+  "verdict": "PASS",
+  "brands": { "claret": "redgate-lodge-bespoke-qa", "light": "redgate-lodge-bespoke-qa-alt (teal)" },
+  "mechanical": {
+    "tsc": "pass",
+    "colorContract": "pass (0 literals in 0 files)",
+    "audit": "pass (0 blockers, 31 advisories theme-wide; none on homepage-section files)",
+    "greps": [
+      "pass: no box-shadow under sticky header (Header.tsx explicitly border-bottom only)",
+      "pass: canonical hrefs — Header CTA + PxInvite = /sell-my-car (no /sell-your-car)",
+      "pass: no hardcoded dealer strings in TSX/CSS (Redgate matches are theme.json metadata + code identifiers only)",
+      "pass: all server fetches thread ?brand= (FeaturedStock, BrowseByMake, used-cars, detail)",
+      "pass: shell.tsx passes belowMain={<BrowseByMake/>} — home-1 blocker RESOLVED"
+    ]
+  },
+  "issues": [],
+  "notes": [
+    "PRIMARY FOCUS — BrowseByMake sitewide band: shell.tsx now wires belowMain={<BrowseByMake/>}; the band ('BROWSE BY MAKER / Find your next car by manufacturer', 12 maker chips, 4-col >=1024) renders on surface between the last route section and the footer plate on EVERY route and BOTH brands (verified via full-page capture fp-claret-*/fp-teal-*). The home-1 blocker is fixed.",
+    "FOOTER — deep claret plate renders correctly (fp-claret-privacy-policy-full.png shows the full footer). The earlier 'void' in fixed-window shots was styles/base.css .redgate-main{min-height:calc(100vh-200px)} pushing the footer one viewport down; captured cleanly with a full-page puppeteer pass. Not a defect.",
+    "Home section flow observed: bg(hero) -> surface(proof-ledger, double-hairline top) -> bg(featured 3x2) -> surface(aftercare) -> primary(px-invite) -> bg(reviews) -> surface(visit-lodge) -> surface(browse-by-make, hairline) -> footer plate. Alternation + single-primary-band + handoffs all correct.",
+    "TEAL brand PASS — px-invite band, ledger numerals, card glyphs, browse chips, footer all token-driven and legible; nothing hardcoded claret."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/tall-claret-home-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-home-w505.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/fp-claret-privacy-policy-full.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/fp-teal-privacy-policy-full.png"
+  ]
+}

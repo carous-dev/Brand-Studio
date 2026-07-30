@@ -1,0 +1,48 @@
+/* Contact split (design-language §7): on `bg`, enquiry form card left, reused
+   visit-lodge details (bare, unbanded) right. Mobile-first: base is a single
+   column (form first, details below); the two-up split arrives at 1024 where the
+   form also becomes a surface card. Tokens only — paired bg/text. No shadows, no
+   gradients. */
+.section {
+  position: relative; /* anchors the aurora CanvasFX backdrop */
+  padding: clamp(3.25rem, 7vw, 6rem) 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  overflow: hidden;
+}
+
+/* Furnishing (luxury→refined): the aurora light sits behind the split, kept
+   fainter than the hero so the enquiry form reads first. Self-guards (static
+   token wash ≤640px / reduced-motion, pauses off-screen), so no
+   *-decor-mobile-hide is needed here. */
+.aurora {
+  opacity: 0.4;
+}
+
+.inner {
+  position: relative;
+  z-index: 1; /* content rides above the aurora backdrop */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2.5rem, 6vw, 3.5rem);
+  align-items: start;
+}
+
+@media (min-width: 640px) {
+  .inner {
+    padding: 0 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+}

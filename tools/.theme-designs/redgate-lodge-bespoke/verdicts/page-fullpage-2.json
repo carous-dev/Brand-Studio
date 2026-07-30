@@ -1,0 +1,50 @@
+{
+  "component": "full-page",
+  "iteration": 2,
+  "verdict": "PASS",
+  "mode": "full-page-reverify",
+  "note": "Post vehicle-detail-redesign re-verify. Real brand (claret) all 15 routes + light throwaway brand (Teal Ridge) on home/used-cars/detail/contact. Mechanical gates green (pre-run by orchestrator, not re-run). Footer + shell BrowseByMake band confirmed via puppeteer fullPage device shots (window-size shots clip them below the route's min-height:100vh stretch).",
+  "routes_checked": {
+    "/": "PASS (real 1440/505/iphone13, alt 1440/iphone13) - ivory split hero 2-line headline, numbered proof-ledger, featured stock, aftercare, claret px-invite, reviews, visit-lodge, BrowseByMake, deep-plate footer",
+    "/about": "PASS (real 1440) - story split reusing hero mat, ledger reused verbatim, aftercare, px-invite",
+    "/contact": "PASS (real 1440, alt 1440/505/iphone13) - ribbon + contact split form/visit",
+    "/services": "PASS (real 1440) - expanded 6-card aftercare + 01-03 how-it-works ledger + px-invite",
+    "/finance": "PASS (real 1440) - 3 ledger-steps + representative-example card + credit-broker disclaimer + enquiry form",
+    "/sell-my-car": "PASS (real 1440) - sell-px-form + 01-03 steps + reviews (probe warning was a false Node/lvh.me fetch hiccup, page renders fine)",
+    "/part-exchange": "PASS (real 1440) - PX copy variant form + 01-03 steps",
+    "/used-cars": "PASS (real 1440/iphone13, alt 1440/iphone13) - inventory hero (in-stock count + search + makes filter), toolbar chips, 3-col grid, px-invite",
+    "/used-cars/[slug]": "PASS - see page-used-cars-detail-2.json (2 minors)",
+    "/recently-sold": "PASS (real 1440) - grayscale SOLD-stamp cards, struck prices, 'yours could be next' px-invite variant",
+    "/compare": "PASS (real 1440) - 'Nothing to compare yet' empty state",
+    "/wishlist": "PASS (real 1440) - 'Your wishlist is empty' empty state",
+    "/privacy-policy": "PASS (real 1440) - 720px prose measure, hairline-underlined serif h2s (probe warning was a false fetch hiccup)",
+    "/cookie-policy": "PASS (real 505/1440) - prose page, same treatment as privacy"
+  },
+  "light_brand_dark_assumption_check": "PASS - all primary bands (px-invite, detail claret specs band, footer deep plate, BrowseByMake) render in the light brand's teal with legible on-primary text; all body copy dark-on-light; inputs/sidebar surface-safe. Zero invisible-text / dark-locked / bg-scrim failures.",
+  "responsiveness_check": "PASS - no [WARN x-overflow] at 505/768/1024/1440 or on iphone13 (390x844@2x) / androidS (360x800@3x) device emulation on home, used-cars, detail. Mobile simplification present (one hero CTA, single-column, sticky bottom action bar on detail).",
+  "section_flow_check": "PASS - Header -> route sections -> BrowseByMake (surface, hairline separator) -> Footer (deep plate) holds on every route; background alternation and primary-band-per-route cap respected.",
+  "issues": [
+    {
+      "id": "full-page-2-01",
+      "severity": "minor",
+      "criterion": "AC5 (vehicle-detail)",
+      "route": "/used-cars/[slug]",
+      "brand": "both",
+      "screen": "all",
+      "evidence": "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/dev-used-cars-ford-c-max-1-6-tdci-titanium-euro-5-5dr-109-000-miles-2690-109000-202511238087920-iphone13.png",
+      "description": "Gallery pill 'Gallery ()' empty count — see page-used-cars-detail-2.json#vehicle-detail-2-01. Attributed to vehicle-detail component."
+    },
+    {
+      "id": "full-page-2-02",
+      "severity": "minor",
+      "criterion": "AC3 (vehicle-detail)",
+      "route": "/used-cars/[slug]",
+      "brand": "both",
+      "screen": "all",
+      "evidence": "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/real-pri-used-cars-ford-c-max-1-6-tdci-titanium-euro-5-5dr-109-000-miles-2690-109000-202511238087920-w1440.png",
+      "description": "About-this-car prose clips derivative leading token ('6 TDCi'/'0 TDI') — see page-used-cars-detail-2.json#vehicle-detail-2-02. Attributed to vehicle-detail/parseDescription.ts."
+    }
+  ],
+  "screenshots_dir": "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots",
+  "screenshot_count": 62
+}

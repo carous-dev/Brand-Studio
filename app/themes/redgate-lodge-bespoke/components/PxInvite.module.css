@@ -1,0 +1,191 @@
+/* PxInvite — the full-width primary "invitation ribbon" (design-language §5
+   band recipe). The band is `--color-primary` bg paired with `--color-on-primary`
+   fg in ONE rule; every foreground below reuses `--color-on-primary` so the
+   band survives the real claret palette AND a light throwaway brand (build-rules
+   §2). No white literals, no faded rgba, no gradients, no shadows.
+
+   Mobile-first: base is the 360 single-column left-aligned stack (title, body,
+   ONE full-width outlined CTA; flourish hidden; padding at the clamp low end).
+   min-width queries reveal the flourish (768) and switch to the single-row
+   text-left / CTA-right feel (1024). Container caps at 1200px inside the
+   full-bleed band (1440). */
+
+/* ---------- Band shell (paired surface) ------------------------------------- */
+.section {
+  position: relative;
+  padding: clamp(3.25rem, 7vw, 6rem) 0;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  overflow: hidden; /* anchors + clips the aurora CanvasFX backdrop */
+}
+
+/* Furnishing: the soft brand-light aurora sits behind everything (z-index 0 via
+   canvas-fx.css). It self-guards (static token wash ≤640px / reduced-motion,
+   pauses off-screen), so no *-decor-mobile-hide is needed. Softened here so it
+   only deepens the claret plate, never competes with the on-primary text. */
+.aurora {
+  opacity: 0.5;
+}
+
+.inner {
+  position: relative;
+  z-index: 1; /* content + flourish ride above the aurora backdrop */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+
+/* ---------- The written invitation (left-aligned, above the flourish) -------- */
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+/* The unique move: italic-leaning EB Garamond 500 display line, sentence case —
+   reads like a hand-written note, not a billboard. Title-slot clamp; no
+   max-width (clamp is the only width control). */
+.title {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 500;
+  font-style: italic;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.18;
+  color: var(--color-on-primary);
+  text-wrap: balance;
+}
+
+.body {
+  margin: 0;
+  max-width: 52ch;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--color-on-primary);
+  text-wrap: pretty;
+}
+
+/* ---------- Outlined on-primary CTA (mobile: one full-width button) ---------- */
+.cta {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.75rem 1.75rem;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  background: transparent;
+  color: var(--color-on-primary);
+  border: 1px solid var(--color-on-primary);
+  border-radius: 4px;
+  transition: background-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Hover (spec §States, refined): fill flips to the on-primary token, text to
+   the primary — legible on any brand because both are the band's own paired
+   tokens — softened by an on-primary glow halo. The halo uses --color-on-primary
+   (never --color-primary) so it reads as a soft light over the claret plate AND
+   flips correctly on a light throwaway brand. ONE tasteful effect. */
+.cta:hover {
+  background: var(--color-on-primary);
+  color: var(--color-primary);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-on-primary) 55%, transparent),
+    0 0 26px color-mix(in srgb, var(--color-on-primary) 26%, transparent);
+}
+
+.cta:focus-visible {
+  outline: 2px solid var(--color-on-primary);
+  outline-offset: 2px;
+}
+
+/* ---------- Ornamental closing quote-flourish (hidden ≤640) ------------------ */
+.flourish {
+  display: none;
+  position: absolute;
+  z-index: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 6rem;
+  line-height: 1;
+  /* 20% of the on-primary token — never a white literal / faded rgba. */
+  color: color-mix(in srgb, var(--color-on-primary) 20%, transparent);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ---------- 768: flourish appears right; content constrained --------------- */
+@media (min-width: 768px) {
+  .inner {
+    padding: 0 1.25rem;
+  }
+
+  .content {
+    max-width: 60%;
+  }
+
+  /* CTA becomes a natural-width button (no longer full-bleed) so it clears the
+     flourish; still left-aligned in the stack. */
+  .cta {
+    width: auto;
+    align-self: flex-start;
+  }
+
+  .flourish {
+    display: block;
+    top: 50%;
+    right: 1.25rem;
+    transform: translateY(-50%);
+  }
+}
+
+/* ---------- 1024: single-row feel — text left, CTA right-aligned centered --- */
+@media (min-width: 1024px) {
+  .inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2.5rem;
+  }
+
+  .content {
+    max-width: 62%;
+  }
+
+  .cta {
+    flex: 0 0 auto;
+    align-self: center;
+  }
+
+  /* Flourish sits behind the CTA area (z-index below content/CTA). */
+  .flourish {
+    right: clamp(2rem, 10vw, 7rem);
+    font-size: 8rem;
+  }
+}
+
+/* ---------- Reduced motion: hover transitions collapse (≤200ms already, but
+   normalise to none for consistency) --------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .cta {
+    transition: none;
+  }
+}

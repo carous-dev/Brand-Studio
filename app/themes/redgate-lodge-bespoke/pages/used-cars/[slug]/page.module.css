@@ -1,0 +1,1014 @@
+/* Vehicle detail — redgate-lodge-bespoke.
+   =============================================================================
+   Structure (design-language §7 detail flow): title strip (bg) → full-bleed
+   mosaic gallery (bg) → claret specs band (primary, the route's ONE primary
+   band) → content + sticky sidebar (bg) → similar rail (surface).
+
+   Every `background:` is paired with its `color:` in the same rule (build-rules
+   §2). All colour is tokens / `color-mix` — the only literals are the lightbox
+   photo-scrim chrome, each tagged "photo-scrim-ok". Mobile-first: base CSS
+   targets ~360px; wider layouts are added via `min-width` queries only.
+   Verify mobile at 505px. */
+
+.page {
+  --wide-pad: clamp(1rem, 3vw, 2.5rem);
+  --wide-max: 1600px;
+  --content-max: 1280px;
+  --hairline: var(--color-border);
+  --sticky-top: 80px; /* 64px sticky nav row + 16px */
+
+  /* Type scale — exactly the theme's 5 roles (design-language §3). Every
+     font-size on this page resolves to one of these five tokens. */
+  --fs-display: clamp(1.6rem, 4vw, 2.5rem);
+  --fs-title: clamp(1.5rem, 3vw, 2.25rem);
+  --fs-subtitle: 1.1875rem;
+  --fs-body: 1rem;
+  --fs-caption: 0.8125rem;
+
+  position: relative;
+  overflow-x: hidden;
+  padding-bottom: 76px; /* clears the mobile sticky action bar */
+  background: var(--color-bg);
+  color: var(--color-text);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 320ms ease, transform 320ms ease;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+}
+
+.pageVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------------------------------------------------------------- lead wrap */
+/* Base (mobile): gallery first, title strip second. ≥768 the order swaps so the
+   title sits ABOVE the gallery. */
+.leadWrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.titleStrip {
+  order: 2;
+  background: var(--color-bg);
+  color: var(--color-text);
+  padding: clamp(1.25rem, 3vw, 2rem) 0 clamp(0.75rem, 2vw, 1rem);
+}
+
+.gallerySection {
+  order: 1;
+  background: var(--color-bg);
+  color: var(--color-text);
+  padding: clamp(0.75rem, 2vw, 1rem) 0 0;
+}
+
+.galleryInner {
+  max-width: var(--wide-max);
+  margin: 0 auto;
+  padding: 0 var(--wide-pad);
+}
+
+.titleInner {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 0 var(--wide-pad) clamp(0.9rem, 2vw, 1.15rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--hairline); /* seats the masthead */
+}
+
+.titleText {
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: var(--fs-display);
+  line-height: 1.18;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.subLine {
+  margin: 0.35rem 0 0;
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.titlePrice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+}
+
+.priceEyebrow {
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: var(--fs-caption);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.priceValue {
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: var(--fs-title);
+  line-height: 1.05;
+  color: var(--color-text);
+}
+
+.priceFinance {
+  font-size: var(--fs-caption);
+  color: var(--color-muted);
+}
+
+.priceStruck {
+  text-decoration: line-through;
+  color: var(--color-muted);
+}
+
+/* ------------------------------------------------------------- gallery: base */
+/* ≤767 swipe carousel + thumb rail. Hidden ≥768 (mosaic takes over). */
+.galleryMobile {
+  display: block;
+}
+
+.carouselTrack {
+  position: relative;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.carouselTrack::-webkit-scrollbar {
+  display: none;
+}
+
+.carouselSlide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: zoom-in;
+}
+
+.carouselSlide img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+.carouselPill {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.6); /* photo-scrim-ok — photo-count chip over gallery */
+  color: #ffffff; /* photo-scrim-ok */
+  font-size: var(--fs-caption);
+  font-weight: 600;
+}
+
+.carouselExpand {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.thumbRail {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.thumbRail::-webkit-scrollbar {
+  display: none;
+}
+
+.thumb {
+  flex: 0 0 auto;
+  width: 76px;
+  padding: 0;
+  border: 1px solid var(--hairline);
+  border-radius: 0;
+  overflow: hidden;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.thumb img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.thumbActive {
+  border-color: var(--color-primary);
+  outline: 1px solid var(--color-primary);
+}
+
+/* ------------------------------------------------------------ gallery mosaic */
+/* Hidden on mobile; ≥768 becomes the 1-main + 2x2 mosaic. */
+.galleryMosaic {
+  display: none;
+}
+
+.galleryEmpty {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 3 / 2;
+  min-height: 240px;
+  border: 1px solid var(--hairline);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-size: var(--fs-subtitle);
+  text-align: center;
+  padding: 1rem;
+}
+
+.mosaicTile {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: zoom-in;
+}
+
+.mosaicTile img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: center;
+  /* Furnishing (luxury→refined): a slow, clipped ken-burns on hover — the tile's
+     overflow:hidden keeps the overscan inside the frame. */
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Thumbs: a gentle lift. */
+.mosaicTile:hover img {
+  transform: scale(1.045);
+}
+
+/* Main hero tile: a touch more travel (cinematic drift), still clipped. */
+.mosaicMain:hover img {
+  transform: scale(1.06) translate(-0.8%, -0.8%);
+}
+
+.mosaicPill {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 6px 12px;
+  border-radius: 4px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--fs-caption);
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------- specs band */
+/* Full-bleed claret ledger. The grid uses a 1px hairline `gap` over an
+   on-primary tint so the internal separators read without any per-cell border
+   maths; every cell repaints the primary bg so only the gaps show through. */
+.specsBand {
+  position: relative; /* anchors + clips the aurora CanvasFX backdrop */
+  overflow: hidden;
+  width: 100%;
+  margin-top: clamp(1.25rem, 3vw, 2rem);
+  padding: clamp(1.5rem, 3.2vw, 2.25rem) 0;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+/* Furnishing: the soft brand-light aurora sits behind the claret plate
+   (z-index 0 via canvas-fx.css). Softened so it only deepens the plate and
+   never competes with the on-primary text. It self-guards (static token wash
+   ≤640px / reduced-motion, pauses off-screen), so no *-decor-mobile-hide is
+   needed. */
+.aurora {
+  opacity: 0.5;
+}
+
+.specsInner {
+  position: relative;
+  z-index: 1; /* on-primary specs ride above the aurora backdrop */
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 0 var(--wide-pad);
+}
+
+.specsGrid {
+  --spec-hair: color-mix(in srgb, var(--color-on-primary) 22%, transparent);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0; /* separators are now per-cell insets, not a gap-tint */
+  background: transparent;
+  color: var(--color-on-primary);
+}
+
+.specCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  padding: clamp(0.85rem, 2vw, 1.15rem) clamp(0.9rem, 2vw, 1.35rem);
+  min-width: 0;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  /* left + bottom interior hairline: count-agnostic, no hanging tint when a
+     cell is filtered out */
+  box-shadow: inset 1px 0 0 0 var(--spec-hair), inset 0 -1px 0 0 var(--spec-hair);
+}
+
+.specCol:first-child {
+  box-shadow: inset 0 -1px 0 0 var(--spec-hair); /* no leftmost frame line */
+}
+
+.specIcon {
+  display: inline-flex;
+  color: var(--color-on-primary);
+}
+
+.specLabel {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: var(--fs-caption);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-on-primary);
+}
+
+.specValue {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: var(--fs-subtitle);
+  line-height: 1.2;
+  color: var(--color-on-primary);
+}
+
+/* ------------------------------------------------------------ content + side */
+.contentSection {
+  background: var(--color-bg);
+  color: var(--color-text);
+  padding: clamp(2rem, 5vw, 3.5rem) 0;
+}
+
+.contentInner {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 0 var(--wide-pad);
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+}
+
+.mainCol {
+  min-width: 0;
+  display: grid;
+  gap: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+/* Highlights checklist — refined positive points with primary tick glyphs. */
+.highlightGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.highlightItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--hairline);
+  font-size: var(--fs-body);
+  color: var(--color-text);
+}
+
+.highlightTick {
+  flex: 0 0 auto;
+  margin-top: 0.15rem;
+  color: var(--color-primary);
+}
+
+/* About (prose) — the old .description look. */
+.aboutBody {
+  color: var(--color-text);
+  line-height: 1.65;
+  font-size: var(--fs-body);
+}
+
+.aboutBody p {
+  margin: 0 0 1rem;
+  text-wrap: pretty;
+}
+
+.aboutBody p:last-child {
+  margin-bottom: 0;
+}
+
+.blockTitle {
+  margin: 0 0 0.85rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--hairline);
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: var(--fs-subtitle);
+  color: var(--color-text);
+}
+
+.factsList {
+  margin: 0;
+  display: grid;
+  gap: 0;
+}
+
+/* Specification — 2-col label/value grid of the non-band identity fields. */
+.specGrid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: 2rem;
+}
+
+.specGridRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--hairline);
+  font-size: var(--fs-body);
+}
+
+.specGridRow dt {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.specGridRow dd {
+  margin: 0;
+  text-align: right;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.factRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--hairline);
+  font-size: var(--fs-body);
+}
+
+.factRow:last-child {
+  border-bottom: 0;
+}
+
+/* Furnishing micro-interaction: key-facts rows warm on hover. The inline inset
+   (padding + cancelling negative margin) is applied at REST so hover only
+   animates the background — no layout shift. Colour-only, reduced-motion safe. */
+.factRow {
+  padding-inline: 0.55rem;
+  margin-inline: -0.55rem;
+  border-radius: 4px;
+  transition: background-color 160ms ease;
+}
+
+.factRow:hover {
+  background: color-mix(in srgb, var(--color-primary) 7%, transparent);
+}
+
+.factRow dt {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.factRow dd {
+  margin: 0;
+  text-align: right;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.keyFactsMobile {
+  display: block;
+}
+
+/* Sidebar — hidden on mobile (the sticky bottom bar + mobile key facts cover
+   it); becomes a sticky price card ≥1024. */
+.sidebar {
+  display: none;
+  min-width: 0;
+}
+
+.priceCard {
+  display: grid;
+  gap: 1.15rem;
+  padding: 1.35rem;
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-primary); /* claret ribbon cue */
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.priceZone {
+  display: grid;
+  gap: 0.25rem;
+  padding-bottom: 1.15rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.cardActions {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.cardPrice {
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: var(--fs-title);
+  line-height: 1;
+  color: var(--color-text);
+}
+
+.financeLine {
+  margin: -0.35rem 0 0;
+  font-size: var(--fs-caption);
+  color: var(--color-muted);
+}
+
+.enquireBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.75rem 1.25rem;
+  border: 0;
+  border-radius: 4px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: inherit;
+  font-size: var(--fs-body);
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.enquireBtn:hover {
+  background: color-mix(in srgb, var(--color-primary) 86%, var(--color-text));
+  color: var(--color-on-primary);
+}
+
+.enquireBtn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.soldChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  color: var(--color-primary);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.callLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: var(--fs-body);
+  text-decoration: none;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.callLink:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.sidebarFacts {
+  border-top: 1px solid var(--hairline);
+  padding-top: 1rem;
+}
+
+.factsHeading {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: var(--fs-subtitle);
+  color: var(--color-text);
+}
+
+/* --------------------------------------------------------------- sticky bar */
+.stickyBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem clamp(1rem, 3vw, 1.25rem);
+  background: var(--color-bg);
+  color: var(--color-text);
+  border-top: 1px solid var(--hairline);
+  box-shadow: 0 -2px 12px color-mix(in srgb, var(--color-text) 12%, transparent);
+}
+
+.stickyPrice {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  flex: 0 0 auto;
+}
+
+.stickyPriceLabel {
+  font-size: var(--fs-caption);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.stickyPrice strong {
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: var(--fs-subtitle);
+  color: var(--color-text);
+}
+
+.stickyCta {
+  flex: 1 1 auto;
+  min-height: 46px;
+}
+
+/* ---------------------------------------------------------------- similar */
+.similarSection {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-top: 1px solid var(--hairline);
+  padding: clamp(2.5rem, 6vw, 4.5rem) 0;
+}
+
+.similarInner {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 0 var(--wide-pad);
+}
+
+.similarHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.similarTitle {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: var(--fs-title);
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.similarLink {
+  flex: 0 0 auto;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: var(--fs-body);
+  text-decoration: none;
+}
+
+.similarLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+/* Mobile: horizontal scroll-snap rail (build-rules §8). */
+.similarGrid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 80%;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+
+.similarGrid::-webkit-scrollbar {
+  display: none;
+}
+
+.similarGrid > * {
+  scroll-snap-align: start;
+  min-width: 0;
+}
+
+/* Reveal-stagger wrapper for the "More like this" cards — a plain grid cell so
+   the VehicleCard fills it and the AOS reveal has a real box to animate. */
+.similarCell {
+  display: flex;
+  min-width: 0;
+}
+
+.similarCell > * {
+  width: 100%;
+}
+
+/* ------------------------------------------------------------- lightbox */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightboxBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9); /* photo-scrim-ok — lightbox scrim over gallery */
+}
+
+.lightboxClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55); /* photo-scrim-ok — lightbox close over imagery */
+  color: #ffffff; /* photo-scrim-ok */
+  cursor: pointer;
+}
+
+.lightboxCounter {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 2;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55); /* photo-scrim-ok — lightbox counter over imagery */
+  color: #ffffff; /* photo-scrim-ok */
+  font-size: var(--fs-caption);
+  font-weight: 600;
+}
+
+.lightboxNav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55); /* photo-scrim-ok — lightbox nav over imagery */
+  color: #ffffff; /* photo-scrim-ok */
+  cursor: pointer;
+}
+
+.lightboxPrev {
+  left: 16px;
+}
+
+.lightboxNext {
+  right: 16px;
+}
+
+.lightboxClose:focus-visible,
+.lightboxNav:focus-visible {
+  outline: 2px solid #ffffff; /* photo-scrim-ok — focus ring over lightbox imagery */
+  outline-offset: 2px;
+}
+
+.lightboxStage {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 3rem);
+}
+
+.lightboxStage img {
+  display: block;
+  max-width: min(100%, 1400px);
+  max-height: 88vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ============================================================ breakpoints */
+@media (min-width: 768px) {
+  .titleStrip {
+    order: 1;
+    padding: clamp(1.75rem, 3.5vw, 2.5rem) 0 clamp(1rem, 2vw, 1.25rem);
+  }
+
+  .gallerySection {
+    order: 2;
+    padding: 0;
+  }
+
+  .titleInner {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .titlePrice {
+    align-items: flex-end;
+    text-align: right;
+    flex: 0 0 auto;
+  }
+
+  .galleryMobile {
+    display: none;
+  }
+
+  .galleryMosaic {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    height: clamp(360px, 44vw, 560px);
+  }
+
+  .mosaicMain {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  .mosaicFull {
+    grid-column: 1 / -1;
+    grid-row: 1 / span 2;
+  }
+
+  .specsGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .highlightGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 2rem;
+  }
+
+  .specGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .similarGrid {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-columns: auto;
+    overflow: visible;
+  }
+}
+
+@media (min-width: 1024px) {
+  .specsGrid {
+    grid-template-columns: repeat(var(--spec-cols, 6), minmax(0, 1fr));
+  }
+
+  .contentGrid {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  .sidebar {
+    display: block;
+    position: sticky;
+    top: calc(var(--sticky-top));
+    align-self: start;
+  }
+
+  .keyFactsMobile {
+    display: none;
+  }
+
+  .stickyBar {
+    display: none;
+  }
+
+  .page {
+    padding-bottom: 0;
+  }
+}
+
+@media (min-width: 1440px) {
+  .galleryMosaic {
+    height: clamp(440px, 40vw, 620px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .mosaicTile img,
+  .enquireBtn,
+  .callLink,
+  .factRow {
+    transition: none;
+  }
+
+  .mosaicTile:hover img,
+  .mosaicMain:hover img {
+    transform: none;
+  }
+}

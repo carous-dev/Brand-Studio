@@ -148,6 +148,7 @@ peer of the chosen archetype is the bar.
 - `stats-band-plus-recently-sold-rail` — stats bar above + dedicated recently-sold horizontal rail below
 - `edition-strip-plus-acquisitions-row` — "Volume X · Spring Edition" strip + horizontal acquisitions cards
 - `why-choose-us-trust-strip` — primary feature is a multi-pillar "why choose us" band high in the page
+- `proof-ledger-band` — full-width hairline-ruled ledger directly below the hero: numbered rows/columns of credential entries (award, review score, stock scale, aftercare) with oversized oldstyle serif numerals in brand-primary (coined by redgate-lodge-bespoke)
 
 If the dealer's brand voice genuinely demands a move not on this list,
 ADD a new kebab id and write a one-line description so the next theme
@@ -179,6 +180,7 @@ The "top contact bar + header + nav" assembly varies materially per theme:
 - `hairline-thin-borderless` — 52px hairline border-bottom, minimalist-archetype default
 - `dark-accent-strip-top` — dark charcoal nav with 3px brand-accent strip across the very top
 - `newspaper-masthead-two-tier` — edition strip + nav below, serif wordmark centered
+- `spanning-logo-plaque-two-row` — logo sits in a full-height bordered plaque at the left edge spanning BOTH header rows (contact strip + nav); the brand-primary contact strip and the nav each run to the right of the plaque (coined by redgate-lodge-bespoke)
 
 ### "One big move" — restraint exemption
 
@@ -951,12 +953,19 @@ _Test discipline:_
   loud badge or logo block.
 
 **Restraint and visual hierarchy — professional, not hacky (must-have, learned 2026-05-11; supersedes the maximalist clauses below). Each theme is allowed ONE exempted axis — see §"Distinctiveness contract → One big move":**
-- The dominant failure mode for /new-theme themes is **overdesign**: too
-  many font sizes, too many gradient surfaces, too many decorative
-  layers stacked in every section, brand color dominating instead of
-  accenting. The result reads as amateur-busy, not premium. This rule
-  is the governing constraint — when a downstream rule (motion, futuristic,
-  archetype spec) collides with this one, restraint wins.
+- **RETUNED 2026-07-30 → "rich by default" (see theme-builder build-rules
+  §14).** Restraint is now a QUALITY FLOOR, not a governing constraint: it
+  blocks only amateur-busy, illegible, broken-on-mobile, or contract-violating
+  results. Within that floor, richness is EXPECTED — every component is
+  FURNISHED (imagery/motion/depth/canvas/micro-interaction, archetype-gated),
+  and a PLAIN component is now a defect. The caps below are the *starting*
+  budgets; the furnisher raises them per the archetype vocabulary (modern/
+  industrial/rugged run rich neon+canvas; luxury/editorial refined+cinematic;
+  minimalist keeps the low caps + its glow/gradient ban). The old failure mode
+  (overdesign → amateur-busy) is still real, so restraint still WINS when a
+  furnishing move is illegible, breaks mobile, floods brand color past
+  legibility, or violates a contract — but it no longer wins merely because a
+  component is "calmer." Mobile stays calm regardless of desktop richness.
 - **Typography scale cap.** A single page may use ≤ 5 distinct font
   sizes total — UNLESS `oneBigMove` is `typography-scale`, in which
   case the cap lifts to 7. One display size for hero / page-title, one

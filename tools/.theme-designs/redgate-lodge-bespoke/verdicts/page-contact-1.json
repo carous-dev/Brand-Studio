@@ -1,0 +1,29 @@
+{
+  "component": "page-contact",
+  "mode": "full-page",
+  "route": "/contact",
+  "iteration": 1,
+  "verdict": "PASS",
+  "brands": { "claret": "redgate-lodge-bespoke-qa", "light": "redgate-lodge-bespoke-qa-alt (teal)" },
+  "mechanical": { "tsc": "pass", "colorContract": "pass", "audit": "pass (0 blockers)" },
+  "issues": [
+    {
+      "id": "page-contact-1-01",
+      "severity": "minor",
+      "owner": "contact-page",
+      "criterion": "design-language §7 (/contact split section on `bg`)",
+      "route": "/contact",
+      "width": "1440",
+      "evidence": "fp-teal-contact-full.png: the contact split (ContactForm card left, VisitLodge right) sits on a `surface` band with the form as a white `bg` card, rather than the whole split on `bg` as §7 states. No visual/alternation harm (ribbon surface -> split surface is separated by the card + hairline). Cosmetic token choice.",
+      "fix_hint": "If exact §7 compliance wanted, set the contact split section background to var(--color-bg). Non-blocking."
+    }
+  ],
+  "notes": [
+    "ContactForm same underline-input treatment as finance (tracked as minor there); legible on both brands. VisitLodge HOURS shows safe fallback 'Call us to arrange a time that suits you' — no false 'Closed' (appointment-only brand handled correctly). browse-by-make + footer teal-safe. Mobile 505: single-column, full-width Send enquiry CTA, then Visit the showroom."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/fp-teal-contact-full.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-contact-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-contact-w505.png"
+  ]
+}

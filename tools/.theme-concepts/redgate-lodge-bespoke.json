@@ -1,0 +1,20 @@
+{
+  "themeId": "redgate-lodge-bespoke",
+  "archetype": "luxury",
+  "signatureConcept": "Warm-premium 'guest house for cars' — an ivory split hero with a claret-matted framed photo hands off to a full-width numbered proof ledger of the dealer's credentials, with hairline-rule surface grammar, letterspaced EB Garamond serif-caps eyebrows over sentence-case serif display, and hospitality-toned aftercare storytelling in a warm voice",
+  "signatureMove": "proof-ledger-band",
+  "coinedMoves": {
+    "proof-ledger-band": "full-width hairline-ruled ledger directly below the hero: numbered rows/columns of credential entries (award, review score, stock scale, aftercare) with oversized oldstyle serif numerals in brand-primary",
+    "spanning-logo-plaque-two-row": "header assembly where the logo sits in a full-height bordered plaque at the left edge spanning BOTH header rows (contact strip row + nav row); the brand-primary contact strip and the nav each run to the right of the plaque"
+  },
+  "personalityVoice": "warm",
+  "headerStructure": "spanning-logo-plaque-two-row",
+  "heroPattern": "split-screen-photo-right",
+  "homepageSections": ["hero", "proof-ledger", "featured-stock", "aftercare-suite", "px-invite", "reviews", "visit-lodge", "directory"],
+  "inventoryListPattern": "showroom-grid",
+  "vehicleDetailPattern": "full-bleed-mosaic",
+  "fontHeading": "EB Garamond",
+  "fontBody": "Lato",
+  "titleTreatment": "serif-sentence-case-with-letterspaced-caps-eyebrows",
+  "oneBigMove": "none"
+}

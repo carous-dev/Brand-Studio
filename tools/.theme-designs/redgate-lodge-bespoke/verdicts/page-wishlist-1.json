@@ -1,0 +1,18 @@
+{
+  "component": "page-wishlist",
+  "mode": "full-page",
+  "route": "/wishlist",
+  "iteration": 1,
+  "verdict": "PASS",
+  "brands": { "claret": "redgate-lodge-bespoke-qa", "light": "redgate-lodge-bespoke-qa-alt (teal)" },
+  "mechanical": { "tsc": "pass", "colorContract": "pass", "audit": "pass (0 blockers; advisory motion-aos-min-count — non-blocking)" },
+  "issues": [],
+  "notes": [
+    "Flow matches §7: page-ribbon slim 'Your wishlist'(surface) -> saved-cars area(bg). Empty state per spec: 'Your wishlist is empty / Tap the heart on any car...' + 'Browse the showroom' CTA. browse-by-make + footer below. Mobile 505 single-column.",
+    "The 'Compiling...' badge bottom-left is the Next dev-server indicator, not a theme element."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-wishlist-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-wishlist-w505.png"
+  ]
+}

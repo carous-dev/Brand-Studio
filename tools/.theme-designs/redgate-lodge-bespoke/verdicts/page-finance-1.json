@@ -1,0 +1,29 @@
+{
+  "component": "page-finance",
+  "mode": "full-page",
+  "route": "/finance",
+  "iteration": 1,
+  "verdict": "PASS",
+  "brands": { "claret": "redgate-lodge-bespoke-qa", "light": "redgate-lodge-bespoke-qa-alt (teal)" },
+  "mechanical": { "tsc": "pass", "colorContract": "pass", "audit": "pass (0 blockers)" },
+  "issues": [
+    {
+      "id": "page-finance-1-01",
+      "severity": "minor",
+      "owner": "ContactForm",
+      "criterion": "build-rules [visual] 'forms have visible solid-border inputs + labels' / design-language §5 (inputs radius 4px)",
+      "route": "/finance",
+      "width": "1440 (both brands)",
+      "evidence": "fp-claret-finance-full.png / fp-teal-finance-full.png: the 'Send us a message' form uses underline-style inputs (bottom hairline only, uppercase eyebrow labels YOUR NAME/PHONE/EMAIL/MESSAGE) rather than 4-sided boxed 4px-radius inputs. Fields are visible, labeled and legible on BOTH brands (no invisible text, no dark-locked inputs) and fit the theme's hairline grammar — so not a legibility failure, but a deviation from the boxed-input spec.",
+      "fix_hint": "Acceptable as-is (intentional hairline grammar). If strict §5 compliance is wanted, add a 1px var(--color-border) box + 4px radius to inputs. Does not block ship."
+    }
+  ],
+  "notes": [
+    "Flow matches §7: page-ribbon(surface) -> finance intro + 3 ledger-steps 01-03(bg) -> assurance strip 'representative example' card + disclaimer captions(surface) -> enquiry form card(bg) -> browse-by-make -> footer. Single ledger instance; no primary band (footer excluded). Legible on teal."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/fp-claret-finance-full.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/fp-teal-finance-full.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-finance-w505.png"
+  ]
+}

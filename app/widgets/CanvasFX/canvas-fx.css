@@ -1,0 +1,50 @@
+/* CanvasFX — the living-backdrop container. Absolute-fills its positioned
+ * parent behind content (z-index 0), never interactive. When the live canvas is
+ * suppressed (reduced-motion, ≤640px, pre-hydration SSR) a static brand-token
+ * gradient shows instead, so the slot is never blank or broken. */
+
+.cfx {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* Static token wash — the SSR/guarded/frozen fallback (also the mobile +
+     reduced-motion look), painted under the canvas. Two soft brand-light
+     radials (primary top-right, accent bottom-left) so the atmosphere reads
+     RICH even when the live canvas is suppressed — refined, never neon. */
+  background:
+    radial-gradient(
+      58% 72% at 80% 10%,
+      color-mix(in srgb, var(--color-primary) 16%, transparent),
+      transparent 66%
+    ),
+    radial-gradient(
+      52% 64% at 10% 92%,
+      color-mix(in srgb, var(--color-accent) 12%, transparent),
+      transparent 72%
+    );
+}
+
+.cfx-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Guarded states: hide the live canvas, keep the static wash. */
+.cfx.cfx-static .cfx-canvas {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .cfx .cfx-canvas {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cfx .cfx-canvas {
+    display: none;
+  }
+}

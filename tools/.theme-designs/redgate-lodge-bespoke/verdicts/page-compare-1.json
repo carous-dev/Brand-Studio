@@ -1,0 +1,18 @@
+{
+  "component": "page-compare",
+  "mode": "full-page",
+  "route": "/compare",
+  "iteration": 1,
+  "verdict": "PASS",
+  "brands": { "claret": "redgate-lodge-bespoke-qa", "light": "redgate-lodge-bespoke-qa-alt (teal)" },
+  "mechanical": { "tsc": "pass", "colorContract": "pass", "audit": "pass (0 blockers)" },
+  "issues": [],
+  "notes": [
+    "Flow matches §7: page-ribbon slim 'Compare cars'(surface) -> compare area(bg). Empty state renders per spec: 'Nothing to compare yet / Add a few cars with the compare button...' + 'Browse the showroom' CTA (href /used-cars, canonical). browse-by-make + footer below. Mobile 505 single-column.",
+    "Populated compare table not exercised (QA garage empty) — empty state is the correct default and is clean."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-compare-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/full-claret-compare-w505.png"
+  ]
+}

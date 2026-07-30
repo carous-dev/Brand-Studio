@@ -90,9 +90,35 @@ export default function AnimateOnScroll() {
     const mutation = new MutationObserver(() => observeAll())
     mutation.observe(document.body, { childList: true, subtree: true })
 
+    // MotionFX `.mfx-spotlight` — write the pointer's element-relative position
+    // to --mfx-mx / --mfx-my so the radial glow follows the cursor. Skipped
+    // under reduced-motion and on coarse/small screens (no cursor; the CSS
+    // hides the overlay there anyway). One passive, rAF-throttled listener.
+    const fine =
+      window.matchMedia &&
+      window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    let spotlightMove: ((e: PointerEvent) => void) | null = null
+    let spotRaf = 0
+    if (fine && !reduced) {
+      spotlightMove = (e: PointerEvent) => {
+        const target = (e.target as Element | null)?.closest?.('.mfx-spotlight') as HTMLElement | null
+        if (!target) return
+        if (spotRaf) return
+        spotRaf = window.requestAnimationFrame(() => {
+          spotRaf = 0
+          const r = target.getBoundingClientRect()
+          target.style.setProperty('--mfx-mx', `${e.clientX - r.left}px`)
+          target.style.setProperty('--mfx-my', `${e.clientY - r.top}px`)
+        })
+      }
+      window.addEventListener('pointermove', spotlightMove, { passive: true })
+    }
+
     return () => {
       if (rafId1) window.cancelAnimationFrame(rafId1)
       if (rafId2) window.cancelAnimationFrame(rafId2)
+      if (spotRaf) window.cancelAnimationFrame(spotRaf)
+      if (spotlightMove) window.removeEventListener('pointermove', spotlightMove)
       observer.disconnect()
       mutation.disconnect()
     }

@@ -1,0 +1,61 @@
+{
+  "component": "header",
+  "iteration": 2,
+  "verdict": "FAIL",
+  "mechanical": {
+    "tsc": "pass",
+    "colorContract": "pass (0 literals in 0 files)",
+    "audit": "pass-for-header (Header.tsx, Header.module.css, BrandLogo.tsx, BrandLogo.module.css produced 0 findings). CONTEXT (not header-owned, unchanged from iter-1): styles/base.css:36 std-link-color-blanket BLOCKER (global-styles/base component); plus advisories on used-cars/[slug], used-cars, services, sell-your-car, wishlist pages (other components).",
+    "greps": [
+      "PASS (fix verified): no `logo.png` reference anywhere in the theme — grep for 'logo\\.png' across app/themes/redgate-lodge-bespoke returned no matches. BrandLogo.tsx is now an explicit 2-tier fallback (brand.logo <img> onError -> serif .wordmark); no <img> can request /themes/<id>/logo.png. This 2-tier approach is sanctioned by the amended spec Logo policy block (build-rules §5 'theme default' role satisfied by the styled wordmark).",
+      "PASS (fix verified): the 3 mobile-overlay strings now route through resolveText — Header.tsx:224 resolveText(brand,'footer.wishlist'), :228 resolveText(brand,'footer.compare'), :243 resolveText(brand,'header.whatsapp'). All three keys exist in recipes/text-recipe.json (footer.wishlist, footer.compare, header.whatsapp) with generic defaults. header-1-02 resolved.",
+      "pass: no box-shadow in Header.module.css (border-bottom:1px var(--color-border) only on .navRow / .overlayHead).",
+      "pass: no bare element selectors (CSS module; <header> styled via .navRow).",
+      "pass: all <Link href> whitelisted (/, /used-cars, /recently-sold, /services, /finance, /part-exchange, /sell-my-car, /wishlist, /compare) — /sell-my-car correct, no Home/About/Contact nav items.",
+      "pass: no max-width media queries in Header.module.css (only min-width 768/1024 + prefers-reduced-motion).",
+      "pass: paired background/color on every rule; contact strip uses --color-primary bg + --color-on-primary fg; plaque/nav on --color-bg + --color-text.",
+      "pass: no 'use client' issue (Header.tsx is a client component, not a page wrapper).",
+      "note (out-of-scope for header, flag for FOOTER reviewer): Footer.tsx:12 hardcodes `brand?.name || 'Redgate'` — a seed-dealer name fallback that violates do-not §10 / build-rules §12 and would leak into reused previews. Not a header file. BrandLogo.tsx:16 'Redgate' is a code comment only (not rendered), acceptable."
+    ]
+  },
+  "issues": [
+    {
+      "id": "header-2-01",
+      "severity": "major",
+      "criterion": "spec Unique move + Layout 768/1024/1440 (plaque width ~180px, logo inside) + AC1 (plaque shows the serif wordmark as a clean bordered plaque)",
+      "route": "/ and /used-cars",
+      "screen": "768, 1024, 1440",
+      "evidence": "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/crop-header-2-home-w1440.png ; C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/crop-header-2-home-w1024.png ; C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/crop-header-2-home-w768.png ; C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-2-home-w1440.png ; C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-2-used-cars-w1024.png",
+      "description": "The blocker's ROOT (broken image) is fixed and the wordmark now renders, but on the real CLARET brand the long name 'Redgate Lodge Motor Group' OVERFLOWS the fixed 180px plaque and is CLIPPED at the left viewport edge: it renders 'dgate Lodge Motor Group' at 768, 'gate Lodge Motor Group' at 1024, and 'edgate Lodge Motor Group' at 1440 (leading letters cut off), while the tail spills past the plaque's right hairline border into the nav gap. Root cause is header-owned: Header.module.css .plaque{width:180px; justify-content:center} combined with BrandLogo.module.css .wordmark{white-space:nowrap; font-size:clamp(1.25rem,2.4vw,1.6rem)} — a centered nowrap wordmark wider than 180px overflows equally both sides, and the left overflow falls off-screen. The dealer's own name losing its first letter in the identity plaque, at every desktop width on the primary brand, is visibly wrong. Confirmed name-length-dependent: the shorter teal-brand name 'Teal Ridge Cars' fits inside the plaque without clipping (crop-header-2-alt-home-w1440.png). Fix options: let the wordmark wrap to 2 lines inside the plaque (drop white-space:nowrap, tighten line-height) and/or reduce the plaque wordmark clamp and left-align so long names shrink-to-fit rather than overflow; widening the fixed 180px alone will not scale to arbitrary names. Mobile (505) is unaffected — the navLogo wordmark has no fixed width and renders the full name."
+    }
+  ],
+  "context_notes": [
+    "BLOCKER header-1-01 (broken-image box) is RESOLVED. On BOTH brands the plaque/nav render the styled EB Garamond wordmark (dark serif on ivory) with NO broken-image placeholder and NO 404 raster request. This was the sole iter-1 blocker; the fix (2-tier BrandLogo + no shipped logo.png) works as designed. The remaining issue header-2-01 is a NEW layout defect exposed now that the wordmark actually paints, not a regression of the image fix.",
+    "MINOR header-1-02 (overlay strings not via resolveText) is RESOLVED — see greps.",
+    "AC1 spanning (unique move): at 768/1024/1440 the single .plaque element spans both rows (36px strip + 64px nav = 100px) with one hairline right border touching strip and nav — one element, not a per-row logo. Verified in markup (one <Link className=plaque> in the contact strip; the nav-row .navLogo is display:none from 768 up) and visually. The spanning geometry itself is correct; only the wordmark's horizontal fit within it fails (header-2-01).",
+    "AC2 (mobile 505): header is one 32px nowrap claret contact row (status chip 'By appointment & walk-in' right, no city/county, socials hidden) + one sticky 60px white nav row with the FULL wordmark left (not clipped) and a 44x44 hamburger right; desktop CTA cluster hidden. Satisfied.",
+    "AC3 (no shadow): Header.module.css has zero box-shadow; nav row + overlay head use border-bottom:1px var(--color-border) only. No shadow visible under the sticky row in the 1024 used-cars capture. Satisfied.",
+    "AC4 (tokens/contrast): contact strip = var(--color-primary) bg + var(--color-on-primary) fg. Legible under BOTH brands — claret strip with white text/chips, and teal strip with white text/chips on the alt brand (header-2-alt-home-w1440.png). Nav links, CTA button and active underline all flow the brand hue (claret / teal), never hardcoded claret. Satisfied.",
+    "AC5: nav lean (no Home/About/Contact); wordmark/plaque links to /; all hrefs whitelisted incl. /sell-my-car. Satisfied.",
+    "AC6 (active nav): on /used-cars at 1024 the 'Used cars' item shows the 2px brand-primary underline + weight 700 (aria-current in DOM); isActiveRoute uses startsWith(href+'/') so /used-cars/<slug> keeps it active. Satisfied.",
+    "AC7 (overlay): markup verified — overlay rows min-height:56px, visible 44x44 close button, .overlay[hidden]{display:none!important} present. (Open state not screenshottable from a static shot; code-verified.) Satisfied.",
+    "AC8 (adjacency): nav-row bottom is a clean 1px var(--color-border) hairline handing off to the home stub (bg) and, on /used-cars, to the ribbon band (hue break) — no gap, no shadow, no double border. Satisfied.",
+    "This claret QA brand has no phone and no city/county, so the strip location chip and phone link are correctly hidden by defensive rendering (contact.locationLabel && / contact.phoneTel &&) — data-driven, not a header bug. Status chip shows the neutral 'By appointment & walk-in' fallback, never 'Closed'.",
+    "OUT OF SCOPE for header, flag for other reviewers: (a) styles/base.css:36 std-link-color-blanket BLOCKER (global-styles component, unchanged from iter-1); (b) Footer.tsx:12 hardcoded 'Redgate' name fallback (footer component); (c) /used-cars page-ribbon renders as a claret PRIMARY band whereas design-language §7 specifies it on `surface` (page-ribbon component); (d) used-cars grid card content is clipped on the right at 1024 by the right-edge capture fade — verify separately in the inventory review."
+  ],
+  "screenshots": [
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-2-home-w505.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-2-home-w768.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-2-home-w1024.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-2-home-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-2-used-cars-w505.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-2-used-cars-w768.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-2-used-cars-w1024.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-2-used-cars-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/header-2-alt-home-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/crop-header-2-home-w1440.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/crop-header-2-home-w1024.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/crop-header-2-home-w768.png",
+    "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/crop-header-2-alt-home-w1440.png"
+  ]
+}

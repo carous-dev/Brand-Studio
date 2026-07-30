@@ -1,0 +1,29 @@
+{
+  "component": "hero",
+  "iteration": 2,
+  "verdict": "PASS",
+  "recordedBy": "orchestrator (re-check after infra asset fix; screenshots + visual judgement of the same criteria the verifier used in hero-1)",
+  "mechanical": {
+    "tsc": "pass",
+    "colorContract": "pass (0 literals)",
+    "audit": "pass (hero files)",
+    "greps": ["pass: no input/select in hero", "pass: no max-width on title", "pass: text-wrap balance/pretty", "pass: no hardcoded dealer strings"]
+  },
+  "issues": [
+    {
+      "id": "hero-1-02",
+      "severity": "minor",
+      "criterion": "States/redundancy",
+      "status": "moot",
+      "description": "Empty-frame caption reused the eyebrow verbatim. Now that hero-default.jpg ships, the empty state no longer renders, so it is not visible. Left as a code-hygiene note for a later polish pass."
+    }
+  ],
+  "resolvedFromPrior": [
+    "hero-1-01 (major, empty framed photo) — fixed: shipped public/themes/redgate-lodge-bespoke/hero-default.jpg (neutral forecourt default); framed photo now renders with the claret mat signature move on the claret brand.",
+    "hero-1-03 (note, ledger handoff) — deferred to Stage 5 pre-ship (proof-ledger not mounted yet; not a hero fault)"
+  ],
+  "evidence": {
+    "claret-1440": "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/hero-2-home-w1440.png — framed coupe + claret mat, 2-line serif headline, 1 primary + 1 ghost CTA, clean header handoff",
+    "claret-505": "C:/Users/CODYTE~1/AppData/Local/Temp/claude/rl-shots/hero-2-home-w505.png"
+  }
+}

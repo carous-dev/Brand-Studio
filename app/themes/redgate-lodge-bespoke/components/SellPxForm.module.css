@@ -1,0 +1,345 @@
+/* SellPxForm — sell / part-exchange lead section on `bg`. Two-part ledger entry:
+   an oversized letterspaced reg-plate input + mileage lead the form card, then
+   ledger-underline contact fields (component 14's ruled-page grammar duplicated
+   locally — never cross-import another page's module), with LedgerSteps in the
+   right-hand rail. Every colour is a dashboard token / color-mix (+ the
+   --t-error/--t-success status tokens), so it reads on the claret palette AND a
+   light throwaway brand; no rule assumes primary is dark or bg is white. The reg
+   input uses ONLY bg/border/text tokens — no yellow/amber/plate literals.
+   Radius scale (design-language §5): 4px inputs/submit, 6px card. No shadows, no
+   gradients. Mobile-first: single-column base (form card, then steps below,
+   full-width submit); min-width queries add the framed card, the 3-up steps row,
+   then the 2-col form|rail split. */
+
+/* ---------- Section (paired surface) --------------------------------------- */
+.section {
+  position: relative; /* anchors the aurora CanvasFX backdrop */
+  overflow: hidden; /* clips the aurora wash to the band */
+  background: var(--color-bg);
+  color: var(--color-text);
+  padding: clamp(3.25rem, 7vw, 6rem) 0;
+}
+
+/* Furnishing (luxury→refined): the same soft brand-light canvas the hero /
+   proof-ledger / visit bands carry, dialled down hard so the ruled form stays
+   the focus — warm continuity, never a competing layer over the fields. It
+   self-guards (static token wash ≤640px / reduced-motion, pauses off-screen),
+   so no *-decor-mobile-hide is needed. Decorative + aria-hidden (CanvasFX). */
+.aurora {
+  opacity: 0.4;
+}
+
+.inner {
+  position: relative;
+  z-index: 1; /* form + rail ride above the aurora backdrop */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ---------- Grid (base: single column, form then steps) -------------------- */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 5vw, 2.75rem);
+}
+
+/* ---------- Form card (base: frameless paper) ------------------------------ */
+.card {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* ---------- Card title (serif, sentence case) ------------------------------ */
+.title {
+  margin: 0 0 clamp(1.5rem, 4vw, 2rem);
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.18;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.5rem, 4vw, 1.875rem);
+}
+
+/* ---------- Reg plate — oversized, centered, letterspaced (bg/border tokens
+   ONLY; NO yellow/amber/plate literal) --------------------------------------- */
+.regField {
+  display: flex;
+  flex-direction: column;
+}
+
+.regInput {
+  width: 100%;
+  min-height: 56px;
+  padding: 0.6rem 0.75rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  text-align: center;
+  /* Scoped uppercase display (spec §States / AC6 — this input selector only). */
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.regInput::placeholder {
+  color: color-mix(in srgb, var(--color-text) 40%, transparent);
+  letter-spacing: 0.12em;
+}
+
+/* Furnishing (luxury→refined): the marquee field earns a soft primary
+   focus-glow ring — a token-driven border-glow (spread ring, NOT a decorative
+   drop-shadow), ≤200ms, so the oversized reg plate reads as the hero field
+   while the display stays fully legible. Reads on the claret palette AND a
+   light throwaway brand (color-mix over the primary token). */
+.regInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+/* ---------- Underline fields (mileage + name/phone/email) ------------------- */
+.underlineFields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.5rem, 4vw, 1.875rem);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Serif-caps caption label — the "ruled page" heading over each value line.
+   Shifts to primary while the field is focused (below). */
+.label {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  transition: color 160ms ease;
+}
+
+/* Ledger-underline value line: transparent shell, ONLY a bottom hairline.
+   16px font floor = no iOS zoom; ≥48px tall touch target. */
+.input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.6rem 0;
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 1rem;
+  line-height: 1.6;
+  border-style: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  transition: border-color 160ms ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.input::placeholder {
+  color: color-mix(in srgb, var(--color-text) 45%, transparent);
+}
+
+.input:focus {
+  outline: none;
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.regField:focus-within .label,
+.field:focus-within .label {
+  color: var(--color-primary);
+}
+
+/* ---------- Error state ---------------------------------------------------- */
+.formError {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--t-error);
+  background: color-mix(in srgb, var(--t-error) 8%, var(--color-bg));
+  border-left: 3px solid var(--t-error);
+  border-radius: 4px;
+}
+
+.hasError .regInput {
+  border-color: var(--t-error);
+}
+
+.hasError .input {
+  border-bottom-color: var(--t-error);
+}
+
+.error {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--t-error);
+}
+
+/* ---------- Submit (the only solid element; full-width on mobile) ---------- */
+.actions {
+  display: flex;
+}
+
+.submit {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.85rem 1.75rem;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 160ms ease;
+}
+
+.submit:hover {
+  background: color-mix(in srgb, var(--color-primary) 88%, var(--color-text));
+  color: var(--color-on-primary);
+}
+
+.submit:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-text) 55%, transparent);
+  outline-offset: 3px;
+}
+
+.submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---------- Success block (swaps in for the form) -------------------------- */
+.successState {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: clamp(1.25rem, 4vw, 1.75rem) 0;
+  border-top: 1px solid var(--t-success);
+}
+
+.successTitle {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.18;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.successBody {
+  margin: 0;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--color-text);
+  text-wrap: pretty;
+}
+
+.reset {
+  margin-top: 0.5rem;
+  min-height: 44px;
+  padding: 0.6rem 1.5rem;
+  background: transparent;
+  color: var(--color-primary);
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 1rem;
+  border: 1px solid var(--color-primary);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.reset:hover {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.reset:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-text) 55%, transparent);
+  outline-offset: 3px;
+}
+
+/* ---------- 768: framed card constrained to 560px, submit auto-width -------- */
+@media (min-width: 768px) {
+  .inner {
+    padding: 0 1.25rem;
+  }
+
+  .card {
+    max-width: 560px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: clamp(1.75rem, 3vw, 2.5rem);
+  }
+
+  .actions {
+    justify-content: flex-end;
+  }
+
+  .submit {
+    width: auto;
+  }
+}
+
+/* ---------- 1024: 2-col form | steps rail (rail sticky top) ----------------- */
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: 3fr 2fr;
+    align-items: start;
+    gap: clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  .card {
+    max-width: none;
+    padding: clamp(2rem, 3vw, 2.75rem);
+  }
+
+  .rail {
+    position: sticky;
+    top: 6rem;
+  }
+}
+
+/* ---------- 1440: container caps at 1200px; nothing further to widen -------- */
+
+/* ---------- Reduced motion: collapse the >0ms hover/focus transitions ------ */
+@media (prefers-reduced-motion: reduce) {
+  .regInput,
+  .input,
+  .label,
+  .submit,
+  .reset {
+    transition: none;
+  }
+}

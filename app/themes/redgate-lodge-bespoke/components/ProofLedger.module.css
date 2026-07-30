@@ -1,0 +1,272 @@
+/* ProofLedger — THE signature band. Full-width numbered "proof ledger" on
+   `--color-surface`, opening with the theme's ONLY double-hairline (the
+   hero→ledger handoff) and closing with a single hairline into featured-stock.
+   Every surface derives from the dashboard tokens, so it reads correctly on the
+   claret palette AND a light throwaway brand. Radius scale (design-language §5):
+   0 here — hairlines carry all structure, no cards, no shadows, no gradients.
+   Mobile-first: stacked ledger rows base, min-width queries widen. */
+
+.ledger {
+  position: relative; /* anchors the aurora CanvasFX backdrop */
+  overflow: hidden; /* clips the aurora wash to the band */
+  background: var(--color-surface);
+  color: var(--color-text);
+  /* Section top border = the FIRST of the two double-hairline rules. */
+  border-top: 1px solid var(--color-border);
+  /* Bottom single hairline hands off to featured-stock (which carries no top
+     rule of its own). */
+  border-bottom: 1px solid var(--color-border);
+  /* Compact rhythm (design-language §4 low end) — this is the second thing
+     seen, kept quiet and structural. */
+  padding: clamp(2.5rem, 5vw, 4rem) 0;
+}
+
+/* SECOND rule of the double-hairline: a full-bleed 1px line 4px below the top
+   edge. Reserved to this band + the footer top edge (design-language §5). */
+.ledger::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--color-border);
+  pointer-events: none;
+  z-index: 1; /* the double-hairline handoff rides above the faint aurora wash */
+}
+
+/* Furnishing (luxury→refined): the aurora light sits behind the ledger, dialled
+   down hard so it reads as continuity with the hero/visit bands — atmosphere,
+   never a competing layer over the numerals. It self-guards (static token wash
+   ≤640px / reduced-motion, pauses off-screen), so no *-decor-mobile-hide is
+   needed. */
+.aurora {
+  opacity: 0.34;
+}
+
+.srTitle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.inner {
+  position: relative;
+  z-index: 1; /* the ledger content rides above the aurora backdrop */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+/* ---- Base (360, verify 505): stacked rows, numeral in a fixed left column,
+   label + detail right; a horizontal hairline BETWEEN rows only (the band's
+   top double-hairline already caps the first row). Reads like guest-ledger
+   lines. ---- */
+.entry {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  align-items: start;
+  column-gap: 1rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--color-border);
+  /* Refined hover micro-interaction: whatever hairline this entry carries at the
+     current breakpoint (row top-rule at base, column/row rules at 768/1024)
+     warms toward the claret accent. Colour-only, ≤180ms, no layout shift, so
+     it's reduced-motion safe. */
+  transition: border-color 180ms ease;
+}
+
+/* On hover the entry's oversized numeral deepens toward the strong claret and
+   its hairline picks up the same warmth — a quiet ledger-line highlight that
+   reads as attentive, never busy. Both are colour fades only.
+   NB: the 768/1024 blocks re-set per-column hairlines at nth-child specificity
+   (0,2,0); the `.list` prefix here lifts the hover to (0,3,0) so the warm
+   colour wins over whichever divider (top-rule at base, column/row rule at
+   768/1024) the entry currently carries — `border-color` touches only the
+   sides that actually have a rule. */
+.list .entry:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 42%, var(--color-border));
+}
+
+.list .entry:hover .numeral {
+  color: color-mix(in srgb, var(--color-primary-strong) 82%, var(--color-primary));
+}
+
+.entry:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.entry:last-child {
+  padding-bottom: 0;
+}
+
+/* Oversized oldstyle serif numeral — the ledger's crowning mark. Title slot
+   size, primary hue (AA-checked pair on surface), oldstyle numerals for the
+   guest-ledger character. */
+.numeral {
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  font-variant-numeric: oldstyle-nums;
+  font-feature-settings: 'onum' 1;
+  color: var(--color-primary);
+  transition: color 180ms ease;
+}
+
+.body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* Serif-caps letterspaced label — the eyebrow-role treatment applied as the
+   ledger entry heading (echoes the wordmark; design-language §3 caps role). */
+.label {
+  margin: 0;
+  font-family: var(--font-brand-family-override, 'EB Garamond', Georgia, serif);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.detail {
+  margin: 0;
+  font-family: var(--font-ui-family-override, 'Lato', system-ui, sans-serif);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--color-muted);
+  text-wrap: pretty;
+}
+
+/* ---- 768: 2×2 grid. Numeral crowns each cell (stacked above the label).
+   Internal hairlines both directions via collapsed cell borders — no double
+   lines: only inner edges carry a rule, outer edges stay flush. ---- */
+@media (min-width: 768px) {
+  .inner {
+    padding: 0 1.25rem;
+  }
+
+  .list {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .entry {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.75rem 1.5rem;
+    border-top: none;
+  }
+
+  /* Reset base first/last overrides so the 2×2 rules apply uniformly. */
+  .entry:first-child,
+  .entry:last-child {
+    padding: 1.75rem 1.5rem;
+  }
+
+  /* Left column flush to the container edge; right column flush right. */
+  .entry:nth-child(2n + 1) {
+    padding-left: 0;
+  }
+
+  .entry:nth-child(2n) {
+    padding-right: 0;
+  }
+
+  /* Top row flush to the top double-hairline; bottom row flush to the base. */
+  .entry:nth-child(-n + 2) {
+    padding-top: 0;
+  }
+
+  .entry:nth-child(n + 3) {
+    padding-bottom: 0;
+  }
+
+  /* Vertical hairline between the two columns. */
+  .entry:nth-child(2n) {
+    border-left: 1px solid var(--color-border);
+  }
+
+  /* Horizontal hairline between the two rows. */
+  .entry:nth-child(n + 3) {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .numeral {
+    font-size: clamp(2rem, 3vw, 2.5rem);
+  }
+}
+
+/* ---- 1024: single row of four columns, top-aligned, vertical hairlines
+   between entries only. ----
+   NB: the 768 2×2 block sets nth-child padding/border resets whose specificity
+   (0,2,0) OUT-RANKS a bare `.entry` rule (0,1,0), and both @media (min-width)
+   blocks stay active at ≥1024. So this block MUST re-assert every per-column
+   value at matching nth-child specificity, or the 2×2 resets leak (entry 3
+   loses its left gutter and crams against its divider; entries 3–4 grow stray
+   top hairlines). */
+@media (min-width: 1024px) {
+  .list {
+    grid-template-columns: repeat(4, 1fr);
+    align-items: start;
+  }
+
+  .entry {
+    padding: 0 2rem;
+    border-top: none;
+    border-left: none;
+  }
+
+  /* Re-assert the paddings the 768 2×2 resets would otherwise leave at 0. */
+  .entry:nth-child(2n + 1) {
+    padding-left: 2rem;
+  }
+
+  .entry:nth-child(2n) {
+    padding-right: 2rem;
+  }
+
+  /* Kill the 768 row hairline + row-2 padding reset in the single-row layout. */
+  .entry:nth-child(n + 3) {
+    border-top: none;
+    padding-bottom: 0;
+  }
+
+  /* Between-column vertical hairline; outer edges stay flush to the container. */
+  .entry:not(:first-child) {
+    border-left: 1px solid var(--color-border);
+  }
+
+  .entry:first-child {
+    padding-left: 0;
+  }
+
+  .entry:last-child {
+    padding-right: 0;
+  }
+}
+
+/* ---- 1440: container already caps at 1200px; between-column padding is fixed
+   (2rem) so the gutters stop growing. Nothing further to widen. ---- */
