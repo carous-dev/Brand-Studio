@@ -18,6 +18,7 @@ import { getVehicleLookupCandidates } from '../../../lib/vehicle-links'
 import { EnquiryModal, useEnquiryModal } from '@/app/widgets/EnquiryModal'
 import { WhatsAppIcon } from '@/app/widgets/WhatsAppFab'
 import VehicleCard from '../../../components/cards/VehicleCard'
+import VehicleGallery from '../../../components/VehicleGallery'
 import styles from './page.module.css'
 
 type VehicleDetails = {
@@ -260,8 +261,6 @@ export function DualVehicleDetailPage(_props?: Record<string, unknown>) {
   const [details, setDetails] = useState<VehicleDetails | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [galleryIndex, setGalleryIndex] = useState(0)
-  const [lightboxOpen, setLightboxOpen] = useState(false)
   const [similar, setSimilar] = useState<InventoryVehicle[]>([])
 
   const candidates = useMemo(() => getVehicleLookupCandidates(slugParam), [slugParam])
@@ -354,7 +353,6 @@ export function DualVehicleDetailPage(_props?: Record<string, unknown>) {
         specs: buildSpecs(found.raw, found.vehicle, isBike),
       })
       setLoading(false)
-      setGalleryIndex(0)
     }
 
     load()
@@ -399,23 +397,6 @@ export function DualVehicleDetailPage(_props?: Record<string, unknown>) {
       .catch(() => {})
     return () => { cancelled = true }
   }, [brandSlug, details])
-
-  // Keyboard support for lightbox
-  useEffect(() => {
-    if (!lightboxOpen) return
-    const handler = (e: KeyboardEvent) => {
-      if (!details) return
-      if (e.key === 'Escape') setLightboxOpen(false)
-      if (e.key === 'ArrowLeft') setGalleryIndex((i) => (i - 1 + details.gallery.length) % details.gallery.length)
-      if (e.key === 'ArrowRight') setGalleryIndex((i) => (i + 1) % details.gallery.length)
-    }
-    window.addEventListener('keydown', handler)
-    document.body.style.overflow = 'hidden'
-    return () => {
-      window.removeEventListener('keydown', handler)
-      document.body.style.overflow = ''
-    }
-  }, [lightboxOpen, details])
 
   if (loading) {
     return (
@@ -473,10 +454,6 @@ export function DualVehicleDetailPage(_props?: Record<string, unknown>) {
     image: vehicle.image,
   }
 
-  const galleryActive = gallery[galleryIndex] || vehicle.image
-  const visibleThumbs = gallery.slice(0, 4)
-  const extraCount = Math.max(0, gallery.length - visibleThumbs.length)
-  const totalPhotos = gallery.length
   const enquirySubject = `Enquiry: ${vehicle.title}`
   const hiddenFields = {
     vehicle: vehicle.title,
@@ -555,77 +532,10 @@ export function DualVehicleDetailPage(_props?: Record<string, unknown>) {
             </div>
           </header>
 
-          {/* Gallery — desktop: hero left + 4 thumbs 2×2 right + "+N more" cell spanning columns
-              Mobile: large hero on top, thumbs scroll-snap row below. */}
+          {/* Futuristic swipeable gallery — track slide, drag/swipe, pill
+              indicators, glass nav, auto-centering thumb rail + lightbox. */}
           <section className={styles.gallery} aria-label="Vehicle photos">
-            <div
-              role="button"
-              tabIndex={0}
-              className={styles.galleryMain}
-              onClick={() => setLightboxOpen(true)}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault()
-                  setLightboxOpen(true)
-                }
-              }}
-              aria-label="Open photo in full screen"
-            >
-              {galleryActive ? (
-                <img src={galleryActive} alt={vehicle.title} loading="eager" />
-              ) : (
-                <span className={styles.mediaPlaceholder}>Photo coming soon</span>
-              )}
-              <span className={styles.galleryCounter} aria-hidden="true">
-                {galleryIndex + 1} / {totalPhotos}
-              </span>
-              <span className={styles.galleryExpand} aria-hidden="true">
-                <Icon.Expand />
-                <span>View all</span>
-              </span>
-              {totalPhotos > 1 && (
-                <>
-                  <button
-                    type="button"
-                    className={`${styles.galleryMobileNav} ${styles.galleryMobilePrev}`}
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      setGalleryIndex((i) => (i - 1 + gallery.length) % gallery.length)
-                    }}
-                    aria-label="Previous photo"
-                  >
-                    ‹
-                  </button>
-                  <button
-                    type="button"
-                    className={`${styles.galleryMobileNav} ${styles.galleryMobileNext}`}
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      setGalleryIndex((i) => (i + 1) % gallery.length)
-                    }}
-                    aria-label="Next photo"
-                  >
-                    ›
-                  </button>
-                </>
-              )}
-            </div>
-            <div className={styles.galleryThumbs}>
-              {visibleThumbs.map((src, i) => (
-                <button
-                  key={`${src}-${i}`}
-                  type="button"
-                  className={`${styles.thumb} ${galleryIndex === i ? styles.thumbActive : ''}`}
-                  onClick={() => (extraCount > 0 && i === visibleThumbs.length - 1 ? setLightboxOpen(true) : setGalleryIndex(i))}
-                  aria-label={extraCount > 0 && i === visibleThumbs.length - 1 ? `View all ${totalPhotos} photos` : `Show photo ${i + 1}`}
-                >
-                  <img src={src} alt="" loading="lazy" />
-                  {extraCount > 0 && i === visibleThumbs.length - 1 && (
-                    <span className={styles.thumbCountBadge}>+{extraCount}</span>
-                  )}
-                </button>
-              ))}
-            </div>
+            <VehicleGallery images={gallery} alt={vehicle.title} />
           </section>
         </div>
       </section>
@@ -880,36 +790,6 @@ export function DualVehicleDetailPage(_props?: Record<string, unknown>) {
             </div>
           </div>
         </section>
-      )}
-
-      {/* Lightbox */}
-      {lightboxOpen && (
-        // audit-ignore: a11y-div-as-button — modal backdrop click-to-close; close button + Esc handle keyboard, role=dialog declared
-        <div
-          className={styles.lightbox}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Photo viewer"
-          onClick={(e) => { if (e.target === e.currentTarget) setLightboxOpen(false) }}
-        >
-          <button type="button" className={styles.lightboxClose} onClick={() => setLightboxOpen(false)} aria-label="Close photo viewer">✕</button>
-          <button
-            type="button"
-            className={styles.lightboxNav}
-            data-side="prev"
-            onClick={() => setGalleryIndex((i) => (i - 1 + gallery.length) % gallery.length)}
-            aria-label="Previous photo"
-          >‹</button>
-          <img src={galleryActive} alt={vehicle.title} className={styles.lightboxImg} />
-          <button
-            type="button"
-            className={styles.lightboxNav}
-            data-side="next"
-            onClick={() => setGalleryIndex((i) => (i + 1) % gallery.length)}
-            aria-label="Next photo"
-          >›</button>
-          <div className={styles.lightboxFooter}>{galleryIndex + 1} / {gallery.length}</div>
-        </div>
       )}
 
       <EnquiryModal

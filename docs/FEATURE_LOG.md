@@ -2,6 +2,11 @@
 
 Newest entry at the top. One entry per logical change, not per file.
 
+- 2026-08-04: dual-stock-modern-bespoke — futuristic swipeable vehicle gallery widget (owner: Difatha)
+  - Scope: `app/themes/dual-stock-modern-bespoke/components/{VehicleGallery.tsx, VehicleGallery.module.css}` (new); `pages/used-cars/[slug]/{page.tsx, page.module.css}`.
+  - Reason: Difatha wanted the vehicle-detail photo widget rebuilt as a modern, futuristic gallery — smooth animated swiping back-and-forth with indicators — instead of the static "hero + 2×2 thumb mosaic + separate lightbox" it shipped with.
+  - Notes: Extracted the whole gallery (main image, thumb mosaic, lightbox, keyboard nav, index/lightbox state) out of the detail page into a self-contained `VehicleGallery` island. New widget is a single transform-based sliding track (`translate3d`, expo cubic-bezier easing) with real pointer/touch drag — follow-the-finger while dragging, snap on release past a 56px commit threshold, tap-under-6px opens the lightbox. Modern affordances: glass blur nav arrows with a brand-primary glow on hover, animated pill dot indicators that stretch + glow on the active slide and auto-collapse to a gradient scrubber bar past 10 photos, an auto-centering thumbnail rail (`scrollIntoView` keeps the active thumb in view), a counter chip, and a keyboard-accessible "Full screen" button that opens a swipeable full-bleed lightbox (Esc/←/→, scroll-lock). Tokens-only + light/dark-palette safe (`color-mix` over `--color-primary`/`--surface-dark`/`--color-on-dark`); `prefers-reduced-motion` kills the slide + glow easing. Page shed ~120 lines of gallery markup + the dead `.galleryMain/.galleryThumbs/.lightbox*` CSS; the wrapper `.gallery` is now a plain centred container. Verified: tsc exit 0; theme-contract 15/15 PASS; image-contract 0 violations. (Live screenshot verification was interrupted before capture; ships to the VPS build where it renders on every dual-stock detail page.)
+
 - 2026-08-04: dual-stock-modern-bespoke — Lenis site-wide smooth scrolling (owner: Difatha)
   - Scope: `app/themes/dual-stock-modern-bespoke/components/{SmoothScroll.tsx, SmoothScroll.css, Shell.tsx}`.
   - Reason: Difatha wanted the dual-stock theme to match the smooth-scroll feel already shipped on fbm-motors / redgate / cnhcars / classic-dealer / axis-autos.

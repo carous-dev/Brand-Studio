@@ -1,0 +1,306 @@
+/* =============================================================================
+ * VehicleGallery — futuristic swipeable carousel (dual-stock-modern-bespoke).
+ *
+ * A transform-based sliding track with pointer/touch drag, glass nav controls,
+ * animated pill indicators (→ scrubber bar past 10 photos), an auto-centering
+ * thumbnail rail, and a swipeable full-screen lightbox. Tokens-only; adapts to
+ * both light and dark brand palettes.
+ * ============================================================================= */
+
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* ----- Viewport (shared by inline + lightbox) --------------------------- */
+.viewport {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  aspect-ratio: 4 / 3;
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.viewport:active { cursor: grabbing; }
+@media (min-width: 900px) {
+  .viewport[data-variant='inline'] { aspect-ratio: 16 / 10; }
+}
+
+.track {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  will-change: transform;
+  transition: transform 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.slide {
+  position: relative;
+  flex: 0 0 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+.placeholder {
+  color: var(--color-muted);
+  font-family: var(--font-ui-family-override, 'Open Sans', sans-serif);
+  letter-spacing: 0.04em;
+}
+
+/* Lightbox contains the whole photo instead of cropping. */
+.viewport[data-variant='lightbox'] {
+  aspect-ratio: auto;
+  width: min(1280px, 94vw);
+  height: min(80vh, 820px);
+  background: transparent;
+  border-color: color-mix(in srgb, var(--color-on-dark) 14%, transparent);
+  border-radius: 12px;
+}
+.viewport[data-variant='lightbox'] .slide img { object-fit: contain; }
+
+/* Top sheen — a faint futuristic light-bar catching the frame edge. */
+.sheen {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 38%;
+  pointer-events: none;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--color-on-dark) 22%, transparent), transparent);
+  opacity: 0.5;
+  mix-blend-mode: soft-light;
+}
+
+/* ----- Glass nav controls ------------------------------------------------ */
+.nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--color-on-dark) 26%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface-dark, #0b0f16) 52%, transparent);
+  color: var(--color-on-dark);
+  cursor: pointer;
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  opacity: 0.82;
+  transition: opacity 0.2s ease, background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.nav:hover {
+  opacity: 1;
+  background: color-mix(in srgb, var(--color-primary) 68%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 80%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 22%, transparent),
+              0 8px 24px color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+.nav:active { transform: translateY(-50%) scale(0.94); }
+.navPrev { left: 14px; }
+.navNext { right: 14px; }
+@media (max-width: 640px) {
+  .nav { width: 38px; height: 38px; }
+  .navPrev { left: 10px; }
+  .navNext { right: 10px; }
+}
+
+/* ----- Counter + expand hint -------------------------------------------- */
+.counter {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface-dark, #0b0f16) 62%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-on-dark) 16%, transparent);
+  color: var(--color-on-dark);
+  font-family: var(--font-brand-family-override, 'Roboto Condensed', sans-serif);
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.counter b { font-weight: 700; color: var(--color-on-dark); }
+.counter i { font-style: normal; opacity: 0.5; margin: 0 1px; }
+
+.expand {
+  appearance: none;
+  cursor: pointer;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface-dark, #0b0f16) 62%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-on-dark) 16%, transparent);
+  color: var(--color-on-dark);
+  font-family: var(--font-brand-family-override, 'Roboto Condensed', sans-serif);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+.viewport[data-variant='inline']:hover .expand {
+  background: color-mix(in srgb, var(--color-primary) 62%, transparent);
+}
+@media (max-width: 640px) {
+  .expand { top: 12px; right: 12px; padding: 6px 11px; font-size: 0.64rem; }
+}
+
+/* ----- Pill dot indicators ---------------------------------------------- */
+.dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+.dot {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text) 26%, transparent);
+  cursor: pointer;
+  transition: width 0.32s cubic-bezier(0.22, 1, 0.36, 1), background 0.24s ease, box-shadow 0.24s ease;
+}
+.dot:hover { background: color-mix(in srgb, var(--color-primary) 55%, transparent); }
+.dotActive {
+  width: 26px;
+  background: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent),
+              0 0 12px color-mix(in srgb, var(--color-primary) 45%, transparent);
+}
+.dots[data-variant='lightbox'] .dot { background: color-mix(in srgb, var(--color-on-dark) 34%, transparent); }
+.dots[data-variant='lightbox'] .dotActive { background: var(--color-on-dark); box-shadow: 0 0 12px color-mix(in srgb, var(--color-on-dark) 60%, transparent); }
+
+/* ----- Scrubber bar (photo count > DOT_LIMIT) --------------------------- */
+.progress {
+  height: 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text) 14%, transparent);
+  overflow: hidden;
+}
+.progress[data-variant='lightbox'] { background: color-mix(in srgb, var(--color-on-dark) 22%, transparent); width: min(1280px, 94vw); }
+.progressFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 70%, var(--color-accent, var(--color-primary))), var(--color-primary));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-primary) 55%, transparent);
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ----- Thumbnail rail ---------------------------------------------------- */
+.thumbs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 2px 2px 6px;
+  scrollbar-width: thin;
+}
+.thumbs::-webkit-scrollbar { height: 4px; }
+.thumbs::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-primary) 45%, transparent);
+  border-radius: 999px;
+}
+.thumb {
+  appearance: none;
+  flex: 0 0 auto;
+  width: clamp(76px, 12vw, 108px);
+  aspect-ratio: 4 / 3;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  scroll-snap-align: center;
+  position: relative;
+  background: var(--color-surface);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0.62;
+  transition: opacity 0.2s ease, transform 0.3s ease;
+}
+.thumb:hover img { opacity: 0.9; }
+.thumbActive {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary), 0 4px 16px color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+.thumbActive img { opacity: 1; }
+
+/* ----- Lightbox ---------------------------------------------------------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 24px;
+  background: color-mix(in srgb, var(--color-surface-dark, #05070c) 92%, #000);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: galleryFade 0.24s ease;
+}
+@keyframes galleryFade { from { opacity: 0; } to { opacity: 1; } }
+.lightboxClose {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  z-index: 2;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: var(--color-on-dark);
+  background: color-mix(in srgb, var(--color-on-dark) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-on-dark) 24%, transparent);
+  transition: background 0.2s ease;
+}
+.lightboxClose:hover { background: color-mix(in srgb, var(--color-primary) 55%, transparent); }
+
+/* ----- Reduced motion — keep it snappy, kill the slide/glow easing ------ */
+@media (prefers-reduced-motion: reduce) {
+  .track { transition: none; }
+  .dot, .dotActive, .progressFill, .nav, .thumb, .thumb img { transition: none; }
+  .dotActive { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent); }
+}
