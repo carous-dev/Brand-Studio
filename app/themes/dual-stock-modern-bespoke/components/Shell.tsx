@@ -5,6 +5,7 @@ import { useBrand } from '../context/BrandClientWrapper'
 import { GarageProvider } from '../context/GarageContext'
 import Header from './Header'
 import Footer from './Footer'
+import SmoothScroll from './SmoothScroll'
 import ThemeChrome from '@/app/themes/lib/ThemeChrome'
 
 import '../styles/base.css'
@@ -23,7 +24,7 @@ export function DualShell({ children }: { children: ReactNode }) {
       brand={brand ?? null}
       classPrefix="dual"
       provider={GarageProvider}
-      header={<Header />}
+      header={<><SmoothScroll /><Header /></>}
       footer={<Footer />}
     >
       {children}

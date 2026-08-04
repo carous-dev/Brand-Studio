@@ -241,12 +241,17 @@
   gap: clamp(4px, 1.4vw, 22px);
   justify-content: center;
 }
+.navGroup {
+  position: relative;
+  display: inline-flex;
+}
 .navLink {
   position: relative;
   padding: 8px 4px;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
+  gap: 5px;
   color: var(--color-muted);
   text-decoration: none;
   font-family: 'Roboto Condensed', sans-serif;
@@ -274,6 +279,66 @@
   color: var(--color-text);
 }
 .navLinkActive::before { width: 100%; }
+.navChevron {
+  flex: 0 0 auto;
+  color: var(--color-primary);
+  transition: transform 0.18s ease;
+}
+.navGroup:hover .navChevron,
+.navGroup:focus-within .navChevron { transform: rotate(180deg); }
+
+/* Desktop dropdown — hover / keyboard-focus reveal. top:100% keeps the panel
+ * flush against the trigger so there is no hover gap to fall through. */
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  min-width: 210px;
+  padding: 8px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 18px 44px rgba(11, 28, 58, 0.16);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s;
+  z-index: 40;
+}
+.navGroup:hover .dropdown,
+.navGroup:focus-within .dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.dropdownLink {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--color-text);
+  text-decoration: none;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 500;
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+.dropdownLink:hover {
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-primary);
+}
+.dropdownLinkActive {
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
+}
 
 .headerActions {
   display: flex;
@@ -429,8 +494,21 @@
 .drawerNav {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 20px;
+}
+.drawerGroup {
+  display: flex;
+  flex-direction: column;
   border-top: 1px solid color-mix(in srgb, var(--color-on-dark) 10%, transparent);
+}
+.drawerGroupLabel {
+  padding: 14px 4px 6px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary);
 }
 .drawerLink {
   display: flex;

@@ -9,12 +9,27 @@ import { getBrandContactInfo } from '../lib/contact'
 import styles from './Header.module.css'
 
 type NavItem = { label: string; href: string; match?: 'exact' | 'prefix' }
+type NavGroup = { label: string; href: string; children: NavItem[] }
+type NavEntry = NavItem | NavGroup
 
-const NAV_ITEMS: NavItem[] = [
+const isGroup = (entry: NavEntry): entry is NavGroup => 'children' in entry
+
+/* Compact primary nav — only the stock-browse items collapse into one Stock
+ * dropdown (trigger links to /used-cars; hover / keyboard-focus reveals the
+ * refinements). Home, Finance, Part Exchange, About and Contact stay flat;
+ * "Sell your car" stays the standalone header CTA. */
+const NAV_ENTRIES: NavEntry[] = [
   { label: 'Home', href: '/', match: 'exact' },
-  { label: 'Cars', href: '/used-cars?type=car', match: 'prefix' },
-  { label: 'Bikes', href: '/used-cars?type=bike', match: 'prefix' },
-  { label: 'All Stock', href: '/used-cars' },
+  {
+    label: 'Stock',
+    href: '/used-cars',
+    children: [
+      { label: 'All Stock', href: '/used-cars' },
+      { label: 'Cars', href: '/used-cars?type=car', match: 'prefix' },
+      { label: 'Bikes', href: '/used-cars?type=bike', match: 'prefix' },
+      { label: 'Recently Sold', href: '/recently-sold' },
+    ],
+  },
   { label: 'Finance', href: '/finance' },
   { label: 'Part Exchange', href: '/part-exchange' },
   { label: 'About', href: '/about' },
@@ -33,6 +48,10 @@ function isActiveRoute(pathname: string, item: NavItem): boolean {
   }
   if (cleanHref === '/') return pathname === '/'
   return pathname === cleanHref || pathname.startsWith(`${cleanHref}/`)
+}
+
+function isGroupActive(pathname: string, group: NavGroup): boolean {
+  return group.children.some((c) => isActiveRoute(pathname, c))
 }
 
 export default function Header() {
@@ -193,16 +212,50 @@ export default function Header() {
           </Link>
 
           <nav aria-label="Primary" className={styles.nav}>
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={`${styles.navLink} ${isActiveRoute(pathname, item) ? styles.navLinkActive : ''}`}
-                aria-current={isActiveRoute(pathname, item) ? 'page' : undefined}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {NAV_ENTRIES.map((entry) => {
+              if (!isGroup(entry)) {
+                const active = isActiveRoute(pathname, entry)
+                return (
+                  <Link
+                    key={entry.label}
+                    href={entry.href}
+                    className={`${styles.navLink} ${active ? styles.navLinkActive : ''}`}
+                    aria-current={active ? 'page' : undefined}
+                  >
+                    {entry.label}
+                  </Link>
+                )
+              }
+              const groupActive = isGroupActive(pathname, entry)
+              return (
+                <div key={entry.label} className={styles.navGroup}>
+                  <Link
+                    href={entry.href}
+                    className={`${styles.navLink} ${groupActive ? styles.navLinkActive : ''}`}
+                    aria-current={groupActive ? 'page' : undefined}
+                    aria-haspopup="true"
+                  >
+                    {entry.label}
+                    <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </Link>
+                  <div className={styles.dropdown} role="menu" aria-label={entry.label}>
+                    {entry.children.map((child) => (
+                      <Link
+                        key={child.label}
+                        href={child.href}
+                        role="menuitem"
+                        className={`${styles.dropdownLink} ${isActiveRoute(pathname, child) ? styles.dropdownLinkActive : ''}`}
+                        aria-current={isActiveRoute(pathname, child) ? 'page' : undefined}
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
           </nav>
 
           <div className={styles.headerActions}>
@@ -277,17 +330,35 @@ export default function Header() {
         >
           <div className={styles.drawerInner}>
             <nav className={styles.drawerNav} aria-label="Mobile navigation">
-              {NAV_ITEMS.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className={`${styles.drawerLink} ${isActiveRoute(pathname, item) ? styles.drawerLinkActive : ''}`}
-                  onClick={() => setDrawerOpen(false)}
-                >
-                  {item.label}
-                  <span aria-hidden="true">→</span>
-                </Link>
-              ))}
+              {NAV_ENTRIES.map((entry) =>
+                isGroup(entry) ? (
+                  <div key={entry.label} className={styles.drawerGroup}>
+                    <span className={styles.drawerGroupLabel}>{entry.label}</span>
+                    {entry.children.map((child) => (
+                      <Link
+                        key={child.label}
+                        href={child.href}
+                        className={`${styles.drawerLink} ${isActiveRoute(pathname, child) ? styles.drawerLinkActive : ''}`}
+                        onClick={() => setDrawerOpen(false)}
+                      >
+                        {child.label}
+                        <span aria-hidden="true">→</span>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div key={entry.label} className={styles.drawerGroup}>
+                    <Link
+                      href={entry.href}
+                      className={`${styles.drawerLink} ${isActiveRoute(pathname, entry) ? styles.drawerLinkActive : ''}`}
+                      onClick={() => setDrawerOpen(false)}
+                    >
+                      {entry.label}
+                      <span aria-hidden="true">→</span>
+                    </Link>
+                  </div>
+                )
+              )}
             </nav>
 
             <div className={styles.drawerContact}>

@@ -2,8 +2,145 @@
   background: var(--color-bg);
   color: var(--color-text);
 }
+/* Bespoke inventory hero — compact, centred, elevated. Photo shows through a
+ * focused radial legibility scrim (band reads alive, not blacked-out) with one
+ * soft racing-red brand glow top-right; eyebrow → title → lead → hairline
+ * assurance strip. Self-contained (does not use the shared .dual-page-hero
+ * band, so restyling here never touches the other inner pages). */
 .hero {
-  /* No type-tabs in the hero anymore — keep the band tight. */
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--color-surface-dark);
+  color: var(--color-on-dark);
+}
+.heroBg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  /* Layered so a 404 on the brand hero reveals the theme default beneath. */
+  background-image: var(--brand-image-hero, none), url('/themes/dual-stock-modern-bespoke/images/hero.jpg');
+  background-position: center, center;
+  background-size: cover, cover;
+  background-repeat: no-repeat, no-repeat;
+  opacity: 0.55;
+}
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image:
+    radial-gradient(1000px 440px at 50% 46%, rgba(8, 16, 32, 0.5), transparent 72%), /* photo-scrim-ok */
+    linear-gradient(180deg, rgba(8, 16, 32, 0.5), rgba(8, 16, 32, 0.28) 46%, rgba(8, 16, 32, 0.7)); /* photo-scrim-ok */
+}
+.heroGlow {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background-image: radial-gradient(
+    560px 320px at 90% 4%,
+    color-mix(in srgb, var(--color-primary) 30%, transparent),
+    transparent 62%
+  );
+}
+.heroInner {
+  position: relative;
+  z-index: 3;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(2.25rem, 5vw, 3.75rem) clamp(1rem, 3vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+.heroBreadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-on-dark) 70%, transparent);
+}
+.heroBreadcrumb a {
+  color: color-mix(in srgb, var(--color-on-dark) 70%, transparent);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.heroBreadcrumb a:hover,
+.heroBreadcrumb [aria-current='page'] { color: var(--color-on-dark); }
+.heroEyebrow {
+  margin: 4px 0 0;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-primary) 82%, var(--color-on-dark));
+  text-shadow: 0 1px 14px rgba(8, 16, 32, 0.5);
+}
+.heroTitle {
+  margin: 0;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  line-height: 1.06;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  color: var(--color-on-dark);
+  text-shadow: 0 2px 24px rgba(8, 16, 32, 0.55);
+}
+.heroLead {
+  margin: 4px 0 0;
+  max-width: 58ch;
+  font-size: clamp(0.92rem, 1.2vw, 1.05rem);
+  line-height: 1.55;
+  text-wrap: pretty;
+  color: color-mix(in srgb, var(--color-on-dark) 90%, transparent);
+  text-shadow: 0 1px 14px rgba(8, 16, 32, 0.5);
+}
+.heroAssurances {
+  list-style: none;
+  max-width: 680px;
+  margin: 16px 0 0;
+  padding: 16px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 26px;
+  border-top: 1px solid color-mix(in srgb, var(--color-on-dark) 16%, transparent);
+}
+.heroAssurance {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--color-on-dark) 90%, transparent);
+  text-shadow: 0 1px 12px rgba(8, 16, 32, 0.45);
+}
+.heroAssurance svg {
+  flex: 0 0 auto;
+  color: color-mix(in srgb, var(--color-primary) 82%, var(--color-on-dark));
+}
+
+@media (max-width: 640px) {
+  .heroInner { padding: clamp(1.75rem, 7vw, 2.5rem) 1.15rem; gap: 8px; }
+  .heroAssurances { gap: 6px 18px; margin-top: 12px; padding-top: 12px; }
+  .heroAssurance { font-size: 0.82rem; }
+}
+@media (max-width: 480px) {
+  /* Modest mobile inventory hero — drop the lead, keep eyebrow + short title
+   * + a tight two-item assurance row. */
+  .heroLead { display: none; }
+  .heroAssurance:nth-child(n + 3) { display: none; }
 }
 
 /* Modern underline tabs — bottom hairline rail with primary-color indicator

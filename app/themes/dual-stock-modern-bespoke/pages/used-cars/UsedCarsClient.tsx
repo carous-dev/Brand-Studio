@@ -217,17 +217,31 @@ export default function UsedCarsClient({
 
   return (
     <main className={styles.page}>
-      <section className={`dual-page-hero dual-page-hero--used-cars ${styles.hero}`}>
-        <div className="dual-page-hero__inner">
-          <nav className="dual-page-hero__breadcrumb" aria-label="Breadcrumb">
+      <section className={styles.hero}>
+        <div className={styles.heroBg} aria-hidden="true" />
+        <div className={styles.heroOverlay} aria-hidden="true" />
+        <div className={styles.heroGlow} aria-hidden="true" />
+        <div className={styles.heroInner}>
+          <nav className={styles.heroBreadcrumb} aria-label="Breadcrumb">
             <Link href="/">Home</Link>
             <span aria-hidden="true">/</span>
             <span aria-current="page">Browse stock</span>
           </nav>
-          <h1 className="dual-page-hero__title">All stock</h1>
-          <p className="dual-page-hero__lead">
+          <p className={styles.heroEyebrow}>Cars &amp; bikes — one search</p>
+          <h1 className={styles.heroTitle}>All stock</h1>
+          <p className={styles.heroLead}>
             Browse our full inventory of cars and motorcycles — filter by type, make, body or budget.
           </p>
+          <ul className={styles.heroAssurances}>
+            {['Every vehicle inspected', 'History-checked', 'Nationwide delivery'].map((a) => (
+              <li key={a} className={styles.heroAssurance}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {a}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
