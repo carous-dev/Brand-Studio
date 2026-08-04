@@ -68,14 +68,34 @@ const toText = (input: unknown): string => {
   return ''
 }
 
+/**
+ * AutoTrader feed URLs carry a `{resize}` (or literal `WxH`) size segment in
+ * the path — e.g. `/a/media/{resize}/hash.jpg`. Left in place, the CDN serves a
+ * mis-sized / mis-cropped variant (or the raw token 404-adjacent default), which
+ * is what made card photos look cut. Strip the size segment so we request the
+ * true original; Next's optimizer then resizes it. Mirrors the classic-dealer
+ * normalizer so every theme requests the same clean source.
+ */
+const normalizeImageUrl = (url: string): string => {
+  if (!url) return ''
+  try {
+    return url
+      .replace(/%7Bresize%7D/gi, '{resize}')
+      .replace(/\/(?:\d+x\d+|\{resize\})\//g, '/')
+      .trim()
+  } catch {
+    return url.trim()
+  }
+}
+
 const collectImages = (input: unknown) => {
   if (!Array.isArray(input)) return []
   return input
     .map((item) => {
       if (!item) return ''
-      if (typeof item === 'string') return item
+      if (typeof item === 'string') return normalizeImageUrl(item)
       if (typeof item === 'object') {
-        return toText(
+        return normalizeImageUrl(toText(
           (item as any).url ||
           (item as any).href ||
           (item as any).src ||
@@ -85,7 +105,7 @@ const collectImages = (input: unknown) => {
           (item as any).original ||
           (item as any).large ||
           (item as any).thumbnail
-        )
+        ))
       }
       return ''
     })
@@ -120,7 +140,7 @@ export function normalizeInventoryItem(item: any): InventoryVehicle | null {
     ...collectImages(item.photos),
     ...collectImages(vehicle.photos),
   ]
-  const image = toText(galleryImages[0] ?? vehicle.image ?? item.image)
+  const image = normalizeImageUrl(toText(galleryImages[0] ?? vehicle.image ?? item.image))
   const fallbackImage = '/images/image.png'
 
   const titleParts = [year || undefined, make || undefined, model || undefined, derivative || undefined].filter(Boolean)
