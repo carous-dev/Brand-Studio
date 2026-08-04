@@ -126,11 +126,13 @@ export async function FbmHomePage({ brand }: ThemePageProps) {
     <>
       <section className={styles.hero}>
         {heroBg && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={heroBg} alt="" className={styles.heroImage} />
+          <div
+            className={styles.heroImage}
+            style={{ backgroundImage: `url(${heroBg})` }}
+            aria-hidden
+          />
         )}
         <div className={styles.heroOverlay} aria-hidden />
-        <div className={styles.heroAtmosphere} aria-hidden />
         <div className={styles.heroInner}>
           {heroEyebrow && heroEyebrow !== 'the showroom' && (
             <p className={`fbm-eyebrow ${styles.heroEyebrow} fbm-animate-rise`}>{heroEyebrow}</p>

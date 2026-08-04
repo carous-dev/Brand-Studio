@@ -17,8 +17,11 @@ type UsedCarsRuntimeProps = ThemePageProps & {
 
 export async function FbmUsedCarsPage({ brand, initialInventory, searchParams }: UsedCarsRuntimeProps) {
   const heroBg = brand.images?.hero || brand.heroImage || defaultHero
+  const heroEyebrow = resolveText(brand, 'usedCarsHeroEyebrow')
   const heroTitle = resolveText(brand, 'usedCarsHeroTitle')
   const heroLead = resolveText(brand, 'usedCarsHeroLead')
+  // Generic, non-dealer-specific trust marks for the elevated inventory hero.
+  const heroAssurances = ['Every car inspected', 'History-checked', 'Warranty included']
 
   let items: any[] = Array.isArray(initialInventory) ? initialInventory : []
   let initialMeta: InventoryMeta | null = null
@@ -95,7 +98,13 @@ export async function FbmUsedCarsPage({ brand, initialInventory, searchParams }:
 
   return (
     <>
-      <PageHero image={heroBg} title={heroTitle} lead={heroLead} />
+      <PageHero
+        image={heroBg}
+        eyebrow={heroEyebrow}
+        title={heroTitle}
+        lead={heroLead}
+        assurances={heroAssurances}
+      />
       <UsedCarsClient initialVehicles={initialVehicles} initialMeta={initialMeta} />
     </>
   )

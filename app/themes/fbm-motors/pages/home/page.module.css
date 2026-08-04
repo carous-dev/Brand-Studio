@@ -11,28 +11,37 @@
 .heroImage {
   position: absolute;
   inset: 0;
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-  opacity: 0.35;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* Fixed parallax photo — painted relative to the viewport, clipped to the
+   * hero band by the section's overflow:hidden. Lenis root scrolls the real
+   * document, so this stays in sync. */
+  background-attachment: fixed;
+  /* Bright hero — show the photo near full-strength; the overlay below is a
+   * focused legibility scrim (not a flat blackout), so the band reads bright
+   * while the centred captions stay crisp. */
+  opacity: 0.92;
   z-index: 0;
+}
+/* Fixed attachment is ignored / janky on most mobile browsers (iOS treats it
+ * as scroll) — fall back to a normal scrolling cover there. */
+@media (max-width: 768px), (hover: none) {
+  .heroImage {
+    background-attachment: scroll;
+  }
 }
 .heroOverlay {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background-image: linear-gradient(180deg, color-mix(in srgb, var(--fbm-carbon-950) 70%, transparent), color-mix(in srgb, var(--fbm-carbon-950) 40%, transparent) 50%, color-mix(in srgb, var(--fbm-carbon-950) 80%, transparent));
-}
-.heroAtmosphere {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
   background-image:
-    linear-gradient(color-mix(in srgb, var(--color-bg) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--color-bg) 5%, transparent) 1px, transparent 1px);
-  background-size: 56px 56px;
-  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+    /* soft dark pool concentrated behind the centred title + search only */
+    radial-gradient(1200px 560px at 50% 60%, rgba(6, 10, 18, 0.62), transparent 72%),
+    /* brand-primary bloom top-right for cohesion, edges left bright */
+    radial-gradient(700px 380px at 88% 6%, color-mix(in srgb, var(--color-primary) 22%, transparent), transparent 62%),
+    /* faint top + grounded bottom, middle stays open so the photo shows through */
+    linear-gradient(180deg, rgba(6, 10, 18, 0.3), transparent 30%, transparent 58%, rgba(6, 10, 18, 0.55));
 }
 
 .heroInner {
@@ -47,10 +56,10 @@
   .heroInner { padding: 144px 24px; }
 }
 .heroEyebrow {
-  /* Mix the brand accent toward white so dark brand primaries (e.g. wine
-   * red, deep navy) still pop on the dark hero. With a pure ember orange
-   * the mix barely shifts the perceived hue. */
-  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 55%, var(--color-bg));
+  /* Saturated brand accent with only a light-token floor (not a heavy white
+   * wash) so it pops on the brighter photo yet survives deep brand primaries. */
+  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 72%, var(--color-bg));
+  text-shadow: 0 1px 16px rgba(6, 10, 18, 0.5);
 }
 .heroTitle {
   margin-top: 20px;
@@ -60,27 +69,27 @@
   line-height: 1.1;
   color: var(--color-bg);
   text-wrap: balance;
+  /* Crisp white on the brighter photo — legibility from a soft shadow, not
+   * from washing the letters out. */
+  text-shadow: 0 2px 26px rgba(6, 10, 18, 0.55);
 }
 .heroAccent {
-  /* Same white-mix treatment as the eyebrow — the accent word ("Perfect")
-   * is the visual climax of the title and was reading as near-black on dark
-   * hero whenever a brand chose a deep primary. */
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--fbm-ember-500, var(--color-primary)) 55%, var(--color-bg)),
-    color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 45%, var(--color-bg))
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  /* Solid, saturated brand colour — the accent word is the title's climax and
+   * must POP, not fade into a pale gradient. A 22% light-token floor keeps it
+   * from going near-black for deep brand primaries without whitewashing it. */
+  color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 78%, var(--color-bg));
+  -webkit-text-fill-color: color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 78%, var(--color-bg));
+  text-shadow: 0 2px 30px color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 45%, transparent);
 }
 .heroLead {
   margin: 20px auto 0;
-  color: color-mix(in srgb, var(--color-bg) 78%, transparent);
+  /* Fuller white than before so the strapline isn't the faint, washed line it
+   * was reading as over the brighter photo. */
+  color: color-mix(in srgb, var(--color-bg) 94%, transparent);
   line-height: 1.6;
   text-align: center;
   text-wrap: pretty;
+  text-shadow: 0 1px 18px rgba(6, 10, 18, 0.5);
 }
 
 /* ─── Section primitive ─── */

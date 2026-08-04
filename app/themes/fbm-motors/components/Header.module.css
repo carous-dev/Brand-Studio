@@ -1,6 +1,5 @@
 .header {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 50;
   font-family: var(--font-ui-family-override, 'Inter', sans-serif);
 }
@@ -132,15 +131,26 @@
 .nav {
   display: none;
   align-items: center;
-  gap: 2px;
+  gap: 10px;
 }
 @media (min-width: 1024px) {
   .nav { display: flex; }
 }
+/* Roomier spacing + larger type once there's real width to spend. */
+@media (min-width: 1280px) {
+  .nav { gap: 20px; }
+  .navLink,
+  .dropdownTrigger { font-size: 1.0625rem; }
+}
+@media (min-width: 1536px) {
+  .nav { gap: 30px; }
+  .navLink,
+  .dropdownTrigger { font-size: 1.125rem; }
+}
 .navLink {
   position: relative;
-  padding: 8px 14px;
-  font-size: 0.875rem;
+  padding: 8px 16px;
+  font-size: 0.9375rem;
   font-weight: 500;
   /* Full ink, not the 45%-opacity muted token — menu items are primary
    * chrome, not secondary copy. */
@@ -154,8 +164,8 @@
 .dropdownTrigger::after {
   content: '';
   position: absolute;
-  left: 14px;
-  right: 14px;
+  left: 16px;
+  right: 16px;
   bottom: 0;
   height: 2px;
   border-radius: 2px;
@@ -182,8 +192,8 @@
   gap: 5px;
   background: transparent;
   border: 0;
-  padding: 8px 14px;
-  font-size: 0.875rem;
+  padding: 8px 16px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: var(--fbm-ink-900, var(--color-text));
   cursor: pointer;

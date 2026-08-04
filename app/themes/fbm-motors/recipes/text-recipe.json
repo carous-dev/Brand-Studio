@@ -416,6 +416,7 @@
       "id": "usedCarsPage",
       "label": "Used cars page",
       "fields": [
+        { "key": "usedCarsHeroEyebrow", "label": "Used cars hero eyebrow", "type": "short", "default": "Quality Used Cars", "maxLength": 32 },
         { "key": "usedCarsHeroTitle", "label": "Used cars hero title", "type": "short", "default": "Used Cars", "maxLength": 40 },
         { "key": "usedCarsHeroLead", "label": "Used cars hero lead", "type": "long", "default": "Every vehicle is inspected, history-checked, and covered by a free 3-month warranty plus 12 months of AA Breakdown Cover.", "maxLength": 280 }
       ]
