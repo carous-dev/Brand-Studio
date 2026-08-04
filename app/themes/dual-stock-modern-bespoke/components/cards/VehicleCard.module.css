@@ -31,24 +31,23 @@
 
 .media {
   position: relative;
-  aspect-ratio: 4 / 3;
+  /* 16:9 matches the AutoTrader stock-photo aspect, so exterior shots fill
+     the frame edge-to-edge with no crop and no letterbox bars. */
+  aspect-ratio: 16 / 9;
   overflow: hidden;
-  /* Match the card body surface so any letterbox space around a non-4:3
-     photo reads as clean padding, not a visible frame. */
   background: var(--color-surface);
 }
 .mediaImage {
   position: absolute;
   inset: 0;
-  /* contain (not cover) so the whole vehicle always shows — mixed-aspect
-     dealer feeds (16:9 exteriors + 4:3 shots) never get cropped/cut. */
-  background-size: contain;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   transition: transform 0.4s ease;
 }
-/* No zoom-on-hover: scaling a contained image clips its edges (the card
-   already lifts via translateY). */
+.card:hover .mediaImage {
+  transform: scale(1.04);
+}
 
 .soldStamp {
   position: absolute;

@@ -2,6 +2,11 @@
 
 Newest entry at the top. One entry per logical change, not per file.
 
+- 2026-08-04: dual-stock-modern-bespoke — vehicle card media switched to 16:9 (matches AutoTrader feed) (owner: Difatha)
+  - Scope: `app/themes/dual-stock-modern-bespoke/components/cards/{VehicleCard.tsx, VehicleCard.module.css}`.
+  - Reason: Follow-up to the earlier `contain` fix — Difatha reported production cards STILL looked cropped. Root cause pinned by measuring the actual feed: the AutoTrader stock photos are 2048×1152 (**16:9**), not the 4:3 the card frame assumed — so `cover` in a 4:3 box cropped the front/rear off every exterior shot. (Some other dealers' feeds are 4:3, e.g. the QA/Columbus test brands at 2048×1536; a blurred-fill approach was prototyped for the mixed case but Difatha chose a single 16:9 frame everywhere for simplicity.)
+  - Notes: Changed the shared `VehicleCard` media `aspect-ratio: 4/3 → 16/9` and kept `background-size: cover`, so 16:9 stock photos fill the frame edge-to-edge with no crop and no letterbox bars. Fixes every card in one place — homepage `FeaturedStock`/`RecentlySold`, `/used-cars` grid, wishlist, compare, detail "similar" rail. Trade-off Difatha accepted: a dealer whose feed is 4:3 gets a modest top/bottom crop in the 16:9 frame. Restored the hover `scale(1.04)` zoom (safe with cover). Kept the `{resize}` path-token normalization from the prior entry. Verified with an isolated A/B render on a real 16:9 Bronte photo — 16:9 frame fills the whole Focus front-to-rear, uncropped. tsc exit 0. Deployed to production (VPS) via deploy.yml.
+
 - 2026-08-04: dual-stock-modern-bespoke — vehicle card images no longer cropped/cut (owner: Difatha)
   - Scope: `app/themes/dual-stock-modern-bespoke/components/cards/VehicleCard.module.css`; `app/themes/dual-stock-modern-bespoke/lib/inventory.ts`.
   - Reason: Difatha review of the Bronte Vehicles preview — inventory (and homepage) card photos looked "cut out." Two causes: (1) the shared `VehicleCard` media frame used `background-size: cover` in a fixed 4:3 box, so 16:9 dealer exterior shots got ~25% cropped off the sides; (2) dual-stock's `lib/inventory.ts` was the ONLY theme not normalizing the AutoTrader `{resize}` path token, so it rendered a literal-token URL (`/a/media/{resize}/hash.jpg`) that the CDN serves as a mis-sized/mis-cropped variant.
