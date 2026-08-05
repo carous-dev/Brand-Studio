@@ -147,7 +147,7 @@ export const UIComponents = {
         <td class="col-theme">
           <div class="theme-color">
             <div class="color-swatch" style="background: ${primaryColor};"></div>
-            <span class="color-value">${primaryColor}</span>
+            <span class="theme-name">${this.escapeHtml(brand._theme_name || brand.theme?.id || brand.themeId || '—')}</span>
           </div>
         </td>
         <td class="col-status">

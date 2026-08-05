@@ -244,6 +244,17 @@ def resolve_theme_id(raw_theme_id: Any, *, fallback_to_default: bool = True) -> 
     return ""
 
 
+def get_theme_name(theme_id: Any) -> str:
+    """Return the catalog display name for a theme id (falls back to the id)."""
+    candidate = str(theme_id or "").strip().lower()
+    if not candidate:
+        return ""
+    for theme in load_theme_catalog().get("themes", []):
+        if theme.get("id") == candidate:
+            return str(theme.get("name") or candidate)
+    return candidate
+
+
 def is_theme_disabled(theme_id: Any) -> bool:
     """Return True if the named theme exists and is flagged disabled."""
     candidate = str(theme_id or "").strip().lower()

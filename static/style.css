@@ -2710,7 +2710,7 @@ opacity: 0;
 }
 
 .col-theme {
-    width: 120px;
+    width: 160px;
 }
 
 .col-status {
@@ -2809,6 +2809,15 @@ opacity: 0;
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
     font-size: 0.8rem;
     color: var(--text-muted);
+}
+
+.theme-color .theme-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Status badge */

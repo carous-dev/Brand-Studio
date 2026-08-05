@@ -6,7 +6,7 @@ import re
 from datetime import datetime
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
-from backend.services.theme_catalog import resolve_theme_id
+from backend.services.theme_catalog import get_theme_name, resolve_theme_id
 from preview_store import PreviewStore
 
 logger = logging.getLogger(__name__)
@@ -205,6 +205,7 @@ def serialize_preview_row(row: Dict[str, Any]) -> Dict[str, Any]:
     config.setdefault('name', row['name'])
     config['_created_at'] = row['created_at']
     config['_updated_at'] = row['updated_at']
+    config['_theme_name'] = get_theme_name(config.get('themeId'))
     return config
 
 
