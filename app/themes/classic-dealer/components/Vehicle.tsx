@@ -6,6 +6,11 @@ import AppIcon from './AppIcon'
 import InventoryCard from './InventoryCard'
 import EnquiryForm from './EnquiryForm'
 import { useBrand } from '../context/BrandClientWrapper'
+import {
+  openExternalReservation,
+  openExternalVehicleEnquiry,
+  type ExternalVehicleEnquirySummary,
+} from '../lib/external-widgets'
 import aa1Banner from '../images/aa-1.png'
 import hp1Banner from '../images/hp1.png'
 import '../styles/vehicle.css'
@@ -855,9 +860,49 @@ export default function Vehicle({ vehicle: vehicleProp, images, similarList: sim
   const [enquiryOpen, setEnquiryOpen] = useState(false)
   const enquiryTriggerRef = useRef<HTMLButtonElement | null>(null)
 
-  const openEnquiry = (trigger: HTMLButtonElement) => {
-    enquiryTriggerRef.current = trigger
+  const [pageUrl, setPageUrl] = useState('')
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setPageUrl(window.location.href)
+    }
+  }, [vehicle?.reg, vehicle?.registration, vehicle?.slug])
+
+  const enquirySummary: ExternalVehicleEnquirySummary = {
+    title: vehicleTitle,
+    registration: asFirstText(vehicle?.reg, vehicle?.registration) || undefined,
+    make: asText(vehicle?.make) || undefined,
+    model: asText(vehicle?.model) || undefined,
+    derivative: asText(vehicle?.derivative) || undefined,
+    year: toNumberOrNull(vehicle?.year) ?? undefined,
+    price: toNumberOrNull(vehicle?.price) ?? undefined,
+    priceText: (() => {
+      const priceText = fmtPrice(vehicle?.price)
+      return priceText && priceText !== 'Enquire' ? priceText : undefined
+    })(),
+    mileage: toNumberOrNull(vehicle?.mileage) ?? undefined,
+    transmission: asFirstText(vehicle?.trans, vehicle?.transmission) || undefined,
+    fuel: asFirstText(vehicle?.fuel, vehicle?.fuel_type) || undefined,
+    engineSize: (() => {
+      const cc = normalizeEngineCapacityCc(vehicle?.engineCapacityCc)
+      return cc && cc > 0 ? `${(cc / 1000).toFixed(1)}L` : undefined
+    })(),
+    image: galleryImages[0] && galleryImages[0] !== INLINE_FALLBACK_IMAGE ? galleryImages[0] : undefined,
+    url: pageUrl || undefined,
+  }
+
+  // CDN-first: open the hosted vehicle-enquiry widget; fall back to the local
+  // EnquiryForm modal when the bundle hasn't loaded (offline / blocked / slow).
+  const openEnquiry = (trigger?: HTMLButtonElement | null) => {
+    if (trigger) enquiryTriggerRef.current = trigger
+    if (openExternalVehicleEnquiry(enquirySummary)) return
     setEnquiryOpen(true)
+  }
+
+  // CDN-first: open the hosted reserve-a-car widget; fall back to the enquiry
+  // flow (hosted, else local) so the button always does something useful.
+  const openReserve = () => {
+    if (openExternalReservation(enquirySummary)) return
+    openEnquiry()
   }
 
   useEffect(() => {
@@ -1279,6 +1324,13 @@ export default function Vehicle({ vehicle: vehicleProp, images, similarList: sim
                   <AppIcon name="phone" /> {phoneCta}
                 </a>
                 ) : null}
+                <button
+                  type="button"
+                  className="vehicle-summary-btn btn-reserve"
+                  onClick={openReserve}
+                >
+                  <AppIcon name="check-circle" /> Reserve This Vehicle
+                </button>
                 <button
                   type="button"
                   className="vehicle-summary-btn btn-mail"

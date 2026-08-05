@@ -1,5 +1,10 @@
+import Script from 'next/script'
 import type { ThemePageProps } from '../../../../types'
 import Vehicle from '../../../components/Vehicle'
+import {
+  RESERVE_WIDGET_SRC,
+  VEHICLE_ENQUIRY_WIDGET_SRC,
+} from '../../../lib/external-widgets'
 
 export function ClassicVehicleDetailPage({ vehicle, images, similarList }: ThemePageProps) {
   if (!vehicle) {
@@ -7,11 +12,23 @@ export function ClassicVehicleDetailPage({ vehicle, images, similarList }: Theme
   }
 
   return (
-    <Vehicle
-      vehicle={vehicle}
-      images={Array.isArray(images) ? images : []}
-      similarList={Array.isArray(similarList) ? similarList : []}
-    />
+    <>
+      <Script
+        id="carous-vehicle-enquiry-widget"
+        src={VEHICLE_ENQUIRY_WIDGET_SRC}
+        strategy="afterInteractive"
+      />
+      <Script
+        id="carous-reserve-a-car-widget"
+        src={RESERVE_WIDGET_SRC}
+        strategy="afterInteractive"
+      />
+      <Vehicle
+        vehicle={vehicle}
+        images={Array.isArray(images) ? images : []}
+        similarList={Array.isArray(similarList) ? similarList : []}
+      />
+    </>
   )
 }
 

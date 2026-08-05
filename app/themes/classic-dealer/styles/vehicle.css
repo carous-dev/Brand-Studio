@@ -665,6 +665,15 @@
   background: var(--brand-secondary);
 }
 
+.vehicle-summary-btn.btn-reserve {
+  background: var(--brand-secondary);
+  color: var(--brand-background);
+}
+
+.vehicle-summary-btn.btn-reserve:hover {
+  background: var(--brand-primary);
+}
+
 .vehicle-summary-btn.btn-mail {
   border: 1px solid rgba(var(--brand-text-rgb), 0.2);
   color: var(--brand-text);
@@ -742,7 +751,11 @@
   color: var(--brand-secondary);
 }
 
-.vehicle-lightbox {
+/* Scoped under `.classic-theme` (specificity 0,2,0) so it beats the unscoped
+   global `.vehicle-lightbox { display:none }` that gilded-drive's vehicle.css
+   leaks into the shared CSS bundle — that leak previously killed the full-screen
+   lightbox regardless of the `is-open` state. See feedback_cross_theme_css_leakage. */
+.classic-theme .vehicle-lightbox {
   position: fixed;
   inset: 0;
   z-index: 4000;
@@ -755,7 +768,7 @@
   transition: opacity 0.22s ease, visibility 0.22s ease;
 }
 
-.vehicle-lightbox.is-open {
+.classic-theme .vehicle-lightbox.is-open {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
