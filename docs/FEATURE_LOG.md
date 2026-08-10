@@ -2,6 +2,11 @@
 
 Newest entry at the top. One entry per logical change, not per file.
 
+- 2026-08-10: /create — stop the domain field hinting the previous active domain from a stale draft (owner: Difatha)
+  - Scope: `templates/index.html` (`applyCreateDraftPlaceholders`).
+  - Reason: After switching the active managed domain in Settings, /create still showed the old domain (e.g. `showroomshinecars.carouspreviews.co.uk` while `carouswebsites.co.uk` was active). The domain input starts empty, and the create-draft autosave had persisted the full old domain string, which `applyCreateDraftPlaceholders` restored verbatim as the field's placeholder — so the stale domain was what the operator saw.
+  - Notes: The submitted domain was already correct (both the autosave and final submit recompute `computeDomainFromSlug(slug)` against the active base) — only the visual placeholder was stale. Fixed by special-casing the `domain` key in `applyCreateDraftPlaceholders`: instead of hinting the saved domain, recompute it from the saved slug + the current active base (which is already seeded from `serverActiveDomainBase` before placeholders are applied), and skip the hint entirely when it can't be derived. Follow-up to the same-day server-side active-domain fix below.
+
 - 2026-08-10: /create — resolve the active managed domain server-side so it's picked everywhere (owner: Difatha)
   - Scope: `app.py` (`get_active_managed_domain_base` new, `/create` route, `list_managed_domains` GET, `_resolve_preview_url_for_slug`); `templates/index.html` (create-mode domain seeding).
   - Reason: The /create page picked the active managed domain purely client-side — an async `/api/settings/domains?status=active` fetch with a "newest active" heuristic. The server never told the page which domain was active, so the domain field could render blank/stale before the fetch resolved, a browser-cached response could serve a stale active domain after switching it in Settings, and a failed fetch blanked the base entirely. Preview-URL resolution also fell back to a hardcoded `carouspreviews.co.uk` instead of the active domain.

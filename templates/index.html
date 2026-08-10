@@ -4083,7 +4083,16 @@ function applyCreateDraftPlaceholders() {
             if (['logo', 'favicon', 'heroImage', 'logoFile', 'faviconFile', 'heroImageFile', 'inventoryFile'].includes(key)) return;
             if (field.type === 'file' || field.type === 'hidden') return;
 
-            const hint = mapped[key];
+            let hint = mapped[key];
+
+            // The domain is derived from the slug + the CURRENT active managed
+            // domain, so never hint the saved (possibly stale) domain — recompute
+            // it against the active base. Skip entirely if it can't be derived.
+            if (key === 'domain') {
+                const draftSlug = slugifyName(mapped.slug || mapped.slug_display || '');
+                hint = draftSlug ? computeDomainFromSlug(draftSlug) : '';
+            }
+
             if (hint === null || hint === undefined || hint === '') return;
 
             const tag = field.tagName.toLowerCase();
