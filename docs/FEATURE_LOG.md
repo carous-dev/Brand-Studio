@@ -2,6 +2,11 @@
 
 Newest entry at the top. One entry per logical change, not per file.
 
+- 2026-08-10: Settings › Domains — let operators activate any domain (auto-deactivates the rest) (owner: Difatha)
+  - Scope: `templates/settings.html` (DomainManager modal only).
+  - Reason: The Add/Edit Domain modal disabled the Status `<select>` whenever another domain was already active, so a newly-added or inactive domain could never be switched on — operators were stuck with whichever domain happened to be active first.
+  - Notes: The backend already enforced single-active correctly — both `create_managed_domain` and `update_managed_domain` in `app.py` run `UPDATE managed_domains SET status='inactive' WHERE status='active'` before activating the target. Only the frontend was blocking it. Removed all `statusInput.disabled` gating from `openModal`; the field is now always selectable. New domains still default to `inactive` when an active one exists (so adding one doesn't silently steal the active slot) but remain fully activatable. Added a live `#modalDomainStatusHint` that warns "Activating this will deactivate \"<domain>\"" when the chosen status will trigger a switch (updates on the select's `change` event and on modal open; cleared on close).
+
 - 2026-08-05: Dashboard brands table — Theme column now shows the theme name, not the primary hex (owner: Difatha)
   - Scope: `backend/services/theme_catalog.py`, `backend/services/preview.py`, `static/modules/ui-components.js`, `static/style.css`.
   - Reason: The dashboard table already had a "Theme" column but it rendered the brand's primary color swatch + hex value, so operators couldn't tell which theme a preview was actually using.

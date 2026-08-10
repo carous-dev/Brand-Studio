@@ -317,6 +317,7 @@
                         <option value="active">Active</option>
                         <option value="inactive">Inactive</option>
                     </select>
+                    <small class="form-help" id="modalDomainStatusHint" style="display:none;"></small>
                 </div>
             </form>
         </div>
@@ -374,6 +375,7 @@ class DomainManager {
         this.domainInput = document.getElementById('modalDomainName');
         this.descriptionInput = document.getElementById('modalDomainDescription');
         this.statusInput = document.getElementById('modalDomainStatus');
+        this.statusHint = document.getElementById('modalDomainStatusHint');
     }
 
     async init() {
@@ -390,6 +392,28 @@ class DomainManager {
             event.preventDefault();
             await this.submitForm();
         });
+        if (this.statusInput) {
+            this.statusInput.addEventListener('change', () => {
+                const activeDomain = this.domains.find(d => d.status === 'active');
+                this.updateStatusHint(activeDomain, this.editingDomainId);
+            });
+        }
+    }
+
+    updateStatusHint(activeDomain, currentId) {
+        if (!this.statusHint) {
+            return;
+        }
+        const willSwitch = this.statusInput.value === 'active'
+            && activeDomain
+            && Number(activeDomain.id) !== Number(currentId);
+        if (willSwitch) {
+            this.statusHint.textContent = `Activating this will deactivate "${activeDomain.domain}" — only one domain can be active at a time.`;
+            this.statusHint.style.display = '';
+        } else {
+            this.statusHint.textContent = '';
+            this.statusHint.style.display = 'none';
+        }
     }
 
     extractError(error, fallback) {
@@ -429,41 +453,28 @@ class DomainManager {
         // Check if there's already an active domain
         const activeDomain = this.domains.find(d => d.status === 'active');
 
+        // Status is always selectable. Only one domain can be active at a time,
+        // but activating one auto-deactivates the rest server-side, so we never
+        // disable the field — we just surface a hint when a switch will happen.
+        this.statusInput.disabled = false;
+        this.statusInput.style.opacity = '1';
+        this.statusInput.style.cursor = '';
+
         if (domain) {
             this.modalTitle.textContent = 'Edit Domain';
             this.submitLabel.textContent = 'Save Changes';
             this.domainInput.value = domain.domain || '';
             this.descriptionInput.value = domain.description || '';
             this.statusInput.value = domain.status === 'inactive' ? 'inactive' : 'active';
-            
-            // If this domain is active, disable status field (only one can be active)
-            // If there's another active domain, disable status field to prevent conflicts
-            if (domain.status === 'active' || (activeDomain && activeDomain.id !== domain.id)) {
-                this.statusInput.disabled = true;
-                this.statusInput.style.opacity = '0.5';
-                this.statusInput.style.cursor = 'not-allowed';
-            } else {
-                this.statusInput.disabled = false;
-                this.statusInput.style.opacity = '1';
-                this.statusInput.style.cursor = '';
-            }
+            this.updateStatusHint(activeDomain, domain.id);
         } else {
             this.modalTitle.textContent = 'Add New Domain';
             this.submitLabel.textContent = 'Add Domain';
             this.form.reset();
-            
-            // If there's already an active domain, set new domain to inactive and disable status field
-            if (activeDomain) {
-                this.statusInput.value = 'inactive';
-                this.statusInput.disabled = true;
-                this.statusInput.style.opacity = '0.5';
-                this.statusInput.style.cursor = 'not-allowed';
-            } else {
-                this.statusInput.value = 'active';
-                this.statusInput.disabled = false;
-                this.statusInput.style.opacity = '1';
-                this.statusInput.style.cursor = '';
-            }
+            // Default a new domain to inactive when one is already active (so we don't
+            // silently steal the active slot), but keep it fully activatable.
+            this.statusInput.value = activeDomain ? 'inactive' : 'active';
+            this.updateStatusHint(activeDomain, null);
         }
 
         this.modal.classList.add('active');
@@ -483,6 +494,10 @@ class DomainManager {
         this.statusInput.disabled = false;
         this.statusInput.style.opacity = '1';
         this.statusInput.style.cursor = '';
+        if (this.statusHint) {
+            this.statusHint.textContent = '';
+            this.statusHint.style.display = 'none';
+        }
         this.modalTitle.textContent = 'Add New Domain';
         this.submitLabel.textContent = 'Add Domain';
         this.setSubmitting(false);
