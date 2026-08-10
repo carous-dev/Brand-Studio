@@ -1920,6 +1920,21 @@ def list_active_managed_domain_bases() -> list[str]:
     return list_managed_domain_bases(status='active')
 
 
+def get_active_managed_domain_base() -> str:
+    """Return the single active managed domain base (bare host), or '' if none.
+
+    Single-active is enforced on activate, so there is normally exactly one.
+    If legacy data left several active, prefer the newest (list is newest-first).
+    Falls back to the newest managed domain of any status so preview URLs still
+    resolve to a real base instead of a hardcoded default.
+    """
+    active = list_active_managed_domain_bases()
+    if active:
+        return active[0]
+    any_managed = list_managed_domain_bases()
+    return any_managed[0] if any_managed else ''
+
+
 def _extract_managed_base_from_hostname(hostname: str) -> str:
     normalized_host = _normalize_managed_domain(hostname)
     if not normalized_host:
@@ -2100,7 +2115,7 @@ def list_managed_domains():
 
         local_base = _local_preview_base_host()
         port = (os.environ.get('NEXT_INTERNAL_PORT', '') or os.environ.get('PORT', '') or '3000').strip()
-        return jsonify({
+        response = jsonify({
             'domains': domains,
             'count': len(domains),
             'local_preview': {
@@ -2109,7 +2124,11 @@ def list_managed_domains():
                 'url_pattern': f'http://<slug>.{local_base}:{port}',
                 'is_dev_mode': _is_brand_automation_dev_mode(),
             },
-        }), 200
+        })
+        # Never cache: the active domain can change in Settings and every consumer
+        # (e.g. /create) must see the current active domain immediately.
+        response.headers['Cache-Control'] = 'no-store'
+        return response, 200
     except Exception as e:
         app.logger.exception("Failed to list managed domains")
         return jsonify({'error': 'Failed to list managed domains', 'details': str(e)}), 500
@@ -2399,6 +2418,7 @@ def create():
         brand_data=brand_data,
         create_mode=True,
         theme_catalog=theme_catalog,
+        active_domain_base=get_active_managed_domain_base(),
     )
 
 
@@ -4120,8 +4140,13 @@ def _resolve_preview_url_for_slug(slug: str, brand: Dict[str, Any]) -> str:
         if domain.startswith('http://') or domain.startswith('https://'):
             return domain
         return f'https://{domain}'
-    # Local-dev fallback — host is `<slug>.localhost` or similar.
-    base = (os.environ.get('PREVIEW_BASE_DOMAIN') or 'carouspreviews.co.uk').strip()
+    # No explicit domain on the record — derive from the active managed domain
+    # so the URL matches whatever is currently active in Settings, falling back
+    # to PREVIEW_BASE_DOMAIN only when no managed domain exists.
+    base = (
+        get_active_managed_domain_base()
+        or (os.environ.get('PREVIEW_BASE_DOMAIN') or 'carouspreviews.co.uk').strip()
+    )
     return f'https://{slug}.{base}'
 
 

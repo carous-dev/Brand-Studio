@@ -1621,6 +1621,8 @@ let activeManagedDomains = [];
 let selectedManagedDomainBase = '';
 let managedDomainsLoadError = false;
 let activeManagedDomainsLoaded = false;
+// Set from the server-rendered active managed domain in create-mode init.
+let serverActiveDomainBase = '';
 
 function getAvailableThemeIds() {
     const ids = new Set();
@@ -1782,6 +1784,16 @@ async function loadActiveManagedDomainsForCreate() {
     } catch (error) {
         console.error('Failed to load active managed domains:', error);
         activeManagedDomainsLoaded = true;
+        // Keep the server-provided active base if we have one so /create still
+        // works when the live fetch fails; only hard-fail when we have nothing.
+        const seedBase = (typeof serverActiveDomainBase === 'string') ? serverActiveDomainBase : '';
+        if (seedBase) {
+            managedDomainsLoadError = false;
+            activeManagedDomains = [{ domain: seedBase, status: 'active' }];
+            setSelectedManagedDomainBase(seedBase);
+            updateCreateSubmitButtonState();
+            return activeManagedDomains;
+        }
         managedDomainsLoadError = true;
         activeManagedDomains = [];
         selectedManagedDomainBase = '';
@@ -2558,6 +2570,10 @@ function showSnackbar(message, type = 'info', duration = 3500) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const isCreateMode = {{ 'true' if create_mode else 'false' }};
+    // Server-authoritative active managed domain base (bare host). Seeds the
+    // domain field immediately so /create never renders a stale/blank domain
+    // while the async /api/settings/domains fetch is in flight.
+    serverActiveDomainBase = "{{ active_domain_base or '' }}";
 
     // Restore AI state
     restoreAIState();
@@ -2587,6 +2603,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Create mode: use saved draft only as placeholders (no value prefill) and never prefill assets
     if (isCreateMode) {
+        // Seed the selected base from the server's active domain up front so the
+        // domain field is correct on first slug sync, before the async fetch.
+        if (serverActiveDomainBase) {
+            setSelectedManagedDomainBase(serverActiveDomainBase);
+        }
         applyCreateDraftPlaceholders();
         // Start autosave without clobbering any previously stored draft
         enableCreateDraftAutosave({ skipInitialSave: true });

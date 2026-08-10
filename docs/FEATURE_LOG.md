@@ -2,6 +2,11 @@
 
 Newest entry at the top. One entry per logical change, not per file.
 
+- 2026-08-10: /create — resolve the active managed domain server-side so it's picked everywhere (owner: Difatha)
+  - Scope: `app.py` (`get_active_managed_domain_base` new, `/create` route, `list_managed_domains` GET, `_resolve_preview_url_for_slug`); `templates/index.html` (create-mode domain seeding).
+  - Reason: The /create page picked the active managed domain purely client-side — an async `/api/settings/domains?status=active` fetch with a "newest active" heuristic. The server never told the page which domain was active, so the domain field could render blank/stale before the fetch resolved, a browser-cached response could serve a stale active domain after switching it in Settings, and a failed fetch blanked the base entirely. Preview-URL resolution also fell back to a hardcoded `carouspreviews.co.uk` instead of the active domain.
+  - Notes: New `get_active_managed_domain_base()` returns the single active base (bare host; falls back to the newest managed domain of any status). The `/create` route now injects it into the template as `serverActiveDomainBase`, which seeds `selectedManagedDomainBase` synchronously in create-mode init — so the domain is correct on the first slug sync, before/without the async fetch. The async loader still refreshes but now falls back to the server seed on fetch error instead of blanking. Added `Cache-Control: no-store` to the domains GET so switching the active domain in Settings is reflected immediately everywhere. `_resolve_preview_url_for_slug` now derives its base from the active managed domain (env `PREVIEW_BASE_DOMAIN` only as last resort). `serverActiveDomainBase` is a module-level JS global (not a scoped const) so the top-level loader can read it. Builds on the same-day activation fix below.
+
 - 2026-08-10: Settings › Domains — let operators activate any domain (auto-deactivates the rest) (owner: Difatha)
   - Scope: `templates/settings.html` (DomainManager modal only).
   - Reason: The Add/Edit Domain modal disabled the Status `<select>` whenever another domain was already active, so a newly-added or inactive domain could never be switched on — operators were stuck with whichever domain happened to be active first.
