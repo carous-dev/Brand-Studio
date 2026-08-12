@@ -5,6 +5,7 @@ import { getThemeContextBundle } from '@/app/themes/context-registry';
 import { ThemeShell } from '@/app/themes/ThemeShell';
 import { resolveThemeIdFromBrand } from '@/app/themes/theme-selection';
 import PreviewGate from '@/app/widgets/PreviewGate';
+import PreviewAnalytics from '@/app/widgets/PreviewAnalytics';
 import './globals.css';
 import './styles/font-standardization.css';
 
@@ -128,6 +129,7 @@ export default async function RootLayout({
             {/* Dynamic favicon that updates with cache-busting */}
             <DynamicFavicon />
             <PreviewGate brand={brand} />
+            <PreviewAnalytics brand={brand} />
             <div className="brandstudio-preview-lock-target">
               <ThemeShell themeId={themeId}>{children}</ThemeShell>
             </div>

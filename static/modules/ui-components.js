@@ -76,7 +76,7 @@ export const UIComponents = {
     if (brands.length === 0) {
       container.innerHTML = `
         <tr class="empty-state">
-          <td colspan="7">
+          <td colspan="6">
             <div class="empty-content">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -105,8 +105,10 @@ export const UIComponents = {
       const status = brand.status || (brand.is_active !== false ? 'online' : 'offline');
       const isOnline = status === 'online';
       
+      const isSpecial = brand.special === true;
+
       return `
-      <tr data-slug="${brand.slug}">
+      <tr data-slug="${brand.slug}" class="${isSpecial ? 'row-special' : ''}">
         <td>
           <div class="brand-cell">
             <div class="brand-icon">
@@ -121,12 +123,11 @@ export const UIComponents = {
               }
             </div>
             <div class="brand-info">
-              <div class="brand-name">${this.escapeHtml(brand.name || 'Unnamed Brand')}</div>
+              <div class="brand-name">${isSpecial ? '<span class="special-star" title="Special — on the live monitor">★</span> ' : ''}${this.escapeHtml(brand.name || 'Unnamed Brand')}</div>
               ${brand.tagline ? `<div class="brand-tagline">${this.escapeHtml(brand.tagline)}</div>` : ''}
             </div>
           </div>
         </td>
-        <td class="col-slug">${this.escapeHtml(brand.slug || '')}</td>
         <td class="col-domain">
           ${(() => {
             if (!domain) return '-';
@@ -158,6 +159,11 @@ export const UIComponents = {
         </td>
         <td class="col-actions">
           <div class="table-actions">
+            <button class="action-btn special ${isSpecial ? 'is-special' : ''}" data-action="special" data-slug="${brand.slug}" aria-pressed="${isSpecial ? 'true' : 'false'}" title="${isSpecial ? 'Unmark special' : 'Mark as special (add to live monitor)'}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="${isSpecial ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            </button>
             <button class="action-btn edit" data-action="edit" data-slug="${brand.slug}" title="Edit Brand">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -212,6 +218,8 @@ export const UIComponents = {
         window.brandStudio.editBrand(slug);
       } else if (action === 'delete' && window.brandStudio) {
         window.brandStudio.confirmDeleteBrand(slug);
+      } else if (action === 'special' && window.brandStudio) {
+        window.brandStudio.toggleSpecial(slug);
       }
     });
   },

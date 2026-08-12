@@ -75,7 +75,6 @@
                     <thead>
                         <tr>
                             <th class="col-brand">Preview</th>
-                            <th class="col-slug">Slug</th>
                             <th class="col-domain">Domain</th>
                             <th class="col-location">Location</th>
                             <th class="col-theme">Theme</th>
@@ -84,10 +83,9 @@
                         </tr>
                     </thead>
                     <tbody id="brandsList" class="table-loading">
-                        {% for _ in range(6) %}
+                        {% for _ in range(12) %}
                         <tr class="table-skeleton-row" aria-hidden="true">
                             <td><div class="skeleton-line w-70"></div></td>
-                            <td><div class="skeleton-line w-50"></div></td>
                             <td><div class="skeleton-line w-60"></div></td>
                             <td><div class="skeleton-line w-55"></div></td>
                             <td><div class="skeleton-line w-40"></div></td>
@@ -96,7 +94,7 @@
                         </tr>
                         {% endfor %}
                         <tr class="table-loading-row" aria-hidden="true">
-                            <td colspan="7">
+                            <td colspan="6">
                                 <div class="table-loading-hint">Loading previews…</div>
                             </td>
                         </tr>

@@ -1328,6 +1328,9 @@ def serialize_preview_row(row):
     else:
         config['status'] = 'offline'  # Default status if not present
 
+    # Hot-lead star: dashboard focus filter for the live monitor.
+    config['special'] = bool(row.get('special')) if 'special' in row else False
+
     # Local-dev preview URL: when the brand's domain resolves under a wildcard
     # base (lvh.me etc.), expose a directly-clickable URL so the dashboard can
     # link straight to the running Next.js dev server without DNS / hosts edits.
@@ -1682,6 +1685,15 @@ def settings():
     """Render settings page"""
     previews = get_existing_previews()
     return render_template('settings.html', preview_count=len(previews))
+
+
+@app.route('/specials')
+# Auth intentionally handled like /dashboard (page open, data APIs gated) to
+# avoid the login redirect loop that affected the decorated page routes.
+def specials():
+    """Render the live monitor for starred (special) previews."""
+    previews = get_existing_previews()
+    return render_template('specials.html', preview_count=len(previews))
 
 
 MANAGED_DOMAIN_PATTERN = re.compile(
@@ -3107,6 +3119,219 @@ def preview_gate_end_session(session_id):
         return ('', 204)
     preview_store.close_preview_session(session_id=str(session_id), status='ended')
     return jsonify({'ok': True}), 200
+
+
+# -----------------------------------------------------------------------------
+# Preview engagement analytics
+#
+# Always-on beacon fed by the PreviewAnalytics widget on every preview render.
+# Decoupled from the access gate above: analytics are collected for every
+# preview regardless of gating, so a preview starred later already has history.
+# These routes are public (proxied by Next.js) and fail soft — the widget
+# ignores non-2xx responses.
+# -----------------------------------------------------------------------------
+
+# A session counts as "live" if its last heartbeat is within this window. The
+# client beats every 10s, so 30s tolerates one dropped beat before going idle.
+LIVE_WINDOW_SECONDS = 30
+
+
+def _client_ip() -> str:
+    return request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip()
+
+
+@app.route('/api/preview-analytics/session', methods=['POST', 'OPTIONS'])
+def preview_analytics_start_session():
+    if request.method == 'OPTIONS':
+        return ('', 204)
+    payload = request.get_json(silent=True) or {}
+    preview = _resolve_preview_for_gate(payload)
+    if not preview:
+        return jsonify({'ok': False, 'reason': 'unknown_preview'}), 404
+
+    slug = preview.get('slug')
+    session_row = preview_store.start_analytics_session(
+        slug=slug,
+        ip_address=_client_ip(),
+        user_agent=request.headers.get('User-Agent', ''),
+        referrer=str(payload.get('referrer') or ''),
+        device_type=str(payload.get('device') or ''),
+    )
+
+    # Fold the landing page into the same round-trip when the client supplies it.
+    path = str(payload.get('path') or '').strip()
+    if path:
+        preview_store.record_analytics_pageview(
+            session_id=session_row['id'],
+            slug=slug,
+            path=path,
+            title=str(payload.get('title') or ''),
+        )
+
+    return jsonify({'ok': True, 'sessionId': session_row['id'], 'slug': slug}), 201
+
+
+@app.route('/api/preview-analytics/pageview', methods=['POST', 'OPTIONS'])
+def preview_analytics_pageview():
+    if request.method == 'OPTIONS':
+        return ('', 204)
+    payload = request.get_json(silent=True) or {}
+    session_id = str(payload.get('sessionId') or '').strip()
+    path = str(payload.get('path') or '').strip()
+    if not session_id or not path:
+        return jsonify({'ok': False, 'reason': 'missing_fields'}), 400
+
+    slug = str(payload.get('slug') or '').strip().lower()
+    if not slug:
+        preview = _resolve_preview_for_gate(payload)
+        slug = (preview or {}).get('slug') or ''
+
+    result = preview_store.record_analytics_pageview(
+        session_id=session_id,
+        slug=slug,
+        path=path,
+        title=str(payload.get('title') or ''),
+    )
+    if result is None:
+        return jsonify({'ok': False, 'reason': 'unknown_session'}), 404
+    return jsonify(result), 200
+
+
+@app.route('/api/preview-analytics/heartbeat', methods=['POST', 'OPTIONS'])
+def preview_analytics_heartbeat():
+    if request.method == 'OPTIONS':
+        return ('', 204)
+    payload = request.get_json(silent=True) or {}
+    session_id = str(payload.get('sessionId') or '').strip()
+    if not session_id:
+        return jsonify({'ok': False, 'reason': 'missing_session'}), 400
+
+    result = preview_store.heartbeat_analytics_session(session_id=session_id)
+    if result is None:
+        return jsonify({'ok': False, 'reason': 'unknown_session'}), 404
+    return jsonify(result), 200
+
+
+@app.route('/api/preview-analytics/session/<session_id>/end', methods=['POST', 'OPTIONS'])
+def preview_analytics_end_session(session_id):
+    if request.method == 'OPTIONS':
+        return ('', 204)
+    preview_store.end_analytics_session(session_id=str(session_id))
+    return jsonify({'ok': True}), 200
+
+
+# -----------------------------------------------------------------------------
+# Specials / live-monitor dashboard reads (auth-gated)
+# -----------------------------------------------------------------------------
+
+def _special_summary(row: Dict[str, Any]) -> Dict[str, Any]:
+    """Merge a preview's serialized config with its aggregated metrics."""
+    base = serialize_preview_row(row)
+    theme = base.get('theme') if isinstance(base.get('theme'), dict) else {}
+    return {
+        'slug': base.get('slug'),
+        'name': base.get('name'),
+        'domain': base.get('domain'),
+        'preview_url': base.get('preview_url'),
+        'preview_url_kind': base.get('preview_url_kind'),
+        'status': base.get('status'),
+        'special': True,
+        'theme': base.get('_theme_name') or theme.get('id') or base.get('themeId') or '—',
+        'favicon': base.get('favicon'),
+        'metrics': {
+            'visits': int(row.get('visits') or 0),
+            'totalSeconds': int(row.get('total_seconds') or 0),
+            'pageviews': int(row.get('pageviews') or 0),
+            'lastSeen': row.get('last_seen'),
+            'liveNow': int(row.get('live_now') or 0),
+        },
+    }
+
+
+@app.route('/api/previews/<slug>/special', methods=['POST'])
+@auth_manager.login_required
+def toggle_preview_special(slug):
+    """Star / unstar a preview for the live monitor."""
+    if not preview_exists(slug):
+        return jsonify({'error': f'Preview {slug} not found'}), 404
+    payload = request.get_json(silent=True) or {}
+    special = parse_bool_flag(payload.get('special'))
+    preview_store.set_preview_special(slug=slug, special=special)
+    return jsonify({'ok': True, 'slug': slug, 'special': special}), 200
+
+
+@app.route('/api/specials', methods=['GET'])
+@auth_manager.login_required
+def get_specials():
+    """List starred previews with lifetime metrics + current live counts."""
+    rows = preview_store.list_special_previews_with_metrics(live_window_seconds=LIVE_WINDOW_SECONDS)
+    specials = [_special_summary(r) for r in rows]
+    return jsonify({
+        'specials': specials,
+        'count': len(specials),
+        'liveWindowSeconds': LIVE_WINDOW_SECONDS,
+        'timestamp': datetime.utcnow().isoformat() + 'Z',
+    }), 200
+
+
+@app.route('/api/specials/live', methods=['GET'])
+@auth_manager.login_required
+def get_specials_live():
+    """Lightweight poll target for the live monitor: per-special live counts
+    plus the individual sessions viewing a starred preview right now."""
+    rows = preview_store.list_special_previews_with_metrics(live_window_seconds=LIVE_WINDOW_SECONDS)
+    special_slugs = {r.get('slug') for r in rows}
+    all_live = preview_store.get_live_sessions(live_window_seconds=LIVE_WINDOW_SECONDS)
+    live_sessions = [s for s in all_live if s.get('slug') in special_slugs]
+    specials = [{
+        'slug': r.get('slug'),
+        'name': serialize_preview_row(r).get('name'),
+        'liveNow': int(r.get('live_now') or 0),
+        'visits': int(r.get('visits') or 0),
+        'totalSeconds': int(r.get('total_seconds') or 0),
+        'pageviews': int(r.get('pageviews') or 0),
+        'lastSeen': r.get('last_seen'),
+    } for r in rows]
+    return jsonify({
+        'specials': specials,
+        'liveSessions': live_sessions,
+        'totalLive': len(live_sessions),
+        'liveWindowSeconds': LIVE_WINDOW_SECONDS,
+        'timestamp': datetime.utcnow().isoformat() + 'Z',
+    }), 200
+
+
+@app.route('/api/previews/<slug>/metrics', methods=['GET'])
+@auth_manager.login_required
+def get_preview_metrics_route(slug):
+    """Full engagement drill-down for one preview (row-click detail)."""
+    if not preview_exists(slug):
+        return jsonify({'error': f'Preview {slug} not found'}), 404
+    preview = load_preview(slug) or {}
+    metrics = preview_store.get_preview_metrics(slug=slug, live_window_seconds=LIVE_WINDOW_SECONDS)
+    theme = preview.get('theme') if isinstance(preview.get('theme'), dict) else {}
+    return jsonify({
+        'slug': slug,
+        'name': preview.get('name'),
+        'domain': preview.get('domain'),
+        'preview_url': preview.get('preview_url'),
+        'status': preview.get('status'),
+        'special': bool(preview.get('special')),
+        'theme': preview.get('_theme_name') or theme.get('id') or '—',
+        'metrics': {
+            'visits': int(metrics.get('visits') or 0),
+            'totalSeconds': int(metrics.get('total_seconds') or 0),
+            'avgSeconds': int(metrics.get('avg_seconds') or 0),
+            'totalPageviews': int(metrics.get('total_pageviews') or 0),
+            'lastSeen': metrics.get('last_seen'),
+            'liveNow': int(metrics.get('live_now') or 0),
+        },
+        'pages': preview_store.get_preview_pageview_breakdown(slug=slug, limit=25),
+        'liveSessions': preview_store.get_live_sessions(slug=slug, live_window_seconds=LIVE_WINDOW_SECONDS),
+        'recentSessions': preview_store.get_recent_analytics_sessions(slug=slug, limit=25),
+        'liveWindowSeconds': LIVE_WINDOW_SECONDS,
+        'timestamp': datetime.utcnow().isoformat() + 'Z',
+    }), 200
 
 
 @app.route('/api/themes', methods=['GET'])
