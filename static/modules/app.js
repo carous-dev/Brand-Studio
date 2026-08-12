@@ -505,12 +505,11 @@ export class BrandStudio {
     const tbody = DOMUtils.getElement('brandsList');
     if (!tbody) return;
 
-    const rows = Array.from({ length: 6 })
+    const rows = Array.from({ length: 12 })
       .map(
         () => `
           <tr class="table-skeleton-row" aria-hidden="true">
             <td><div class="skeleton-line w-70"></div></td>
-            <td><div class="skeleton-line w-50"></div></td>
             <td><div class="skeleton-line w-60"></div></td>
             <td><div class="skeleton-line w-55"></div></td>
             <td><div class="skeleton-line w-40"></div></td>
@@ -522,7 +521,7 @@ export class BrandStudio {
       .join('');
 
     tbody.classList.add('table-loading');
-    tbody.innerHTML = `${rows}<tr class="table-loading-row" aria-hidden="true"><td colspan="7"><div class="table-loading-hint">Loading previews…</div></td></tr>`;
+    tbody.innerHTML = `${rows}<tr class="table-loading-row" aria-hidden="true"><td colspan="6"><div class="table-loading-hint">Loading previews…</div></td></tr>`;
 
     const pager = DOMUtils.getElement('dashboardPagination');
     if (pager) {
@@ -532,7 +531,7 @@ export class BrandStudio {
   }
 
   getDashboardPagingFromUrl() {
-    const perPage = 6;
+    const perPage = 12;
     const url = new URL(window.location.href);
     const rawPage = parseInt(url.searchParams.get('page') || '1', 10);
     const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
@@ -710,6 +709,33 @@ export class BrandStudio {
     }
     
     window.location.href = `/update/${slug}`;
+  }
+
+  async toggleSpecial(slug) {
+    /**
+     * Star / unstar a preview for the live monitor. Optimistic: flip in memory
+     * and re-render immediately, revert if the API call fails.
+     */
+    const brand = this.brands.find(b => b.slug === slug);
+    if (!brand) return;
+
+    const next = !(brand.special === true);
+    brand.special = next;
+    this.renderBrandsTable();
+
+    try {
+      await ApiService.post(`/previews/${slug}/special`, { special: next });
+      this.showAlert(
+        next
+          ? `⭐ "${brand.name || slug}" added to the live monitor`
+          : `Removed "${brand.name || slug}" from the live monitor`,
+        'success'
+      );
+    } catch (error) {
+      brand.special = !next;
+      this.renderBrandsTable();
+      this.showAlert(`❌ Couldn't update special: ${error.message || 'request failed'}`, 'error');
+    }
   }
 
   confirmDeleteBrand(slug) {
@@ -1692,7 +1718,7 @@ export class BrandStudio {
   }
 
   setDashboardPage(nextPage) {
-    const perPage = 6;
+    const perPage = 12;
     const totalPages = this.dashboardPagination?.totalPages || 1;
     const page = Math.min(Math.max(nextPage, 1), totalPages);
     const url = new URL(window.location.href);

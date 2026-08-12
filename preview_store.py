@@ -91,6 +91,16 @@ class PreviewStore:
                         ADD COLUMN status_checked_at DATETIME NULL
                     """)
 
+                # `special` flags the hot-lead previews the sales side wants to
+                # monitor live. It's a dashboard focus filter — analytics are
+                # collected for every preview regardless of this flag.
+                cur.execute("SHOW COLUMNS FROM previews LIKE 'special'")
+                if not cur.fetchone():
+                    cur.execute("""
+                        ALTER TABLE previews
+                        ADD COLUMN special TINYINT(1) NOT NULL DEFAULT 0
+                    """)
+
                 cur.execute("""
                     CREATE TABLE IF NOT EXISTS preview_sessions (
                         id VARCHAR(36) NOT NULL PRIMARY KEY,
@@ -109,6 +119,53 @@ class PreviewStore:
                         KEY idx_preview_sessions_last_heartbeat (last_heartbeat_at)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
                 """)
+
+                # --- engagement analytics (always-on, decoupled from the gate) ---
+                # One row per visit to a preview site. active_seconds accumulates
+                # via the same capped-delta trick the gate uses so a sleeping tab
+                # can't bank hours of "time spent" in one heartbeat.
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS preview_analytics_sessions (
+                        id VARCHAR(36) NOT NULL PRIMARY KEY,
+                        slug VARCHAR(255) NOT NULL,
+                        started_at DATETIME NOT NULL,
+                        last_heartbeat_at DATETIME NOT NULL,
+                        ended_at DATETIME NULL,
+                        active_seconds INT NOT NULL DEFAULT 0,
+                        page_count INT NOT NULL DEFAULT 0,
+                        status ENUM('active', 'ended') NOT NULL DEFAULT 'active',
+                        ip_address VARCHAR(64) NULL,
+                        user_agent VARCHAR(512) NULL,
+                        referrer VARCHAR(512) NULL,
+                        device_type VARCHAR(16) NULL,
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                        KEY idx_pa_sessions_slug (slug),
+                        KEY idx_pa_sessions_status (status),
+                        KEY idx_pa_sessions_last_heartbeat (last_heartbeat_at)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+                """)
+
+                # One row per page a visitor lands on within a session. The most
+                # recent open pageview (ended_at IS NULL) accrues seconds_on_page
+                # on each heartbeat and is closed when the next pageview arrives.
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS preview_analytics_pageviews (
+                        id VARCHAR(36) NOT NULL PRIMARY KEY,
+                        session_id VARCHAR(36) NOT NULL,
+                        slug VARCHAR(255) NOT NULL,
+                        path VARCHAR(512) NOT NULL,
+                        title VARCHAR(255) NULL,
+                        entered_at DATETIME NOT NULL,
+                        last_heartbeat_at DATETIME NOT NULL,
+                        ended_at DATETIME NULL,
+                        seconds_on_page INT NOT NULL DEFAULT 0,
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        KEY idx_pa_pageviews_session (session_id),
+                        KEY idx_pa_pageviews_slug (slug),
+                        KEY idx_pa_pageviews_path (path)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+                """)
         finally:
             conn.close()
 
@@ -120,7 +177,7 @@ class PreviewStore:
             with conn.cursor() as cur:
                 # Force MySQL to bypass cache and order by most recent created_at first
                 cur.execute(
-                    "SELECT SQL_NO_CACHE slug, name, config, created_at, updated_at, status "
+                    "SELECT SQL_NO_CACHE slug, name, config, created_at, updated_at, status, special "
                     "FROM previews ORDER BY created_at DESC, updated_at DESC, slug ASC"
                 )
                 return list(cur.fetchall())
@@ -149,7 +206,7 @@ class PreviewStore:
                 total = int(cur.fetchone()['count'])
 
                 rows_sql = (
-                    "SELECT SQL_NO_CACHE slug, name, config, created_at, updated_at, status "
+                    "SELECT SQL_NO_CACHE slug, name, config, created_at, updated_at, status, special "
                     f"FROM previews {where_clause} "
                     "ORDER BY created_at DESC, updated_at DESC, slug ASC LIMIT %s OFFSET %s"
                 )
@@ -164,7 +221,7 @@ class PreviewStore:
         try:
             with conn.cursor() as cur:
                 cur.execute(
-                    "SELECT SQL_NO_CACHE slug, name, config, created_at, updated_at, status "
+                    "SELECT SQL_NO_CACHE slug, name, config, created_at, updated_at, status, special "
                     "FROM previews WHERE slug=%s",
                     (slug,),
                 )
@@ -303,3 +360,358 @@ class PreviewStore:
                 )
         finally:
             conn.close()
+
+    # --- special flag ---
+    def set_preview_special(self, *, slug: str, special: bool) -> bool:
+        """Toggle the hot-lead star. Returns the stored boolean value."""
+        conn = self._get_mysql_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "UPDATE previews SET special=%s WHERE slug=%s",
+                    (1 if special else 0, slug),
+                )
+                return bool(special)
+        finally:
+            conn.close()
+
+    # --- engagement analytics ---
+    # Cap on how many seconds a single heartbeat/close can add. A backgrounded
+    # tab, sleeping laptop, or delayed timer must not bank hours at once.
+    _ANALYTICS_MAX_DELTA = 20
+
+    def start_analytics_session(
+        self,
+        *,
+        slug: str,
+        ip_address: str = '',
+        user_agent: str = '',
+        referrer: str = '',
+        device_type: str = '',
+    ) -> Dict[str, Any]:
+        session_id = str(uuid.uuid4())
+        conn = self._get_mysql_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO preview_analytics_sessions (
+                        id, slug, started_at, last_heartbeat_at, active_seconds,
+                        page_count, status, ip_address, user_agent, referrer, device_type
+                    )
+                    VALUES (%s, %s, UTC_TIMESTAMP(), UTC_TIMESTAMP(), 0, 0, 'active', %s, %s, %s, %s)
+                    """,
+                    (
+                        session_id,
+                        slug,
+                        (ip_address or '')[:64] or None,
+                        (user_agent or '')[:512] or None,
+                        (referrer or '')[:512] or None,
+                        (device_type or '')[:16] or None,
+                    ),
+                )
+                return {'id': session_id, 'slug': slug}
+        finally:
+            conn.close()
+
+    def record_analytics_pageview(
+        self, *, session_id: str, slug: str, path: str, title: str = ''
+    ) -> Optional[Dict[str, Any]]:
+        """Open a new pageview, closing the previous one. Deduplicates repeat
+        reports of the same path (React strict-mode double mounts, re-renders).
+        """
+        path = (path or '/')[:512]
+        conn = self._get_mysql_conn()
+        try:
+            with conn.cursor() as cur:
+                # Session must exist and be active.
+                cur.execute(
+                    "SELECT status FROM preview_analytics_sessions WHERE id=%s",
+                    (session_id,),
+                )
+                row = cur.fetchone()
+                if not row or row.get('status') != 'active':
+                    return None
+
+                # If the latest open pageview is already this path, no-op.
+                cur.execute(
+                    """
+                    SELECT id, path FROM preview_analytics_pageviews
+                    WHERE session_id=%s AND ended_at IS NULL
+                    ORDER BY entered_at DESC LIMIT 1
+                    """,
+                    (session_id,),
+                )
+                open_pv = cur.fetchone()
+                if open_pv and open_pv.get('path') == path:
+                    return {'ok': True, 'deduped': True}
+
+                # Close the previous open pageview, crediting the final delta.
+                cur.execute(
+                    """
+                    UPDATE preview_analytics_pageviews
+                    SET seconds_on_page = seconds_on_page + LEAST(
+                            GREATEST(TIMESTAMPDIFF(SECOND, last_heartbeat_at, UTC_TIMESTAMP()), 0),
+                            %s
+                        ),
+                        ended_at = UTC_TIMESTAMP()
+                    WHERE session_id=%s AND ended_at IS NULL
+                    """,
+                    (self._ANALYTICS_MAX_DELTA, session_id),
+                )
+
+                pv_id = str(uuid.uuid4())
+                cur.execute(
+                    """
+                    INSERT INTO preview_analytics_pageviews (
+                        id, session_id, slug, path, title, entered_at, last_heartbeat_at, seconds_on_page
+                    )
+                    VALUES (%s, %s, %s, %s, %s, UTC_TIMESTAMP(), UTC_TIMESTAMP(), 0)
+                    """,
+                    (pv_id, session_id, slug, path, (title or '')[:255] or None),
+                )
+                cur.execute(
+                    """
+                    UPDATE preview_analytics_sessions
+                    SET page_count = page_count + 1, last_heartbeat_at = UTC_TIMESTAMP()
+                    WHERE id=%s AND status='active'
+                    """,
+                    (session_id,),
+                )
+                return {'ok': True, 'pageviewId': pv_id}
+        finally:
+            conn.close()
+
+    def heartbeat_analytics_session(self, *, session_id: str) -> Optional[Dict[str, Any]]:
+        """Advance session active_seconds and the current open pageview's time
+        by the capped delta since each was last touched."""
+        conn = self._get_mysql_conn()
+        try:
+            with conn.cursor() as cur:
+                # Detect the session with a SELECT, not the UPDATE's rowcount:
+                # a same-second heartbeat changes nothing, and MySQL reports
+                # changed (not matched) rows, which would look like a miss.
+                cur.execute(
+                    "SELECT status FROM preview_analytics_sessions WHERE id=%s",
+                    (session_id,),
+                )
+                row = cur.fetchone()
+                if not row or row.get('status') != 'active':
+                    return None
+                cur.execute(
+                    """
+                    UPDATE preview_analytics_sessions
+                    SET active_seconds = active_seconds + LEAST(
+                            GREATEST(TIMESTAMPDIFF(SECOND, last_heartbeat_at, UTC_TIMESTAMP()), 0),
+                            %s
+                        ),
+                        last_heartbeat_at = UTC_TIMESTAMP()
+                    WHERE id=%s AND status='active'
+                    """,
+                    (self._ANALYTICS_MAX_DELTA, session_id),
+                )
+                cur.execute(
+                    """
+                    UPDATE preview_analytics_pageviews
+                    SET seconds_on_page = seconds_on_page + LEAST(
+                            GREATEST(TIMESTAMPDIFF(SECOND, last_heartbeat_at, UTC_TIMESTAMP()), 0),
+                            %s
+                        ),
+                        last_heartbeat_at = UTC_TIMESTAMP()
+                    WHERE session_id=%s AND ended_at IS NULL
+                    """,
+                    (self._ANALYTICS_MAX_DELTA, session_id),
+                )
+                return {'ok': True}
+        finally:
+            conn.close()
+
+    def end_analytics_session(self, *, session_id: str) -> None:
+        conn = self._get_mysql_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    UPDATE preview_analytics_pageviews
+                    SET seconds_on_page = seconds_on_page + LEAST(
+                            GREATEST(TIMESTAMPDIFF(SECOND, last_heartbeat_at, UTC_TIMESTAMP()), 0),
+                            %s
+                        ),
+                        ended_at = COALESCE(ended_at, UTC_TIMESTAMP())
+                    WHERE session_id=%s AND ended_at IS NULL
+                    """,
+                    (self._ANALYTICS_MAX_DELTA, session_id),
+                )
+                cur.execute(
+                    """
+                    UPDATE preview_analytics_sessions
+                    SET active_seconds = active_seconds + LEAST(
+                            GREATEST(TIMESTAMPDIFF(SECOND, last_heartbeat_at, UTC_TIMESTAMP()), 0),
+                            %s
+                        ),
+                        status = 'ended',
+                        ended_at = COALESCE(ended_at, UTC_TIMESTAMP())
+                    WHERE id=%s AND status='active'
+                    """,
+                    (self._ANALYTICS_MAX_DELTA, session_id),
+                )
+        finally:
+            conn.close()
+
+    # --- analytics aggregation (dashboard reads) ---
+    def list_special_previews_with_metrics(self, *, live_window_seconds: int = 30) -> List[Dict[str, Any]]:
+        """Return every starred preview row joined to its lifetime metrics and
+        current live-viewer count. config is left raw for the caller to parse."""
+        conn = self._get_mysql_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT
+                        p.slug, p.name, p.config, p.status, p.special,
+                        p.created_at, p.updated_at,
+                        COALESCE(s.visits, 0)         AS visits,
+                        COALESCE(s.total_seconds, 0)  AS total_seconds,
+                        COALESCE(s.pageviews, 0)      AS pageviews,
+                        s.last_seen,
+                        COALESCE(live.live_now, 0)    AS live_now
+                    FROM previews p
+                    LEFT JOIN (
+                        SELECT slug, COUNT(*) AS visits,
+                               SUM(active_seconds) AS total_seconds,
+                               SUM(page_count) AS pageviews,
+                               MAX(last_heartbeat_at) AS last_seen
+                        FROM preview_analytics_sessions GROUP BY slug
+                    ) s ON s.slug = p.slug
+                    LEFT JOIN (
+                        SELECT slug, COUNT(*) AS live_now
+                        FROM preview_analytics_sessions
+                        WHERE status='active'
+                          AND last_heartbeat_at >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL %s SECOND)
+                        GROUP BY slug
+                    ) live ON live.slug = p.slug
+                    WHERE p.special = 1
+                    ORDER BY live_now DESC, last_seen DESC, p.created_at DESC
+                    """,
+                    (live_window_seconds,),
+                )
+                return [self._coerce_metric_row(r) for r in cur.fetchall()]
+        finally:
+            conn.close()
+
+    def get_preview_metrics(self, *, slug: str, live_window_seconds: int = 30) -> Dict[str, Any]:
+        conn = self._get_mysql_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT
+                        COUNT(*) AS visits,
+                        COALESCE(SUM(active_seconds), 0) AS total_seconds,
+                        COALESCE(AVG(active_seconds), 0) AS avg_seconds,
+                        COALESCE(SUM(page_count), 0) AS total_pageviews,
+                        MAX(last_heartbeat_at) AS last_seen,
+                        SUM(CASE WHEN status='active'
+                                  AND last_heartbeat_at >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL %s SECOND)
+                                 THEN 1 ELSE 0 END) AS live_now
+                    FROM preview_analytics_sessions WHERE slug=%s
+                    """,
+                    (live_window_seconds, slug),
+                )
+                return self._coerce_metric_row(cur.fetchone() or {})
+        finally:
+            conn.close()
+
+    def get_preview_pageview_breakdown(self, *, slug: str, limit: int = 25) -> List[Dict[str, Any]]:
+        conn = self._get_mysql_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT path,
+                           MAX(title) AS title,
+                           COUNT(*) AS views,
+                           COALESCE(SUM(seconds_on_page), 0) AS total_seconds
+                    FROM preview_analytics_pageviews
+                    WHERE slug=%s
+                    GROUP BY path
+                    ORDER BY views DESC, total_seconds DESC
+                    LIMIT %s
+                    """,
+                    (slug, int(limit)),
+                )
+                return [self._coerce_metric_row(r) for r in cur.fetchall()]
+        finally:
+            conn.close()
+
+    def get_live_sessions(self, *, slug: Optional[str] = None, live_window_seconds: int = 30) -> List[Dict[str, Any]]:
+        """Sessions active within the live window, each with its current page."""
+        conn = self._get_mysql_conn()
+        try:
+            with conn.cursor() as cur:
+                params: List[Any] = [live_window_seconds]
+                slug_clause = ""
+                if slug:
+                    slug_clause = "AND s.slug=%s"
+                    params.append(slug)
+                cur.execute(
+                    f"""
+                    SELECT
+                        s.id, s.slug, s.started_at, s.last_heartbeat_at,
+                        s.active_seconds, s.page_count, s.device_type, s.ip_address,
+                        pv.path AS current_path, pv.title AS current_title
+                    FROM preview_analytics_sessions s
+                    LEFT JOIN preview_analytics_pageviews pv ON pv.id = (
+                        SELECT p2.id FROM preview_analytics_pageviews p2
+                        WHERE p2.session_id = s.id
+                        -- Prefer the still-open pageview (the page they're on now);
+                        -- entered_at is only second-precise so it can tie.
+                        ORDER BY (p2.ended_at IS NULL) DESC, p2.entered_at DESC
+                        LIMIT 1
+                    )
+                    WHERE s.status='active'
+                      AND s.last_heartbeat_at >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL %s SECOND)
+                      {slug_clause}
+                    ORDER BY s.last_heartbeat_at DESC
+                    """,
+                    params,
+                )
+                return [self._coerce_metric_row(r) for r in cur.fetchall()]
+        finally:
+            conn.close()
+
+    def get_recent_analytics_sessions(self, *, slug: str, limit: int = 25) -> List[Dict[str, Any]]:
+        conn = self._get_mysql_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT id, started_at, ended_at, last_heartbeat_at,
+                           active_seconds, page_count, status, device_type,
+                           ip_address, referrer
+                    FROM preview_analytics_sessions
+                    WHERE slug=%s
+                    ORDER BY started_at DESC
+                    LIMIT %s
+                    """,
+                    (slug, int(limit)),
+                )
+                return [self._coerce_metric_row(r) for r in cur.fetchall()]
+        finally:
+            conn.close()
+
+    @staticmethod
+    def _coerce_metric_row(row: Dict[str, Any]) -> Dict[str, Any]:
+        """Make an aggregation row JSON-safe: Decimals -> int, datetimes -> ISO-8601 Z."""
+        import datetime as _dt
+        from decimal import Decimal as _Decimal
+
+        out: Dict[str, Any] = {}
+        for key, value in dict(row).items():
+            if isinstance(value, _Decimal):
+                out[key] = int(value)
+            elif isinstance(value, _dt.datetime):
+                out[key] = value.replace(microsecond=0).isoformat() + 'Z'
+            else:
+                out[key] = value
+        return out

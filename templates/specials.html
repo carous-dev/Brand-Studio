@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Live Monitor · Carous{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='specials.css') }}">
+
+<div id="lm-root">
+  <div class="lm-top">
+    <div class="lm-title">
+      <h1>Live Monitor</h1>
+      <span class="lm-chip" id="lmChip"><span class="d"></span> <b id="lmChipN">0</b>&nbsp;live</span>
+    </div>
+    <div class="lm-controls">
+      <label class="lm-switch" title="Auto-refresh"><input type="checkbox" id="lmAuto" checked><span class="tk"></span></label>
+      <span class="lm-switch-label">Auto</span>
+      <button class="lm-iconbtn" id="lmRefresh" title="Refresh" aria-label="Refresh">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="lm-kpis">
+    <div class="lm-kpi"><div class="v" id="lmTracked">0</div><div class="k">Tracked</div></div>
+    <div class="lm-kpi"><div class="v" id="lmVisits">0</div><div class="k">Total visits</div></div>
+    <div class="lm-kpi"><div class="v" id="lmTime">0m</div><div class="k">Watch time</div></div>
+  </div>
+
+  <div id="lmListWrap">
+    <div class="lm-tablewrap">
+      <div class="lm-scroll">
+        <table class="lm-table">
+          <thead>
+            <tr>
+              <th>Preview</th>
+              <th>Live</th>
+              <th class="num">Visits</th>
+              <th class="num">Time</th>
+              <th class="num">Pages</th>
+              <th class="num">Last seen</th>
+            </tr>
+          </thead>
+          <tbody id="lmRows">
+            <tr><td colspan="6" class="lm-loading">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="lm-pager" id="lmPager" hidden></div>
+  </div>
+</div>
+
+<div class="lm-drawer" id="lmDrawer" aria-hidden="true">
+  <div class="lm-scrim" data-lm-close></div>
+  <aside class="lm-panel" aria-label="Preview metrics">
+    <div class="lm-panel-h">
+      <div>
+        <h2 id="lmDwName">Preview</h2>
+        <a id="lmDwDomain" href="#" target="_blank" rel="noopener"></a>
+      </div>
+      <button class="lm-close" data-lm-close aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="lm-panel-b" id="lmDwBody"></div>
+  </aside>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{{ url_for('static', filename='modules/specials.js') }}"></script>
+{% endblock %}

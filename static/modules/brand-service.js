@@ -58,7 +58,7 @@ export const BrandService = {
   /**
    * Load brands with backend pagination
    */
-  async loadBrandsPaginated(page = 1, perPage = 6, search = '') {
+  async loadBrandsPaginated(page = 1, perPage = 12, search = '') {
     try {
       const response = await ApiService.getBrands({
         page,
