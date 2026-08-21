@@ -1,0 +1,822 @@
+/* @carous/garage — wishlist / compare / recently-viewed widget styles.
+ *
+ * Theme per app by overriding these CSS custom properties (on :root or any
+ * ancestor). Defaults chain onto the common Carous brand tokens, so most apps
+ * need to set nothing:
+ *   --cg-accent          primary brand colour (buttons, prices, active states)
+ *   --cg-accent-strong   hover/darker accent
+ *   --cg-on-accent       text/icon colour on top of the accent (default #fff)
+ *   --cg-fg              main text colour
+ *   --cg-surface         card / panel background (default #fff)
+ *   --cg-font-display    display font for headings/prices (default inherit)
+ *
+ * Alpha shades are derived with color-mix(), so no companion `-rgb` var is
+ * needed. Class prefix: `cg-`.
+ */
+
+:root {
+  --cg-accent: var(--accent-primary, var(--color-primary, var(--accent, #ff6b1a)));
+  --cg-accent-strong: var(--accent-primary-strong, var(--color-primary-strong, var(--accent-2, var(--cg-accent))));
+  --cg-on-accent: var(--accent-primary-foreground, #ffffff);
+  --cg-fg: var(--color-text, #0b1720);
+  --cg-surface: #ffffff;
+  --cg-font-display: var(--font-display, inherit);
+}
+
+/* ─── Top bar + breadcrumb (saved / recent pages) ─────────────────────── */
+.cg-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(16px, 2.4vw, 28px);
+}
+
+.cg-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: color-mix(in srgb, var(--cg-fg) 55%, transparent);
+  min-width: 0;
+}
+
+.cg-breadcrumb a {
+  color: color-mix(in srgb, var(--cg-fg) 55%, transparent);
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.cg-breadcrumb a:hover {
+  color: var(--cg-accent);
+}
+
+.cg-breadcrumb [aria-current="page"] {
+  color: var(--cg-fg);
+  font-weight: 600;
+}
+
+/* ─── Inventory top-bar shortcut pills (recent / wishlist / compare) ───── */
+.cg-savelinks {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.cg-savelink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 13px;
+  background: var(--cg-surface);
+  border: 1px solid color-mix(in srgb, var(--cg-fg) 12%, transparent);
+  border-radius: 999px;
+  color: var(--cg-fg);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.cg-savelink:hover {
+  border-color: var(--cg-accent);
+  color: var(--cg-accent);
+}
+
+.cg-savelink.has-count {
+  border-color: color-mix(in srgb, var(--cg-accent) 40%, transparent);
+  color: var(--cg-accent);
+}
+
+.cg-savelink-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  background: color-mix(in srgb, var(--cg-fg) 6%, transparent);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.cg-savelink.has-count .cg-savelink-count {
+  background: var(--cg-accent);
+  color: var(--cg-on-accent);
+}
+
+@media (max-width: 519px) {
+  .cg-savelink {
+    padding: 0 10px;
+    gap: 5px;
+  }
+}
+
+/* ─── Card wishlist / compare overlay ─────────────────────────────────── */
+/* The app wraps the card in a positioned element (use `.cg-card-shell` or give
+ * the card wrapper `position: relative`) and renders <VehicleSaveButtons> as a
+ * sibling of the card link so taps here never navigate. */
+.cg-card-shell {
+  position: relative;
+  height: 100%;
+}
+
+.cg-card-save {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 6;
+  display: flex;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.cg-card-save-btn {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--cg-fg);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 6px 16px -8px color-mix(in srgb, var(--cg-fg) 50%, transparent);
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.cg-card-save-btn:hover {
+  transform: translateY(-1px);
+  color: var(--cg-accent);
+}
+
+.cg-card-save-btn.is-active {
+  background: var(--cg-accent);
+  color: var(--cg-on-accent);
+}
+
+.cg-card-save-btn.is-limited {
+  animation: cg-card-save-shake 0.32s ease;
+}
+
+@keyframes cg-card-save-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cg-card-save-btn.is-limited { animation: none; }
+}
+
+/* ─── Saved / recent pages ────────────────────────────────────────────── */
+.cg-saved-tabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  background: color-mix(in srgb, var(--cg-fg) 5%, transparent);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.cg-saved-tabs a {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--cg-fg) 60%, transparent);
+  text-decoration: none;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+
+.cg-saved-tabs a:hover { color: var(--cg-fg); }
+
+.cg-saved-tabs a.is-active {
+  background: var(--cg-surface);
+  color: var(--cg-fg);
+  box-shadow: 0 2px 8px -4px color-mix(in srgb, var(--cg-fg) 40%, transparent);
+}
+
+.cg-saved-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(20px, 3vw, 32px);
+}
+
+.cg-saved-title {
+  margin: 0;
+  font-family: var(--cg-font-display);
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 800;
+  color: var(--cg-fg);
+}
+
+.cg-saved-blurb {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: color-mix(in srgb, var(--cg-fg) 60%, transparent);
+  max-width: 52ch;
+}
+
+.cg-saved-clear {
+  padding: 10px 18px;
+  background: var(--cg-surface);
+  border: 1px solid color-mix(in srgb, var(--cg-fg) 12%, transparent);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cg-fg);
+  cursor: pointer;
+  transition: border-color 0.16s ease, color 0.16s ease;
+}
+
+.cg-saved-clear:hover {
+  border-color: #d33;
+  color: #d33;
+}
+
+.cg-saved-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(12px, 2vw, 20px);
+}
+
+@media (min-width: 1024px) {
+  .cg-saved-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.cg-saved-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--cg-surface);
+  border: 1px solid color-mix(in srgb, var(--cg-fg) 8%, transparent);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.cg-saved-media {
+  display: block;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--cg-fg);
+  overflow: hidden;
+}
+
+.cg-saved-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cg-saved-media-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+}
+
+.cg-saved-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: clamp(14px, 1.8vw, 18px);
+}
+
+.cg-saved-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cg-saved-card-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+  min-width: 0;
+}
+
+.cg-saved-card-title a {
+  color: var(--cg-fg);
+  text-decoration: none;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cg-saved-card-title a:hover { color: var(--cg-accent); }
+
+.cg-saved-card-price {
+  margin: 0;
+  flex-shrink: 0;
+  font-family: var(--cg-font-display);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--cg-accent);
+  white-space: nowrap;
+}
+
+.cg-saved-card-specs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.cg-spec {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: color-mix(in srgb, var(--cg-fg) 72%, transparent);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.cg-spec-icon {
+  color: var(--cg-accent);
+  flex-shrink: 0;
+}
+
+.cg-saved-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.cg-saved-view {
+  flex: 1 1 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--cg-accent);
+  color: var(--cg-on-accent);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: filter 0.16s ease;
+}
+
+.cg-saved-view:hover { filter: brightness(1.05); }
+
+.cg-saved-remove {
+  flex-shrink: 0;
+  height: 40px;
+  padding: 0 16px;
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--cg-fg) 14%, transparent);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--cg-fg) 70%, transparent);
+  cursor: pointer;
+  transition: border-color 0.16s ease, color 0.16s ease;
+}
+
+.cg-saved-remove:hover {
+  border-color: #d33;
+  color: #d33;
+}
+
+/* ─── Compare table ───────────────────────────────────────────────────── */
+.cg-compare-wrap {
+  margin-top: clamp(24px, 4vw, 40px);
+  overflow-x: auto;
+  border: 1px solid color-mix(in srgb, var(--cg-fg) 8%, transparent);
+  border-radius: 16px;
+}
+
+.cg-compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 480px;
+}
+
+.cg-compare-table th,
+.cg-compare-table td {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 13.5px;
+  border-bottom: 1px solid color-mix(in srgb, var(--cg-fg) 8%, transparent);
+}
+
+.cg-compare-table thead th {
+  background: color-mix(in srgb, var(--cg-fg) 3%, transparent);
+  font-weight: 700;
+  color: var(--cg-fg);
+}
+
+.cg-compare-table thead th a {
+  color: var(--cg-fg);
+  text-decoration: none;
+}
+
+.cg-compare-table thead th a:hover { color: var(--cg-accent); }
+
+.cg-compare-table tbody th {
+  font-weight: 600;
+  color: color-mix(in srgb, var(--cg-fg) 55%, transparent);
+  white-space: nowrap;
+}
+
+.cg-compare-table tbody td {
+  color: var(--cg-fg);
+  font-weight: 600;
+}
+
+.cg-compare-hint {
+  margin-top: 20px;
+  font-size: 14px;
+  color: color-mix(in srgb, var(--cg-fg) 60%, transparent);
+}
+
+/* ─── Recently viewed rail ────────────────────────────────────────────── */
+.cg-recent {
+  margin-top: clamp(32px, 5vw, 56px);
+}
+
+.cg-recent-title {
+  margin: 0 0 14px;
+  font-family: var(--cg-font-display);
+  font-size: clamp(17px, 2vw, 20px);
+  font-weight: 700;
+  color: var(--cg-fg);
+}
+
+.cg-recent-rail {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+
+.cg-recent-card {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+  width: clamp(180px, 42vw, 220px);
+  background: var(--cg-surface);
+  border: 1px solid color-mix(in srgb, var(--cg-fg) 8%, transparent);
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  transition: border-color 0.16s ease, transform 0.16s ease;
+}
+
+.cg-recent-card:hover {
+  border-color: color-mix(in srgb, var(--cg-accent) 40%, transparent);
+  transform: translateY(-2px);
+}
+
+.cg-recent-media {
+  display: block;
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: var(--cg-fg);
+  overflow: hidden;
+}
+
+.cg-recent-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cg-recent-media-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+}
+
+.cg-recent-body {
+  display: block;
+  padding: 10px 12px 12px;
+}
+
+.cg-recent-name {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cg-fg);
+}
+
+.cg-recent-price {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--cg-font-display);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--cg-accent);
+}
+
+/* ─── Empty state (saved / recent pages) ──────────────────────────────── */
+.cg-empty {
+  padding: clamp(40px, 6vw, 80px) clamp(20px, 4vw, 48px);
+  background: var(--cg-surface);
+  border: 1px dashed color-mix(in srgb, var(--cg-fg) 18%, transparent);
+  border-radius: 16px;
+  text-align: center;
+  color: color-mix(in srgb, var(--cg-fg) 65%, transparent);
+}
+
+.cg-empty h3 {
+  margin: 0 0 8px;
+  font-family: var(--cg-font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cg-fg);
+}
+
+.cg-empty p { margin: 0 0 20px; }
+
+.cg-empty-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 22px;
+  background: var(--cg-accent);
+  color: var(--cg-on-accent);
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: filter 0.18s ease, transform 0.18s ease;
+}
+
+.cg-empty-cta:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+/* ─── Garage alerts — email capture over the wishlist ─────────────────────
+ * Two surfaces, both on the dealer's own --cg-* tokens:
+ *  • the lean interruptive modal (light surface over a dark backdrop);
+ *  • the compact bell button in the wishlist header actions.
+ * ─────────────────────────────────────────────────────────────────────── */
+
+/* Wishlist header action row — holds the bell button + "Clear all". */
+.cg-saved-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+/* Compact bell trigger — sits beside "Clear all"; opens the modal. Mirrors
+ * the .cg-saved-clear pill so the two read as a pair. `.is-on` = subscribed. */
+.cg-alerts-bell-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 40px;
+  padding: 0 15px;
+  background: var(--cg-surface);
+  border: 1px solid color-mix(in srgb, var(--cg-accent) 32%, transparent);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cg-accent);
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.cg-alerts-bell-btn:hover {
+  background: color-mix(in srgb, var(--cg-accent) 8%, var(--cg-surface));
+  border-color: color-mix(in srgb, var(--cg-accent) 55%, transparent);
+}
+
+.cg-alerts-bell-btn.is-on {
+  background: var(--cg-accent);
+  border-color: var(--cg-accent);
+  color: var(--cg-on-accent);
+}
+
+.cg-alerts-bell-btn.is-on:hover { filter: brightness(1.05); }
+
+.cg-alerts-field {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 0 14px;
+  background: var(--cg-surface);
+  border: 1px solid color-mix(in srgb, var(--cg-fg) 16%, transparent);
+  border-radius: 11px;
+  color: color-mix(in srgb, var(--cg-fg) 45%, transparent);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.cg-alerts-field:focus-within {
+  border-color: var(--cg-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cg-accent) 20%, transparent);
+}
+
+.cg-alerts-field input {
+  flex: 1;
+  min-width: 0;
+  padding: 13px 0;
+  background: none;
+  border: 0;
+  outline: none;
+  font: inherit;
+  font-size: 14.5px;
+  color: var(--cg-fg);
+}
+
+.cg-alerts-field input::placeholder { color: color-mix(in srgb, var(--cg-fg) 42%, transparent); }
+
+.cg-alerts-submit {
+  flex: none;
+  padding: 0 20px;
+  height: 48px;
+  background: var(--cg-accent);
+  color: var(--cg-on-accent);
+  border: 0;
+  border-radius: 11px;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.16s ease, transform 0.12s ease;
+}
+
+.cg-alerts-submit:hover { filter: brightness(1.06); }
+.cg-alerts-submit:active { transform: translateY(1px); }
+.cg-alerts-submit:disabled { opacity: 0.6; cursor: default; transform: none; }
+
+.cg-alerts-fine {
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--cg-fg) 52%, transparent);
+}
+
+.cg-alerts-error {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #d33;
+}
+
+/* Turn-off — subtle text button under "Done" in the manage panel. */
+.cg-alerts-turnoff {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.16s ease;
+}
+
+.cg-alerts-turnoff:hover { color: color-mix(in srgb, var(--cg-fg) 78%, transparent); }
+
+/* ─── Modal (committed dark-glass) ────────────────────────────────────── */
+.cg-alerts-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(8, 10, 16, 0.66);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  animation: cg-alerts-fade 0.2s ease;
+}
+
+.cg-alerts-modal {
+  /* Light — sits on the dealer's own --cg-* tokens like the rest of the garage;
+     the dark backdrop behind provides the contrast. */
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  padding: clamp(22px, 4vw, 30px);
+  background: var(--cg-surface);
+  border: 1px solid color-mix(in srgb, var(--cg-fg) 10%, transparent);
+  border-radius: 20px;
+  box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.45);
+  color: var(--cg-fg);
+  animation: cg-alerts-pop 0.24s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+.cg-alerts-modal form,
+.cg-alerts-modal-success {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cg-alerts-modal .cg-alerts-field { flex: none; }
+
+.cg-alerts-modal-success { align-items: center; text-align: center; gap: 12px; padding-top: 6px; }
+
+.cg-alerts-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cg-fg) 6%, transparent);
+  color: color-mix(in srgb, var(--cg-fg) 60%, transparent);
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+
+.cg-alerts-modal-close:hover { background: color-mix(in srgb, var(--cg-fg) 12%, transparent); color: var(--cg-fg); }
+
+.cg-alerts-modal-title {
+  margin: 0;
+  font-family: var(--cg-font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--cg-fg);
+  text-wrap: balance;
+}
+
+.cg-alerts-modal-blurb {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--cg-fg) 68%, transparent);
+}
+
+.cg-alerts-modal-blurb strong { color: var(--cg-fg); font-weight: 700; }
+
+.cg-alerts-modal-cta {
+  width: 100%;
+  height: 50px;
+  margin-top: 2px;
+}
+
+.cg-alerts-success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cg-accent) 20%, transparent);
+  color: var(--cg-accent);
+}
+
+@keyframes cg-alerts-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cg-alerts-pop {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cg-alerts-backdrop,
+  .cg-alerts-modal { animation: none; }
+}

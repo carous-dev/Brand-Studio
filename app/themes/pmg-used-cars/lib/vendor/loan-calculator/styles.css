@@ -1,0 +1,385 @@
+/*
+ * @carous/loan-calculator — widget styles.
+ *
+ * Minimal, accessible, themable. All rules scoped under `.lcw-*`.
+ * Host apps can override `--lcw-accent`, `--lcw-text`, etc. on a parent.
+ */
+
+.lcw {
+  --lcw-accent: var(--accent-primary, var(--color-primary, #ff6b1a));
+  --lcw-accent-soft: color-mix(in srgb, var(--lcw-accent) 12%, transparent);
+  --lcw-text: var(--color-text, #1a2238);
+  --lcw-text-soft: color-mix(in srgb, var(--lcw-text) 60%, transparent);
+  --lcw-surface: var(--color-surface, #ffffff);
+  --lcw-surface-alt: color-mix(in srgb, var(--lcw-text) 4%, transparent);
+  --lcw-border: color-mix(in srgb, var(--lcw-text) 10%, transparent);
+  --lcw-font: var(--font-display, var(--font-sans, "Poppins", system-ui, sans-serif));
+
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 2.6vw, 28px);
+  color: var(--lcw-text);
+  font-family: var(--lcw-font);
+}
+
+/* ─── Header ──────────────────────────────────────────────────────────── */
+
+.lcw-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lcw-title {
+  margin: 0;
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  line-height: 1.2;
+}
+
+.lcw-subtitle {
+  margin: 0;
+  color: var(--lcw-text-soft);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* ─── Input grid ──────────────────────────────────────────────────────── */
+
+.lcw-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 14px;
+}
+
+@media (min-width: 720px) {
+  .lcw-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.lcw-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.lcw-field-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--lcw-text-soft);
+}
+
+.lcw-field-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  height: 46px;
+  background: var(--lcw-surface);
+  border: 1px solid var(--lcw-border);
+  border-radius: 10px;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.lcw-field-control:focus-within {
+  border-color: var(--lcw-accent);
+  box-shadow: 0 0 0 3px var(--lcw-accent-soft);
+}
+
+.lcw-field-affix {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--lcw-text-soft);
+  flex-shrink: 0;
+}
+
+.lcw-field-affix.is-suffix {
+  margin-left: auto;
+}
+
+.lcw-field-control input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--lcw-text);
+}
+
+.lcw-field-control input:focus {
+  outline: none;
+}
+
+.lcw-field-control input::placeholder {
+  color: var(--lcw-text-soft);
+  font-weight: 500;
+}
+
+/* ─── Result ──────────────────────────────────────────────────────────── */
+
+.lcw-result {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px 24px;
+  background: var(--lcw-surface-alt);
+  border-radius: 14px;
+}
+
+@media (min-width: 720px) {
+  .lcw-result {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 22px 28px;
+  }
+}
+
+.lcw-result-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.lcw-result-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lcw-text-soft);
+}
+
+.lcw-result-value {
+  font-family: var(--lcw-font);
+  font-size: clamp(28px, 3.4vw, 38px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: var(--lcw-accent);
+}
+
+.lcw-result-meta {
+  display: flex;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+}
+
+.lcw-result-meta > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lcw-result-meta dt {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lcw-text-soft);
+}
+
+.lcw-result-meta dd {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--lcw-text);
+}
+
+/* ─── Soft gate (opt-in lead capture) ─────────────────────────────────── */
+
+.lcw-gate {
+  padding: 18px 20px;
+  background: var(--lcw-surface-alt);
+  border: 1px solid var(--lcw-border);
+  border-radius: 14px;
+}
+
+.lcw-gate-prompt {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+@media (min-width: 560px) {
+  .lcw-gate-prompt {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+}
+
+.lcw-gate-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.lcw-gate-heading {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--lcw-text);
+}
+
+.lcw-gate-sub {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--lcw-text-soft);
+}
+
+.lcw-gate-cta {
+  flex-shrink: 0;
+  appearance: none;
+  height: 46px;
+  padding: 0 22px;
+  background: var(--lcw-accent);
+  color: #fff;
+  border: 0;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: filter 0.16s ease, transform 0.16s ease;
+}
+
+.lcw-gate-cta:hover:not(:disabled) {
+  filter: brightness(0.94);
+  transform: translateY(-1px);
+}
+
+.lcw-gate-cta:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.lcw-gate.is-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.lcw-gate-fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 560px) {
+  .lcw-gate-fields {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.lcw-gate-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.lcw-gate-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--lcw-text-soft);
+}
+
+.lcw-gate-label-hint {
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.lcw-gate-field input {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  padding: 0 12px;
+  background: var(--lcw-surface);
+  border: 1px solid var(--lcw-border);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--lcw-text);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.lcw-gate-field input:focus {
+  outline: none;
+  border-color: var(--lcw-accent);
+  box-shadow: 0 0 0 3px var(--lcw-accent-soft);
+}
+
+.lcw-gate-field input[aria-invalid="true"] {
+  border-color: #d64545;
+}
+
+.lcw-gate-field input::placeholder {
+  color: var(--lcw-text-soft);
+  font-weight: 500;
+}
+
+.lcw-gate-error {
+  font-size: 12px;
+  font-weight: 600;
+  color: #d64545;
+}
+
+.lcw-gate-feedback {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #d64545;
+}
+
+.lcw-gate-foot {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--lcw-text-soft);
+}
+
+.lcw-gate.is-success {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lcw-gate-success-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--lcw-accent);
+}
+
+.lcw-gate-success-body {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--lcw-text-soft);
+}
+
+/* ─── Disclaimer ──────────────────────────────────────────────────────── */
+
+.lcw-disclaimer {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--lcw-text-soft);
+}

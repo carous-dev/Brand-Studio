@@ -1,0 +1,164 @@
+/* Legal / policy pages (privacy, cookies) — a restrained premium lift on top of
+ * the base `.pmg-legal` prose block defined in globals.css. Everything here is
+ * scoped under `.pmg-legal` so nothing leaks into the shell / widget DOM.
+ *
+ * Loaded via `import "../legal.css"` from the privacy-policy and cookie-policy
+ * pages. Colours come from the PMG tokens (globals.css) — no literals here. */
+
+/* ── Dark hero band (bg image + jet scrim), full-bleed above the prose ─────── */
+.legal-hero {
+  position: relative;
+  background-color: var(--jet);
+  background-image:
+    linear-gradient(
+      100deg,
+      rgba(var(--jet-rgb), 0.96) 0%,
+      rgba(var(--jet-rgb), 0.9) 34%,
+      rgba(var(--jet-rgb), 0.68) 70%,
+      rgba(var(--jet-rgb), 0.52) 100%
+    ),
+    url("/themes/pmg-used-cars/images/image-2.png");
+  background-size: cover;
+  background-position: center right;
+  color: var(--surface);
+  overflow: hidden;
+}
+/* Faint technical grid, masked to a soft vignette. */
+.legal-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(var(--white-rgb), 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--white-rgb), 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 10%, #000 0%, transparent 76%);
+  mask-image: radial-gradient(120% 90% at 50% 10%, #000 0%, transparent 76%);
+}
+.legal-hero .legal-head {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(56px, 8vw, 104px) clamp(20px, 4vw, 72px) clamp(38px, 5vw, 64px);
+}
+.legal-hero .legal-kicker {
+  color: var(--pmg-red-signal);
+}
+.legal-hero h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: clamp(1.9rem, 4.4vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+  margin: 0 0 16px;
+}
+.legal-hero .legal-lead {
+  color: var(--c-300);
+  max-width: 68ch;
+  margin: 0 0 20px;
+}
+.legal-hero .legal-meta {
+  color: var(--c-300);
+  background: rgba(var(--white-rgb), 0.06);
+  border-color: rgba(var(--white-rgb), 0.16);
+}
+.legal-hero .legal-meta svg {
+  color: var(--pmg-red-signal);
+}
+
+/* Kicker + title + meta header, sits above the prose. */
+.pmg-legal .legal-head {
+  margin-bottom: clamp(26px, 5vw, 40px);
+}
+
+.pmg-legal .legal-kicker {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--pmg-red);
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  margin: 0 0 14px;
+}
+
+.pmg-legal .legal-kicker::before {
+  content: "";
+  width: 26px;
+  height: 2px;
+  background: var(--pmg-red);
+  transform: skewX(-20deg);
+}
+
+.pmg-legal .legal-lead {
+  font-size: 1.05rem;
+  color: var(--c-700);
+  line-height: 1.7;
+  margin: 0 0 18px;
+}
+
+.pmg-legal .legal-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--c-50);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 14px;
+}
+
+.pmg-legal .legal-meta svg {
+  width: 14px;
+  height: 14px;
+  color: var(--pmg-red);
+}
+
+/* h3 sub-headings (privacy policy uses them under h2 sections). */
+.pmg-legal h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: none;
+  margin: 22px 0 8px;
+  color: var(--ink);
+}
+
+/* First section sits tighter to the header. */
+.pmg-legal .legal-body > h2:first-child {
+  margin-top: 8px;
+}
+
+/* Contact / help callout at the foot of a policy. */
+.pmg-legal .legal-callout {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--c-50), var(--surface));
+}
+
+.pmg-legal .legal-callout h2 {
+  margin: 0;
+}
+
+.pmg-legal .legal-callout p {
+  margin: 0;
+}
+
+.pmg-legal .legal-callout .legal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}

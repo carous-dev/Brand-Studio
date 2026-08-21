@@ -1,0 +1,1199 @@
+/* PMG Used Car Sales — vehicle detail page.
+ *
+ * Futuristic-but-restrained: light working surface, jet accent panels, one red
+ * accent, hairline data grids, Chakra Petch section kickers with a skewed tick.
+ * Everything is scoped under `.pmg-vd` and reads the brand tokens declared in
+ * app/globals.css (--pmg-red, --jet, --c-*, --font-display, …) so a rebrand
+ * touches the tokens only. Mobile-first: base styles target ~360px; the
+ * two-column layout + sticky rail switch on at min-width.
+ *
+ * The gallery itself is the CDN @carous/vehicle-gallery widget mounted into
+ * #vehicle-gallery-mount — it ships its own styles; we only size its shell. */
+
+.pmg-vd {
+  --vd-gap: clamp(18px, 4vw, 30px);
+  --vd-radius: var(--radius, 16px);
+  --vd-radius-sm: var(--radius-sm, 10px);
+  --vd-hair: 1px solid var(--line);
+  background: var(--surface-page, #fbfbfc);
+  padding-bottom: clamp(40px, 8vw, 88px);
+}
+
+/* ─── Top bar: breadcrumb + share/print ──────────────────────────────────── */
+.pmg-vd-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+.pmg-vd-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  min-width: 0;
+}
+.pmg-vd-crumbs a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+  white-space: nowrap;
+}
+.pmg-vd-crumbs a:hover {
+  color: var(--pmg-red);
+}
+.pmg-vd-crumbs .sep {
+  color: var(--c-300);
+}
+.pmg-vd-crumbs .current {
+  color: var(--ink);
+  font-weight: 600;
+  min-width: 0;
+  max-width: 46vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pmg-vd-topactions {
+  display: flex;
+  gap: 8px;
+  flex: none;
+}
+.pmg-vd-iconbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 15px;
+  border-radius: 99px;
+  border: var(--vd-hair);
+  background: var(--surface);
+  color: var(--c-700);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.pmg-vd-iconbtn svg {
+  width: 16px;
+  height: 16px;
+}
+.pmg-vd-iconbtn:hover,
+.pmg-vd-iconbtn.is-active {
+  color: var(--pmg-red);
+  border-color: rgba(var(--pmg-red-rgb), 0.4);
+}
+.pmg-vd-iconbtn.is-active {
+  background: rgba(var(--pmg-red-rgb), 0.05);
+}
+.pmg-vd-iconbtn .label {
+  display: none;
+}
+@media (min-width: 560px) {
+  .pmg-vd-iconbtn .label {
+    display: inline;
+  }
+}
+
+/* Phones: the breadcrumb + 4 action buttons don't fit on one row, so the crumbs
+   wrapped to three lines and collided with the icons. Stack them — crumbs on a
+   single truncated line, actions as an even full-width row of tappable icons. */
+@media (max-width: 559px) {
+  .pmg-vd-topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+  .pmg-vd-crumbs {
+    flex-wrap: nowrap;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .pmg-vd-crumbs .current {
+    max-width: none;
+    flex: 0 1 auto;
+  }
+  .pmg-vd-topactions {
+    gap: 8px;
+  }
+  .pmg-vd-iconbtn {
+    flex: 1 1 0;
+    justify-content: center;
+    padding: 0;
+  }
+}
+
+/* ─── Layout ──────────────────────────────────────────────────────────────── */
+/* Mobile: head → gallery → detail sections → purchase rail → remaining sections.
+ * The rail sits right after the Features block (end of `main`); History/Finance/
+ * Location (`main-b`) fall below it. Desktop: two columns with the rail sticky
+ * beside the continuous left column (main + main-b). */
+.pmg-vd-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas: "head" "gallery" "main" "rail" "mainb";
+  gap: var(--vd-gap);
+  align-items: start;
+}
+.pmg-vd-head {
+  grid-area: head;
+}
+.pmg-vd-gallery {
+  grid-area: gallery;
+}
+.pmg-vd-rail {
+  grid-area: rail;
+}
+.pmg-vd-main {
+  grid-area: main;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vd-gap);
+}
+.pmg-vd-main-b {
+  grid-area: mainb;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vd-gap);
+}
+@media (min-width: 1000px) {
+  .pmg-vd-layout {
+    grid-template-columns: minmax(0, 1fr) 350px;
+    /* Head spans full width so the title bar doesn't leave a dead block beside
+     * it — the gallery rises to sit level with the sticky price rail. main and
+     * main-b stack in the left column; the rail spans beside both. */
+    grid-template-areas:
+      "head    head"
+      "gallery rail"
+      "main    rail"
+      "mainb   rail";
+    column-gap: var(--vd-gap);
+  }
+}
+
+/* ─── Title header ────────────────────────────────────────────────────────── */
+.pmg-vd-head {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pmg-vd-head-main {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+/* Inline key facts filling the right of the full-width head bar (desktop). */
+.pmg-vd-headstats {
+  display: none;
+  margin: 0;
+}
+@media (min-width: 1000px) {
+  .pmg-vd-head {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+  }
+  .pmg-vd-headstats {
+    display: flex;
+    flex: none;
+    gap: 26px;
+    padding-bottom: 4px;
+  }
+  .pmg-vd-headstats div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .pmg-vd-headstats dt {
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .pmg-vd-headstats dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.02rem;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+}
+.pmg-vd-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.pmg-vd-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 999px;
+  line-height: 1;
+}
+.pmg-vd-chip svg {
+  width: 12px;
+  height: 12px;
+}
+.pmg-vd-chip.plate {
+  background: var(--jet);
+  color: var(--surface);
+}
+.pmg-vd-chip.approved {
+  background: rgba(var(--pmg-red-rgb), 0.1);
+  color: var(--pmg-red-deep);
+  border: 1px solid rgba(var(--pmg-red-rgb), 0.24);
+}
+.pmg-vd-chip.price-great,
+.pmg-vd-chip.price-good {
+  background: var(--tag-low-bg);
+  color: var(--tag-low-fg);
+}
+.pmg-vd-chip.price-fair {
+  background: var(--tag-value-bg);
+  color: var(--tag-value-fg);
+}
+.pmg-vd-chip.reserved {
+  background: var(--tag-reserved-bg);
+  color: var(--surface);
+  border: 1px solid var(--tag-reserved-line);
+}
+.pmg-vd-chip.sold {
+  background: var(--pmg-red-deep);
+  color: var(--surface);
+}
+.pmg-vd-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  line-height: 1.08;
+  letter-spacing: 0.005em;
+  color: var(--ink);
+  margin: 0;
+  text-wrap: balance;
+}
+.pmg-vd-derivative {
+  font-size: 1rem;
+  color: var(--muted);
+  margin: 0;
+}
+.pmg-vd-grab {
+  margin: 0;
+  font-size: 0.92rem;
+  font-style: italic;
+  color: var(--c-700);
+}
+
+/* ─── Gallery mount ───────────────────────────────────────────────────────── */
+.pmg-vd-gallery {
+  border-radius: var(--vd-radius);
+  overflow: hidden;
+}
+.pmg-vd-gallery #vehicle-gallery-mount {
+  min-height: clamp(220px, 56vw, 460px);
+  border-radius: var(--vd-radius);
+  overflow: hidden;
+  background: linear-gradient(158deg, var(--c-50) 0%, var(--c-200) 58%, var(--c-300) 100%);
+}
+
+/* ─── Quick spec strip ────────────────────────────────────────────────────── */
+.pmg-vd-quickspecs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: var(--vd-hair);
+  border-radius: var(--vd-radius);
+  overflow: hidden;
+}
+@media (min-width: 500px) {
+  .pmg-vd-quickspecs {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 1000px) {
+  .pmg-vd-quickspecs {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.pmg-vd-quickspecs li {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 14px 15px;
+  background: var(--surface);
+}
+.pmg-vd-qs-ico {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(var(--pmg-red-rgb), 0.08);
+  border: 1px solid rgba(var(--pmg-red-rgb), 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pmg-vd-qs-ico svg {
+  width: 17px;
+  height: 17px;
+  color: var(--pmg-red);
+}
+.pmg-vd-qs-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.pmg-vd-qs-text .k {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+.pmg-vd-qs-text .v {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.98rem;
+  color: var(--ink);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Section sub-nav (sticky anchor rail) ────────────────────────────────── */
+.pmg-vd-subnav {
+  position: sticky;
+  top: 88px;
+  z-index: 20;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  background: rgba(var(--white-rgb), 0.9);
+  backdrop-filter: blur(10px);
+  border: var(--vd-hair);
+  border-radius: 999px;
+  padding: 6px;
+  -webkit-overflow-scrolling: touch;
+}
+.pmg-vd-subnav::-webkit-scrollbar {
+  display: none;
+}
+.pmg-vd-subnav a {
+  flex: none;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-600);
+  padding: 8px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s, background 0.15s;
+}
+.pmg-vd-subnav a:hover {
+  color: var(--pmg-red);
+  background: var(--c-50);
+}
+/* Active section (scroll-spy) — filled red chip while floating. */
+.pmg-vd-subnav a.is-active {
+  color: var(--surface);
+  background: var(--pmg-red);
+}
+/* Stuck: drop the pill radius, become a flat bar; active becomes an underlined
+ * tab so it reads as a nav bar rather than a floating pill. */
+.pmg-vd-subnav.is-stuck {
+  border-radius: 0;
+  border-color: transparent;
+  border-bottom: 1px solid var(--line);
+  background: rgba(var(--white-rgb), 0.97);
+  box-shadow: 0 10px 24px -18px rgba(var(--jet-rgb), 0.7);
+  padding: 7px 4px;
+}
+.pmg-vd-subnav.is-stuck a {
+  border-radius: 8px;
+}
+.pmg-vd-subnav.is-stuck a.is-active {
+  background: transparent;
+  color: var(--pmg-red);
+  border-radius: 0;
+  box-shadow: inset 0 -2px 0 var(--pmg-red);
+}
+
+/* Small screens: the sticky header shrinks to 72px, so pin the section nav flush
+   beneath it (kills the ~16px content gap) and break it out of the shell padding
+   into a full-viewport-width flat bar. The negative margin exactly cancels the
+   .pmg-shell padding; the matching inline padding keeps the tabs aligned to the
+   content column. */
+@media (max-width: 860px) {
+  .pmg-vd-subnav,
+  .pmg-vd-subnav.is-stuck {
+    top: 72px;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    margin-inline: calc(clamp(20px, 4vw, 72px) * -1);
+    padding-inline: clamp(20px, 4vw, 72px);
+  }
+}
+
+/* ─── Sections ────────────────────────────────────────────────────────────── */
+.pmg-vd-section {
+  scroll-margin-top: 140px;
+  background: var(--surface);
+  border: var(--vd-hair);
+  border-radius: var(--vd-radius);
+  padding: clamp(20px, 4vw, 30px);
+}
+.pmg-vd-kicker {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--pmg-red);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.pmg-vd-kicker::before {
+  content: "";
+  width: 24px;
+  height: 2px;
+  background: var(--pmg-red);
+  transform: skewX(-20deg);
+}
+.pmg-vd-h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: clamp(1.15rem, 3vw, 1.5rem);
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 0 0 16px;
+}
+
+/* Overview description with clamp + read-more */
+.pmg-vd-desc {
+  color: var(--c-700);
+  font-size: 0.96rem;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+.pmg-vd-desc.is-clamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.pmg-vd-readmore {
+  margin-top: 14px;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--pmg-red);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.pmg-vd-readmore svg {
+  width: 15px;
+  height: 15px;
+  transition: transform 0.2s;
+}
+.pmg-vd-readmore[data-open="true"] svg {
+  transform: rotate(180deg);
+}
+
+/* ─── Economy highlight tiles ─────────────────────────────────────────────── */
+.pmg-vd-econ {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  background: var(--line-dark);
+  border-radius: var(--vd-radius);
+  overflow: hidden;
+  margin-top: 20px;
+}
+.pmg-vd-econ-tile {
+  background: var(--jet-soft);
+  color: var(--surface);
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pmg-vd-econ-tile svg {
+  width: 20px;
+  height: 20px;
+  color: var(--pmg-red-signal);
+  margin-bottom: 6px;
+}
+.pmg-vd-econ-tile .val {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+.pmg-vd-econ-tile .lbl {
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-400);
+}
+
+/* Phones: collapse the tall stacked tiles into compact single-line rows —
+   [icon] label ............ value — so the block takes a fraction of the height. */
+@media (max-width: 559px) {
+  .pmg-vd-econ {
+    grid-template-columns: 1fr;
+  }
+  .pmg-vd-econ-tile {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+  .pmg-vd-econ-tile svg {
+    margin-bottom: 0;
+    flex: none;
+  }
+  .pmg-vd-econ-tile .lbl {
+    order: 2;
+    flex: 1;
+    min-width: 0;
+  }
+  .pmg-vd-econ-tile .val {
+    order: 3;
+    margin-left: auto;
+    font-size: 1.2rem;
+  }
+}
+
+/* ─── Spec grid (key/value data table) ────────────────────────────────────── */
+.pmg-vd-subhead {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 24px 0 10px;
+}
+.pmg-vd-subhead:first-child {
+  margin-top: 0;
+}
+.pmg-vd-specgrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--line);
+  border: var(--vd-hair);
+  border-radius: var(--vd-radius-sm);
+  overflow: hidden;
+}
+@media (min-width: 560px) {
+  .pmg-vd-specgrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.pmg-vd-specrow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 15px;
+  background: var(--surface);
+  font-size: 0.9rem;
+}
+.pmg-vd-specrow .k {
+  color: var(--muted);
+}
+.pmg-vd-specrow .v {
+  font-weight: 600;
+  color: var(--ink);
+  text-align: right;
+}
+
+/* API-delivered spec groups */
+.pmg-vd-specgroup {
+  border: var(--vd-hair);
+  border-radius: var(--vd-radius-sm);
+  margin-top: 12px;
+  overflow: hidden;
+}
+.pmg-vd-specgroup > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: var(--c-50);
+}
+.pmg-vd-specgroup > summary::-webkit-details-marker {
+  display: none;
+}
+.pmg-vd-specgroup > summary .chev {
+  width: 16px;
+  height: 16px;
+  color: var(--c-500);
+  transition: transform 0.2s;
+  flex: none;
+}
+.pmg-vd-specgroup[open] > summary .chev {
+  transform: rotate(180deg);
+}
+.pmg-vd-specgroup .pmg-vd-specrow {
+  border-top: var(--vd-hair);
+}
+
+/* ─── Features ────────────────────────────────────────────────────────────── */
+.pmg-vd-featgroup {
+  margin-bottom: 18px;
+}
+.pmg-vd-featgroup:last-child {
+  margin-bottom: 0;
+}
+.pmg-vd-featlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 9px 20px;
+}
+@media (min-width: 500px) {
+  .pmg-vd-featlist {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (min-width: 1000px) {
+  .pmg-vd-featlist {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+.pmg-vd-featlist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: 0.89rem;
+  color: var(--c-800);
+  line-height: 1.4;
+}
+.pmg-vd-featlist li svg {
+  width: 15px;
+  height: 15px;
+  color: var(--pmg-red);
+  flex: none;
+  margin-top: 2px;
+}
+.pmg-vd-showall {
+  margin-top: 18px;
+}
+
+/* ─── History / provenance check grid ─────────────────────────────────────── */
+.pmg-vd-checkgrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--line);
+  border: var(--vd-hair);
+  border-radius: var(--vd-radius-sm);
+  overflow: hidden;
+}
+@media (min-width: 560px) {
+  .pmg-vd-checkgrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.pmg-vd-check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 15px;
+  background: var(--surface);
+}
+.pmg-vd-check-ico {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pmg-vd-check-ico svg {
+  width: 16px;
+  height: 16px;
+}
+.pmg-vd-check.pass .pmg-vd-check-ico {
+  background: var(--tag-low-bg);
+  color: var(--tag-low-fg);
+}
+.pmg-vd-check.warn .pmg-vd-check-ico {
+  background: var(--tag-value-bg);
+  color: var(--tag-value-fg);
+}
+.pmg-vd-check.info .pmg-vd-check-ico {
+  background: rgba(var(--pmg-red-rgb), 0.08);
+  color: var(--pmg-red);
+}
+.pmg-vd-check-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.pmg-vd-check-text .k {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+.pmg-vd-check-text .v {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+.pmg-vd-prep {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pmg-vd-prep li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.82rem;
+  color: var(--c-700);
+  background: var(--c-50);
+  border: var(--vd-hair);
+  border-radius: 999px;
+  padding: 7px 13px;
+}
+.pmg-vd-prep li svg {
+  width: 14px;
+  height: 14px;
+  color: var(--pmg-red);
+}
+
+/* ─── Finance ─────────────────────────────────────────────────────────────── */
+.pmg-vd-finance :is(.lcw, [class^="lcw"]) {
+  --lcw-accent: var(--pmg-red);
+}
+.pmg-vd-finance-note {
+  margin-top: 14px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+/* ─── Location / dealer ───────────────────────────────────────────────────── */
+.pmg-vd-dealer {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 720px) {
+  .pmg-vd-dealer {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+.pmg-vd-dealer-info h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin: 0 0 8px;
+}
+.pmg-vd-dealer-lines {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.pmg-vd-dealer-lines li {
+  display: flex;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--c-700);
+  align-items: flex-start;
+  line-height: 1.45;
+}
+.pmg-vd-dealer-lines li svg {
+  width: 16px;
+  height: 16px;
+  color: var(--pmg-red);
+  flex: none;
+  margin-top: 2px;
+}
+.pmg-vd-dealer-lines a {
+  color: inherit;
+  text-decoration: none;
+}
+.pmg-vd-dealer-lines a:hover {
+  color: var(--pmg-red);
+}
+.pmg-vd-hours {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pmg-vd-hours li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.84rem;
+  padding: 5px 0;
+  border-bottom: var(--vd-hair);
+  color: var(--c-700);
+}
+.pmg-vd-hours li:last-child {
+  border-bottom: 0;
+}
+.pmg-vd-hours li b {
+  color: var(--ink);
+  font-weight: 600;
+}
+.pmg-vd-hours li.today {
+  color: var(--pmg-red);
+}
+.pmg-vd-map {
+  border: 0;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--vd-radius-sm);
+  min-height: 220px;
+  background: var(--c-100);
+}
+
+/* ─── Sticky purchase rail ────────────────────────────────────────────────── */
+.pmg-vd-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+@media (min-width: 1000px) {
+  .pmg-vd-rail {
+    position: sticky;
+    top: 104px;
+  }
+}
+.pmg-vd-railcard {
+  border-radius: var(--vd-radius);
+  overflow: hidden;
+  border: var(--vd-hair);
+  background: var(--surface);
+}
+.pmg-vd-railprice {
+  background: var(--jet);
+  color: var(--surface);
+  padding: 22px 20px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.pmg-vd-railprice::before {
+  content: "";
+  position: absolute;
+  right: -30%;
+  top: -60%;
+  width: 260px;
+  height: 220%;
+  background: radial-gradient(circle, rgba(var(--pmg-red-rgb), 0.28), transparent 62%);
+  pointer-events: none;
+}
+.pmg-vd-railprice .plabel {
+  position: relative;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-400);
+}
+.pmg-vd-railprice .pval {
+  position: relative;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 7vw, 2.5rem);
+  line-height: 1;
+  margin-top: 4px;
+}
+.pmg-vd-railprice .pfin {
+  position: relative;
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: var(--c-300);
+}
+.pmg-vd-railprice .pfin b {
+  color: var(--pmg-red-signal);
+  font-family: var(--font-display);
+}
+.pmg-vd-railprice .pfin a {
+  color: var(--surface);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.pmg-vd-railbody {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pmg-vd-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1;
+  padding: 15px 18px;
+  border-radius: 99px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.16s, background 0.16s, border-color 0.16s, color 0.16s;
+}
+.pmg-vd-cta svg {
+  width: 18px;
+  height: 18px;
+}
+.pmg-vd-cta.primary {
+  background: var(--pmg-red);
+  color: var(--surface);
+  box-shadow: var(--shadow-cta);
+}
+.pmg-vd-cta.primary:hover {
+  background: var(--pmg-red-deep);
+  transform: translateY(-1px);
+}
+.pmg-vd-cta.dark {
+  background: var(--jet);
+  color: var(--surface);
+}
+.pmg-vd-cta.dark:hover {
+  background: var(--jet-raised);
+}
+.pmg-vd-cta.outline {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--c-300);
+}
+.pmg-vd-cta.outline:hover {
+  border-color: var(--ink);
+}
+.pmg-vd-cta.wa {
+  background: #128c7e;
+  color: var(--surface);
+}
+.pmg-vd-cta.wa:hover {
+  background: #0f7a6d;
+}
+.pmg-vd-cta:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+}
+.pmg-vd-ctarow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.pmg-vd-stockref {
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: var(--vd-hair);
+  font-size: 0.76rem;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.pmg-vd-stockref b {
+  color: var(--c-800);
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+}
+
+/* Rail mini trust card */
+.pmg-vd-railtrust {
+  border: var(--vd-hair);
+  border-radius: var(--vd-radius);
+  background: var(--surface);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.pmg-vd-railtrust li,
+.pmg-vd-railtrust > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.84rem;
+  color: var(--c-700);
+}
+.pmg-vd-railtrust svg {
+  width: 17px;
+  height: 17px;
+  color: var(--pmg-red);
+  flex: none;
+}
+
+/* ─── Similar + recently viewed ───────────────────────────────────────────── */
+.pmg-vd-related {
+  margin-top: clamp(30px, 6vw, 54px);
+}
+.pmg-vd-related-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.pmg-vd-related-head h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: clamp(1.3rem, 3.4vw, 1.8rem);
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 0;
+}
+.pmg-vd-related-head a {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.84rem;
+  text-transform: uppercase;
+  color: var(--pmg-red);
+  text-decoration: none;
+}
+.pmg-vd-related-head a svg {
+  width: 15px;
+  height: 15px;
+}
+/* The grid + cards are the shared inventory <InventoryCard/> (.pmg-inv-grid),
+   pulled in via ../inventory.css — no bespoke related-card styling here. */
+
+/* Feature list collapse (many-feature vehicles start clipped). */
+.pmg-vd-featwrap.is-collapsed {
+  max-height: 300px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(#000 60%, transparent);
+  mask-image: linear-gradient(#000 60%, transparent);
+}
+
+/* ─── Mobile sticky action bar (price + enquire always reachable) ──────────── */
+.pmg-vd-mobilebar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* Right padding reserves the bottom-right corner for the floating WhatsApp
+   * FAB so it never sits on top of the Enquire CTA. */
+  padding: 10px 76px calc(10px + env(safe-area-inset-bottom, 0px)) 14px;
+  background: rgba(var(--jet-rgb), 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line-dark);
+}
+.pmg-vd-mobilebar .mb-price {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  min-width: 0;
+}
+.pmg-vd-mobilebar .mb-price small {
+  color: var(--c-400);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.pmg-vd-mobilebar .mb-price b {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--surface);
+}
+.pmg-vd-mobilebar .mb-cta {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  flex: none;
+}
+.pmg-vd-mobilebar .pmg-vd-cta {
+  width: auto;
+  padding: 12px 15px;
+  font-size: 0.88rem;
+}
+.pmg-vd-mobilebar .pmg-vd-cta.icononly {
+  padding: 12px;
+}
+@media (min-width: 1000px) {
+  .pmg-vd-mobilebar {
+    display: none;
+  }
+}
+@media (max-width: 999px) {
+  .pmg-vd {
+    padding-bottom: 92px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pmg-vd * {
+    transition: none !important;
+  }
+}

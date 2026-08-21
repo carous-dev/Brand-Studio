@@ -63,6 +63,12 @@
       "status": "experimental"
     },
     {
+      "id": "pmg-used-cars",
+      "name": "PMG Used Car Sales",
+      "description": "PMG Used Car Sales (Pak Motor Group), Dewsbury — jet-black chrome, PMG red, Chakra Petch display.",
+      "status": "experimental"
+    },
+    {
       "id": "queensbury-cars-bespoke",
       "name": "Queensbury Cars",
       "description": "Bespoke sport-modern theme for Queensbury Cars — cobalt-on-white with bold display typography, a live horizontal stock ticker hero band, and gradient sweeps threading through alternating sections.",

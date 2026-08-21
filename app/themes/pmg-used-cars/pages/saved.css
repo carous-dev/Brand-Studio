@@ -1,0 +1,27 @@
+/* PMG Used Car Sales — saved-vehicles pages (/wishlist, /compare).
+ *
+ * .pmg-saved is the theming + layout hook that wraps the shared
+ * @carous/garage <SavedVehiclesView>. Brand tokens are set on this scope only
+ * (never :root) so the garage `cg-*` component renders in PMG jet/red without
+ * leaking onto the rest of the site. The component's internals are fully
+ * styled by @carous/garage/styles.css — we only own page rhythm here. */
+
+.pmg-saved {
+  /* Garage component theme — PMG jet-black + PMG-red on a clean light panel. */
+  --cg-accent: var(--pmg-red);
+  --cg-accent-strong: var(--pmg-red-deep);
+  --cg-on-accent: var(--on-accent);
+  --cg-fg: var(--ink);
+  --cg-surface: var(--surface);
+  --cg-font-display: var(--font-display);
+
+  min-height: 62vh;
+  padding-block: clamp(28px, 6vw, 64px);
+}
+
+/* No max-width override here: the rest of the site (header, home, used-cars,
+   contact, vehicle detail) all use the bare full-width `.pmg-shell` gutter
+   (padding: 0 clamp(20px,4vw,72px); no centering cap). Capping + centring the
+   garage view pushed its left edge inward on wide screens so it no longer
+   lined up with the header brand — hence the inconsistency. Inheriting the
+   plain `.pmg-shell` keeps wishlist/compare aligned with every other page. */
