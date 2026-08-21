@@ -22,6 +22,7 @@ type RoutedThemePageId = Extract<
   | 'contact'
   | 'services'
   | 'sellYourCar'
+  | 'carSourcing'
   | 'finance'
   | 'partExchange'
   | 'warranty'
@@ -537,6 +538,15 @@ export async function generateThemePageMetadata(options: ThemeRouteRuntimeOption
   if (options.pageId === 'sellYourCar') {
     const seo = generateSellCarPageSEO(brand)
     return buildPageMetadata(brand, options.canonicalPath, seo)
+  }
+
+  if (options.pageId === 'carSourcing') {
+    return buildSimpleMetadata(
+      brand,
+      options.canonicalPath,
+      `Car Sourcing | ${brand.name}`,
+      `Can't find it in stock? ${brand.name} will source the exact car you want — specced, inspected and prepared to our standard.`,
+    )
   }
 
   if (options.pageId === 'finance') {
