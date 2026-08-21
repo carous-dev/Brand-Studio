@@ -1,0 +1,188 @@
+/* PMG Used Car Sales — SEO hub pages (/make/<slug>, /used-cars-in/<town>).
+ * Shares the `.pmg-inv-grid` + card styling from inventory.css; this file only
+ * adds the hub-specific hero, copy and link-rail chrome. Tokens come from
+ * globals.css. Mobile-first. */
+
+.pmg-hub {
+  /* The shared .pmg-inv-card styling reads these page-scoped vars (normally set
+     on .pmg-inv-page) — redeclare them so hub cards keep their border + radius. */
+  --pmg-inv-line: var(--line);
+  --pmg-inv-line-soft: var(--c-100);
+  --pmg-inv-radius: 16px;
+  background: var(--surface-page);
+  padding-bottom: clamp(56px, 9vw, 104px);
+}
+
+/* ─── Hero ─────────────────────────────────────────────────────────────── */
+
+.pmg-hub-hero {
+  position: relative;
+  overflow: hidden;
+  color: var(--surface);
+  isolation: isolate;
+  background-color: var(--jet);
+  background-image:
+    radial-gradient(90% 130% at 50% -30%, rgba(var(--jet-rgb), 0.2) 0%, rgba(var(--jet-rgb), 0.5) 55%, rgba(var(--jet-rgb), 0.72) 100%),
+    linear-gradient(180deg, var(--jet-soft) 0%, var(--jet) 100%);
+}
+
+.pmg-hub-hero::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -55%;
+  transform: translateX(-50%);
+  width: min(760px, 80%);
+  height: 130%;
+  z-index: -1;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(var(--pmg-red-rgb), 0.16), transparent 70%);
+  pointer-events: none;
+}
+
+.pmg-hub-hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding-block: clamp(26px, 3.6vw, 46px);
+}
+
+.pmg-hub-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--c-400);
+}
+
+.pmg-hub-crumbs a {
+  color: var(--c-300);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.pmg-hub-crumbs a:hover {
+  color: var(--surface);
+}
+
+.pmg-hub-crumbs span[aria-current] {
+  color: var(--surface);
+}
+
+.pmg-hub-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--pmg-red-signal);
+  margin: 4px 0 0;
+}
+
+.pmg-hub-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.8rem, 5vw, 2.9rem);
+  line-height: 1.05;
+  margin: 0;
+}
+
+.pmg-hub-title em {
+  font-style: normal;
+  color: var(--pmg-red-signal);
+}
+
+.pmg-hub-lead {
+  font-size: 0.95rem;
+  color: var(--c-300);
+  max-width: 62ch;
+  margin: 2px 0 0;
+  line-height: 1.55;
+}
+
+/* ─── Body ─────────────────────────────────────────────────────────────── */
+
+.pmg-hub-body {
+  padding-top: clamp(24px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 5vw, 44px);
+}
+
+.pmg-hub-copy p {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--c-700);
+  max-width: 74ch;
+  margin: 0;
+}
+
+.pmg-hub-more {
+  display: flex;
+  justify-content: center;
+}
+
+.pmg-hub-empty {
+  border: 1px dashed var(--c-300);
+  border-radius: var(--radius);
+  padding: clamp(28px, 6vw, 48px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.pmg-hub-empty p {
+  margin: 0;
+  color: var(--c-600);
+  font-size: 1rem;
+}
+
+.pmg-hub-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* ─── Link rails (other makes / nearby areas) ──────────────────────────── */
+
+.pmg-hub-rail {
+  border-top: 1px solid var(--line);
+  padding-top: clamp(22px, 4vw, 32px);
+}
+
+.pmg-hub-rail-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin: 0 0 14px;
+  color: var(--ink);
+}
+
+.pmg-hub-rail-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pmg-hub-rail-list a {
+  display: inline-block;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: var(--c-700);
+  text-decoration: none;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.pmg-hub-rail-list a:hover {
+  color: var(--pmg-red);
+  border-color: var(--pmg-red);
+  background: rgba(var(--pmg-red-rgb), 0.06);
+}

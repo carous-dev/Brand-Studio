@@ -1,0 +1,708 @@
+/* PMG Used Car Sales — Car Sourcing (Vehicle Procurement Service).
+ * Every selector scoped under .pmg-sourcing so nothing leaks into the shell or
+ * widget DOM. Colours read the brand tokens from globals.css only; translucency
+ * is composited from the --*-rgb channel triples. Buttons reuse the shared
+ * .pmg-btn* classes. Mobile-first: base ~375px single column, scaled up with
+ * min-width media queries. Vibe: futuristic technical restraint on jet-black. */
+
+.pmg-sourcing {
+  background: var(--surface);
+  color: var(--ink);
+  overflow-x: clip;
+}
+
+/* ─── Shared section primitives ─────────────────────────────────────────────── */
+.pmg-sourcing .ps-section {
+  padding: 58px 0;
+}
+.pmg-sourcing .ps-head {
+  max-width: 640px;
+  margin: 0 auto 36px;
+  text-align: center;
+}
+.pmg-sourcing .ps-eyebrow {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.74rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--pmg-red);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.pmg-sourcing .ps-eyebrow::before {
+  content: "";
+  width: 24px;
+  height: 2px;
+  background: var(--pmg-red);
+  transform: skewX(-20deg);
+}
+.pmg-sourcing .ps-head .ps-eyebrow {
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.pmg-sourcing .ps-h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  margin: 0 0 12px;
+}
+.pmg-sourcing .ps-h2 em {
+  font-style: italic;
+  color: var(--pmg-red);
+}
+.pmg-sourcing .ps-sub {
+  color: var(--muted);
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* ─── Hero — jet, technical grid, red scan glow ─────────────────────────────── */
+.pmg-sourcing .ps-hero {
+  position: relative;
+  background: var(--jet);
+  color: var(--surface);
+  overflow: hidden;
+  padding: 64px 0 62px;
+  isolation: isolate;
+}
+.pmg-sourcing .ps-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(var(--jet-rgb), 0.88) 0%,
+      rgba(var(--jet-rgb), 0.74) 42%,
+      rgba(var(--jet-rgb), 0.9) 100%
+    ),
+    var(--brand-image-car-sourcing, none),
+    url("/themes/pmg-used-cars/images/image-3.png");
+  background-size: cover;
+  background-position: center;
+}
+/* Faint technical grid masked to a soft vignette. */
+.pmg-sourcing .ps-hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(var(--white-rgb), 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--white-rgb), 0.03) 1px, transparent 1px);
+  background-size: 58px 58px;
+  -webkit-mask-image: radial-gradient(120% 92% at 50% 14%, #000 0%, transparent 76%);
+  mask-image: radial-gradient(120% 92% at 50% 14%, #000 0%, transparent 76%);
+}
+/* Red glow behind the headline. */
+.pmg-sourcing .ps-hero-bg::after {
+  content: "";
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  width: min(640px, 92vw);
+  height: 460px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(var(--pmg-red-rgb), 0.1), transparent 62%);
+}
+.pmg-sourcing .ps-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 780px;
+  margin: 0 auto;
+  text-align: center;
+}
+.pmg-sourcing .ps-kicker {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.74rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--pmg-red-signal);
+  margin: 0 0 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.pmg-sourcing .ps-kicker::before,
+.pmg-sourcing .ps-kicker::after {
+  content: "";
+  width: 22px;
+  height: 2px;
+  background: rgba(var(--pmg-red-signal-rgb), 0.7);
+  transform: skewX(-20deg);
+}
+.pmg-sourcing .ps-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-style: italic;
+  text-transform: uppercase;
+  font-size: clamp(2rem, 6.4vw, 3.5rem);
+  line-height: 1.04;
+  letter-spacing: 0.005em;
+  margin: 0 0 18px;
+  text-wrap: balance;
+}
+.pmg-sourcing .ps-title .ps-accent {
+  color: var(--pmg-red-signal);
+}
+.pmg-sourcing .ps-lead {
+  font-size: 1.06rem;
+  color: var(--c-300);
+  max-width: 56ch;
+  margin: 0 auto 24px;
+}
+.pmg-sourcing .ps-chips {
+  list-style: none;
+  margin: 0 0 30px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+}
+.pmg-sourcing .ps-chips li {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.76rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c-200);
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--white-rgb), 0.14);
+  background: rgba(var(--white-rgb), 0.04);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.pmg-sourcing .ps-chips svg {
+  width: 14px;
+  height: 14px;
+  color: var(--pmg-red-signal);
+  flex: none;
+}
+.pmg-sourcing .ps-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  align-items: stretch;
+}
+.pmg-sourcing .ps-cta .pmg-btn {
+  width: 100%;
+}
+
+@media (min-width: 560px) {
+  .pmg-sourcing .ps-cta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .pmg-sourcing .ps-cta .pmg-btn {
+    width: auto;
+  }
+}
+
+/* WhatsApp button — brand-red family, keeps the dark palette cohesive. */
+.pmg-sourcing .ps-btn-wa {
+  background: rgba(var(--white-rgb), 0.06);
+  color: var(--surface);
+  border-color: rgba(var(--white-rgb), 0.28);
+}
+.pmg-sourcing .ps-btn-wa:hover {
+  background: rgba(var(--white-rgb), 0.12);
+  border-color: var(--surface);
+}
+
+/* ─── Stats strip — light metrics band between the two dark sections ─────────── */
+.pmg-sourcing .ps-stats {
+  background: var(--c-50);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.pmg-sourcing .ps-stats-inner {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--line);
+  margin: 0;
+  padding: 0;
+}
+.pmg-sourcing .ps-stat {
+  background: var(--c-50);
+  color: var(--ink);
+  text-align: center;
+  padding: 26px 16px;
+  margin: 0;
+}
+.pmg-sourcing .ps-stat dd {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.4rem, 4vw, 1.9rem);
+  line-height: 1;
+  margin: 0 0 7px;
+  color: var(--ink);
+}
+.pmg-sourcing .ps-stat dd .ps-stat-star {
+  color: var(--star);
+  font-size: 0.9em;
+}
+.pmg-sourcing .ps-stat dt {
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+@media (min-width: 760px) {
+  .pmg-sourcing .ps-stats-inner {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ─── How it works — numbered steps, hairline card grid ─────────────────────── */
+.pmg-sourcing .ps-how {
+  background: var(--jet);
+  color: var(--surface);
+  position: relative;
+  overflow: clip;
+}
+.pmg-sourcing .ps-how::after {
+  content: "";
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  width: 680px;
+  height: 480px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(var(--pmg-red-rgb), 0.12), transparent 66%);
+  pointer-events: none;
+}
+.pmg-sourcing .ps-how .pmg-shell {
+  position: relative;
+  z-index: 1;
+}
+.pmg-sourcing .ps-how .ps-h2 {
+  color: var(--surface);
+}
+.pmg-sourcing .ps-how .ps-sub {
+  color: var(--c-400);
+}
+.pmg-sourcing .ps-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: rgba(var(--white-rgb), 0.08);
+  border: 1px solid rgba(var(--white-rgb), 0.08);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.pmg-sourcing .ps-step {
+  position: relative;
+  background: var(--jet-soft);
+  padding: 30px 26px 28px;
+  transition: background 0.25s ease;
+  overflow: hidden;
+}
+.pmg-sourcing .ps-step::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--pmg-red);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.pmg-sourcing .ps-step:hover {
+  background: var(--jet-raised);
+}
+.pmg-sourcing .ps-step:hover::before {
+  transform: scaleX(1);
+}
+.pmg-sourcing .ps-step-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+  color: var(--pmg-red-signal);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.pmg-sourcing .ps-step-num::before {
+  content: "";
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  border: 1px solid rgba(var(--pmg-red-rgb), 0.32);
+  background: rgba(var(--pmg-red-rgb), 0.08);
+}
+.pmg-sourcing .ps-step-badge {
+  position: absolute;
+  top: 24px;
+  right: 22px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: rgba(var(--white-rgb), 0.05);
+  pointer-events: none;
+}
+.pmg-sourcing .ps-step h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.06rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--surface);
+  margin: 0 0 9px;
+}
+.pmg-sourcing .ps-step p {
+  font-size: 0.9rem;
+  color: var(--c-400);
+  line-height: 1.6;
+  margin: 0 0 14px;
+  max-width: 46ch;
+}
+.pmg-sourcing .ps-step-meta {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-300);
+  border: 1px solid rgba(var(--white-rgb), 0.14);
+  border-radius: 999px;
+  padding: 5px 11px;
+  display: inline-block;
+}
+@media (min-width: 720px) {
+  .pmg-sourcing .ps-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1040px) {
+  .pmg-sourcing .ps-steps {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ─── What's included — light hairline card grid ────────────────────────────── */
+.pmg-sourcing .ps-inc-section {
+  background: var(--c-50);
+}
+.pmg-sourcing .ps-inc-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+.pmg-sourcing .ps-inc {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px 22px;
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.pmg-sourcing .ps-inc:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+  border-color: var(--c-300);
+}
+.pmg-sourcing .ps-inc-ico {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(var(--pmg-red-rgb), 0.08);
+  border: 1px solid rgba(var(--pmg-red-rgb), 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pmg-red);
+}
+.pmg-sourcing .ps-inc-ico svg {
+  width: 23px;
+  height: 23px;
+}
+.pmg-sourcing .ps-inc h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.04rem;
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+.pmg-sourcing .ps-inc p {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  margin: 0;
+}
+@media (min-width: 680px) {
+  .pmg-sourcing .ps-inc-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1000px) {
+  .pmg-sourcing .ps-inc-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ─── Proof / quote ─────────────────────────────────────────────────────────── */
+.pmg-sourcing .ps-proof {
+  background: var(--jet);
+  color: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+.pmg-sourcing .ps-proof::before {
+  content: "";
+  position: absolute;
+  right: -8%;
+  top: -40%;
+  width: 420px;
+  height: 200%;
+  background: rgba(var(--pmg-red-rgb), 0.08);
+  transform: skewX(-16deg);
+  pointer-events: none;
+}
+.pmg-sourcing .ps-proof .pmg-shell {
+  position: relative;
+  z-index: 1;
+}
+.pmg-sourcing .ps-proof-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  text-align: center;
+}
+.pmg-sourcing .ps-stars {
+  display: inline-flex;
+  gap: 3px;
+  margin-bottom: 18px;
+}
+.pmg-sourcing .ps-stars svg {
+  width: 20px;
+  height: 20px;
+  color: var(--star);
+  fill: var(--star);
+}
+.pmg-sourcing .ps-quote {
+  margin: 0;
+}
+.pmg-sourcing .ps-quote p {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.25rem, 3vw, 1.7rem);
+  line-height: 1.35;
+  color: var(--surface);
+  margin: 0 0 20px;
+  text-wrap: balance;
+}
+.pmg-sourcing .ps-quote footer {
+  font-size: 0.86rem;
+  color: var(--c-400);
+}
+.pmg-sourcing .ps-quote footer b {
+  color: var(--surface);
+  font-weight: 600;
+}
+.pmg-sourcing .ps-proof-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+.pmg-sourcing .ps-proof-badges div {
+  border: 1px solid rgba(var(--white-rgb), 0.12);
+  background: rgba(var(--white-rgb), 0.03);
+  border-radius: var(--radius-sm);
+  padding: 13px 20px;
+  min-width: 132px;
+}
+.pmg-sourcing .ps-proof-badges span {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-500);
+  margin-bottom: 5px;
+}
+.pmg-sourcing .ps-proof-badges b {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: var(--surface);
+}
+.pmg-sourcing .ps-proof-badges b .ps-stat-star {
+  color: var(--star);
+}
+
+/* ─── FAQ — native details/summary ──────────────────────────────────────────── */
+.pmg-sourcing .ps-faq {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pmg-sourcing .ps-faq details {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  overflow: hidden;
+  transition: border-color 0.18s;
+}
+.pmg-sourcing .ps-faq details[open] {
+  border-color: rgba(var(--pmg-red-rgb), 0.35);
+}
+.pmg-sourcing .ps-faq summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 20px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.98rem;
+  color: var(--ink);
+}
+.pmg-sourcing .ps-faq summary::-webkit-details-marker {
+  display: none;
+}
+.pmg-sourcing .ps-faq summary::after {
+  content: "";
+  flex: none;
+  width: 11px;
+  height: 11px;
+  border-right: 2px solid var(--pmg-red);
+  border-bottom: 2px solid var(--pmg-red);
+  transform: rotate(45deg);
+  transition: transform 0.2s;
+}
+.pmg-sourcing .ps-faq details[open] summary::after {
+  transform: rotate(-135deg);
+}
+.pmg-sourcing .ps-faq p {
+  margin: 0;
+  padding: 0 20px 20px;
+  color: var(--c-700);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+/* ─── Closer band — brand red ───────────────────────────────────────────────── */
+.pmg-sourcing .ps-closer {
+  background: var(--pmg-red);
+  color: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+.pmg-sourcing .ps-closer::before {
+  content: "";
+  position: absolute;
+  right: -6%;
+  top: -40%;
+  width: 420px;
+  height: 200%;
+  background: rgba(var(--white-rgb), 0.06);
+  transform: skewX(-16deg);
+  pointer-events: none;
+}
+.pmg-sourcing .ps-closer .pmg-shell {
+  position: relative;
+  z-index: 1;
+}
+.pmg-sourcing .ps-closer-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+}
+.pmg-sourcing .ps-closer .ps-eyebrow {
+  color: var(--surface);
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.pmg-sourcing .ps-closer .ps-eyebrow::before {
+  background: var(--surface);
+}
+.pmg-sourcing .ps-closer h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+  line-height: 1.08;
+  margin: 0 0 12px;
+}
+.pmg-sourcing .ps-closer-sub {
+  color: rgba(var(--white-rgb), 0.9);
+  max-width: 50ch;
+  margin: 0 auto 26px;
+  font-size: 1rem;
+}
+.pmg-sourcing .ps-closer .ps-cta {
+  justify-content: center;
+}
+.pmg-sourcing .ps-closer .pmg-btn-dark {
+  color: var(--pmg-red-deep);
+}
+.pmg-sourcing .ps-closer .ps-btn-wa {
+  background: transparent;
+  color: var(--surface);
+  border-color: rgba(var(--white-rgb), 0.55);
+}
+.pmg-sourcing .ps-closer .ps-btn-wa:hover {
+  background: rgba(var(--white-rgb), 0.12);
+  border-color: var(--surface);
+}
+
+/* ─── Larger screens: roomier sections ──────────────────────────────────────── */
+@media (min-width: 720px) {
+  .pmg-sourcing .ps-section {
+    padding: 74px 0;
+  }
+  .pmg-sourcing .ps-hero {
+    padding: 88px 0 84px;
+  }
+  .pmg-sourcing .ps-head {
+    margin-bottom: 46px;
+  }
+}
+
+/* Wide screens: let copy use the space instead of sitting in a narrow column. */
+@media (min-width: 1200px) {
+  .pmg-sourcing .ps-hero-inner {
+    max-width: 1120px;
+  }
+  .pmg-sourcing .ps-lead {
+    max-width: 74ch;
+  }
+  .pmg-sourcing .ps-head {
+    max-width: 900px;
+  }
+  .pmg-sourcing .ps-proof-inner {
+    max-width: 1000px;
+  }
+  .pmg-sourcing .ps-step p {
+    max-width: none;
+  }
+}

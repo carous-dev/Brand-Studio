@@ -1,0 +1,88 @@
+{
+  "themeId": "pmg-used-cars",
+  "version": 1,
+  "description": "Editable image contract for the PMG Used Car Sales theme. Every operator-editable theme image is a slot here; the dashboard Page Images tab renders one upload/replace control per slot, uploads persist to brand.images[<key>], and BrandStyles emits each as a --brand-image-<key> CSS var (camelCase to match the theme CSS). brand.images[<key>] overrides the theme default photo.",
+  "slots": [
+    {
+      "key": "hero",
+      "label": "Home hero",
+      "page": "Home",
+      "role": "hero",
+      "aspect": "16:9",
+      "width": 1920,
+      "default": "/themes/pmg-used-cars/images/image-4.png",
+      "aiHint": "wide forecourt with a row of stock cars, jet/dark tone",
+      "unsplashHint": "used car dealership forecourt row of cars"
+    },
+    {
+      "key": "about",
+      "label": "About page hero",
+      "page": "About",
+      "aspect": "16:9",
+      "width": 1600,
+      "default": "/themes/pmg-used-cars/images/image-4.png",
+      "aiHint": "the forecourt, premises or a signature vehicle",
+      "unsplashHint": "car dealership forecourt exterior"
+    },
+    {
+      "key": "services",
+      "label": "Services band photo (Home)",
+      "page": "Home — Our Services",
+      "aspect": "15:4",
+      "width": 1500,
+      "default": "/themes/pmg-used-cars/images/image-5.png",
+      "aiHint": "wide banner of prepared vehicles / service line-up",
+      "unsplashHint": "row of used cars showroom banner"
+    },
+    {
+      "key": "finance",
+      "label": "Finance promo image (Home)",
+      "page": "Home — Promos",
+      "aspect": "4:3",
+      "width": 1280,
+      "default": "/themes/pmg-used-cars/images/image-4.png",
+      "aiHint": "showroom desk, signing or a lead vehicle",
+      "unsplashHint": "car finance showroom desk"
+    },
+    {
+      "key": "partExchange",
+      "label": "Part-exchange promo image (Home)",
+      "page": "Home — Promos",
+      "aspect": "4:3",
+      "width": 1280,
+      "default": "/themes/pmg-used-cars/images/image-2.png",
+      "aiHint": "two cars side-by-side or keys being handed over",
+      "unsplashHint": "car keys handover part exchange"
+    },
+    {
+      "key": "sellYourCar",
+      "label": "Sell Your Car hero",
+      "page": "Sell Your Car",
+      "aspect": "16:9",
+      "width": 1600,
+      "default": "/themes/pmg-used-cars/images/image-2.png",
+      "aiHint": "owner next to their car or a car-keys close-up",
+      "unsplashHint": "person selling car keys"
+    },
+    {
+      "key": "carSourcing",
+      "label": "Car Sourcing hero",
+      "page": "Car Sourcing",
+      "aspect": "16:9",
+      "width": 1600,
+      "default": "/themes/pmg-used-cars/images/image-3.png",
+      "aiHint": "forecourt / vehicle procurement, dark cinematic tone",
+      "unsplashHint": "car dealership forecourt dusk"
+    },
+    {
+      "key": "contact",
+      "label": "Contact hero",
+      "page": "Contact",
+      "aspect": "16:9",
+      "width": 1600,
+      "default": "/themes/pmg-used-cars/images/image-2.png",
+      "aiHint": "the showroom / premises exterior",
+      "unsplashHint": "car showroom building exterior"
+    }
+  ]
+}

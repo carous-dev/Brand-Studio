@@ -1,0 +1,645 @@
+/* PMG Used Car Sales — Sell Your Car (free dealer valuation).
+ * Every selector scoped under .pmg-syc so nothing leaks into the shell or
+ * widget DOM. Colours read the brand tokens from globals.css only; translucency
+ * is composited from the --*-rgb channel triples. Buttons reuse the shared
+ * .pmg-btn* classes. Mobile-first: base ~375px single column, scaled up with
+ * min-width media queries. Vibe matches /car-sourcing — futuristic technical
+ * restraint on jet-black, one red accent.
+ *
+ * The valuation wizard is @carous/sell-your-car; it is re-skinned to PMG red on
+ * a light panel by overriding its --sycw-* tokens on `.pmg-syc .sycw-root`. */
+
+.pmg-syc {
+  background: var(--surface);
+  color: var(--ink);
+  overflow-x: clip;
+}
+
+/* ─── Shared section primitives ─────────────────────────────────────────────── */
+.pmg-syc .syc-section {
+  padding: 58px 0;
+}
+.pmg-syc .syc-head {
+  max-width: 640px;
+  margin: 0 auto 36px;
+  text-align: center;
+}
+.pmg-syc .syc-eyebrow {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.74rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--pmg-red);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.pmg-syc .syc-eyebrow::before {
+  content: "";
+  width: 24px;
+  height: 2px;
+  background: var(--pmg-red);
+  transform: skewX(-20deg);
+}
+.pmg-syc .syc-head .syc-eyebrow {
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.pmg-syc .syc-h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  margin: 0 0 12px;
+}
+.pmg-syc .syc-h2 em {
+  font-style: italic;
+  color: var(--pmg-red);
+}
+.pmg-syc .syc-sub {
+  color: var(--muted);
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* ─── Hero — jet banner, technical grid, red scan glow. Standalone: the
+       valuation widget sits in its own light section below (see .syc-valuation),
+       not floated on the dark. ──────────────────────────────────────────────── */
+.pmg-syc .syc-hero {
+  position: relative;
+  background: var(--jet);
+  color: var(--surface);
+  overflow: hidden;
+  padding: 56px 0 60px;
+  isolation: isolate;
+}
+.pmg-syc .syc-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(var(--jet-rgb), 0.9) 0%,
+      rgba(var(--jet-rgb), 0.78) 44%,
+      rgba(var(--jet-rgb), 0.94) 100%
+    ),
+    var(--brand-image-sell-your-car, none),
+    url("/themes/pmg-used-cars/images/image-2.png");
+  background-size: cover;
+  background-position: center;
+}
+/* Faint technical grid masked to a soft vignette, centred for the banner. */
+.pmg-syc .syc-hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(var(--white-rgb), 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--white-rgb), 0.03) 1px, transparent 1px);
+  background-size: 58px 58px;
+  -webkit-mask-image: radial-gradient(120% 96% at 50% 6%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(120% 96% at 50% 6%, #000 0%, transparent 72%);
+}
+/* Red glow behind the headline, centred. */
+.pmg-syc .syc-hero-bg::after {
+  content: "";
+  position: absolute;
+  top: -150px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(640px, 90vw);
+  height: 480px;
+  background: radial-gradient(circle, rgba(var(--pmg-red-rgb), 0.16), transparent 62%);
+}
+
+/* Centred banner copy — single column, no side panel. */
+.pmg-syc .syc-hero-copy {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.pmg-syc .syc-kicker {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.74rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--pmg-red-signal);
+  margin: 0 0 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.pmg-syc .syc-kicker::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  background: rgba(var(--pmg-red-signal-rgb), 0.7);
+  transform: skewX(-20deg);
+}
+.pmg-syc .syc-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-style: italic;
+  text-transform: uppercase;
+  font-size: clamp(2rem, 6.4vw, 3.4rem);
+  line-height: 1.04;
+  letter-spacing: 0.005em;
+  margin: 0 0 18px;
+  text-wrap: balance;
+}
+.pmg-syc .syc-title .syc-accent {
+  color: var(--pmg-red-signal);
+}
+.pmg-syc .syc-lead {
+  font-size: 1.06rem;
+  color: var(--c-300);
+  max-width: 56ch;
+  margin: 0 auto 24px;
+}
+.pmg-syc .syc-chips {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+}
+.pmg-syc .syc-chips li {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.76rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c-200);
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--white-rgb), 0.14);
+  background: rgba(var(--white-rgb), 0.04);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.pmg-syc .syc-chips svg {
+  width: 14px;
+  height: 14px;
+  color: var(--pmg-red-signal);
+  flex: none;
+}
+
+/* Hero mini-stats */
+.pmg-syc .syc-hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 26px 34px;
+  margin: 0;
+}
+.pmg-syc .syc-hero-stats div {
+  margin: 0;
+}
+.pmg-syc .syc-hero-stats dd {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.3rem, 3.6vw, 1.7rem);
+  line-height: 1;
+  margin: 0 0 6px;
+  color: var(--surface);
+}
+.pmg-syc .syc-hero-stats .syc-star {
+  color: var(--star);
+  font-size: 0.9em;
+}
+.pmg-syc .syc-hero-stats dt {
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-400);
+}
+
+/* ─── Valuation section — own light band directly under the hero ────────────── */
+.pmg-syc .syc-valuation {
+  background: var(--c-50);
+  padding: 44px 0 58px;
+}
+/* The card holding the wizard — centred. */
+.pmg-syc .syc-form-panel {
+  position: relative;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 22px 20px 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.pmg-syc .syc-form-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pmg-red);
+  background: rgba(var(--pmg-red-rgb), 0.08);
+  border: 1px solid rgba(var(--pmg-red-rgb), 0.18);
+  padding: 6px 12px;
+  border-radius: 999px;
+  margin: 0 0 16px;
+}
+.pmg-syc .syc-form-flag svg {
+  width: 15px;
+  height: 15px;
+}
+.pmg-syc .syc-mount {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Re-skin the @carous/sell-your-car wizard to PMG red on a light panel. */
+.pmg-syc .sycw-root {
+  --sycw-bg: #ffffff;
+  --sycw-fg: var(--ink);
+  --sycw-muted: var(--muted);
+  --sycw-border: var(--line);
+  --sycw-border-strong: var(--c-300);
+  --sycw-surface: var(--c-100);
+  --sycw-accent: var(--pmg-red);
+  --sycw-accent-soft: rgba(var(--pmg-red-rgb), 0.1);
+  --sycw-accent-foreground: var(--surface);
+  --sycw-radius-sm: var(--radius-sm);
+  --sycw-radius-md: 12px;
+  --sycw-radius-lg: var(--radius);
+  --sycw-shadow-card: 0 18px 40px -24px rgba(var(--jet-rgb), 0.28);
+  --sycw-shadow-card-hover: 0 26px 54px -22px rgba(var(--jet-rgb), 0.34);
+}
+
+/* Roomier banner on large screens. */
+@media (min-width: 1000px) {
+  .pmg-syc .syc-hero {
+    padding: 78px 0 84px;
+  }
+  .pmg-syc .syc-form-panel {
+    padding: 26px 26px 30px;
+  }
+}
+
+/* ─── How it works — numbered steps, hairline card grid on jet ──────────────── */
+.pmg-syc .syc-how {
+  background: var(--jet);
+  color: var(--surface);
+  position: relative;
+  overflow: clip;
+}
+.pmg-syc .syc-how::after {
+  content: "";
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  width: 680px;
+  height: 480px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(var(--pmg-red-rgb), 0.12), transparent 66%);
+  pointer-events: none;
+}
+.pmg-syc .syc-how .pmg-shell {
+  position: relative;
+  z-index: 1;
+}
+.pmg-syc .syc-how .syc-h2 {
+  color: var(--surface);
+}
+.pmg-syc .syc-how .syc-sub {
+  color: var(--c-400);
+}
+.pmg-syc .syc-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: rgba(var(--white-rgb), 0.08);
+  border: 1px solid rgba(var(--white-rgb), 0.08);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.pmg-syc .syc-step {
+  position: relative;
+  background: var(--jet-soft);
+  padding: 30px 26px 28px;
+  transition: background 0.25s ease;
+  overflow: hidden;
+}
+.pmg-syc .syc-step::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--pmg-red);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.pmg-syc .syc-step:hover {
+  background: var(--jet-raised);
+}
+.pmg-syc .syc-step:hover::before {
+  transform: scaleX(1);
+}
+.pmg-syc .syc-step-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+  color: var(--pmg-red-signal);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.pmg-syc .syc-step-num svg {
+  color: var(--pmg-red-signal);
+}
+.pmg-syc .syc-step-badge {
+  position: absolute;
+  top: 24px;
+  right: 22px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: rgba(var(--white-rgb), 0.05);
+  pointer-events: none;
+}
+.pmg-syc .syc-step h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.06rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--surface);
+  margin: 0 0 9px;
+}
+.pmg-syc .syc-step p {
+  font-size: 0.9rem;
+  color: var(--c-400);
+  line-height: 1.6;
+  margin: 0 0 14px;
+  max-width: 46ch;
+}
+.pmg-syc .syc-step-meta {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-300);
+  border: 1px solid rgba(var(--white-rgb), 0.14);
+  border-radius: 999px;
+  padding: 5px 11px;
+  display: inline-block;
+}
+.pmg-syc .syc-how-cta {
+  text-align: center;
+  margin-top: 34px;
+}
+@media (min-width: 860px) {
+  .pmg-syc .syc-steps {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ─── Why sell to PMG — light hairline card grid ────────────────────────────── */
+.pmg-syc .syc-why-section {
+  background: var(--c-50);
+}
+.pmg-syc .syc-why-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+.pmg-syc .syc-why {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px 22px;
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.pmg-syc .syc-why:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+  border-color: var(--c-300);
+}
+.pmg-syc .syc-why-ico {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(var(--pmg-red-rgb), 0.08);
+  border: 1px solid rgba(var(--pmg-red-rgb), 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pmg-red);
+}
+.pmg-syc .syc-why-ico svg {
+  width: 23px;
+  height: 23px;
+}
+.pmg-syc .syc-why h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.04rem;
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+.pmg-syc .syc-why p {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  margin: 0;
+}
+@media (min-width: 680px) {
+  .pmg-syc .syc-why-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1000px) {
+  .pmg-syc .syc-why-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ─── FAQ — native details/summary ──────────────────────────────────────────── */
+.pmg-syc .syc-faq {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pmg-syc .syc-faq details {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  overflow: hidden;
+  transition: border-color 0.18s;
+}
+.pmg-syc .syc-faq details[open] {
+  border-color: rgba(var(--pmg-red-rgb), 0.35);
+}
+.pmg-syc .syc-faq summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 20px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.98rem;
+  color: var(--ink);
+}
+.pmg-syc .syc-faq summary::-webkit-details-marker {
+  display: none;
+}
+.pmg-syc .syc-faq summary::after {
+  content: "";
+  flex: none;
+  width: 11px;
+  height: 11px;
+  border-right: 2px solid var(--pmg-red);
+  border-bottom: 2px solid var(--pmg-red);
+  transform: rotate(45deg);
+  transition: transform 0.2s;
+}
+.pmg-syc .syc-faq details[open] summary::after {
+  transform: rotate(-135deg);
+}
+.pmg-syc .syc-faq p {
+  margin: 0;
+  padding: 0 20px 20px;
+  color: var(--c-700);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+/* ─── Closer band — brand red ───────────────────────────────────────────────── */
+.pmg-syc .syc-closer {
+  background: var(--pmg-red);
+  color: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+.pmg-syc .syc-closer::before {
+  content: "";
+  position: absolute;
+  right: -6%;
+  top: -40%;
+  width: 420px;
+  height: 200%;
+  background: rgba(var(--white-rgb), 0.06);
+  transform: skewX(-16deg);
+  pointer-events: none;
+}
+.pmg-syc .syc-closer .pmg-shell {
+  position: relative;
+  z-index: 1;
+}
+.pmg-syc .syc-closer-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+}
+.pmg-syc .syc-closer .syc-eyebrow {
+  color: var(--surface);
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.pmg-syc .syc-closer .syc-eyebrow::before {
+  background: var(--surface);
+}
+.pmg-syc .syc-closer h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+  line-height: 1.08;
+  margin: 0 0 12px;
+}
+.pmg-syc .syc-closer-sub {
+  color: rgba(var(--white-rgb), 0.9);
+  max-width: 50ch;
+  margin: 0 auto 26px;
+  font-size: 1rem;
+}
+.pmg-syc .syc-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  align-items: stretch;
+}
+.pmg-syc .syc-cta .pmg-btn {
+  width: 100%;
+}
+.pmg-syc .syc-closer .pmg-btn-dark {
+  color: var(--pmg-red-deep);
+}
+.pmg-syc .syc-btn-ghost {
+  background: transparent;
+  color: var(--surface);
+  border-color: rgba(var(--white-rgb), 0.55);
+}
+.pmg-syc .syc-btn-ghost:hover {
+  background: rgba(var(--white-rgb), 0.12);
+  border-color: var(--surface);
+}
+@media (min-width: 560px) {
+  .pmg-syc .syc-cta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .pmg-syc .syc-cta .pmg-btn {
+    width: auto;
+  }
+}
+
+/* ─── Larger screens: roomier sections ──────────────────────────────────────── */
+@media (min-width: 720px) {
+  .pmg-syc .syc-section {
+    padding: 74px 0;
+  }
+  .pmg-syc .syc-head {
+    margin-bottom: 46px;
+  }
+}
+@media (min-width: 1200px) {
+  .pmg-syc .syc-head {
+    max-width: 820px;
+  }
+  .pmg-syc .syc-step p {
+    max-width: none;
+  }
+}

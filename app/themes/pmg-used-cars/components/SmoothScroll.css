@@ -1,0 +1,22 @@
+/* Carous smooth-scroll override sheet — extra rules not in lenis/dist/lenis.css.
+ *
+ * Carous dealer-app `app/globals.css` ships
+ *   html, body { height: 100%; overflow-x: hidden }
+ * and individual page CSS files (e.g. services.css) re-declare
+ *   html { scroll-behavior: smooth }
+ *
+ * Lenis's bundled CSS only handles the height issue — the rules below cover
+ * the scroll-behavior fight and re-state the height un-pin at higher
+ * specificity in case a downstream sheet wins via cascade order.
+ */
+
+html.lenis {
+  /* Native browser smooth-scroll competes with Lenis's RAF-driven scrollTop
+     updates. Force it off when Lenis is active. */
+  scroll-behavior: auto !important;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto !important;
+}
