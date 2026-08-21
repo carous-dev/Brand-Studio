@@ -16,9 +16,9 @@
      primary so the theme retints per brand; PMG's record sets #de010d. The
      jet/grey/white neutrals stay fixed to preserve the exact jet-black look. */
   --pmg-red: var(--color-primary, #de010d);
-  --pmg-red-signal: #ff3b45;
-  --pmg-red-deep: #b70009;
-  --jet: #050506;
+  --pmg-red-signal: var(--color-accent, #ff3b45);
+  --pmg-red-deep: var(--color-primary-strong, #b70009);
+  --jet: var(--color-secondary, #050506);
   --c-50: #f5f5f6;
   --c-100: #ececee;
   --c-200: #dedee1;
@@ -29,23 +29,23 @@
   --c-700: #46464d;
   --c-800: #2c2c32;
   --c-900: #1b1b1f;
-  --ink: #1b1b1f;
-  --muted: #5d5d66;
-  --line: #e3e3e7;
+  --ink: var(--color-text, #1b1b1f);
+  --muted: var(--color-muted, #5d5d66);
+  --line: var(--color-border, #e3e3e7);
 
   /* RGB channel triples — the ONLY place a brand colour is composited with an
      alpha lives here. Every rgba() in the app reads one of these, so a rebrand
      updates the hex token above and its triple below in lock-step. */
-  --pmg-red-rgb: 222, 1, 13;
-  --pmg-red-signal-rgb: 255, 59, 69;
+  --pmg-red-rgb: var(--color-primary-rgb, 222, 1, 13);
+  --pmg-red-signal-rgb: var(--color-accent-rgb, 255, 59, 69);
   --pmg-red-deep-rgb: 183, 0, 9;
-  --jet-rgb: 5, 5, 6;
-  --ink-rgb: 27, 27, 31;
+  --jet-rgb: var(--color-secondary-rgb, 5, 5, 6);
+  --ink-rgb: var(--color-text-rgb, 27, 27, 31);
   --white-rgb: 255, 255, 255;
   --black-rgb: 0, 0, 0;
 
   /* Semantic surfaces + on-colours (swap these to re-skin light/dark) */
-  --surface: #ffffff;        /* cards, panels, drawers, header glass, on-brand text */
+  --surface: var(--color-bg, #ffffff);        /* cards, panels, drawers, header glass, on-brand text */
   --surface-page: #fbfbfc;   /* inventory page backdrop */
   --on-accent: var(--surface);
 

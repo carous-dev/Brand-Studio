@@ -2,6 +2,11 @@
 
 Newest entry at the top. One entry per logical change, not per file.
 
+- 2026-08-21: pmg-used-cars — token-drive the palette (bridge pmg tokens → canonical --color-*) (owner: Difatha)
+  - Scope: app/themes/pmg-used-cars/styles/base.css
+  - Reason: the theme emitted the full canonical --color-* set (BrandStyles/buildThemeTokens) but its CSS ran on hardcoded --pmg-red/--jet/--ink/--surface/--muted/--line literals, so only primary retinted per brand — dashboard edits to secondary/accent/bg/text/muted/border did nothing. Bridged the pmg semantic tokens (+ their rgb triples) to the canonical tokens with the pmg literal as fallback: --pmg-red-signal→accent, --pmg-red-deep→primary-strong, --jet→secondary, --ink→text, --muted→muted, --line→border, --surface→bg, *-rgb→*-rgb. Neutral grey ramp (--c-*) + status hues stay fixed.
+  - Notes: brand colors currently null → all resolve to the pmg palette via BrandStyles defaults, so render is byte-identical; verified live (identical home render + chrome retints when secondary/accent are changed). CSS-only; build validated (45/45 pages).
+
 - 2026-08-21: pmg-used-cars — fixed unstyled filter drawer (missing vendored CSS import) (owner: Difatha)
   - Scope: app/themes/pmg-used-cars/pages/used-cars/InventoryClient.tsx
   - Reason: the /used-cars filter drawer rendered as raw stacked form fields at page bottom — the vendored `vehicle-filters/styles.css` (imported at layout level in the source app) was never imported in the port. Added the import to InventoryClient (matching the garage/loan/sell vendored-CSS convention); `--vf-*` chains off `--accent-primary` so the drawer is PMG-red branded.
