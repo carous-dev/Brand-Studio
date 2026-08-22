@@ -7,6 +7,7 @@ import { GitCompareArrows, Heart } from "lucide-react";
 import { countSaved, subscribeSaved } from "@/app/themes/pmg-used-cars/lib/vendor/garage";
 import { dealer } from "../data/site-config";
 import { useBrand } from "../context/BrandClientWrapper";
+import { resolveText } from "../lib/brand-text";
 import WhatsAppIcon from "./WhatsAppIcon";
 
 const phoneHref = `tel:${(dealer.contact.phoneE164 ?? dealer.contact.phoneDisplay ?? "").replace(/\s+/g, "")}`;
@@ -21,8 +22,8 @@ const addressText = [
   .join(", ");
 const mapsHref = `https://maps.google.com/?q=${encodeURIComponent(addressText)}`;
 
+// Lean nav — Home is the clickable wordmark, not a nav item.
 const NAV = [
-  { href: "/", label: "Home" },
   { href: "/used-cars", label: "Used Cars", dropdown: true },
   { href: "/car-sourcing", label: "Car Sourcing", badge: true },
   { href: "/sell-my-car", label: "Sell Your Car" },
@@ -170,10 +171,10 @@ export function Header() {
                 <IconClock />{" "}
                 {hours.open ? (
                   <>
-                    <span className="u-open">Open today</span> · <b>{hours.range}</b>
+                    <span className="u-open">{resolveText(brand as any, "topbarOpenToday")}</span> · <b>{hours.range}</b>
                   </>
                 ) : (
-                  <b>By appointment</b>
+                  <b>{resolveText(brand as any, "topbarByAppointment")}</b>
                 )}
               </span>
             ) : null}
@@ -244,7 +245,7 @@ export function Header() {
                   <IconPhone /> Call Us Today!
                 </a>
               ) : null}
-              <button className="burger" aria-label="Open menu" onClick={() => setDrawerOpen(true)}>
+              <button className="burger" aria-label="Open menu" /* text-static-ok */ onClick={() => setDrawerOpen(true)}>
                 <IconMenu />
               </button>
             </div>
@@ -257,8 +258,10 @@ export function Header() {
       <div className={`pmg-drawer-bg${drawerOpen ? " open" : ""}`} onClick={() => setDrawerOpen(false)} />
       <aside className={`pmg-drawer${drawerOpen ? " open" : ""}`}>
         <div className="drawer-top">
-          <img src={logoSrc} alt={dealer.brandName} />
-          <button className="x" aria-label="Close menu" onClick={() => setDrawerOpen(false)}>
+          <Link href="/" aria-label={`${dealer.brandName} — home`} onClick={() => setDrawerOpen(false)}>
+            <img src={logoSrc} alt={dealer.brandName} />
+          </Link>
+          <button className="x" aria-label="Close menu" /* text-static-ok */ onClick={() => setDrawerOpen(false)}>
             <IconX />
           </button>
         </div>

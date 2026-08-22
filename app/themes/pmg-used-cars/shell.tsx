@@ -17,10 +17,10 @@ import './styles/color-policy.css'
  *
  * Theme-specific bits: PMG's own sticky/overlay Header + jet Footer, the source
  * app's smooth-scroll (Lenis), and its own bottom-left dark-glass consent bar
- * (PmgConsentBar). ThemeChrome's shared CookieBanner + floating WhatsApp are
- * disabled — PMG surfaces consent via its own banner and WhatsApp via wa.me
- * links in the utility bar / header / detail page (no floating FAB in the
- * source design).
+ * (PmgConsentBar). ThemeChrome's shared CookieBanner is disabled — PMG surfaces
+ * consent via its own banner. The shared CarousWhatsAppWidget (bottom-right CDN
+ * whatsapp-enquiry launcher) IS enabled; it clears PMG's bottom-left consent bar
+ * and consumes the per-vehicle subject the detail page publishes.
  *
  * @carous/garage is provider-less (localStorage + CustomEvents) so no wishlist
  * provider is needed. The context registry mounts BrandClientWrapper +
@@ -38,7 +38,7 @@ export const themeShell: ThemeShellComponent = ({ children }) => {
         extraRoutes={['/car-sourcing']}
         header={<Header />}
         footer={<Footer />}
-        widgets={{ cookieBanner: false, whatsApp: false }}
+        widgets={{ cookieBanner: false }}
       >
         {children}
         <PmgConsentBar />

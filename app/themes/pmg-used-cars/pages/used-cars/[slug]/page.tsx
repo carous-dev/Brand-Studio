@@ -1,5 +1,12 @@
+import Script from "next/script";
 import { permanentRedirect } from "next/navigation";
-import { normalizeVehiclePayload, type NormalizedVehicle } from "@/app/themes/pmg-used-cars/lib/vendor/dealer-shell";
+import {
+  normalizeVehiclePayload,
+  VEHICLE_GALLERY_WIDGET_SRC,
+  VEHICLE_ENQUIRY_WIDGET_SRC,
+  RESERVE_WIDGET_SRC,
+  type NormalizedVehicle,
+} from "@/app/themes/pmg-used-cars/lib/vendor/dealer-shell";
 import { RecordRecentlyViewed } from "@/app/themes/pmg-used-cars/lib/vendor/garage";
 import type { SavedVehicle } from "@/app/themes/pmg-used-cars/lib/vendor/garage";
 import { dealer, theme } from "../../../data/site-config";
@@ -49,7 +56,7 @@ async function loadSimilar(vehicle: NormalizedVehicle, brandSlug: string | null)
     // Prefer same-make stock; top up with newest stock if that's thin.
     const primary = make ? await fetchInventory({ ...EMPTY_FILTERS, make }, brandSlug) : { items: [] as InventoryVehicle[] };
     let items = primary.items;
-    if (items.filter((i) => i.slug && i.slug !== vehicle.slug).length < 3) {
+    if (items.filter((i) => i.slug && i.slug !== vehicle.slug).length < 3) { /* text-static-ok */
       const fallback = await fetchInventory({ ...EMPTY_FILTERS }, brandSlug);
       const seen = new Set(items.map((i) => i.slug));
       items = [...items, ...fallback.items.filter((i) => !seen.has(i.slug))];
@@ -139,6 +146,11 @@ export default async function VehiclePage({ brand, vehicleSlug }: PageProps) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(vehicleLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
+      {/* CDN widget bundles the detail page drives: gallery mount + enquiry/reserve
+          modals. The site-wide WhatsApp launcher is loaded once by the shell. */}
+      <Script id="carous-vehicle-gallery-widget" src={VEHICLE_GALLERY_WIDGET_SRC} strategy="afterInteractive" />
+      <Script id="carous-vehicle-enquiry-widget" src={VEHICLE_ENQUIRY_WIDGET_SRC} strategy="afterInteractive" />
+      <Script id="carous-reserve-a-car-widget" src={RESERVE_WIDGET_SRC} strategy="afterInteractive" />
       <RecordRecentlyViewed vehicle={recentSnapshot} />
       <VehicleDetail vehicle={vehicle} dealer={dealer} theme={theme} pageUrl={pageUrl} similar={similar} />
     </>

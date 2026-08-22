@@ -577,16 +577,15 @@ a {
   height: 22px;
 }
 
-/* Centre the primary nav on large screens */
+/* Centre the primary nav on large screens. Centre it WITHIN the space between
+   the logo and the CTA cluster (flex:1 + justify-center) rather than pinning to
+   the viewport midpoint — absolute 50% centering collided with wide wordmarks
+   (e.g. "ST IVES VEHICLE SALES") and left the row looking clogged on the left. */
 @media (min-width: 1100px) {
-  .pmg-header .nav {
-    position: relative;
-  }
   .pmg-header .nav-links {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    flex: 1;
+    justify-content: center;
+    gap: 6px;
     margin-left: 0;
   }
 }

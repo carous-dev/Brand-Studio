@@ -18,6 +18,10 @@ export {
   openExternalVehicleEnquiry,
   useExternalVehicleGallery,
   useExternalWhatsAppEnquiryScope,
+  WIDGETS_BASE_URL,
+  VEHICLE_GALLERY_WIDGET_SRC,
+  VEHICLE_ENQUIRY_WIDGET_SRC,
+  RESERVE_WIDGET_SRC,
   type ExternalVehicleEnquirySummary,
   type ExternalWhatsAppEnquirySubject,
 } from "./external-widgets";
