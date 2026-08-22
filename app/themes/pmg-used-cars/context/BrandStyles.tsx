@@ -6,21 +6,20 @@ import { buildThemeTokens, renderThemeStyle } from '@/app/themes/lib/theme-token
 import { buildImageVars } from '@/app/themes/lib/theme-images'
 import imageRecipe from '../recipes/image-recipe.json'
 
-const THEME_ID = 'pmg-used-cars'
-const SCOPE = `[data-theme-id="${THEME_ID}"]`
-
 // Chakra Petch (display, incl. italic 700 for the hero) + Inter (body/UI).
 const FONT_IMPORT =
   "@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,500;0,600;0,700;1,700&family=Inter:wght@400;500;600;700&display=swap');\n"
 
 /**
- * Emits the brand-overridable CSS variables for the PMG Used Car Sales theme,
- * scoped to [data-theme-id="pmg-used-cars"] so a multi-theme preview bundle
- * never leaks PMG's palette onto sibling themes.
+ * Emits the brand-overridable CSS variables for the PMG Used Car Sales theme.
  *
  * Colours: buildThemeTokens with PMG design values as `defaults`; brand records
- * override any of the 8 via theme.colors.*. base.css bridges the PMG token
- * names (--pmg-red, --ink, …) onto these canonical --color-* tokens.
+ * override any of the 8 via theme.colors.*. Emitted on :root (NOT
+ * [data-theme-id]) because base.css bridges the PMG token names
+ * (--pmg-red → var(--color-primary), --jet → var(--color-secondary), …) on
+ * :root — a custom property's var() resolves at its declaration element, so
+ * --color-* MUST live on the same element (:root) or the bridge always falls
+ * back to the PMG literal. Previews render one theme at a time, so :root is safe.
  *
  * Images: buildImageVars reads recipes/image-recipe.json and emits one
  * `--brand-image-<kebab(key)>` per slot, resolving brand.images[key] (the
@@ -53,7 +52,7 @@ export function BrandStyles({ brand }: { brand: BrandConfig }): ReactNode {
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: renderThemeStyle({ vars, extras, scope: SCOPE, fontImport: FONT_IMPORT }),
+        __html: renderThemeStyle({ vars, extras, fontImport: FONT_IMPORT }),
       }}
     />
   )

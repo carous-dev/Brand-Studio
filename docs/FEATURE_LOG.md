@@ -2,6 +2,10 @@
 
 Newest entry at the top. One entry per logical change, not per file.
 
+- 2026-08-22: pmg-used-cars — fix token-drive: emit --color-* on :root, not [data-theme-id] (owner: Difatha)
+  - Scope: app/themes/pmg-used-cars/context/BrandStyles.tsx
+  - Reason: the previous token bridge silently didn't work — a real brand (Morris: blue primary, brown/yellow palette) still rendered jet+red. BrandStyles emitted the --color-* set scoped to [data-theme-id="pmg-used-cars"] (the <body>), but base.css declares the bridges (--pmg-red: var(--color-primary), --jet: var(--color-secondary), …) on :root. A custom property's var() resolves at its DECLARATION element, so at :root --color-primary was undefined and every bridge fell back to the PMG literal. Emitting to :root (the default, like all reference themes) puts the tokens on the same element as the bridges. Verified live: Morris's palette now fully retints (blue CTAs/banner, yellow accents). Note: brand.theme.colors uses *Color keys (primaryColor, …) — buildThemeTokens reads those; short keys are ignored.
+
 - 2026-08-21: pmg-used-cars — token-drive the palette (bridge pmg tokens → canonical --color-*) (owner: Difatha)
   - Scope: app/themes/pmg-used-cars/styles/base.css
   - Reason: the theme emitted the full canonical --color-* set (BrandStyles/buildThemeTokens) but its CSS ran on hardcoded --pmg-red/--jet/--ink/--surface/--muted/--line literals, so only primary retinted per brand — dashboard edits to secondary/accent/bg/text/muted/border did nothing. Bridged the pmg semantic tokens (+ their rgb triples) to the canonical tokens with the pmg literal as fallback: --pmg-red-signal→accent, --pmg-red-deep→primary-strong, --jet→secondary, --ink→text, --muted→muted, --line→border, --surface→bg, *-rgb→*-rgb. Neutral grey ramp (--c-*) + status hues stay fixed.
