@@ -2,6 +2,10 @@
 
 Newest entry at the top. One entry per logical change, not per file.
 
+- 2026-08-22: pmg-used-cars — more vertical breathing room on the inventory + detail heroes (owner: Difatha)
+  - Scope: app/themes/pmg-used-cars/pages/used-cars/inventory.css (.pmg-inv-hero), pages/used-cars/[slug]/vehicle-detail.css (.pmg-vd)
+  - Reason: both hero blocks read cramped on the y-axis. FIRST attempt (padding-block on .pmg-inv-hero-inner / padding-top on .pmg-vd-topbar) did nothing — those elements also carry .pmg-shell, whose `padding: 0 clamp(20px,4vw,72px)` shorthand zeroes top/bottom at equal specificity (cascade-order dependent), so it silently won and the padding never applied. Fix moves the vertical padding onto the wrappers that do NOT carry .pmg-shell: the .pmg-inv-hero <section> gets padding-block clamp(52px,6.5vw,100px); the .pmg-vd container gets padding-top clamp(28px,3.4vw,52px). No rule competes with those selectors, so it's cascade-order-proof. Verified in the compiled .next CSS (both rules present, no conflicting padding on either selector); pixel screenshot not run locally (brand API app.py+MySQL not up on this box).
+
 - 2026-08-22: pmg-used-cars — derive theme neutrals from brand tokens (no fixed greys) (owner: Difatha)
   - Scope: app/themes/pmg-used-cars/styles/base.css, pages/sell-your-car/sell-your-car.css
   - Reason: the grey ramp (--c-50..900), --jet-raised/--jet-soft, --surface-page and --line-dark were fixed hex, so those neutrals never retinted with the brand. Derived them from --color-text/--color-bg/--jet via color-mix (byte-close to the PMG originals, and now shift coherently for any brand). Also bridged --pmg-red-deep-rgb → var(--color-primary-rgb) and the sell-your-car widget --sycw-bg → var(--surface). Kept intentionally-fixed literals: semantic status (--ok green, --star amber, stock tags), WhatsApp brand green, mask #000, UK-flag SVG, and var(--color-*, #hex) fallbacks (the token drives; hex is only the unset fallback).

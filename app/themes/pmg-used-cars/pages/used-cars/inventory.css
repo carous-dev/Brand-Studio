@@ -19,6 +19,10 @@
   overflow: hidden;
   color: var(--surface);
   isolation: isolate;
+  /* Vertical breathing lives on the section, NOT the inner — the inner also
+     carries .pmg-shell, whose `padding: 0 <gutter>` shorthand would zero any
+     padding-block set on it (equal specificity → cascade-order dependent). */
+  padding-block: clamp(52px, 6.5vw, 100px);
   /* Forecourt photo (brandkit "hero material") under a jet scrim + shaped
      gradient so the white type stays legible per the ≥45% scrim rule. */
   background-color: var(--jet);
@@ -64,7 +68,6 @@
   align-items: center;
   text-align: center;
   gap: 13px;
-  padding-block: clamp(26px, 3.6vw, 46px);
 }
 
 .pmg-inv-hero-eyebrow {
