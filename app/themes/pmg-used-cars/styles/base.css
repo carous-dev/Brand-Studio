@@ -44,8 +44,13 @@
   --pmg-red-deep-rgb: var(--color-primary-rgb, 183, 0, 9);
   --jet-rgb: var(--color-secondary-rgb, 5, 5, 6);
   --ink-rgb: var(--color-text-rgb, 27, 27, 31);
-  --white-rgb: 255, 255, 255;
-  --black-rgb: 0, 0, 0;
+  /* "white"/"black" composites (hover glass, footer/chrome text, borders,
+     scrims) are the light/dark ends of the brand: white → the background
+     colour (the on-dark light), black → the text colour. So every
+     rgba(var(--white-rgb), a) / rgba(var(--black-rgb), a) retints per brand
+     instead of being a fixed white/black. */
+  --white-rgb: var(--color-bg-rgb, 255, 255, 255);
+  --black-rgb: var(--color-text-rgb, 0, 0, 0);
 
   /* Semantic surfaces + on-colours (swap these to re-skin light/dark) */
   --surface: var(--color-bg, #ffffff);        /* cards, panels, drawers, header glass, on-brand text */
