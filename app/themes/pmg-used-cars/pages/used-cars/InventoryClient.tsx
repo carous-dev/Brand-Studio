@@ -35,6 +35,7 @@ import { buildVehiclePermalink } from "../../lib/vehicle-links";
 import { fetchInventoryClient } from "./_lib/inventory-client";
 import { PER_PAGE, type ClientFilters, type FilterMeta, type InventoryVehicle } from "./_lib/types";
 import { useBrand } from "../../context/BrandClientWrapper";
+import { resolveText } from "../../lib/brand-text";
 
 type ViewMode = "grid" | "list";
 type PaginationItem = number | "ellipsis";
@@ -474,7 +475,7 @@ export function InventoryClient({ initialItems, initialTotal, meta }: Props) {
   }, []);
 
   return (
-    <section className="pmg-inv" aria-label="Vehicle inventory">
+    <section className="pmg-inv" aria-label={resolveText(brand, "invSectionLabel")}>
       <div className="pmg-inv-shell">
         <div className="pmg-inv-toolbar">
           <div className="pmg-inv-toolbar-lead">
@@ -496,12 +497,12 @@ export function InventoryClient({ initialItems, initialTotal, meta }: Props) {
                 type="search"
                 value={searchInput}
                 onChange={(event) => setSearchInput(event.target.value)}
-                placeholder="Search make, model or keyword"
-                aria-label="Search stock"
+                placeholder={resolveText(brand, "invSearchPlaceholder")}
+                aria-label={resolveText(brand, "invSearchLabel")}
                 enterKeyHint="search"
               />
               {searchInput ? (
-                <button type="button" className="pmg-inv-search-clear" onClick={clearSearch} aria-label="Clear search">
+                <button type="button" className="pmg-inv-search-clear" onClick={clearSearch} aria-label="Clear search" /* text-static-ok */>
                   <X size={15} aria-hidden="true" />
                 </button>
               ) : null}
@@ -510,7 +511,7 @@ export function InventoryClient({ initialItems, initialTotal, meta }: Props) {
 
           <div className="pmg-inv-toolbar-controls">
             {!isCompact ? (
-              <div className="pmg-inv-view" role="group" aria-label="View mode">
+              <div className="pmg-inv-view" role="group" aria-label={resolveText(brand, "invViewModeLabel")}>
                 <button
                   type="button"
                   className={effectiveViewMode === "grid" ? "pmg-inv-view-btn is-active" : "pmg-inv-view-btn"}
@@ -532,7 +533,7 @@ export function InventoryClient({ initialItems, initialTotal, meta }: Props) {
               </div>
             ) : null}
 
-            <div className="pmg-inv-counters" aria-label="Saved vehicles">
+            <div className="pmg-inv-counters" aria-label={resolveText(brand, "invSavedLabel")}>
               <Link href="/wishlist" className="pmg-inv-counter" title={`Wishlist: ${wishlistCount}`}>
                 <Heart size={15} aria-hidden="true" />
                 <strong>{wishlistCount}</strong>
@@ -551,7 +552,7 @@ export function InventoryClient({ initialItems, initialTotal, meta }: Props) {
                   setSort(event.target.value);
                   setPage(1);
                 }}
-                aria-label="Sort vehicles"
+                aria-label={resolveText(brand, "invSortLabel")}
               >
                 {SORT_OPTIONS.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -578,8 +579,8 @@ export function InventoryClient({ initialItems, initialTotal, meta }: Props) {
             <div className="pmg-inv-empty-icon" aria-hidden="true">
               <Search size={28} strokeWidth={1.5} />
             </div>
-            <h3>No cars match those filters</h3>
-            <p>Try widening the price range, clearing a filter, or get in touch and we&apos;ll help source the right car.</p>
+            <h3>{resolveText(brand, "invEmptyTitle")}</h3>
+            <p>{resolveText(brand, "invEmptyBody")}</p>
             <div className="pmg-inv-empty-actions">
               <button
                 type="button"
@@ -629,7 +630,7 @@ export function InventoryClient({ initialItems, initialTotal, meta }: Props) {
             {loading && vehicles.length > 0 ? <div className="pmg-inv-loading-bar" aria-hidden="true" /> : null}
 
             {totalPages > 1 ? (
-              <nav className="pmg-inv-pagination" aria-label="Inventory pagination">
+              <nav className="pmg-inv-pagination" aria-label={resolveText(brand, "invPaginationLabel")}>
                 {currentPage === 1 ? (
                   <span className="pmg-inv-pager pmg-inv-pager-nav is-disabled" aria-disabled="true">
                     <ChevronLeft size={15} aria-hidden="true" />

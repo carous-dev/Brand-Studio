@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { dealer } from "../data/site-config";
 import { useBrand } from "../context/BrandClientWrapper";
+import { resolveText } from "../lib/brand-text";
 import { areasServed, popularMakes } from "../lib/areas";
 
 // SEO internal-linking band. brandstudio's router has no per-theme /make/<slug>
@@ -84,18 +85,18 @@ export function Footer() {
           </div>
 
           <div>
-            <h5>Quick links</h5>
+            <h5>{resolveText(brand as any, "footerQuickLinksTitle")}</h5>
             <ul>
-              <li><Link href="/used-cars">Used cars</Link></li>
-              <li><Link href="/car-sourcing">Car sourcing</Link></li>
-              <li><Link href="/sell-my-car">Sell your car</Link></li>
-              <li><Link href="/about">About us</Link></li>
+              <li><Link href="/used-cars">{resolveText(brand as any, "footerNavUsedCars")}</Link></li>
+              <li><Link href="/car-sourcing">{resolveText(brand as any, "footerNavCarSourcing")}</Link></li>
+              <li><Link href="/sell-my-car">{resolveText(brand as any, "footerNavSellYourCar")}</Link></li>
+              <li><Link href="/about">{resolveText(brand as any, "footerNavAbout")}</Link></li>
               <li><Link href="/contact">Contact</Link></li>
             </ul>
           </div>
 
           <div>
-            <h5>Get in touch</h5>
+            <h5>{resolveText(brand as any, "footerGetInTouchTitle")}</h5>
             <ul className="contact">
               <li><IconPin /> {addressText}</li>
               {dealer.contact.phoneDisplay ? (
@@ -108,21 +109,21 @@ export function Footer() {
           </div>
 
           <div>
-            <h5>Opening hours</h5>
+            <h5>{resolveText(brand as any, "footerOpeningHoursTitle")}</h5>
             {oh ? (
               <>
-                <div className="hours-row"><span>Mon – Fri</span><b>{fmt(oh[1])}</b></div>
+                <div className="hours-row"><span>{resolveText(brand as any, "footerHoursWeekdayLabel")}</span><b>{fmt(oh[1])}</b></div>
                 <div className="hours-row"><span>Saturday</span><b>{fmt(oh[6])}</b></div>
                 <div className="hours-row"><span>Sunday</span><b>{fmt(oh[7])}</b></div>
               </>
             ) : null}
-            <p className="appt">Viewings by appointment — call ahead and we&apos;ll have your car ready.</p>
+            <p className="appt">{resolveText(brand as any, "footerViewingsNote")}</p>
           </div>
         </div>
 
-        <nav className="fseo" aria-label="Popular searches">
+        <nav className="fseo" aria-label={resolveText(brand as any, "footerSeoNavLabel")}>
           <div className="fseo-row">
-            <span className="fseo-label">Areas we cover</span>
+            <span className="fseo-label">{resolveText(brand as any, "footerAreasTitle")}</span>
             <ul className="fseo-list">
               {FOOTER_AREAS.map((area) => (
                 <li key={area.town}>
@@ -132,7 +133,7 @@ export function Footer() {
             </ul>
           </div>
           <div className="fseo-row">
-            <span className="fseo-label">Browse by make</span>
+            <span className="fseo-label">{resolveText(brand as any, "footerBrowseMakeTitle")}</span>
             <ul className="fseo-list">
               {popularMakes.map((make) => (
                 <li key={make}>
@@ -152,7 +153,7 @@ export function Footer() {
         <div className="legal">
           <span>© {year} {dealer.brandName}. All rights reserved.</span>
           <div className="ll">
-            <Link href="/privacy-policy">Privacy Policy</Link>
+            <Link href="/privacy-policy">{resolveText(brand as any, "footerPrivacyLink")}</Link>
             <Link href="/cookie-policy">Cookies</Link>
             <Link href="/sitemap.xml">Sitemap</Link>
           </div>

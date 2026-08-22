@@ -3,6 +3,7 @@
 import { SellYourCarWidget } from "@/app/themes/pmg-used-cars/lib/vendor/sell-your-car";
 import "@/app/themes/pmg-used-cars/lib/vendor/sell-your-car/styles.css";
 import { dealer } from "../data/site-config";
+import { resolveText } from "../lib/brand-text";
 
 const PHONE_TEL = (dealer.contact.phoneE164 ?? dealer.contact.phoneDisplay ?? "").replace(/\s+/g, "");
 const WA_DIGITS = (dealer.contact.whatsappNumber ?? dealer.contact.phoneE164 ?? "").replace(/[^\d]/g, "");
@@ -15,7 +16,7 @@ const WA_DIGITS = (dealer.contact.whatsappNumber ?? dealer.contact.phoneE164 ?? 
  */
 export function SellYourCarMount() {
   return (
-    <div id="sell-form" className="syc-mount" aria-label="Car valuation form">
+    <div id="sell-form" className="syc-mount" aria-label={resolveText(null, "sellMountRegionLabel")}>
       <SellYourCarWidget
         leadOwner={dealer.dealerClientId}
         brandName={dealer.brandName}

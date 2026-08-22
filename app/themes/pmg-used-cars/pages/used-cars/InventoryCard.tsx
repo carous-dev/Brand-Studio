@@ -3,6 +3,7 @@
 import { Calendar, Cog, Fuel, Gauge, GitCompareArrows, Heart, Palette, Zap } from "lucide-react";
 import { InventoryCardMedia } from "./InventoryCardMedia";
 import type { InventoryVehicle } from "./_lib/types";
+import { resolveText } from "../../lib/brand-text";
 
 /* ── formatting helpers (self-contained; card renders from raw API items) ── */
 
@@ -261,11 +262,11 @@ export function InventoryCard({
           </div>
           {monthly ? (
             <div className="pmg-inv-card-finance">
-              <span>Finance from</span>
+              <span>{resolveText(null, "invCardFinanceFrom")}</span>
               <strong>{monthly}</strong>
             </div>
           ) : (
-            <div className="pmg-inv-card-finance is-generic">Finance available</div>
+            <div className="pmg-inv-card-finance is-generic">{resolveText(null, "invCardFinanceAvailable")}</div>
           )}
         </div>
       </div>

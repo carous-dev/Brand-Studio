@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { dealer } from "../../data/site-config";
+import { resolveText } from "../../lib/brand-text";
+import type { ThemePageProps } from "../../../types";
 import "../legal.css";
 
 const PHONE_DISPLAY = dealer.contact.phoneDisplay ?? "";
@@ -33,83 +35,69 @@ const IconMail = () => (
   </svg>
 );
 
-export default function CookiePolicyPage() {
+export default function CookiePolicyPage({ brand }: ThemePageProps) {
   return (
     <>
       <header className="legal-hero">
         <div className="legal-head">
-          <p className="legal-kicker">How this site works</p>
-          <h1>Cookie Policy</h1>
+          <p className="legal-kicker">{resolveText(brand, "cookieKicker")}</p>
+          <h1>{resolveText(brand, "cookieTitle")}</h1>
           <p className="legal-lead">
-            This policy explains how {dealer.legalName ?? dealer.brandName} uses cookies and similar
-            technologies on this website, and the choices available to you.
+            {resolveText(brand, "cookieLeadPre")}
+            {dealer.legalName ?? dealer.brandName}
+            {resolveText(brand, "cookieLeadPost")}
           </p>
           <span className="legal-meta">
-            <IconCookie /> Last updated {UPDATED}
+            <IconCookie /> {resolveText(brand, "cookieUpdatedLabel")} {UPDATED}
           </span>
         </div>
       </header>
 
       <section className="pmg-legal">
       <div className="legal-body">
-        <h2>What cookies are</h2>
-        <p>
-          Cookies are small text files stored on your device when you visit a website. They help the
-          site work, remember your preferences, and let us understand how the site is used so we can
-          improve it.
-        </p>
+        <h2>{resolveText(brand, "cookieWhatTitle")}</h2>
+        <p>{resolveText(brand, "cookieWhatBody")}</p>
 
-        <h2>How we use them</h2>
+        <h2>{resolveText(brand, "cookieHowTitle")}</h2>
         <ul>
           <li>
-            <strong>Necessary cookies</strong> — required for the site to function (page navigation,
-            security, remembering your cookie choice, and keeping your saved/compared vehicles). These
-            are always on.
+            <strong>{resolveText(brand, "cookieNecessaryLabel")}</strong>
+            {resolveText(brand, "cookieNecessaryBody")}
           </li>
           <li>
-            <strong>Analytics cookies</strong> — help us understand which pages and vehicles are
-            viewed so we can improve the site. Only set if you accept.
+            <strong>{resolveText(brand, "cookieAnalyticsLabel")}</strong>
+            {resolveText(brand, "cookieAnalyticsBody")}
           </li>
           <li>
-            <strong>Marketing cookies</strong> — used to make advertising more relevant to you and to
-            measure how our campaigns perform. Only set if you accept.
+            <strong>{resolveText(brand, "cookieMarketingLabel")}</strong>
+            {resolveText(brand, "cookieMarketingBody")}
           </li>
         </ul>
 
-        <h2>Third-party cookies</h2>
-        <p>
-          Some cookies are set by third-party services we use — for example embedded Google Maps on
-          our contact page, our enquiry and WhatsApp widgets, and analytics providers. These providers
-          set their own cookies subject to their own policies.
-        </p>
+        <h2>{resolveText(brand, "cookieThirdPartyTitle")}</h2>
+        <p>{resolveText(brand, "cookieThirdPartyBody")}</p>
 
-        <h2>Managing your choice</h2>
-        <p>
-          When you first visit, we ask whether to accept all cookies or necessary cookies only. Your
-          choice is stored in your browser and remembered on future visits. You can change it at any
-          time by clearing this site&apos;s data in your browser settings, which will prompt the cookie
-          notice again. Most browsers also let you block or delete cookies through their settings —
-          note that blocking necessary cookies may stop parts of the site working.
-        </p>
+        <h2>{resolveText(brand, "cookieManagingTitle")}</h2>
+        <p>{resolveText(brand, "cookieManagingBody")}</p>
 
-        <h2>More about your data</h2>
+        <h2>{resolveText(brand, "cookieMoreTitle")}</h2>
         <p>
-          For how we handle the personal data we collect — including through cookies — please see our{" "}
-          <Link href="/privacy-policy">Privacy Policy</Link>.
+          {resolveText(brand, "cookieMoreBody")}
+          <Link href="/privacy-policy">{resolveText(brand, "cookiePrivacyLink")}</Link>.
         </p>
 
         <div className="legal-callout">
-          <h2>Questions about cookies?</h2>
-          <p>We&apos;re happy to help — get in touch and we&apos;ll talk you through it.</p>
+          <h2>{resolveText(brand, "cookieQuestionsTitle")}</h2>
+          <p>{resolveText(brand, "cookieQuestionsBody")}</p>
           <div className="legal-actions">
             {PHONE_DISPLAY ? (
               <a href={PHONE_TEL} className="pmg-btn pmg-btn-primary">
-                <IconPhone /> Call {PHONE_DISPLAY}
+                <IconPhone /> {resolveText(brand, "cookieCallLabel")} {PHONE_DISPLAY}
               </a>
             ) : null}
             {EMAIL ? (
               <a href={`mailto:${EMAIL}`} className="pmg-btn pmg-btn-outline-dark">
-                <IconMail /> Email us
+                <IconMail /> {resolveText(brand, "cookieEmailLabel")}
               </a>
             ) : null}
           </div>

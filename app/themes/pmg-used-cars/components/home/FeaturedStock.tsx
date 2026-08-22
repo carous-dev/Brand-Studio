@@ -10,9 +10,11 @@ const Arrow = () => (
   </svg>
 );
 
+import type { BrandConfig } from "@/brands/types";
 import { HubGrid } from "../../pages/used-cars/HubGrid";
 import "../../pages/used-cars/inventory.css";
 import { BODY_ORDER, type FeaturedCar } from "./featured-data";
+import { resolveText } from "../../lib/brand-text";
 
 type Tab = { key: string; label: string };
 
@@ -29,7 +31,7 @@ function buildTabs(cars: FeaturedCar[]): Tab[] {
   return tabs.length > 2 ? tabs : [];
 }
 
-export function FeaturedStock({ cars }: { cars: FeaturedCar[] }) {
+export function FeaturedStock({ cars, brand }: { cars: FeaturedCar[]; brand: BrandConfig }) {
   const [filter, setFilter] = useState("all");
 
   if (!cars.length) return null;
@@ -41,8 +43,8 @@ export function FeaturedStock({ cars }: { cars: FeaturedCar[] }) {
     <section className="section" id="stock">
       <div className="pmg-shell">
         <div className="section-head">
-          <span className="eyebrow center">Our latest arrivals</span>
-          <h2>Featured stock</h2>
+          <span className="eyebrow center">{resolveText(brand, "featuredEyebrow")}</span>
+          <h2>{resolveText(brand, "featuredTitle")}</h2>
           <p>
             A hand-picked selection from our forecourt. Every car is prepared to a high standard and
             ready to drive away.

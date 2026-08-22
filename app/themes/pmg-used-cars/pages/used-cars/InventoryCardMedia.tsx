@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState, type ReactNode } from "react";
 import { ArrowRight, Camera, ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { resolveText } from "../../lib/brand-text";
 
 /** Slides shown per card. Detail page carries the full set. */
 const MAX_SLIDES = 8;
@@ -82,7 +83,7 @@ export function InventoryCardMedia({ images, title, href, reserved, sold, hasVid
           <button
             type="button"
             className="pmg-inv-slide-nav is-prev"
-            aria-label="Previous image"
+            aria-label="Previous image" /* text-static-ok */
             onClick={(event) => goTo(index - 1, event)}
             disabled={index === 0}
           >
@@ -91,13 +92,13 @@ export function InventoryCardMedia({ images, title, href, reserved, sold, hasVid
           <button
             type="button"
             className="pmg-inv-slide-nav is-next"
-            aria-label="Next image"
+            aria-label="Next image" /* text-static-ok */
             onClick={(event) => goTo(index + 1, event)}
             disabled={index === count - 1}
           >
             <ChevronRight size={18} aria-hidden="true" />
           </button>
-          <div className="pmg-inv-slide-dots" role="tablist" aria-label="Vehicle images">
+          <div className="pmg-inv-slide-dots" role="tablist" aria-label={resolveText(null, "invMediaTablistLabel")}>
             {slides.map((_, i) => (
               <button
                 type="button"

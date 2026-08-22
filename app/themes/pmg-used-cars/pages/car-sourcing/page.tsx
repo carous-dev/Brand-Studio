@@ -16,6 +16,8 @@ import {
   Check,
 } from "lucide-react";
 import { dealer } from "../../data/site-config";
+import { resolveText } from "../../lib/brand-text";
+import type { ThemePageProps } from "../../../types";
 import "./car-sourcing.css";
 
 const BRAND = dealer.brandName;
@@ -167,7 +169,7 @@ const faqJsonLd = {
   })),
 };
 
-export default function CarSourcingPage() {
+export default function CarSourcingPage({ brand }: ThemePageProps) {
   return (
     <main className="pmg-sourcing">
       <script
@@ -186,13 +188,9 @@ export default function CarSourcingPage() {
           <div className="ps-hero-inner">
             <p className="ps-kicker">Vehicle Procurement · {TOWN}</p>
             <h1 id="ps-title" className="ps-title">
-              Tell us the car. <span className="ps-accent">We source it.</span>
+              {resolveText(brand, "csrcHeroTitleLead")} <span className="ps-accent">{resolveText(brand, "csrcHeroTitleAccent")}</span>
             </h1>
-            <p className="ps-lead">
-              Not on our pitch? {BRAND}&apos;s Vehicle Procurement Service does the hunting for you.
-              Give us the make, budget and must-haves and our team sources, buys and prepares the
-              right car &mdash; saving you the time, effort and stress across {COUNTY} and nationwide.
-            </p>
+            <p className="ps-lead">{resolveText(brand, "csrcHeroLead")}</p>
             <ul className="ps-chips">
               {CHIPS.map((c) => (
                 <li key={c}>
@@ -229,26 +227,26 @@ export default function CarSourcingPage() {
       </header>
 
       {/* ── Stats strip ── */}
-      <section className="ps-stats" aria-label="Sourcing at a glance">
+      <section className="ps-stats" aria-label={resolveText(brand, "csrcStatsAria")}>
         <div className="pmg-shell">
           <dl className="ps-stats-inner">
             <div className="ps-stat">
               <dd>
                 4.5 <span className="ps-stat-star">&#9733;</span>
               </dd>
-              <dt>Feefo rating</dt>
+              <dt>{resolveText(brand, "csrcFeefoLabel")}</dt>
             </div>
             <div className="ps-stat">
               <dd>&pound;0</dd>
-              <dt>No obligation</dt>
+              <dt>{resolveText(brand, "csrcStatObligation")}</dt>
             </div>
             <div className="ps-stat">
               <dd>30 mi</dd>
-              <dt>Free delivery</dt>
+              <dt>{resolveText(brand, "csrcStatDelivery")}</dt>
             </div>
             <div className="ps-stat">
               <dd>Checked</dd>
-              <dt>Health-checked &amp; valeted</dt>
+              <dt>{resolveText(brand, "csrcStatChecked")}</dt>
             </div>
           </dl>
         </div>
@@ -258,14 +256,11 @@ export default function CarSourcingPage() {
       <section className="ps-section ps-how" aria-labelledby="ps-how-title">
         <div className="pmg-shell">
           <div className="ps-head">
-            <p className="ps-eyebrow">How it works</p>
+            <p className="ps-eyebrow">{resolveText(brand, "csrcHowEyebrow")}</p>
             <h2 className="ps-h2" id="ps-how-title">
               Four steps to the <em>right</em> car.
             </h2>
-            <p className="ps-sub">
-              You do the easy part once. We handle the search, the checks and the prep until it&apos;s
-              ready for your driveway.
-            </p>
+            <p className="ps-sub">{resolveText(brand, "csrcHowSub")}</p>
           </div>
           <ol className="ps-steps">
             {STEPS.map((s, i) => {
@@ -293,13 +288,11 @@ export default function CarSourcingPage() {
       <section className="ps-section ps-inc-section" aria-labelledby="ps-inc-title">
         <div className="pmg-shell">
           <div className="ps-head">
-            <p className="ps-eyebrow">Every sourced car</p>
+            <p className="ps-eyebrow">{resolveText(brand, "csrcIncEyebrow")}</p>
             <h2 className="ps-h2" id="ps-inc-title">
               Sourced anywhere, prepared like our own.
             </h2>
-            <p className="ps-sub">
-              A car we procure for you gets exactly the same treatment as one picked off our pitch.
-            </p>
+            <p className="ps-sub">{resolveText(brand, "csrcIncSub")}</p>
           </div>
           <ul className="ps-inc-grid">
             {INCLUDES.map((item) => (
@@ -341,18 +334,18 @@ export default function CarSourcingPage() {
             </blockquote>
             <div className="ps-proof-badges">
               <div>
-                <span>Feefo rating</span>
+                <span>{resolveText(brand, "csrcFeefoLabel")}</span>
                 <b>
                   4.5 / 5 <span className="ps-stat-star">&#9733;</span>
                 </b>
               </div>
               <div>
-                <span>To reserve</span>
-                <b>Refundable deposit</b>
+                <span>{resolveText(brand, "csrcReserveLabel")}</span>
+                <b>{resolveText(brand, "csrcReserveValue")}</b>
               </div>
               <div>
-                <span>Backed by</span>
-                <b>In-house warranty</b>
+                <span>{resolveText(brand, "csrcBackedLabel")}</span>
+                <b>{resolveText(brand, "csrcBackedValue")}</b>
               </div>
             </div>
           </div>
@@ -363,7 +356,7 @@ export default function CarSourcingPage() {
       <section className="ps-section" aria-labelledby="ps-faq-title">
         <div className="pmg-shell">
           <div className="ps-head">
-            <p className="ps-eyebrow">Common questions</p>
+            <p className="ps-eyebrow">{resolveText(brand, "csrcFaqEyebrow")}</p>
             <h2 className="ps-h2" id="ps-faq-title">
               The service, in plain English.
             </h2>
@@ -383,12 +376,9 @@ export default function CarSourcingPage() {
       <section className="ps-section ps-closer" aria-labelledby="ps-closer-title">
         <div className="pmg-shell">
           <div className="ps-closer-inner">
-            <p className="ps-eyebrow">Ready when you are</p>
-            <h2 id="ps-closer-title">Send us the brief.</h2>
-            <p className="ps-closer-sub">
-              It takes two minutes. Tell us what you&apos;re after and let {BRAND} do the hunting
-              &mdash; no obligation, and the holding deposit is fully refundable.
-            </p>
+            <p className="ps-eyebrow">{resolveText(brand, "csrcCloserEyebrow")}</p>
+            <h2 id="ps-closer-title">{resolveText(brand, "csrcCloserTitle")}</h2>
+            <p className="ps-closer-sub">{resolveText(brand, "csrcCloserSub")}</p>
             <div className="ps-cta">
               {PHONE_DISPLAY ? (
                 <a href={PHONE_TEL} className="pmg-btn pmg-btn-dark pmg-btn-lg">

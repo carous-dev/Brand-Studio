@@ -7,6 +7,7 @@ import { fetchFilterMeta, fetchInventory } from "../../used-cars/_lib/inventory"
 import { EMPTY_FILTERS } from "../../used-cars/_lib/types";
 import { popularMakes } from "../../../lib/areas";
 import { buildMakePath, resolveMakeFromSlug, slugifyPart } from "../../../lib/seo-links";
+import { resolveText } from "../../../lib/brand-text";
 import "../../used-cars/inventory.css";
 import "../../used-cars/hub.css";
 
@@ -99,11 +100,11 @@ export default async function MakeHubPage({ params }: PageProps) {
             <nav className="pmg-hub-crumbs" aria-label="Breadcrumb">
               <Link href="/">Home</Link>
               <span aria-hidden="true">/</span>
-              <Link href="/used-cars">Used cars</Link>
+              <Link href="/used-cars">{resolveText(null, "makeHubCrumbUsedCars")}</Link>
               <span aria-hidden="true">/</span>
               <span aria-current="page">{make}</span>
             </nav>
-            <p className="pmg-hub-eyebrow">Browse by make</p>
+            <p className="pmg-hub-eyebrow">{resolveText(null, "makeHubEyebrow")}</p>
             <h1 className="pmg-hub-title">
               Used <em>{make}</em> cars for sale
             </h1>
@@ -132,14 +133,14 @@ export default async function MakeHubPage({ params }: PageProps) {
               <p>No {make} available today. New stock lands weekly.</p>
               <div className="pmg-hub-empty-actions">
                 <Link className="pmg-btn pmg-btn-primary" href="/car-sourcing">Source a {make}</Link>
-                <Link className="pmg-btn pmg-btn-outline-dark" href="/used-cars">Browse all stock</Link>
+                <Link className="pmg-btn pmg-btn-outline-dark" href="/used-cars">{resolveText(null, "makeHubBrowseAllStock")}</Link>
               </div>
             </div>
           )}
 
           {otherMakes.length > 0 ? (
-            <nav className="pmg-hub-rail" aria-label="Browse other makes">
-              <h2 className="pmg-hub-rail-title">Browse other makes</h2>
+            <nav className="pmg-hub-rail" aria-label={resolveText(null, "makeHubOtherMakesLabel")}>
+              <h2 className="pmg-hub-rail-title">{resolveText(null, "makeHubOtherMakesTitle")}</h2>
               <ul className="pmg-hub-rail-list">
                 {otherMakes.map((m) => (
                   <li key={m}>

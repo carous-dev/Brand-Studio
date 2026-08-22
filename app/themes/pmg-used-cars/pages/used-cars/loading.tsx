@@ -1,5 +1,6 @@
 import { GitCompareArrows, Heart, LayoutGrid, Rows3, Search, SlidersHorizontal } from "lucide-react";
 import { PER_PAGE } from "./_lib/types";
+import { resolveText } from "../../lib/brand-text";
 import "./inventory.css";
 
 /** Card skeleton — identical markup/dimensions to the client SkeletonCard so the
@@ -32,9 +33,9 @@ export default function Loading() {
     <main className="pmg-inv-page" aria-busy="true">
       <section className="pmg-inv-hero">
         <div className="pmg-shell pmg-inv-hero-inner">
-          <p className="pmg-inv-hero-eyebrow">Current stock</p>
+          <p className="pmg-inv-hero-eyebrow">{resolveText(null, "invRegionLabel")}</p>
           <h1 className="pmg-inv-hero-title">
-            Quality used cars. <em>Zero pressure.</em>
+            {resolveText(null, "invHeroTitleLead")} <em>{resolveText(null, "invHeroTitleAccent")}</em>
           </h1>
           <p className="pmg-inv-hero-lead">
             Every car health-checked, valeted and prepared to a high standard — honest advice, no
@@ -58,7 +59,7 @@ export default function Loading() {
       </section>
 
       <div className="pmg-shell">
-        <section className="pmg-inv" aria-label="Vehicle inventory">
+        <section className="pmg-inv" aria-label={resolveText(null, "invSectionLabel")}>
           <div className="pmg-inv-shell">
             <div className="pmg-inv-toolbar" aria-hidden="true">
               <div className="pmg-inv-toolbar-lead">
@@ -68,7 +69,7 @@ export default function Loading() {
                 </span>
                 <div className="pmg-inv-search">
                   <Search size={16} />
-                  <input type="search" placeholder="Search make, model or keyword" disabled />
+                  <input type="search" placeholder={resolveText(null, "invSearchPlaceholder")} disabled />
                 </div>
               </div>
 
@@ -98,13 +99,13 @@ export default function Loading() {
                 <label className="pmg-inv-sort">
                   <span>Sort</span>
                   <select disabled defaultValue="newest" aria-hidden="true">
-                    <option value="newest">Newest first</option>
+                    <option value="newest">{resolveText(null, "invSortNewest")}</option>
                   </select>
                 </label>
               </div>
             </div>
 
-            <p className="pmg-inv-count">Loading stock…</p>
+            <p className="pmg-inv-count">{resolveText(null, "invLoadingStock")}</p>
 
             <div className="pmg-inv-grid" aria-hidden="true">
               {Array.from({ length: PER_PAGE }).map((_, i) => (

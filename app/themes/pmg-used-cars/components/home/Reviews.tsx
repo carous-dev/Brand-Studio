@@ -1,3 +1,6 @@
+import type { BrandConfig } from "@/brands/types";
+import { resolveText } from "../../lib/brand-text";
+
 const Star = () => (
   <svg viewBox="0 0 24 24">
     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
@@ -28,13 +31,13 @@ const REVIEWS: Array<{ quote: string; who: string; meta: string }> = [
   },
 ];
 
-export function Reviews() {
+export function Reviews({ brand }: { brand: BrandConfig }) {
   return (
     <section className="section reviews" id="reviews">
       <div className="pmg-shell">
         <div className="section-head">
-          <span className="eyebrow center">What our customers say</span>
-          <h2>Rated 4.5 / 5 on Feefo</h2>
+          <span className="eyebrow center">{resolveText(brand, "reviewsEyebrow")}</span>
+          <h2>{resolveText(brand, "reviewsTitle")}</h2>
           <div className="rev-head">
             <span className="rev-score">
               <Stars /> <b>4.5</b> · Independent reviews

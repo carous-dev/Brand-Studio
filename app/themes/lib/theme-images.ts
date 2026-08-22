@@ -22,6 +22,12 @@ export interface ImageSlot {
   key: string
   label?: string
   page?: string
+  /**
+   * Slot media kind. 'image' (default) resolves an `<img>`/background from
+   * brand.images[key]; 'video' resolves a clip from brand.media[key] rendered by
+   * <BrandMedia>, degrading to its poster still.
+   */
+  type?: 'image' | 'video'
   /** 'hero' opts the slot into the brand.heroImage tier-1 special-case. */
   role?: 'hero' | string
   aspect?: string
@@ -32,12 +38,44 @@ export interface ImageSlot {
   aiHint?: string
   /** Per-slot search bias for prospect image sourcing (fetch-theme-images). */
   unsplashHint?: string
+
+  // ── video-only fields (type: 'video') ─────────────────────────────────────
+  /**
+   * The still shown before/instead of the clip: another slot's key (e.g.
+   * 'hero') or a rooted path. Under reduced-motion / small screens / a missing
+   * clip, <BrandMedia> renders this poster and never autoplays.
+   */
+  poster?: string
+  /** Theme-shipped poster fallback path when `poster` resolves to nothing. */
+  posterDefault?: string
+  /** Loop the clip (default true). */
+  loop?: boolean
+  /** Autoplay (muted, inline) on capable screens (default true). */
+  autoplay?: boolean
+  /** Per-slot search bias for prospect video sourcing (theme-video-catalogue). */
+  stockHint?: string
 }
 
 export interface ImageRecipe {
   themeId?: string
   version?: number
   slots: ImageSlot[]
+}
+
+/** Alias — the recipe now carries image AND video slots. */
+export type MediaRecipe = ImageRecipe
+export type MediaSlot = ImageSlot
+
+/** Resolved media for a slot, consumed by <BrandMedia>. */
+export interface MediaDescriptor {
+  type: 'image' | 'video'
+  /** Optimized image src (image slots) OR raw clip URL (video slots); '' when none. */
+  url: string
+  /** Poster still (video slots): optimized image URL, or '' when none. */
+  poster: string
+  loop: boolean
+  autoplay: boolean
+  aspect?: string
 }
 
 /**
@@ -83,6 +121,10 @@ function brandImages(brand: BrandConfig | null | undefined): Record<string, unkn
   return ((brand as any)?.images as Record<string, unknown>) || {}
 }
 
+function brandMedia(brand: BrandConfig | null | undefined): Record<string, unknown> {
+  return ((brand as any)?.media as Record<string, unknown>) || {}
+}
+
 function firstString(...candidates: Array<unknown>): string {
   for (const c of candidates) {
     if (typeof c === 'string' && c.trim()) return c.trim()
@@ -121,6 +163,67 @@ export function resolveImageCss(brand: BrandConfig | null | undefined, slot: Ima
   return optimizedCssUrl(raw || null, slotOpts(slot))
 }
 
+/**
+ * Resolve the poster still for a video slot. `slot.poster` may name another
+ * slot key (resolved as that slot's image) or be a rooted path; falls back to
+ * `slot.posterDefault`. Always optimized; '' when nothing resolves.
+ */
+function resolvePoster(
+  recipe: RecipeLike,
+  brand: BrandConfig | null | undefined,
+  slot: ImageSlot,
+): string {
+  const ref = typeof slot.poster === 'string' ? slot.poster.trim() : ''
+  if (ref) {
+    const referenced = ref.startsWith('/') ? undefined : findSlot(recipe, ref)
+    if (referenced) {
+      const url = resolveImageUrl(brand, referenced)
+      if (url) return url
+    } else {
+      return optimizeImageUrl(ref, slotOpts(slot))
+    }
+  }
+  return slot.posterDefault ? optimizeImageUrl(slot.posterDefault, slotOpts(slot)) : ''
+}
+
+/**
+ * Resolve a slot to a media descriptor for <BrandMedia>. Image slots reuse the
+ * brand.images / heroImage / default tiers; video slots read the raw clip URL
+ * from brand.media[key] → slot.default, plus a poster still. Video URLs are NOT
+ * run through the image optimizer.
+ */
+export function resolveMedia(
+  recipe: RecipeLike,
+  brand: BrandConfig | null | undefined,
+  key: string,
+): MediaDescriptor {
+  const slot = findSlot(recipe, key)
+  if (!slot) {
+    return { type: 'image', url: '', poster: '', loop: true, autoplay: true }
+  }
+  if (slot.type === 'video') {
+    const media = brandMedia(brand)
+    const override = typeof media[slot.key] === 'string' ? (media[slot.key] as string) : ''
+    const url = firstString(override, slot.default)
+    return {
+      type: 'video',
+      url,
+      poster: resolvePoster(recipe, brand, slot),
+      loop: slot.loop !== false,
+      autoplay: slot.autoplay !== false,
+      aspect: slot.aspect,
+    }
+  }
+  return {
+    type: 'image',
+    url: resolveImageUrl(brand, slot),
+    poster: '',
+    loop: true,
+    autoplay: true,
+    aspect: slot.aspect,
+  }
+}
+
 /** Convenience: resolve a slot by key from a recipe → optimized URL ('' if absent). */
 export function themeImageUrl(recipe: RecipeLike, brand: BrandConfig | null | undefined, key: string): string {
   const slot = findSlot(recipe, key)
@@ -144,6 +247,7 @@ export function buildImageVars(
 ): Record<string, string> {
   const out: Record<string, string> = {}
   for (const slot of normalizeSlots(recipe)) {
+    if (slot.type === 'video') continue // video is <BrandMedia>-rendered, not a CSS bg var
     const css = resolveImageCss(brand, slot)
     const kebab = kebabKey(slot.key)
     out[`--brand-image-${kebab}`] = css

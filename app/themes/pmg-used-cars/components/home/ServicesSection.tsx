@@ -1,3 +1,6 @@
+import type { BrandConfig } from "@/brands/types";
+import { resolveText } from "../../lib/brand-text";
+
 const SERVICES: Array<{ title: string; body: string; icon: React.ReactNode }> = [
   {
     title: "Vehicle Health Checks",
@@ -66,16 +69,16 @@ const SERVICES: Array<{ title: string; body: string; icon: React.ReactNode }> = 
   },
 ];
 
-export function ServicesSection() {
+export function ServicesSection({ brand }: { brand: BrandConfig }) {
   return (
     <section className="section services" id="services">
       <div className="pmg-shell">
         <div className="svc-head">
-          <span className="svc-eyebrow">Committed to good service</span>
-          <h2>Our Services</h2>
+          <span className="svc-eyebrow">{resolveText(brand, "servicesEyebrow")}</span>
+          <h2>{resolveText(brand, "servicesTitle")}</h2>
           <div className="svc-underline" />
         </div>
-        <div className="svc-media" role="img" aria-label="Range of vehicles available at PMG Used Car Sales" />
+        <div className="svc-media" role="img" aria-label={resolveText(brand, "servicesMediaAlt")} />
         <div className="svc-grid">
           {SERVICES.map((s) => (
             <div className="svc-item" key={s.title}>

@@ -44,6 +44,8 @@ import {
 import { isSaved, subscribeSaved, toggleSaved, type SavedVehicle } from "@/app/themes/pmg-used-cars/lib/vendor/garage";
 import { LoanCalculatorWidget } from "@/app/themes/pmg-used-cars/lib/vendor/loan-calculator";
 import WhatsAppIcon from "../../../components/WhatsAppIcon";
+import { useBrand } from "../../../context/BrandClientWrapper";
+import { resolveText } from "../../../lib/brand-text";
 import { HubGrid } from "../HubGrid";
 import type { InventoryVehicle } from "../_lib/types";
 import "../inventory.css";
@@ -128,6 +130,7 @@ function formatDate(iso: string | null): string {
 }
 
 export function VehicleDetail({ vehicle, dealer, theme, pageUrl, similar }: Props) {
+  const brand = useBrand() as any;
   const title = useMemo(() => buildTitle(vehicle), [vehicle]);
   const priceText = formatPrice(vehicle.price);
   const monthly = estimateMonthly(vehicle.price);
@@ -376,7 +379,7 @@ export function VehicleDetail({ vehicle, dealer, theme, pageUrl, similar }: Prop
     // even under Lenis smooth-scroll (which can swallow native scroll events).
     const nav = navRef.current;
     const stuckObserver = nav
-      ? new IntersectionObserver(([entry]) => setNavStuck(entry.intersectionRatio < 1), {
+      ? new IntersectionObserver(([entry]) => setNavStuck(entry.intersectionRatio < 1), { /* text-static-ok */
           rootMargin: "-89px 0px 0px 0px",
           threshold: [1],
         })
@@ -412,7 +415,7 @@ export function VehicleDetail({ vehicle, dealer, theme, pageUrl, similar }: Prop
         <nav className="pmg-vd-crumbs" aria-label="Breadcrumb">
           <a href="/">Home</a>
           <span className="sep">/</span>
-          <a href="/used-cars">Used Cars</a>
+          <a href="/used-cars">{resolveText(brand, "vdBreadcrumb")}</a>
           <span className="sep">/</span>
           <span className="current">{title}</span>
         </nav>
@@ -518,16 +521,16 @@ export function VehicleDetail({ vehicle, dealer, theme, pageUrl, similar }: Prop
                 ) : null}
               </div>
               <div className="pmg-vd-stockref">
-                <span>Stock reference</span>
+                <span>{resolveText(brand, "vdStockRef")}</span>
                 <b>{stockRef}</b>
               </div>
             </div>
           </div>
 
           <ul className="pmg-vd-railtrust">
-            <li><ShieldCheck aria-hidden="true" /> Every car HPI-checked &amp; workshop-prepared</li>
-            <li><BadgeCheck aria-hidden="true" /> Warranty &amp; finance available on request</li>
-            <li><Car aria-hidden="true" /> Part-exchange welcome</li>
+            <li><ShieldCheck aria-hidden="true" /> {resolveText(brand, "vdTrustHpi")}</li>
+            <li><BadgeCheck aria-hidden="true" /> {resolveText(brand, "vdTrustWarranty")}</li>
+            <li><Car aria-hidden="true" /> {resolveText(brand, "vdTrustPartEx")}</li>
           </ul>
         </aside>
 
@@ -550,7 +553,7 @@ export function VehicleDetail({ vehicle, dealer, theme, pageUrl, similar }: Prop
 
           {/* Sub-nav */}
           {sections.length > 1 ? (
-            <nav ref={navRef} className={`pmg-vd-subnav${navStuck ? " is-stuck" : ""}`} aria-label="Vehicle sections">
+            <nav ref={navRef} className={`pmg-vd-subnav${navStuck ? " is-stuck" : ""}`} aria-label={resolveText(brand, "vdSectionsLabel")}>
               {sections.map((s) => (
                 <a key={s.id} href={`#${s.id}`} className={activeSection === s.id ? "is-active" : undefined}>
                   {s.label}
@@ -588,7 +591,7 @@ export function VehicleDetail({ vehicle, dealer, theme, pageUrl, similar }: Prop
           {hasCoreSpecs ? (
             <section id="spec" className="pmg-vd-section">
               <span className="pmg-vd-kicker">Specification</span>
-              <h2 className="pmg-vd-h2">Full technical detail</h2>
+              <h2 className="pmg-vd-h2">{resolveText(brand, "vdSpecTitle")}</h2>
               <div className="pmg-vd-specgrid">
                 {coreSpecs
                   .filter(([, v]) => v)
@@ -602,7 +605,7 @@ export function VehicleDetail({ vehicle, dealer, theme, pageUrl, similar }: Prop
 
               {hasDims ? (
                 <>
-                  <p className="pmg-vd-subhead">Dimensions &amp; capacity</p>
+                  <p className="pmg-vd-subhead">{resolveText(brand, "vdDimsSubhead")}</p>
                   <div className="pmg-vd-specgrid">
                     {dimSpecs
                       .filter(([, v]) => v)
@@ -641,7 +644,7 @@ export function VehicleDetail({ vehicle, dealer, theme, pageUrl, similar }: Prop
           {totalFeatures ? (
             <section id="features" className="pmg-vd-section">
               <span className="pmg-vd-kicker">Equipment</span>
-              <h2 className="pmg-vd-h2">Features &amp; options</h2>
+              <h2 className="pmg-vd-h2">{resolveText(brand, "vdFeaturesTitle")}</h2>
               <div className={`pmg-vd-featwrap${totalFeatures > 18 && !featOpen ? " is-collapsed" : ""}`}>
                 {featureGroups.map((group) => (
                   <div className="pmg-vd-featgroup" key={group.category}>
@@ -673,7 +676,7 @@ export function VehicleDetail({ vehicle, dealer, theme, pageUrl, similar }: Prop
           {hasHistory ? (
             <section id="history" className="pmg-vd-section">
               <span className="pmg-vd-kicker">Provenance</span>
-              <h2 className="pmg-vd-h2">History &amp; checks</h2>
+              <h2 className="pmg-vd-h2">{resolveText(brand, "vdHistoryTitle")}</h2>
               <div className="pmg-vd-checkgrid">
                 {checks.map((c) => (
                   <div className={`pmg-vd-check ${c.tone}`} key={c.key}>
@@ -686,9 +689,9 @@ export function VehicleDetail({ vehicle, dealer, theme, pageUrl, similar }: Prop
                 ))}
               </div>
               <ul className="pmg-vd-prep">
-                <li><ShieldCheck aria-hidden="true" /> HPI clear</li>
-                <li><Sparkles aria-hidden="true" /> Multi-point workshop preparation</li>
-                <li><BadgeCheck aria-hidden="true" /> Warranty available</li>
+                <li><ShieldCheck aria-hidden="true" /> {resolveText(brand, "vdHistHpi")}</li>
+                <li><Sparkles aria-hidden="true" /> {resolveText(brand, "vdHistPrep")}</li>
+                <li><BadgeCheck aria-hidden="true" /> {resolveText(brand, "vdHistWarranty")}</li>
               </ul>
             </section>
           ) : null}
@@ -697,7 +700,7 @@ export function VehicleDetail({ vehicle, dealer, theme, pageUrl, similar }: Prop
           {vehicle.price ? (
             <section id="finance" className="pmg-vd-section pmg-vd-finance">
               <span className="pmg-vd-kicker">Finance</span>
-              <h2 className="pmg-vd-h2">Estimate your monthly payment</h2>
+              <h2 className="pmg-vd-h2">{resolveText(brand, "vdFinanceTitle")}</h2>
               <LoanCalculatorWidget
                 initialPrice={vehicle.price}
                 initialDownPayment={Math.round(vehicle.price * 0.1)}
@@ -722,8 +725,8 @@ export function VehicleDetail({ vehicle, dealer, theme, pageUrl, similar }: Prop
 
           {/* Location */}
           <section id="location" className="pmg-vd-section">
-            <span className="pmg-vd-kicker">Visit us</span>
-            <h2 className="pmg-vd-h2">Where to find this car</h2>
+            <span className="pmg-vd-kicker">{resolveText(brand, "vdLocationKicker")}</span>
+            <h2 className="pmg-vd-h2">{resolveText(brand, "vdLocationTitle")}</h2>
             <div className="pmg-vd-dealer">
               <div className="pmg-vd-dealer-info">
                 <h3>{dealer.brandName}</h3>
@@ -771,9 +774,9 @@ export function VehicleDetail({ vehicle, dealer, theme, pageUrl, similar }: Prop
 
       {/* Similar vehicles */}
       {similar.length ? (
-        <section className="pmg-vd-related pmg-shell" aria-label="Similar vehicles">
+        <section className="pmg-vd-related pmg-shell" aria-label={resolveText(brand, "vdSimilarLabel")}>
           <div className="pmg-vd-related-head">
-            <h2>Similar vehicles</h2>
+            <h2>{resolveText(brand, "vdSimilarTitle")}</h2>
             <a href="/used-cars">
               View all stock <ArrowRight aria-hidden="true" />
             </a>

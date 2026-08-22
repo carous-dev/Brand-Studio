@@ -1,0 +1,10 @@
+{
+  "_doc": "Curated, freely-licensed stock VIDEO clips per (archetype × role/slot). The backend media auto-fill (_media_autofill in app.py) reads this at /api/v1/preview/create and sets brand.media[<slot>] for any video slot the operator left empty. Shape mirrors theme-image-catalogue.json. Each entry: { url, poster?, attribution? }. url must be a DIRECT, hotlinkable mp4/webm on a host whitelisted in next.config.js remotePatterns (or a self-hosted /themes/... path). DO NOT add fabricated/unverified URLs — an empty archetype is fine: when no clip resolves, <BrandMedia> renders the slot's poster still, so the hero is never blank.",
+  "_licensePolicy": "Only add clips that are free for commercial use with hotlinking permitted (e.g. Coverr, Mixkit, Pexels self-hosted, or clips uploaded to the Carous CDN). Record attribution where the license requests it.",
+  "_howToPopulate": "Find a real, license-clear clip; confirm the direct file URL loads; add its host to next.config.js remotePatterns if remote; paste under the right (archetype, role). Role keys match a media-recipe video slot's `role` (falling back to its `key`) — e.g. 'hero'.",
+  "classic": {},
+  "modern": {},
+  "rugged": {},
+  "luxury": {},
+  "prestige": {}
+}

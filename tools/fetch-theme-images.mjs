@@ -45,20 +45,27 @@ const OUT_DIR = path.join(TOOLS_DIR, '.theme-images')
 // declared in a theme's manifest is auto-sourced for prospect previews.
 const SLOTS = ['hero', 'about', 'services', 'finance', 'partExchange', 'sellYourCar', 'recentlySold']
 
-/** Read {slots, hints} from a theme's image-recipe.json, or null (legacy). */
+/**
+ * Read {slots, hints} of IMAGE slots from a theme's media-recipe.json (falling
+ * back to the legacy image-recipe.json), or null. Video slots are skipped here —
+ * they source from the video catalogue in the backend pipeline, not Unsplash.
+ */
 async function manifestSlots(themeId) {
-  try {
-    const p = path.join(PROJECT_ROOT, 'app', 'themes', themeId, 'recipes', 'image-recipe.json')
-    const recipe = JSON.parse(await fs.readFile(p, 'utf8'))
-    const list = Array.isArray(recipe.slots) ? recipe.slots : []
-    const slots = list.map((s) => s.key).filter(Boolean)
-    if (!slots.length) return null
-    const hints = {}
-    for (const s of list) if (s.key && s.unsplashHint) hints[s.key] = s.unsplashHint
-    return { slots, hints }
-  } catch {
-    return null
+  for (const name of ['media-recipe.json', 'image-recipe.json']) {
+    try {
+      const p = path.join(PROJECT_ROOT, 'app', 'themes', themeId, 'recipes', name)
+      const recipe = JSON.parse(await fs.readFile(p, 'utf8'))
+      const list = (Array.isArray(recipe.slots) ? recipe.slots : []).filter((s) => s.type !== 'video')
+      const slots = list.map((s) => s.key).filter(Boolean)
+      if (!slots.length) return null
+      const hints = {}
+      for (const s of list) if (s.key && s.unsplashHint) hints[s.key] = s.unsplashHint
+      return { slots, hints }
+    } catch {
+      /* try next */
+    }
   }
+  return null
 }
 
 // Default search terms per (archetype × slot). Used when the live Unsplash

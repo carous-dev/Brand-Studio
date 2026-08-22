@@ -10,22 +10,23 @@ import { Reviews } from "../../components/home/Reviews";
 import { SourcingBand } from "../../components/home/SourcingBand";
 import { fetchInventory } from "../used-cars/_lib/inventory";
 import { EMPTY_FILTERS } from "../used-cars/_lib/types";
+import type { ThemePageProps } from "../../../types";
 
-export default async function HomePage() {
+export default async function HomePage({ brand }: ThemePageProps) {
   const { items } = await fetchInventory({ ...EMPTY_FILTERS, sort: "newest" });
   const featuredCars = toFeaturedCars(items);
 
   return (
     <div className="pmg-home">
-      <Hero />
+      <Hero brand={brand} />
       <MakesStrip />
-      <ServicesSection />
-      <FeaturedStock cars={featuredCars} />
+      <ServicesSection brand={brand} />
+      <FeaturedStock cars={featuredCars} brand={brand} />
       <TrustBar />
-      <WhyBuy />
-      <Promos />
-      <Reviews />
-      <SourcingBand />
+      <WhyBuy brand={brand} />
+      <Promos brand={brand} />
+      <Reviews brand={brand} />
+      <SourcingBand brand={brand} />
     </div>
   );
 }

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import type { BrandConfig } from "@/brands/types";
 import { dealer } from "../../data/site-config";
 import { InventoryClient } from "./InventoryClient";
 import { MakesBand } from "./MakesBand";
 import { fetchFilterMeta, fetchInventory } from "./_lib/inventory";
 import { buildVehiclePermalink } from "../../lib/vehicle-links";
 import { readFilters, type RawSearchParams } from "./_lib/types";
+import { resolveText } from "../../lib/brand-text";
 import "./inventory.css";
 
 const TOWN = dealer.address.town;
@@ -31,10 +33,11 @@ export const metadata: Metadata = {
 };
 
 type PageProps = {
+  brand: BrandConfig;
   searchParams?: Promise<RawSearchParams>;
 };
 
-export default async function UsedCarsPage({ searchParams }: PageProps) {
+export default async function UsedCarsPage({ brand, searchParams }: PageProps) {
   const resolved = searchParams ? await searchParams : {};
   const filters = readFilters(resolved);
 
@@ -101,15 +104,15 @@ export default async function UsedCarsPage({ searchParams }: PageProps) {
       <main className="pmg-inv-page">
         <section className="pmg-inv-hero">
           <div className="pmg-shell pmg-inv-hero-inner">
-            <p className="pmg-inv-hero-eyebrow">Current stock · {TOWN}</p>
+            <p className="pmg-inv-hero-eyebrow">{resolveText(brand, "invRegionLabel")} · {TOWN}</p>
             <h1 className="pmg-inv-hero-title">
-              Quality used cars. <em>Zero pressure.</em>
+              {resolveText(brand, "invHeroTitleLead")} <em>{resolveText(brand, "invHeroTitleAccent")}</em>
             </h1>
             <p className="pmg-inv-hero-lead">
               Every car health-checked, valeted and prepared to a high standard — honest advice, no
               pressure. View it, drive it, sleep on it.
             </p>
-            <div className="pmg-inv-hero-stats" aria-label="Dealership at a glance">
+            <div className="pmg-inv-hero-stats" aria-label={resolveText(brand, "invHeroStatsLabel")}>
               <span className="pmg-inv-hero-stat">
                 <strong>{total}</strong> in stock
               </span>

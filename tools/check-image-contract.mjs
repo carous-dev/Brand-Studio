@@ -52,16 +52,18 @@ const SKIP_FILE = [
 ]
 
 const IMG_EXT = 'png|jpe?g|webp|gif|avif|svg'
-// A rooted literal image path: "/themes/…jpg", "/images/…png", url("/…webp").
-const LITERAL_PATH = new RegExp(`["'\`(]\\s*(\\/(?:themes|images)\\/[^"'\`)\\s]*?\\.(?:${IMG_EXT}))(?:[?#][^"'\`)\\s]*)?`, 'gi')
-const STATIC_OK = /image-static-ok/
-const RESOLVER_CALL = /themeImage(?:Css|Url)\s*\(|resolveImage(?:Url|Css)?\s*\(|buildImageVars\s*\(|findSlot\s*\(/
+const VIDEO_EXT = 'mp4|webm|mov|m4v|ogv'
+const MEDIA_EXT = `${IMG_EXT}|${VIDEO_EXT}`
+// A rooted literal media path: "/themes/…jpg", "/images/…png", "/…mp4".
+const LITERAL_PATH = new RegExp(`["'\`(]\\s*(\\/(?:themes|images)\\/[^"'\`)\\s]*?\\.(?:${MEDIA_EXT}))(?:[?#][^"'\`)\\s]*)?`, 'gi')
+const STATIC_OK = /image-static-ok|media-static-ok/
+const RESOLVER_CALL = /themeImage(?:Css|Url)\s*\(|resolveImage(?:Url|Css)?\s*\(|resolveMedia\s*\(|buildImageVars\s*\(|findSlot\s*\(|<BrandMedia\b/
 const EXEMPT_HOST = /simple-icons|jsdelivr|_next\/image|data:/i
 const LOGO_CTX = /logo|favicon|marque|brandLogo/i
 
-// brand.images.<key> | brand.images['<key>'] | var(--brand-image-<key>)
-const IMAGES_DOT = /brand\??\.images\??\.\s*([a-zA-Z][\w]*)/g
-const IMAGES_BRACKET = /brand\??\.images\??\s*\[\s*['"]([\w-]+)['"]\s*\]/g
+// brand.images.<key> | brand.images['<key>'] | brand.media.<key> | var(--brand-image-<key>)
+const IMAGES_DOT = /brand\??\.(?:images|media)\??\.\s*([a-zA-Z][\w]*)/g
+const IMAGES_BRACKET = /brand\??\.(?:images|media)\??\s*\[\s*['"]([\w-]+)['"]\s*\]/g
 const BRAND_IMAGE_VAR = /--brand-image-([a-z0-9-]+)/g
 
 function kebab(k) {
@@ -93,17 +95,42 @@ async function walk(dir) {
   return out
 }
 
-async function loadManifest(themeId) {
-  const p = path.join(THEMES_DIR, themeId, 'recipes', 'image-recipe.json')
-  try {
-    const recipe = JSON.parse(await fs.readFile(p, 'utf8'))
-    const slots = Array.isArray(recipe.slots) ? recipe.slots : []
-    const keys = new Set(slots.map((s) => kebab(String(s.key || ''))).filter(Boolean))
-    const defaults = new Set(slots.map((s) => String(s.default || '')).filter(Boolean))
-    return { keys, defaults }
-  } catch {
-    return null // no manifest → legacy, skip
+async function readRecipe(themeId) {
+  // media-recipe.json (image + video slots) wins; image-recipe.json is the
+  // legacy fallback so themes not yet renamed keep validating.
+  for (const name of ['media-recipe.json', 'image-recipe.json']) {
+    try {
+      return JSON.parse(await fs.readFile(path.join(THEMES_DIR, themeId, 'recipes', name), 'utf8'))
+    } catch {
+      /* try next */
+    }
   }
+  return null
+}
+
+async function loadManifest(themeId) {
+  const recipe = await readRecipe(themeId)
+  if (!recipe) return null // no manifest → legacy, skip
+  const slots = Array.isArray(recipe.slots) ? recipe.slots : []
+  const keys = new Set(slots.map((s) => kebab(String(s.key || ''))).filter(Boolean))
+  const defaults = new Set()
+  const structural = []
+  for (const s of slots) {
+    if (s.default) defaults.add(String(s.default))
+    if (s.posterDefault) defaults.add(String(s.posterDefault))
+    if (typeof s.poster === 'string' && s.poster.startsWith('/')) defaults.add(s.poster)
+    // A video slot must be able to show a still, or <BrandMedia> renders blank.
+    if (s.type === 'video' && !s.poster && !s.posterDefault) {
+      structural.push({
+        file: `app/themes/${themeId}/recipes/media-recipe.json`,
+        line: 1,
+        match: String(s.key || '(video slot)'),
+        why: 'video slot has no `poster` (slot key or path) nor `posterDefault` — it can render blank',
+        text: `"${s.key}": { "type": "video", … }`,
+      })
+    }
+  }
+  return { keys, defaults, structural }
 }
 
 function scanContent(file, content, manifest) {
@@ -151,7 +178,7 @@ async function scanTheme(themeId) {
   const manifest = await loadManifest(themeId)
   if (!manifest) return { skipped: true, findings: [] }
   const files = await walk(path.join(THEMES_DIR, themeId))
-  const findings = []
+  const findings = [...(manifest.structural || [])]
   for (const file of files) {
     const rel = path.relative(ROOT, file)
     if (SKIP_FILE.some((re) => re.test(rel))) continue

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { makeMonogram, resolveLogoSlug, simpleIconsLogoUrl } from "./_lib/make-logos";
 import { buildMakePath } from "../../lib/seo-links";
+import { resolveText } from "../../lib/brand-text";
 
 type MakesBandProps = {
   makes: string[];
@@ -65,10 +66,10 @@ export function MakesBand({ makes, town }: MakesBandProps) {
   if (!makes.length) return null;
 
   return (
-    <nav className="pmg-inv-makes" aria-label="Browse used cars by make">
+    <nav className="pmg-inv-makes" aria-label={resolveText(null, "invMakesNavLabel")}>
       <div className="pmg-inv-makes-head">
-        <span className="pmg-inv-makes-eyebrow">Explore the range</span>
-        <h2 className="pmg-inv-makes-title">Browse by make</h2>
+        <span className="pmg-inv-makes-eyebrow">{resolveText(null, "invMakesEyebrow")}</span>
+        <h2 className="pmg-inv-makes-title">{resolveText(null, "invMakesTitle")}</h2>
       </div>
       <div className="pmg-inv-makes-grid">
         {makes.map((make) => (

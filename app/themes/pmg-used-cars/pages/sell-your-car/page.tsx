@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { dealer } from "../../data/site-config";
 import { SellYourCarMount } from "../../components/SellYourCarMount";
+import { resolveText } from "../../lib/brand-text";
+import type { ThemePageProps } from "../../../types";
 import "./sell-your-car.css";
 
 const BRAND = dealer.brandName;
@@ -176,7 +178,7 @@ const faqJsonLd = {
   })),
 };
 
-export default function SellYourCarPage() {
+export default function SellYourCarPage({ brand }: ThemePageProps) {
   return (
     <main className="pmg-syc">
       <script
@@ -194,15 +196,12 @@ export default function SellYourCarPage() {
         <div className="syc-hero-bg" aria-hidden="true" />
         <div className="pmg-shell">
           <div className="syc-hero-copy">
-            <p className="syc-kicker">Sell your car · {TOWN}</p>
+            <p className="syc-kicker">{resolveText(brand, "sellHeroKicker")}</p>
             <h1 id="syc-title" className="syc-title">
-              Sell your car. <span className="syc-accent">Get paid today.</span>
+              {resolveText(brand, "sellHeroTitleLead")}{" "}
+              <span className="syc-accent">{resolveText(brand, "sellHeroTitleAccent")}</span>
             </h1>
-            <p className="syc-lead">
-              Skip the classifieds and the tyre-kickers. Drop your reg for an instant guide price,
-              get a confirmed offer from the {BRAND} team within 24 hours, and walk away paid the
-              same day &mdash; part-exchange or straight sale across {COUNTY}.
-            </p>
+            <p className="syc-lead">{resolveText(brand, "sellHeroLead")}</p>
             <ul className="syc-chips">
               {CHIPS.map((c) => (
                 <li key={c}>
@@ -216,15 +215,15 @@ export default function SellYourCarPage() {
                 <dd>
                   4.5 <span className="syc-star">&#9733;</span>
                 </dd>
-                <dt>Feefo rating</dt>
+                <dt>{resolveText(brand, "sellStatRatingLabel")}</dt>
               </div>
               <div>
                 <dd>24 hrs</dd>
-                <dt>Offer confirmed</dt>
+                <dt>{resolveText(brand, "sellStatOfferLabel")}</dt>
               </div>
               <div>
-                <dd>Same day</dd>
-                <dt>Paid on collection</dt>
+                <dd>{resolveText(brand, "sellStatPaidValue")}</dd>
+                <dt>{resolveText(brand, "sellStatPaidLabel")}</dt>
               </div>
             </dl>
           </div>
@@ -232,7 +231,7 @@ export default function SellYourCarPage() {
       </header>
 
       {/* ── Valuation widget — its own light section, pulled up to meet the hero ── */}
-      <section className="syc-valuation" aria-label="Car valuation">
+      <section className="syc-valuation" aria-label={resolveText(brand, "sellValuationAriaLabel")}>
         <div className="pmg-shell">
           <div className="syc-form-panel">
             <span className="syc-form-flag" aria-hidden="true">
@@ -248,13 +247,11 @@ export default function SellYourCarPage() {
       <section className="syc-section syc-how" aria-labelledby="syc-how-title">
         <div className="pmg-shell">
           <div className="syc-head">
-            <p className="syc-eyebrow">How it works</p>
+            <p className="syc-eyebrow">{resolveText(brand, "sellHowEyebrow")}</p>
             <h2 className="syc-h2" id="syc-how-title">
               From reg to <em>paid</em> in three steps.
             </h2>
-            <p className="syc-sub">
-              No haggling, no admin, no waiting weeks for a private buyer who never shows up.
-            </p>
+            <p className="syc-sub">{resolveText(brand, "sellHowSub")}</p>
           </div>
           <ol className="syc-steps">
             {STEPS.map((s, i) => {
@@ -288,14 +285,11 @@ export default function SellYourCarPage() {
       <section className="syc-section syc-why-section" aria-labelledby="syc-why-title">
         <div className="pmg-shell">
           <div className="syc-head">
-            <p className="syc-eyebrow">Why sell to {BRAND}</p>
+            <p className="syc-eyebrow">{resolveText(brand, "sellWhyEyebrow")}</p>
             <h2 className="syc-h2" id="syc-why-title">
               A fair price, and none of the hassle.
             </h2>
-            <p className="syc-sub">
-              A proper dealer sale &mdash; honest figures, the finance and paperwork handled, money
-              in your account fast.
-            </p>
+            <p className="syc-sub">{resolveText(brand, "sellWhySub")}</p>
           </div>
           <ul className="syc-why-grid">
             {REASONS.map((item) => (
@@ -317,7 +311,7 @@ export default function SellYourCarPage() {
       <section className="syc-section" aria-labelledby="syc-faq-title">
         <div className="pmg-shell">
           <div className="syc-head">
-            <p className="syc-eyebrow">Common questions</p>
+            <p className="syc-eyebrow">{resolveText(brand, "sellFaqEyebrow")}</p>
             <h2 className="syc-h2" id="syc-faq-title">
               Selling to us, in plain English.
             </h2>
@@ -337,12 +331,9 @@ export default function SellYourCarPage() {
       <section className="syc-section syc-closer" aria-labelledby="syc-closer-title">
         <div className="pmg-shell">
           <div className="syc-closer-inner">
-            <p className="syc-eyebrow">Ready when you are</p>
-            <h2 id="syc-closer-title">Find out what your car is worth.</h2>
-            <p className="syc-closer-sub">
-              It takes under a minute and there is no obligation. Get your free {BRAND} valuation now,
-              or talk it through with the team &mdash; whatever suits you.
-            </p>
+            <p className="syc-eyebrow">{resolveText(brand, "sellCloserEyebrow")}</p>
+            <h2 id="syc-closer-title">{resolveText(brand, "sellCloserTitle")}</h2>
+            <p className="syc-closer-sub">{resolveText(brand, "sellCloserSub")}</p>
             <div className="syc-cta">
               <a href="#sell-form" className="pmg-btn pmg-btn-dark pmg-btn-lg">
                 Get my free valuation

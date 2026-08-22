@@ -29,9 +29,10 @@ The first five are also enforced by `backend/services/theme_catalog.py::THEME_RE
 (themes missing them are dropped from the catalog → previews 500). The last four are enforced by
 `check-theme-contract.mjs` and are added to `theme_catalog.py` only once all themes conform.
 
-`lib/brand-text.ts` (`resolveText`) + `recipes/text-recipe.json` are **optional/advisory** — a
-content-copy layer, not chrome. Present in fbm-motors + kain today; adopt where a theme wants
-dashboard-editable component copy.
+The **content contract** (`recipes/text-recipe.json` + `recipes/media-recipe.json` +
+`lib/brand-text.ts`) is currently *advisory-but-staged* — see §9. Themes that adopt it get
+fully LLM/operator-fillable copy and media; pmg-used-cars is the reference. Adopt it for every
+new theme.
 
 ---
 
@@ -123,7 +124,42 @@ explicitly out of scope). Never paint raw color literals — see `docs` color-co
 
 ---
 
-## 8. Conformance status (living)
+## 8. Content contract — text + media (the "never static" layer)
+
+Every brand-voice string and every theme image/video is a declared **slot** so the backend
+pipeline can fill it per-dealer and no preview looks templated. Two manifests, both consumed via
+shared resolvers (no per-theme copies):
+
+**Text** — `recipes/text-recipe.json` → shared `resolveText`:
+- Schema: `{ sections: [{ id, label, fields: [{ key, label, type:'short'|'long', default, maxLength, aiHint }] }] }`.
+- `default` may embed tokens: `{brandName} {namePossessive} {city} {county} {cityish} {streetLine} {postcode} {year} {tagline}`. The runtime interpolates AFTER resolution — never write `{tokens}` into `brand.text`.
+- Bind per theme with a 2-line `lib/brand-text.ts`:
+  `export const { resolveText, resolveTexts, textRecipe } = makeTextResolver(recipe)`
+  (`makeTextResolver` in `app/themes/lib/theme-text.ts`).
+- Resolution: `brand.text[key]` (operator/LLM) → recipe default (interpolated) → `''`.
+- Gate: `node tools/check-text-contract.mjs --id <id>` flags hardcoded multi-word JSX copy /
+  `placeholder|aria-label|title|alt`. Escape genuine chrome with `/* text-static-ok */`.
+
+**Media (image + video)** — `recipes/media-recipe.json` → `resolveMedia` + `<BrandMedia>`:
+- Same slot schema as the legacy `image-recipe.json` (loaders read `media-recipe.json` first,
+  fall back to `image-recipe.json`) **plus** `type:'image'|'video'` and, for video, `poster`
+  (slot key or path), `posterDefault`, `loop`, `autoplay`, `stockHint`. Optional top-level
+  `archetype` biases prospect auto-fill.
+- Image slots persist to `brand.images[key]` (unchanged; also emit `--brand-image-*` via
+  `buildImageVars`). Video slots persist to `brand.media[key]`.
+- Render media with `<BrandMedia recipe={mediaRecipe} brand={brand} slotKey="…"/>`
+  (`app/themes/components/BrandMedia.tsx`): image → `<img>`; video → poster still on the server /
+  reduced-motion / ≤640px / missing clip, progressively upgrading to an autoplaying
+  muted-inline clip only on capable clients. Never blank.
+- Gate: `node tools/check-image-contract.mjs --id <id>` (also validates every video slot has a
+  poster). `npm run check:content` runs both content gates.
+
+**Backend auto-fill** (`app.py`): `POST /api/v1/preview/create` fills every empty slot,
+operator-wins — text via the LLM (`generate_brand` + the theme's text-recipe), images from
+`tools/theme-image-catalogue.json` (archetype × slot), video from `tools/theme-video-catalogue.json`
+(archetype × role); when no clip resolves, `<BrandMedia>` shows the poster.
+
+## 9. Conformance status (living)
 
 All 14 themes conform as of 2026-07-20 (`npm run check:contract` → 14/14). Run the
 checker for live status; the table records the migration landing.
