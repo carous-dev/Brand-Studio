@@ -133,6 +133,20 @@ export async function FbmHomePage({ brand }: ThemePageProps) {
           />
         )}
         <div className={styles.heroOverlay} aria-hidden />
+        {/* Futuristic FX layer — neon floor grid, drifting brand orbs, scan
+            sweep, HUD frame. All brand-token tinted, behind the captions,
+            simplified on mobile + frozen under reduced-motion. */}
+        <div className={styles.heroFx} aria-hidden>
+          <div className={styles.fxGlow} />
+          <div className={styles.fxGrid} />
+          <div className={styles.fxScan} />
+          <div className={styles.fxFrame}>
+            <span data-corner="tl" />
+            <span data-corner="tr" />
+            <span data-corner="bl" />
+            <span data-corner="br" />
+          </div>
+        </div>
         <div className={styles.heroInner}>
           {heroEyebrow && heroEyebrow !== 'the showroom' && (
             <p className={`fbm-eyebrow ${styles.heroEyebrow} fbm-animate-rise`}>{heroEyebrow}</p>

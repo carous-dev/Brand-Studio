@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
 import type { BrandConfig } from '@/brands/types'
 import { buildThemeTokens, renderThemeStyle } from '@/app/themes/lib/theme-tokens'
 import { buildImageVars } from '@/app/themes/lib/theme-images'
-import imageRecipe from '../recipes/image-recipe.json'
+import mediaRecipe from '../recipes/media-recipe.json'
 
 // Chakra Petch (display, incl. italic 700 for the hero) + Inter (body/UI).
 const FONT_IMPORT =
@@ -21,7 +21,7 @@ const FONT_IMPORT =
  * --color-* MUST live on the same element (:root) or the bridge always falls
  * back to the PMG literal. Previews render one theme at a time, so :root is safe.
  *
- * Images: buildImageVars reads recipes/image-recipe.json and emits one
+ * Images: buildImageVars reads recipes/media-recipe.json (image slots) and emits one
  * `--brand-image-<kebab(key)>` per slot, resolving brand.images[key] (the
  * dashboard Page-Images override) → (hero) brand.heroImage → the slot's theme
  * default. Adding an editable image is a single recipe declaration — the
@@ -45,8 +45,9 @@ export function BrandStyles({ brand }: { brand: BrandConfig }): ReactNode {
   })
 
   // Per-slot image vars from the recipe → --brand-image-<kebab(key)>.
+  // (Video slots are skipped by buildImageVars — they render via <BrandMedia>.)
   const extras: Record<string, string> = {
-    ...buildImageVars(brand, imageRecipe as any),
+    ...buildImageVars(brand, mediaRecipe as any),
   }
 
   return (

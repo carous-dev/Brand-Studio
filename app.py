@@ -3591,21 +3591,38 @@ def load_theme_image_slots(theme_id):
     dict carries at least a 'key'; the dashboard/template use label/page/aspect/
     caption when present.
     """
-    safe = _validate_theme_id(theme_id) if theme_id else None
-    if not safe:
-        return list(LEGACY_IMAGE_SLOTS)
-    recipe_path = os.path.join(_theme_folder_path(safe), 'recipes', 'image-recipe.json')
-    if not os.path.exists(recipe_path):
-        return list(LEGACY_IMAGE_SLOTS)
-    try:
-        with open(recipe_path, 'r', encoding='utf-8') as fh:
-            recipe = json.load(fh)
+    recipe = _load_theme_media_recipe(theme_id)
+    if recipe:
         slots = recipe.get('slots') if isinstance(recipe, dict) else None
         if isinstance(slots, list) and slots:
-            return [s for s in slots if isinstance(s, dict) and s.get('key')]
-    except Exception:
-        app.logger.exception("Failed to read image-recipe for theme=%s", safe)
+            kept = [s for s in slots if isinstance(s, dict) and s.get('key')]
+            if kept:
+                return kept
     return list(LEGACY_IMAGE_SLOTS)
+
+
+def _load_theme_media_recipe(theme_id):
+    """
+    Return a theme's media recipe dict (image + video slots) — reads
+    `recipes/media-recipe.json`, falling back to the legacy `image-recipe.json`.
+    Returns None when neither exists or on parse error. The recipe may carry a
+    top-level `archetype` used for prospect media auto-fill.
+    """
+    safe = _validate_theme_id(theme_id) if theme_id else None
+    if not safe:
+        return None
+    for name in ('media-recipe.json', 'image-recipe.json'):
+        recipe_path = os.path.join(_theme_folder_path(safe), 'recipes', name)
+        if not os.path.exists(recipe_path):
+            continue
+        try:
+            with open(recipe_path, 'r', encoding='utf-8') as fh:
+                recipe = json.load(fh)
+            if isinstance(recipe, dict):
+                return recipe
+        except Exception:
+            app.logger.exception("Failed to read %s for theme=%s", name, safe)
+    return None
 
 
 def image_slot_url_field(key):
@@ -3613,6 +3630,101 @@ def image_slot_url_field(key):
     return f'image{key[0].upper()}{key[1:]}Url' if key else 'imageUrl'
 
 
+_CURATED_IMAGE_CATALOGUE = None
+_VIDEO_CATALOGUE = None
+
+
+def _tools_json(filename):
+    """Load a JSON file from tools/, cached; returns {} on any error."""
+    try:
+        p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tools', filename)
+        with open(p, 'r', encoding='utf-8') as fh:
+            return json.load(fh) or {}
+    except Exception:
+        return {}
+
+
+def _curated_image_catalogue():
+    global _CURATED_IMAGE_CATALOGUE
+    if _CURATED_IMAGE_CATALOGUE is None:
+        _CURATED_IMAGE_CATALOGUE = _tools_json('theme-image-catalogue.json')
+    return _CURATED_IMAGE_CATALOGUE
+
+
+def _video_catalogue():
+    global _VIDEO_CATALOGUE
+    if _VIDEO_CATALOGUE is None:
+        _VIDEO_CATALOGUE = _tools_json('theme-video-catalogue.json')
+    return _VIDEO_CATALOGUE
+
+
+def _catalogue_pick(catalogue, archetype, key):
+    """Pick a curated URL for (archetype × slot), falling back to classic."""
+    for arch in (archetype, 'classic'):
+        node = catalogue.get(arch) if isinstance(catalogue, dict) else None
+        entry = node.get(key) if isinstance(node, dict) else None
+        if isinstance(entry, dict) and isinstance(entry.get('url'), str) and entry['url'].strip():
+            return entry['url'].strip()
+    return ''
+
+
+def _media_autofill(brand, theme_id):
+    """
+    Fill brand imagery + video for a prospect preview so nothing renders static.
+    Operator-supplied values always win (only empty slots are filled).
+
+      - image slots → brand.images[key] from the curated catalogue (archetype ×
+        slot). Remote Unsplash CDN URLs are whitelisted by optimizeImageUrl.
+      - video slots → brand.media[key] from the video catalogue (archetype ×
+        role). When no clip exists the slot is left empty and <BrandMedia> shows
+        the slot's poster still — never blank.
+
+    Returns the count of slots filled. Never raises.
+    """
+    filled = 0
+    try:
+        recipe = _load_theme_media_recipe(theme_id)
+        if not recipe:
+            return 0
+        slots = recipe.get('slots') if isinstance(recipe, dict) else None
+        if not isinstance(slots, list):
+            return 0
+        archetype = str(recipe.get('archetype') or 'classic').strip().lower() or 'classic'
+        images = dict(brand.get('images') or {})
+        media = dict(brand.get('media') or {})
+        for slot in slots:
+            if not isinstance(slot, dict):
+                continue
+            key = slot.get('key')
+            if not key:
+                continue
+            if slot.get('type') == 'video':
+                if not str(media.get(key) or '').strip():
+                    role = str(slot.get('role') or key)
+                    url = _catalogue_pick(_video_catalogue(), archetype, role) \
+                        or _catalogue_pick(_video_catalogue(), archetype, key)
+                    if url:
+                        media[key] = url
+                        filled += 1
+            else:
+                # hero is also satisfied by brand.heroImage; don't overwrite.
+                already = str(images.get(key) or '').strip() or \
+                    (key == 'hero' and str(brand.get('heroImage') or '').strip())
+                if not already:
+                    url = _catalogue_pick(_curated_image_catalogue(), archetype, key)
+                    if url:
+                        images[key] = url
+                        filled += 1
+        if images:
+            brand['images'] = images
+        if media:
+            brand['media'] = media
+    except Exception:
+        app.logger.exception("media auto-fill failed for theme=%s", theme_id)
+    return filled
+
+
+@app.route('/api/themes/<theme_id>/media-recipe', methods=['GET'])
 @app.route('/api/themes/<theme_id>/image-recipe', methods=['GET'])
 @auth_manager.login_required
 def get_theme_image_recipe(theme_id):
@@ -4498,6 +4610,11 @@ def remote_create_preview():
             ai_error = str(exc)
             app.logger.exception("Remote preview AI auto-fill failed (slug=%s)", slug)
 
+    # ---- Media auto-fill (image + video) so the preview never looks static.
+    # Non-destructive: only fills slots the operator left empty. Runs regardless
+    # of the AI text flag — imagery/video source from curated catalogues, not the LLM.
+    media_filled = _media_autofill(brand, safe_theme_id)
+
     # ---- Persist + return URL
     try:
         upsert_preview(slug, brand)
@@ -4521,6 +4638,7 @@ def remote_create_preview():
         'overwritten': already_exists and force,
         'aiPopulated': ai_populated,
         'aiError': ai_error,
+        'mediaFilled': media_filled,
     }), (201 if not already_exists else 200)
 
 

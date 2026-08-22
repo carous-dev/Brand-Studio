@@ -1,7 +1,8 @@
 {
   "themeId": "pmg-used-cars",
-  "version": 1,
-  "description": "Editable image contract for the PMG Used Car Sales theme. Every operator-editable theme image is a slot here; the dashboard Page Images tab renders one upload/replace control per slot, uploads persist to brand.images[<key>], and BrandStyles emits each as a --brand-image-<key> CSS var (camelCase to match the theme CSS). brand.images[<key>] overrides the theme default photo.",
+  "version": 2,
+  "archetype": "modern",
+  "description": "Editable MEDIA contract for the PMG Used Car Sales theme (image + video slots). Every operator-editable theme image is a slot here; the dashboard Page Images tab renders one upload/replace control per slot, image uploads persist to brand.images[<key>] and BrandStyles emits each as a --brand-image-<key> CSS var (camelCase to match the theme CSS). VIDEO slots (type: 'video') persist to brand.media[<key>] and render via <BrandMedia>, degrading to their poster still under reduced-motion / small screens / a missing clip. brand.images[<key>] / brand.media[<key>] override the theme default.",
   "slots": [
     {
       "key": "hero",
@@ -13,6 +14,20 @@
       "default": "/themes/pmg-used-cars/images/image-4.png",
       "aiHint": "wide forecourt with a row of stock cars, jet/dark tone",
       "unsplashHint": "used car dealership forecourt row of cars"
+    },
+    {
+      "key": "heroVideo",
+      "label": "Home hero background video",
+      "page": "Home",
+      "type": "video",
+      "role": "hero",
+      "aspect": "16:9",
+      "poster": "hero",
+      "loop": true,
+      "autoplay": true,
+      "default": "",
+      "aiHint": "slow cinematic pan across a forecourt / a car detail, dark tone; muted ambience",
+      "stockHint": "used car dealership forecourt cinematic"
     },
     {
       "key": "about",

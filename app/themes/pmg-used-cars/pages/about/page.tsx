@@ -20,6 +20,8 @@ import {
   Gauge,
 } from "lucide-react";
 import { dealer } from "../../data/site-config";
+import { resolveText } from "../../lib/brand-text";
+import type { ThemePageProps } from "../../../types";
 import "./about.css";
 
 export const metadata: Metadata = {
@@ -96,7 +98,7 @@ const reasons = [
   },
 ];
 
-export default function AboutPage() {
+export default function AboutPage({ brand }: ThemePageProps) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "AboutPage",
@@ -145,12 +147,7 @@ export default function AboutPage() {
           <h1 className="ab-hero-title">
             A dealership built on <em>trust</em>, not the hard sell.
           </h1>
-          <p className="ab-hero-lead">
-            {dealer.legalName} is a privately owned dealership in {dealer.address.town},
-            {" "}serving {dealer.address.county} and drivers nationwide. We stock high-quality,
-            hand-picked cars and sell them the honest way — clear pricing, real advice and
-            genuine support that carries on long after you drive away.
-          </p>
+          <p className="ab-hero-lead">{resolveText(brand, "aboutHeroLead")}</p>
           <div className="ab-hero-btns">
             <Link href="/used-cars" className="pmg-btn pmg-btn-primary pmg-btn-lg">
               Browse our cars <ArrowRight />
@@ -168,7 +165,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Stat / trust strip ───────────────────────────────── */}
-      <section className="ab-stats" aria-label="At a glance">
+      <section className="ab-stats" aria-label={resolveText(brand, "aboutStatsAria")}>
         <div className="pmg-shell ab-stats-grid">
           {stats.map((s) => (
             <div className="ab-stat" key={s.label}>
@@ -187,35 +184,22 @@ export default function AboutPage() {
       <section className="ab-story">
         <div className="pmg-shell ab-story-grid">
           <div className="ab-story-main">
-            <span className="ab-eyebrow ab-eyebrow-dark">Who we are</span>
-            <h2 className="ab-h2">Independent, family-run and proudly straightforward.</h2>
-            <p>
-              We're a small, privately owned dealership — which means the person who
-              picks the stock is the same person who'll answer your questions. There's no
-              call-centre, no scripted pitch, and no pressure. Just a team that knows cars
-              and wants you to buy the right one.
-            </p>
-            <p>
-              Every car we list is chosen by hand, inspected against a multi-point health
-              check and prepared with professional valeting before it's offered for sale.
-              If we wouldn't put a family member in it, it doesn't go on the forecourt.
-            </p>
-            <p>
-              From {dealer.address.town} we look after buyers right across {dealer.address.county}
-              {" "}and, with free delivery up to 30 miles and affordable rates beyond, drivers
-              all over the UK.
-            </p>
+            <span className="ab-eyebrow ab-eyebrow-dark">{resolveText(brand, "aboutStoryEyebrow")}</span>
+            <h2 className="ab-h2">{resolveText(brand, "aboutStoryTitle")}</h2>
+            <p>{resolveText(brand, "aboutStoryBody1")}</p>
+            <p>{resolveText(brand, "aboutStoryBody2")}</p>
+            <p>{resolveText(brand, "aboutStoryBody3")}</p>
           </div>
 
-          <aside className="ab-story-panel" aria-label="Visit us">
-            <h3>Come and see us</h3>
+          <aside className="ab-story-panel" aria-label={resolveText(brand, "aboutVisitAria")}>
+            <h3>{resolveText(brand, "aboutVisitTitle")}</h3>
             <ul className="ab-panel-list">
               <li><MapPin /> <span>{addressLine}</span></li>
               <li><Phone /> <span><a href={`tel:${dealer.contact.phoneE164}`}>{dealer.contact.phoneDisplay}</a></span></li>
-              <li><BadgeCheck /> <span>Viewings by appointment — booked fast and flexibly</span></li>
+              <li><BadgeCheck /> <span>{resolveText(brand, "aboutVisitAppointment")}</span></li>
             </ul>
             <div className="ab-panel-hours">
-              <div className="ab-hours-row"><span>Mon – Fri</span><b>10:00 – 17:00</b></div>
+              <div className="ab-hours-row"><span>{resolveText(brand, "aboutHoursWeekdayLabel")}</span><b>10:00 – 17:00</b></div>
               <div className="ab-hours-row"><span>Saturday</span><b>10:00 – 16:30</b></div>
               <div className="ab-hours-row"><span>Sunday</span><b>11:00 – 15:00</b></div>
             </div>
@@ -231,11 +215,9 @@ export default function AboutPage() {
         <div className="ab-values-glow" aria-hidden="true" />
         <div className="pmg-shell">
           <div className="ab-sec-head">
-            <span className="ab-eyebrow">What we stand for</span>
-            <h2 className="ab-h2 ab-h2-light">The way we do business</h2>
-            <p className="ab-sec-sub">
-              Four principles behind every car we sell and every customer we help.
-            </p>
+            <span className="ab-eyebrow">{resolveText(brand, "aboutValuesEyebrow")}</span>
+            <h2 className="ab-h2 ab-h2-light">{resolveText(brand, "aboutValuesTitle")}</h2>
+            <p className="ab-sec-sub">{resolveText(brand, "aboutValuesSub")}</p>
           </div>
           <div className="ab-values-grid">
             {values.map((v, i) => (
@@ -254,11 +236,9 @@ export default function AboutPage() {
       <section className="ab-services">
         <div className="pmg-shell">
           <div className="ab-sec-head">
-            <span className="ab-eyebrow ab-eyebrow-dark">More than a sale</span>
-            <h2 className="ab-h2">Everything we do to make it easy</h2>
-            <p className="ab-sec-sub ab-sub-muted">
-              From finding the car to keeping it on the road, we're set up to help at every step.
-            </p>
+            <span className="ab-eyebrow ab-eyebrow-dark">{resolveText(brand, "aboutServicesEyebrow")}</span>
+            <h2 className="ab-h2">{resolveText(brand, "aboutServicesTitle")}</h2>
+            <p className="ab-sec-sub ab-sub-muted">{resolveText(brand, "aboutServicesSub")}</p>
           </div>
           <div className="ab-svc-grid">
             {services.map((s) => (
@@ -278,11 +258,9 @@ export default function AboutPage() {
       <section className="ab-why">
         <div className="pmg-shell ab-why-grid">
           <div className="ab-why-intro">
-            <span className="ab-eyebrow">Why buy from us</span>
-            <h2 className="ab-h2 ab-h2-light">Reasons drivers choose PMG</h2>
-            <p className="ab-sec-sub">
-              We'd rather earn a customer for life than push one quick sale. Here's how that shows up.
-            </p>
+            <span className="ab-eyebrow">{resolveText(brand, "aboutWhyEyebrow")}</span>
+            <h2 className="ab-h2 ab-h2-light">{resolveText(brand, "aboutWhyTitle")}</h2>
+            <p className="ab-sec-sub">{resolveText(brand, "aboutWhySub")}</p>
             <Link href="/used-cars" className="pmg-btn pmg-btn-primary pmg-btn-lg ab-why-cta">
               See what's in stock <ArrowRight />
             </Link>
@@ -305,12 +283,9 @@ export default function AboutPage() {
       <section className="ab-cta">
         <div className="pmg-shell ab-cta-inner">
           <div className="ab-cta-text">
-            <span className="ab-eyebrow ab-eyebrow-onred">Ready when you are</span>
-            <h2>Find your next car the honest way.</h2>
-            <p>
-              Browse our hand-picked stock or get in touch — we'll help you find the right
-              car, arrange a viewing, or source something specific. No pressure, ever.
-            </p>
+            <span className="ab-eyebrow ab-eyebrow-onred">{resolveText(brand, "aboutCtaEyebrow")}</span>
+            <h2>{resolveText(brand, "aboutCtaTitle")}</h2>
+            <p>{resolveText(brand, "aboutCtaBody")}</p>
           </div>
           <div className="ab-cta-btns">
             <Link href="/used-cars" className="pmg-btn pmg-btn-dark pmg-btn-lg">

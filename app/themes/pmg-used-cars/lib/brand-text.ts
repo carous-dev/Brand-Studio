@@ -1,7 +1,7 @@
 /**
- * Brand-driven text helpers for the redgate-lodge-bespoke theme. Thin binding
- * onto the shared resolver in `app/themes/lib/theme-text.ts`;
- * `recipes/text-recipe.json` is the single source of truth for customisable copy.
+ * Brand-driven text helpers for the pmg-used-cars theme. Thin binding onto the
+ * shared resolver in `app/themes/lib/theme-text.ts`; `recipes/text-recipe.json`
+ * is the single source of truth for customisable copy.
  *
  * Resolution order per key: `brand.text[key]` (operator/LLM override) → recipe
  * default (token-interpolated) → ''. Fallbacks stay generic ("the showroom") so

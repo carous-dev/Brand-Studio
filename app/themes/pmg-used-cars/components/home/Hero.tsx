@@ -1,4 +1,8 @@
 import Link from "next/link";
+import type { BrandConfig } from "@/brands/types";
+import BrandMedia from "@/app/themes/components/BrandMedia";
+import mediaRecipe from "../../recipes/media-recipe.json";
+import { resolveText } from "../../lib/brand-text";
 
 const Check = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
@@ -72,28 +76,36 @@ const SELECTS: Array<{ name: string; label: string; options: Array<{ label: stri
   },
 ];
 
-export function Hero() {
+export function Hero({ brand }: { brand: BrandConfig }) {
   return (
     <section className="hero">
-      <div className="hero-media" />
+      <div className="hero-media">
+        {/* Cinematic hero clip on capable clients; the CSS background-image is
+            the poster still, so renderPosterFallback is off (no double-load).
+            Under reduced-motion / ≤640px / no clip, the background shows. */}
+        <BrandMedia
+          recipe={mediaRecipe as any}
+          brand={brand}
+          slotKey="heroVideo"
+          className="hero-video"
+          renderPosterFallback={false}
+        />
+      </div>
       <div className="pmg-shell">
         <div className="hero-inner">
-          <span className="eyebrow">Quality used cars · Zero pressure</span>
+          <span className="eyebrow">{resolveText(brand, "heroEyebrow")}</span>
           <h1>
-            Drive away <span className="tw-accent">with confidence.</span>
+            {resolveText(brand, "heroTitleLead")} <span className="tw-accent">{resolveText(brand, "heroTitleAccent")}</span>
           </h1>
-          <p className="sub">
-            A privately owned dealership in Dewsbury. Every car is hand-picked, health-checked and
-            valeted before it reaches you — with warranty, finance and nationwide delivery.
-          </p>
+          <p className="sub">{resolveText(brand, "heroLead")}</p>
           <div className="hero-btns">
-            <Link href="/used-cars" className="pmg-btn pmg-btn-primary pmg-btn-lg"><Car /> Browse our stock</Link>
-            <Link href="/sell-my-car" className="pmg-btn pmg-btn-outline-light pmg-btn-lg"><Tag /> Value your car</Link>
+            <Link href="/used-cars" className="pmg-btn pmg-btn-primary pmg-btn-lg"><Car /> {resolveText(brand, "heroBrowseBtn")}</Link>
+            <Link href="/sell-my-car" className="pmg-btn pmg-btn-outline-light pmg-btn-lg"><Tag /> {resolveText(brand, "heroValueBtn")}</Link>
           </div>
           <div className="trust-line">
-            <span><Check /> Health-checked &amp; valeted</span>
-            <span><Check /> Warranty included</span>
-            <span><Check /> Free delivery up to 30 miles</span>
+            <span><Check /> {resolveText(brand, "heroTrust1")}</span>
+            <span><Check /> {resolveText(brand, "heroTrust2")}</span>
+            <span><Check /> {resolveText(brand, "heroTrust3")}</span>
           </div>
         </div>
 

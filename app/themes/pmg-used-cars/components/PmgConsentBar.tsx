@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useCookieConsent } from "@/app/themes/pmg-used-cars/lib/vendor/hooks/useCookieConsent";
+import { resolveText } from "../lib/brand-text";
 
 // Time for the exit animation to play before the banner unmounts.
 const EXIT_MS = 450;
@@ -44,18 +45,18 @@ export function PmgConsentBar() {
       className={`pmg-cookie${show ? " show" : ""}`}
       role="dialog"
       aria-live="polite"
-      aria-label="Cookie notice"
+      aria-label={resolveText(null, "consentRegionLabel")}
     >
-      <button className="cb-close" aria-label="Dismiss — necessary cookies only" onClick={() => choose(declineAll)}>
+      <button className="cb-close" aria-label="Dismiss — necessary cookies only" /* text-static-ok */ onClick={() => choose(declineAll)}>
         <IconClose />
       </button>
       <div className="cb-top">
         <div className="cb-ico"><IconCookie /></div>
         <div>
-          <h4>We use cookies</h4>
+          <h4>{resolveText(null, "consentTitle")}</h4>
           <p>
             To run the site and understand how it&apos;s used. Read our{" "}
-            <a href="/cookie-policy">Cookie Policy</a>.
+            <a href="/cookie-policy">{resolveText(null, "consentPolicyLink")}</a>.
           </p>
         </div>
       </div>

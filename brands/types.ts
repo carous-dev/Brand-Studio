@@ -95,6 +95,21 @@ export type BrandImageSlots = {
   [key: string]: string | undefined
 }
 
+/**
+ * Editable component copy, keyed by a theme's `recipes/text-recipe.json` slot
+ * key. Operator/LLM values live here and win over the recipe default; a theme's
+ * shared `resolveText(brand, key)` reads this first. See `docs/theme-contract.md`.
+ */
+export type BrandTextSlots = Record<string, string>
+
+/**
+ * Editable media, keyed by a theme's `recipes/media-recipe.json` slot key.
+ * VIDEO slots resolve their clip URL from here (image slots keep using
+ * `images` for back-compat). Values are hosted mp4/webm URLs (brand upload or
+ * curated stock). `<BrandMedia>` degrades to the slot's poster still when empty.
+ */
+export type BrandMediaSlots = Record<string, string>
+
 export type BrandConfig = {
   // Identity
   slug: string
@@ -109,6 +124,12 @@ export type BrandConfig = {
   // or self-hosted under /themes/<id>/images/). BrandStyles.tsx exposes these
   // as CSS variables: --brand-image-hero, --brand-image-about, etc.
   images?: BrandImageSlots
+
+  // Editable component copy (text-recipe slots) and video media (media-recipe
+  // video slots). Both are LLM/operator-filled at preview-create time and read
+  // through the shared resolvers (resolveText / resolveMedia).
+  text?: BrandTextSlots
+  media?: BrandMediaSlots
 
   // Core nested config
   location: BrandLocation

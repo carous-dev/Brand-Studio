@@ -7,6 +7,7 @@ import { fetchInventory } from "../../used-cars/_lib/inventory";
 import { EMPTY_FILTERS } from "../../used-cars/_lib/types";
 import { areasServed } from "../../../lib/areas";
 import { buildLocationPath, resolveAreaFromSlug, slugifyPart } from "../../../lib/seo-links";
+import { resolveText } from "../../../lib/brand-text";
 import "../../used-cars/inventory.css";
 import "../../used-cars/hub.css";
 
@@ -108,11 +109,11 @@ export default async function LocationHubPage({ params }: PageProps) {
             <nav className="pmg-hub-crumbs" aria-label="Breadcrumb">
               <Link href="/">Home</Link>
               <span aria-hidden="true">/</span>
-              <Link href="/used-cars">Used cars</Link>
+              <Link href="/used-cars">{resolveText(null, "townHubCrumbUsedCars")}</Link>
               <span aria-hidden="true">/</span>
               <span aria-current="page">{area.town}</span>
             </nav>
-            <p className="pmg-hub-eyebrow">Areas we cover</p>
+            <p className="pmg-hub-eyebrow">{resolveText(null, "townHubEyebrow")}</p>
             <h1 className="pmg-hub-title">
               Used cars in <em>{area.town}</em>
             </h1>
@@ -140,16 +141,16 @@ export default async function LocationHubPage({ params }: PageProps) {
             </>
           ) : (
             <div className="pmg-hub-empty">
-              <p>Our stock is refreshing — new cars land weekly.</p>
+              <p>{resolveText(null, "townHubEmptyBody")}</p>
               <div className="pmg-hub-empty-actions">
-                <Link className="pmg-btn pmg-btn-primary" href="/used-cars">Browse all stock</Link>
-                <Link className="pmg-btn pmg-btn-outline-dark" href="/car-sourcing">Source a car</Link>
+                <Link className="pmg-btn pmg-btn-primary" href="/used-cars">{resolveText(null, "townHubBrowseAllStock")}</Link>
+                <Link className="pmg-btn pmg-btn-outline-dark" href="/car-sourcing">{resolveText(null, "townHubSourceCar")}</Link>
               </div>
             </div>
           )}
 
           {nearby.length > 0 ? (
-            <nav className="pmg-hub-rail" aria-label="Nearby areas we cover">
+            <nav className="pmg-hub-rail" aria-label={resolveText(null, "townHubNearbyLabel")}>
               <h2 className="pmg-hub-rail-title">Used cars near {area.town}</h2>
               <ul className="pmg-hub-rail-list">
                 {nearby.map((a) => (

@@ -23,7 +23,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const THEMES_DIR = path.join(ROOT, 'app', 'themes')
-const STUBS = new Set(['fbm', 'generated', 'lib'])
+const STUBS = new Set(['fbm', 'generated', 'lib', 'components'])
 
 const REQUIRED_FILES = [
   'shell.tsx',

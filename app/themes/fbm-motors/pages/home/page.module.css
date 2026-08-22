@@ -44,6 +44,105 @@
     linear-gradient(180deg, rgba(6, 10, 18, 0.3), transparent 30%, transparent 58%, rgba(6, 10, 18, 0.55));
 }
 
+/* ─── Futuristic FX layer (sits above the photo, below the captions) ─── */
+.heroFx {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Drifting brand-glow orbs — slow breathing light. */
+.fxGlow {
+  position: absolute;
+  inset: -10%;
+  background-image:
+    radial-gradient(340px 340px at 82% 20%, color-mix(in srgb, var(--fbm-ember-500, var(--color-primary)) 34%, transparent), transparent 62%),
+    radial-gradient(300px 300px at 14% 34%, color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 26%, transparent), transparent 60%);
+  animation: fxDrift 12s ease-in-out infinite alternate;
+}
+
+/* Synthwave floor grid receding to a horizon — the signature element. */
+.fxGrid {
+  position: absolute;
+  left: 50%;
+  bottom: -2%;
+  width: 240%;
+  height: 62%;
+  transform: translateX(-50%) perspective(360px) rotateX(70deg);
+  transform-origin: bottom center;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 62%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 62%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: linear-gradient(to top, #000 4%, transparent 82%);
+  mask-image: linear-gradient(to top, #000 4%, transparent 82%);
+  opacity: 0.35;
+  animation: fxGridRun 5.5s linear infinite;
+}
+
+/* Slow scan sweep — a thin bright band travelling down the band. */
+.fxScan {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    180deg,
+    transparent 46%,
+    color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 20%, transparent) 50%,
+    transparent 54%
+  );
+  background-size: 100% 300%;
+  mix-blend-mode: screen;
+  opacity: 0.6;
+  animation: fxScanRun 7s linear infinite;
+}
+
+/* Faint HUD frame + accent corner brackets. */
+.fxFrame {
+  position: absolute;
+  inset: 18px;
+  border: 1px solid color-mix(in srgb, var(--color-bg) 8%, transparent);
+  border-radius: 10px;
+}
+.fxFrame span {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border: 2px solid color-mix(in srgb, var(--fbm-ember-400, var(--color-accent)) 60%, var(--color-bg));
+  opacity: 0.7;
+}
+.fxFrame span[data-corner='tl'] { top: -1px; left: -1px; border-right: 0; border-bottom: 0; border-top-left-radius: 10px; }
+.fxFrame span[data-corner='tr'] { top: -1px; right: -1px; border-left: 0; border-bottom: 0; border-top-right-radius: 10px; }
+.fxFrame span[data-corner='bl'] { bottom: -1px; left: -1px; border-right: 0; border-top: 0; border-bottom-left-radius: 10px; }
+.fxFrame span[data-corner='br'] { bottom: -1px; right: -1px; border-left: 0; border-top: 0; border-bottom-right-radius: 10px; }
+
+@keyframes fxGridRun {
+  to { background-position: 0 48px; }
+}
+@keyframes fxScanRun {
+  0% { background-position: 0 -100%; }
+  100% { background-position: 0 200%; }
+}
+@keyframes fxDrift {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(-2%, 1.5%, 0) scale(1.06); }
+}
+
+/* Calm on phones — drop the grid/scan/frame, keep only the soft glow. */
+@media (max-width: 640px) {
+  .fxGrid,
+  .fxScan,
+  .fxFrame { display: none; }
+}
+
+/* Motion off — freeze every FX animation, keep the static art. */
+@media (prefers-reduced-motion: reduce) {
+  .fxGlow,
+  .fxGrid,
+  .fxScan { animation: none; }
+}
+
 .heroInner {
   position: relative;
   z-index: 3;

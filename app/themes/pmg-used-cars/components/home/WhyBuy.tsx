@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Users, CalendarClock, Video, Radar, LifeBuoy, BadgeCheck } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { BrandConfig } from "@/brands/types";
 import { dealer } from "../../data/site-config";
+import { resolveText } from "../../lib/brand-text";
 
 const phoneHref = `tel:${(dealer.contact.phoneE164 ?? dealer.contact.phoneDisplay ?? "").replace(/\s+/g, "")}`;
 
@@ -14,17 +16,14 @@ const REASONS: Array<{ n: string; Icon: LucideIcon; title: string; body: string 
   { n: "06", Icon: BadgeCheck, title: "Rated Excellent on Feefo", body: "Independently verified reviews from real customers — nothing curated, nothing hidden." },
 ];
 
-export function WhyBuy() {
+export function WhyBuy({ brand }: { brand: BrandConfig }) {
   return (
     <section className="section whybuy" id="why-buy">
       <div className="pmg-shell">
         <div className="wb-head">
-          <span className="eyebrow center">Why buy from PMG</span>
-          <h2>Buying a car <em>shouldn&apos;t</em> feel like a gamble.</h2>
-          <p>
-            We&apos;re a privately owned dealership in Dewsbury — not a superstore. Every car on our
-            forecourt is picked, prepared and backed the way we&apos;d want for our own family.
-          </p>
+          <span className="eyebrow center">{resolveText(brand, "whyEyebrow")}</span>
+          <h2>{resolveText(brand, "whyTitleLead")}<em>{resolveText(brand, "whyTitleEm")}</em>{resolveText(brand, "whyTitleTail")}</h2>
+          <p>{resolveText(brand, "whyIntro")}</p>
         </div>
 
         <div className="wb-grid">
@@ -39,8 +38,8 @@ export function WhyBuy() {
         </div>
 
         <div className="whybuy-cta">
-          <Link href="/used-cars" className="pmg-btn pmg-btn-primary pmg-btn-lg">Browse our stock</Link>
-          <a href={phoneHref} className="pmg-btn pmg-btn-outline-light pmg-btn-lg">Speak to the team</a>
+          <Link href="/used-cars" className="pmg-btn pmg-btn-primary pmg-btn-lg">{resolveText(brand, "whyBrowseBtn")}</Link>
+          <a href={phoneHref} className="pmg-btn pmg-btn-outline-light pmg-btn-lg">{resolveText(brand, "whySpeakBtn")}</a>
         </div>
       </div>
     </section>

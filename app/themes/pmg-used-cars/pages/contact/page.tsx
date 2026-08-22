@@ -13,6 +13,8 @@ import {
   Star,
 } from "lucide-react";
 import { dealer } from "../../data/site-config";
+import { resolveText } from "../../lib/brand-text";
+import type { ThemePageProps } from "../../../types";
 import "./contact.css";
 
 const fullAddress = [
@@ -52,7 +54,7 @@ function fmt(hhmm: string): string {
   return hhmm; // 24h "HH:MM" is fine for UK display
 }
 
-export default function ContactPage() {
+export default function ContactPage({ brand }: ThemePageProps) {
   const hours = dealer.openingHours ?? {};
 
   // Derive "today" + open-now in Europe/London so the highlight is correct
@@ -69,7 +71,7 @@ export default function ContactPage() {
   if (todayRange) {
     const [open, close] = todayRange.split("-");
     if (open && close) {
-      isOpenNow = nowMinutes >= toMinutes(open) && nowMinutes < toMinutes(close);
+      isOpenNow = nowMinutes >= toMinutes(open) && nowMinutes < toMinutes(close); /* text-static-ok */
     }
   }
 
@@ -132,15 +134,11 @@ export default function ContactPage() {
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="ct-hero">
         <div className="pmg-shell ct-hero-inner">
-          <span className="ct-kicker">Get in touch</span>
+          <span className="ct-kicker">{resolveText(brand, "contactHeroKicker")}</span>
           <h1 className="ct-hero-title">
             Talk to <span className="ct-accent">{dealer.brandName}</span>
           </h1>
-          <p className="ct-hero-lead">
-            Ask about a vehicle, book a viewing, or arrange part-exchange. Call or message the
-            team direct, or drop by the showroom in {dealer.address.town} — viewings by
-            appointment.
-          </p>
+          <p className="ct-hero-lead">{resolveText(brand, "contactHeroLead")}</p>
 
           <div className="ct-chips">
             <a href={phoneHref} className="ct-chip">
@@ -187,13 +185,11 @@ export default function ContactPage() {
             <div className="ct-ico" aria-hidden="true">
               <Phone />
             </div>
-            <h2 className="ct-card-title">Call the showroom</h2>
+            <h2 className="ct-card-title">{resolveText(brand, "contactCallTitle")}</h2>
             <a href={phoneHref} className="ct-bignum">
               {phoneDisplay}
             </a>
-            <p className="ct-card-note">
-              The quickest way to reach us. Ask about stock, finance or booking a test drive.
-            </p>
+            <p className="ct-card-note">{resolveText(brand, "contactCallNote")}</p>
             <a href={phoneHref} className="pmg-btn pmg-btn-primary ct-card-cta">
               <Phone aria-hidden="true" />
               Call now
@@ -205,11 +201,8 @@ export default function ContactPage() {
             <div className="ct-ico" aria-hidden="true">
               <MessageCircle />
             </div>
-            <h2 className="ct-card-title">Message us</h2>
-            <p className="ct-card-note">
-              Prefer to type? Send a WhatsApp for a fast reply, or email your enquiry and we
-              will get back to you during opening hours.
-            </p>
+            <h2 className="ct-card-title">{resolveText(brand, "contactMessageTitle")}</h2>
+            <p className="ct-card-note">{resolveText(brand, "contactMessageNote")}</p>
             <div className="ct-card-actions">
               <a
                 href={waHref}
@@ -241,7 +234,7 @@ export default function ContactPage() {
                 {isOpenNow ? "Open" : "Closed"}
               </span>
             </div>
-            <h2 className="ct-card-title">Opening hours</h2>
+            <h2 className="ct-card-title">{resolveText(brand, "contactHoursTitle")}</h2>
             <ul className="ct-hours">
               {DAYS.map((d) => {
                 const range = hours[d.key];
@@ -259,7 +252,7 @@ export default function ContactPage() {
                 );
               })}
             </ul>
-            <p className="ct-card-note ct-appt">Viewings by appointment.</p>
+            <p className="ct-card-note ct-appt">{resolveText(brand, "contactApptNote")}</p>
           </article>
         </div>
       </section>
@@ -268,7 +261,7 @@ export default function ContactPage() {
       <section className="ct-location pmg-shell">
         <div className="ct-location-grid">
           <article className="ct-location-card">
-            <span className="ct-kicker ct-kicker-dark">Visit the showroom</span>
+            <span className="ct-kicker ct-kicker-dark">{resolveText(brand, "contactLocationKicker")}</span>
             <h2 className="ct-section-title">
               Find us in {dealer.address.town}
             </h2>
@@ -297,10 +290,7 @@ export default function ContactPage() {
                 Browse stock
               </Link>
             </div>
-            <p className="ct-location-note">
-              Free on-site parking. Pop in during opening hours or call ahead to reserve a
-              viewing slot.
-            </p>
+            <p className="ct-location-note">{resolveText(brand, "contactLocationNote")}</p>
           </article>
 
           <div className="ct-map-card">
@@ -326,12 +316,9 @@ export default function ContactPage() {
       {/* ── Enquiry ──────────────────────────────────────────────────────── */}
       <section className="ct-enquiry pmg-shell">
         <div className="ct-enquiry-head">
-          <span className="ct-kicker ct-kicker-dark">Send an enquiry</span>
-          <h2 className="ct-section-title">Tell us what you are looking for</h2>
-          <p className="ct-section-lead">
-            Fill in the form and we will be in touch, or use one of the direct options below —
-            whatever suits you best.
-          </p>
+          <span className="ct-kicker ct-kicker-dark">{resolveText(brand, "contactEnquiryKicker")}</span>
+          <h2 className="ct-section-title">{resolveText(brand, "contactEnquiryTitle")}</h2>
+          <p className="ct-section-lead">{resolveText(brand, "contactEnquiryLead")}</p>
         </div>
 
         <div className="ct-enquiry-grid">
@@ -369,19 +356,19 @@ export default function ContactPage() {
           </article>
 
           <aside className="ct-side-card">
-            <h3 className="ct-side-title">What to include</h3>
+            <h3 className="ct-side-title">{resolveText(brand, "contactSideTitle")}</h3>
             <ul className="ct-side-list">
               <li>
                 <CheckCircle2 aria-hidden="true" />
-                <span>The vehicle registration or stock reference, if you have one.</span>
+                <span>{resolveText(brand, "contactSideItem1")}</span>
               </li>
               <li>
                 <CheckCircle2 aria-hidden="true" />
-                <span>Whether you are part-exchanging, and your current vehicle details.</span>
+                <span>{resolveText(brand, "contactSideItem2")}</span>
               </li>
               <li>
                 <CheckCircle2 aria-hidden="true" />
-                <span>A good time to call you back, plus your preferred contact method.</span>
+                <span>{resolveText(brand, "contactSideItem3")}</span>
               </li>
             </ul>
             <div className="ct-side-foot">
