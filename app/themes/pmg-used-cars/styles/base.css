@@ -1719,7 +1719,7 @@ a {
 
 /* Promos */
 .pmg-home .promos { background: var(--pmg-red); padding: 0; }
-.pmg-home .promos .pmg-shell { display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0; }
+.pmg-home .promos .pmg-shell { display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0; max-width: none; }
 .pmg-home .promo { position: relative; overflow: hidden; min-height: 320px; display: flex; align-items: center; color: var(--surface); isolation: isolate; }
 .pmg-home .promo .pmedia { position: absolute; inset: 0; z-index: -2; background-size: cover; background-position: center; }
 .pmg-home .promo::after { content: ""; position: absolute; inset: 0; z-index: -1; }
