@@ -11,6 +11,18 @@
 
 import { useEffect, useRef } from "react";
 
+// ─── CDN bundle URLs ─────────────────────────────────────────────────────────
+// The widget bundles live at widgets.carous.co.uk. The detail page loads the
+// gallery/enquiry/reserve bundles via <Script>; the site-wide WhatsApp launcher
+// is loaded by the shared <CarousWhatsAppWidget> from the theme shell.
+
+export const WIDGETS_BASE_URL =
+  process.env.NEXT_PUBLIC_WIDGETS_BASE_URL?.replace(/\/+$/, "") || "https://widgets.carous.co.uk";
+
+export const VEHICLE_GALLERY_WIDGET_SRC = `${WIDGETS_BASE_URL}/widgets/vehicle-gallery/latest/vehicle-gallery.js`;
+export const VEHICLE_ENQUIRY_WIDGET_SRC = `${WIDGETS_BASE_URL}/widgets/vehicle-enquiry/latest/vehicle-enquiry.js`;
+export const RESERVE_WIDGET_SRC = `${WIDGETS_BASE_URL}/widgets/reserve-a-car/latest/reserve-a-car.js`;
+
 // ─── Vehicle Enquiry widget ──────────────────────────────────────────────────
 
 export type ExternalVehicleEnquirySummary = {
