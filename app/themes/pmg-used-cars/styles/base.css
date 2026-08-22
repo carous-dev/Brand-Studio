@@ -12,23 +12,26 @@
   --font-body: var(--font-inter, "Inter", system-ui, -apple-system, "Segoe UI", sans-serif);
   --font-sans: var(--font-body);
 
-  /* Brand palette (brandkit.html). --pmg-red bridges to the brand record's
-     primary so the theme retints per brand; PMG's record sets #de010d. The
-     jet/grey/white neutrals stay fixed to preserve the exact jet-black look. */
+  /* Brand palette. --pmg-red/--jet/--ink/--muted/--line bridge to the brand
+     record's --color-* tokens so the theme fully retints per brand; the hex
+     after each `var(...)` is only the fallback when a token is unset. The grey
+     ramp + dark variants below are DERIVED from --color-text/--color-bg/--jet
+     via color-mix so the neutrals shift coherently with the brand too — no
+     fixed greys. */
   --pmg-red: var(--color-primary, #de010d);
   --pmg-red-signal: var(--color-accent, #ff3b45);
   --pmg-red-deep: var(--color-primary-strong, #b70009);
   --jet: var(--color-secondary, #050506);
-  --c-50: #f5f5f6;
-  --c-100: #ececee;
-  --c-200: #dedee1;
-  --c-300: #c6c6cc;
-  --c-400: #a4a4ad;
-  --c-500: #7e7e88;
-  --c-600: #5d5d66;
-  --c-700: #46464d;
-  --c-800: #2c2c32;
-  --c-900: #1b1b1f;
+  --c-50: color-mix(in srgb, var(--color-text) 4%, var(--color-bg));
+  --c-100: color-mix(in srgb, var(--color-text) 8%, var(--color-bg));
+  --c-200: color-mix(in srgb, var(--color-text) 15%, var(--color-bg));
+  --c-300: color-mix(in srgb, var(--color-text) 25%, var(--color-bg));
+  --c-400: color-mix(in srgb, var(--color-text) 42%, var(--color-bg));
+  --c-500: color-mix(in srgb, var(--color-text) 56%, var(--color-bg));
+  --c-600: color-mix(in srgb, var(--color-text) 68%, var(--color-bg));
+  --c-700: color-mix(in srgb, var(--color-text) 78%, var(--color-bg));
+  --c-800: color-mix(in srgb, var(--color-text) 87%, var(--color-bg));
+  --c-900: color-mix(in srgb, var(--color-text) 94%, var(--color-bg));
   --ink: var(--color-text, #1b1b1f);
   --muted: var(--color-muted, #5d5d66);
   --line: var(--color-border, #e3e3e7);
@@ -38,7 +41,7 @@
      updates the hex token above and its triple below in lock-step. */
   --pmg-red-rgb: var(--color-primary-rgb, 222, 1, 13);
   --pmg-red-signal-rgb: var(--color-accent-rgb, 255, 59, 69);
-  --pmg-red-deep-rgb: 183, 0, 9;
+  --pmg-red-deep-rgb: var(--color-primary-rgb, 183, 0, 9);
   --jet-rgb: var(--color-secondary-rgb, 5, 5, 6);
   --ink-rgb: var(--color-text-rgb, 27, 27, 31);
   --white-rgb: 255, 255, 255;
@@ -46,30 +49,32 @@
 
   /* Semantic surfaces + on-colours (swap these to re-skin light/dark) */
   --surface: var(--color-bg, #ffffff);        /* cards, panels, drawers, header glass, on-brand text */
-  --surface-page: #fbfbfc;   /* inventory page backdrop */
+  --surface-page: color-mix(in srgb, var(--color-text) 2%, var(--color-bg));   /* inventory page backdrop */
   --on-accent: var(--surface);
 
   /* Dark-section ramp — near-black stops for hero/section gradients that
      descend into --jet. */
-  --jet-raised: #191920;
-  --jet-soft: #0b0b0e;
+  --jet-raised: color-mix(in srgb, var(--color-bg) 9%, var(--jet));
+  --jet-soft: color-mix(in srgb, var(--color-bg) 3%, var(--jet));
 
-  /* Status + rating accents (live outside the brand-red ramp) */
+  /* Status + rating accents — intentionally FIXED semantic signals (they must
+     NOT retint with the brand: "open" stays green, stars stay amber). */
   --ok: #4ade80;             /* "open now" / tick green */
   --star: #f59e0b;           /* review stars */
 
-  /* Stock-tag chips */
+  /* Stock-tag chips — fixed semantic status (success / value / reserved) */
   --tag-low-bg: #dcfce7;
   --tag-low-fg: #15803d;
   --tag-value-bg: #fef3c7;
   --tag-value-fg: #92400e;
   --tag-reserved-bg: var(--c-900);
-  --tag-reserved-line: #3a3a42;
+  --tag-reserved-line: color-mix(in srgb, var(--color-bg) 20%, var(--jet));
 
   /* The canonical --color-* tokens (primary/surface/text/border/…) are emitted
-     by context/BrandStyles.tsx from the brand record, scoped to
-     [data-theme-id="pmg-used-cars"]. base.css only bridges the PMG token names
-     onto them (above) — it must NOT redefine --color-* or it creates a cycle. */
+     on :root by context/BrandStyles.tsx from the brand record. base.css only
+     bridges the PMG token names onto them (above) — it must NOT redefine
+     --color-* or it creates a cycle, and the bridges must stay on :root (same
+     element as --color-*) or their var() falls back to the PMG literal. */
 
   /* Shared-package accent bridge — vendored vehicle-filters (--vf-*) and
      @carous/garage (--cg-*) both chain off --accent-primary. Setting it here
@@ -77,7 +82,7 @@
   --accent-primary: var(--pmg-red);
   --accent-primary-strong: var(--pmg-red-deep);
   --accent-primary-foreground: var(--on-accent);
-  --line-dark: #232329;
+  --line-dark: color-mix(in srgb, var(--color-bg) 14%, var(--jet));
   --radius: 16px;
   --radius-sm: 10px;
   --shadow-cta: 0 6px 18px -6px rgba(var(--pmg-red-rgb), 0.55);
@@ -1322,10 +1327,21 @@ a {
   background-position: center 44%;
   filter: grayscale(0.06) contrast(1.03) brightness(0.94);
 }
+.pmg-home .hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 44%;
+  z-index: 0;
+  filter: grayscale(0.06) contrast(1.03) brightness(0.94);
+}
 .pmg-home .hero-media::after {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: radial-gradient(118% 86% at 50% 46%, rgba(var(--jet-rgb), 0.76) 0%, rgba(var(--jet-rgb), 0.58) 40%, rgba(var(--jet-rgb), 0.24) 72%, rgba(var(--jet-rgb), 0.05) 100%),
     linear-gradient(180deg, rgba(var(--jet-rgb), 0.66), rgba(var(--jet-rgb), 0) 200px),
     linear-gradient(0deg, rgba(var(--jet-rgb), 0.36), rgba(var(--jet-rgb), 0) 240px);

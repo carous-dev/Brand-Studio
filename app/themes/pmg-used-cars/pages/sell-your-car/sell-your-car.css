@@ -269,7 +269,7 @@
 
 /* Re-skin the @carous/sell-your-car wizard to PMG red on a light panel. */
 .pmg-syc .sycw-root {
-  --sycw-bg: #ffffff;
+  --sycw-bg: var(--surface);
   --sycw-fg: var(--ink);
   --sycw-muted: var(--muted);
   --sycw-border: var(--line);
