@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { generateVehicleSlug, loadInventoryByBrand, normalizeVehicle } from '@/app/lib/loadInventory'
+import { generateVehicleSlug, loadInventoryByBrand, loadCarousInventory, normalizeVehicle } from '@/app/lib/loadInventory'
+import { fetchBrandBySlug } from '@/app/lib/brandApi'
 
 export async function GET(request: Request) {
   try {
@@ -7,9 +8,13 @@ export async function GET(request: Request) {
     const brand = (url.searchParams.get('brand') || '').toLowerCase().trim()
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '12', 10), 50)
 
-    // Load inventory for specified brand
-    const inventory = loadInventoryByBrand(brand || undefined)
-    console.log(`[/api/featured-vehicles] Loaded ${inventory.length} items from brand "${brand || 'main'}"`)
+    // A Carous-bound preview (demo accounts) serves live DMS stock by client_id;
+    // every other preview reads its on-disk brand JSON.
+    const brandCfg = brand ? await fetchBrandBySlug(brand) : null
+    const inventory = brandCfg?.carousClientId
+      ? await loadCarousInventory(brandCfg.carousClientId)
+      : loadInventoryByBrand(brand || undefined)
+    console.log(`[/api/featured-vehicles] Loaded ${inventory.length} items from brand "${brand || 'main'}"${brandCfg?.carousClientId ? ' (carous live)' : ''}`)
 
     // Filter featured items and sort by newest
     let featured = inventory

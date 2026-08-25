@@ -33,33 +33,37 @@ export async function generateMetadata(): Promise<Metadata> {
   
   const { brand } = brandResult;
   const siteUrl = (brand?.domain || 'http://localhost:3000').replace(/\/$/, '');
-  const iconUrl = brand.favicon || brand.logo || '/favicon.ico';
+  // Defensive: a partial brand (e.g. an API-created record that skipped the
+  // scaffold) must never crash SSR here. Guard every optional deref.
+  const seo = brand?.seo ?? {};
+  const logo = brand?.logo || '/favicon.ico';
+  const iconUrl = brand?.favicon || brand?.logo || '/favicon.ico';
 
   return {
-    title: brand.name,
-    description: brand.seo.description,
-    keywords: brand.seo.keywords,
+    title: brand?.name,
+    description: seo.description,
+    keywords: seo.keywords,
     openGraph: {
-      title: brand.name,
-      description: brand.seo.description,
+      title: brand?.name,
+      description: seo.description,
       url: siteUrl,
-      siteName: brand.name,
+      siteName: brand?.name,
       images: [{
-        url: brand.logo,
+        url: logo,
         width: 1200,
         height: 630,
-        alt: `${brand.name}`
+        alt: `${brand?.name ?? ''}`
       }],
       locale: 'en_GB',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: brand.name,
-      description: brand.seo.description,
-      images: [brand.logo],
-      creator: brand.seo.twitterHandle,
-      site: brand.seo.twitterHandle
+      title: brand?.name,
+      description: seo.description,
+      images: [logo],
+      creator: seo.twitterHandle,
+      site: seo.twitterHandle
     },
     icons: {
       icon: iconUrl,

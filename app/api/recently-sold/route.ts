@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getBrandFromHost } from '@/config/domains'
 import { fetchBrandByHost, fetchBrandBySlug } from '@/app/lib/brandApi'
-import { generateVehicleSlug, loadInventoryByBrand, normalizeVehicle, type VehicleItem } from '@/app/lib/loadInventory'
+import { generateVehicleSlug, resolveBrandInventory, normalizeVehicle, type VehicleItem } from '@/app/lib/loadInventory'
 
 type RecentlySoldVehicle = VehicleItem & {
   stock_status: 'sold'
@@ -84,7 +84,7 @@ export async function GET(request: Request) {
     const limit = Math.max(1, Math.min(60, Number.parseInt(limitParam, 10) || 12))
 
     const brand = await resolveBrandFromRequest(request, requestedBrand)
-    const inventory = loadInventoryByBrand(brand || undefined).map(normalizeVehicle)
+    const inventory = (await resolveBrandInventory(brand || undefined)).map(normalizeVehicle)
 
     if (inventory.length === 0) {
       return NextResponse.json([], { headers: { 'Cache-Control': 'no-store' } })

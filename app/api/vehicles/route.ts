@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { loadInventoryByBrand, extractPresetsFromInventory } from '@/app/lib/loadInventory'
+import { resolveBrandInventory, extractPresetsFromInventory } from '@/app/lib/loadInventory'
 
 export async function GET(req: NextRequest) {
   try {
@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     const brand = url.searchParams.get('brand')
 
     // Load inventory for specified brand or main inventory
-    const inventory = loadInventoryByBrand(brand || undefined)
+    const inventory = await resolveBrandInventory(brand || undefined)
     const presets = extractPresetsFromInventory(inventory)
 
     // If requesting all makes

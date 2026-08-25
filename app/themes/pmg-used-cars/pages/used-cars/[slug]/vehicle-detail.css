@@ -16,6 +16,9 @@
   --vd-radius-sm: var(--radius-sm, 10px);
   --vd-hair: 1px solid var(--line);
   background: var(--surface-page, #fbfbfc);
+  /* Top breathing on the container (not .pmg-vd-topbar — that carries .pmg-shell,
+     whose `padding: 0 <gutter>` shorthand would zero a padding-top set on it). */
+  padding-top: clamp(28px, 3.4vw, 52px);
   padding-bottom: clamp(40px, 8vw, 88px);
 }
 

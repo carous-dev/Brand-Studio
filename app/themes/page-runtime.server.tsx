@@ -2,7 +2,7 @@
 import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { getBrandForRequest } from '@/app/lib/brandDetection.server'
-import { generateVehicleSlug, loadInventoryByBrand } from '@/app/lib/loadInventory'
+import { generateVehicleSlug, resolveBrandInventory } from '@/app/lib/loadInventory'
 import { getThemePageForBrand } from '@/app/themes/theme-pages.server'
 import type { ThemePageId } from '@/app/themes/types'
 import type { BrandConfig } from '@/brands/types'
@@ -266,11 +266,13 @@ function normalizeLookupKey(value: unknown): string {
   return String(value ?? '').toLowerCase().replace(/[^a-z0-9]/g, '')
 }
 
-function findVehicleInLocalInventory(slug: string, brandId?: string) {
+async function findVehicleInLocalInventory(slug: string, brandId?: string) {
   const lookup = normalizeLookupKey(slug)
   if (!lookup) return null
 
-  const inventory = loadInventoryByBrand(brandId)
+  // Carous-bound previews (demo accounts) look up ONLY the dealer's live DMS
+  // stock — never the shared placeholder inventory.
+  const inventory = await resolveBrandInventory(brandId)
   return inventory.find((item: any) => {
     const generatedSlug = generateVehicleSlug(item)
     const explicitSlug = String(item.slug || item.derivative_slug || '').toLowerCase()
@@ -362,13 +364,13 @@ async function fetchVehicleBySlug(slug: string, brandId?: string) {
     })
 
     if (!res.ok) {
-      return findVehicleInLocalInventory(slug, brandId)
+      return await findVehicleInLocalInventory(slug, brandId)
     }
 
     const data = await res.json()
-    return data?.vehicle ?? data ?? findVehicleInLocalInventory(slug, brandId)
+    return data?.vehicle ?? data ?? (await findVehicleInLocalInventory(slug, brandId))
   } catch {
-    return findVehicleInLocalInventory(slug, brandId)
+    return await findVehicleInLocalInventory(slug, brandId)
   }
 }
 

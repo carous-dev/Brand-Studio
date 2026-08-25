@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { generateVehicleSlug, loadBrandInventoryStrict, loadInventoryByBrand } from '@/app/lib/loadInventory'
+import { generateVehicleSlug, resolveBrandInventory } from '@/app/lib/loadInventory'
 import { getBrandFromHost } from '@/config/domains'
 import { fetchBrandByHost, fetchBrandBySlug } from '@/app/lib/brandApi'
 
@@ -192,10 +192,10 @@ export async function GET(req: Request) {
       brand = (getBrandFromHost(host) || 'fairfield').toLowerCase()
     }
 
-    // Keep behavior aligned with /api/inventory:
-    // prefer strict brand inventory, but fall back to the main inventory file when absent.
-    const strictInventory = loadBrandInventoryStrict(brand)
-    const inventory = strictInventory.length > 0 ? strictInventory : loadInventoryByBrand(brand)
+    // Carous-bound previews (demo accounts) resolve to the dealer's live DMS
+    // stock only (empty when none); other brands keep the strict-then-main file
+    // behaviour — both handled by resolveBrandInventory.
+    const inventory = await resolveBrandInventory(brand)
     if (!inventory || inventory.length === 0) {
       return NextResponse.json({ error: 'brand inventory not found' }, { status: 404, headers: { 'Cache-Control': 'no-store' } })
     }
