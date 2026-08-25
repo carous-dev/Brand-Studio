@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
 import {
   generateVehicleSlug,
-  loadBrandInventoryStrict,
-  loadInventoryByBrand,
+  resolveBrandInventory,
   normalizeVehicle,
   type VehicleItem,
 } from '@/app/lib/loadInventory'
@@ -158,8 +157,8 @@ export async function GET(request: Request) {
     }
 
     const brand = await resolveBrand(request, url)
-    const strictInventory = loadBrandInventoryStrict(brand)
-    const inventory = strictInventory.length > 0 ? strictInventory : loadInventoryByBrand(brand)
+    // Carous-bound previews resolve to the dealer's live DMS stock only.
+    const inventory = await resolveBrandInventory(brand)
 
     if (!inventory.length) {
       return NextResponse.json({ items: [] }, { status: 200, headers: { 'Cache-Control': 'no-store' } })

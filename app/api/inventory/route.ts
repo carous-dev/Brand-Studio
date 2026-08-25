@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import {
   loadInventoryByBrand,
+  loadCarousInventory,
   filterInventory,
   sortInventory,
   paginateInventory,
@@ -75,8 +76,14 @@ export async function GET(request: Request) {
 
     const brand = resolvedBrandId
 
-    // Load inventory from files
-    let inventory = loadInventoryByBrand(brand || undefined)
+    // A preview bound to a Carous dealer (demo accounts) serves that dealer's
+    // LIVE DMS-managed stock by client_id; every other preview reads its on-disk
+    // brand JSON. `brandCfg` is already cached by fetchBrandBySlug.
+    const brandCfg = brand ? await fetchBrandBySlug(brand) : null
+    const carousClientId = brandCfg?.carousClientId
+    let inventory = carousClientId
+      ? await loadCarousInventory(carousClientId)
+      : loadInventoryByBrand(brand || undefined)
 
     // Apply filters
     let filtered = filterInventory(inventory, {
@@ -124,7 +131,7 @@ export async function GET(request: Request) {
         years: presets.years,
         prices: presets.prices
       },
-      source: 'inventory.json'
+      source: carousClientId ? 'carous' : 'inventory.json'
     }
 
     return NextResponse.json({ items, meta }, { status: 200, headers: { 'Cache-Control': 'no-store' } })

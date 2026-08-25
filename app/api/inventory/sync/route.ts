@@ -12,13 +12,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Import inventory loading functions
-    const { loadBrandInventoryStrict, loadInventoryByBrand } = await import('@/app/lib/loadInventory')
-    
-    // Load inventory for the specified brand
-    const inventory = forceRefresh 
-      ? loadInventoryByBrand(brand)
-      : loadBrandInventoryStrict(brand)
+    // Carous-bound previews reflect the dealer's live DMS stock; others read the
+    // per-slug file (strict) or fall back to main inventory on forceRefresh.
+    const { resolveBrandInventory } = await import('@/app/lib/loadInventory')
+    const inventory = await resolveBrandInventory(brand, { strict: !forceRefresh })
 
     if (!inventory || inventory.length === 0) {
       return NextResponse.json(
@@ -55,10 +52,8 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Import inventory loading functions
-    const { loadBrandInventoryStrict } = await import('@/app/lib/loadInventory')
-    
-    const inventory = loadBrandInventoryStrict(brand)
+    const { resolveBrandInventory } = await import('@/app/lib/loadInventory')
+    const inventory = await resolveBrandInventory(brand, { strict: true })
 
     if (!inventory || inventory.length === 0) {
       return NextResponse.json(

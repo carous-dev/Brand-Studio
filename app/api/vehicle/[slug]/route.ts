@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { loadBrandInventoryStrict, loadInventoryByBrand, normalizeVehicle, generateVehicleSlug } from '@/app/lib/loadInventory'
+import { resolveBrandInventory, normalizeVehicle, generateVehicleSlug } from '@/app/lib/loadInventory'
 import { getBrandFromHost } from '@/config/domains'
 import { fetchBrandByHost, fetchBrandBySlug } from '@/app/lib/brandApi'
 
@@ -43,10 +43,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
       return NextResponse.json({ error: 'missing brand for vehicle lookup' }, { status: 400, headers: { 'Cache-Control': 'no-store' } })
     }
 
-    // Keep behavior aligned with /api/inventory:
-    // prefer strict brand inventory, but fall back to main inventory when absent.
-    const strictInventory = loadBrandInventoryStrict(brand)
-    const inventory = strictInventory.length > 0 ? strictInventory : loadInventoryByBrand(brand)
+    // Carous-bound previews resolve to the dealer's live DMS stock only.
+    const inventory = await resolveBrandInventory(brand)
     if (!inventory || inventory.length === 0) {
       return NextResponse.json({ error: 'brand inventory not found' }, { status: 404, headers: { 'Cache-Control': 'no-store' } })
     }

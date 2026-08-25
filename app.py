@@ -4552,6 +4552,34 @@ def remote_create_preview():
         }), 409
 
     brand = dict(brand)
+
+    # Scaffold a COMPLETE brand from whatever fields the caller sent — the remote
+    # path otherwise persists a minimal record that crashes SSR (app/layout.tsx
+    # reads brand.seo.description; themes read pages/services/etc.). This reuses
+    # the SAME canonical builder as the dashboard form path (FormHandler.
+    # createBrandConfig), so operator- and API-created previews are identical.
+    # It's constructive (builds every section with sensible defaults), so we
+    # re-attach the keys it doesn't know about (carousClientId — the DMS demo
+    # binding). Any real dealer fields the caller passed (name/tagline/location/
+    # theme.colors/domain/logo/heroImage) are honoured by the builder.
+    try:
+        import sys as _sys
+        _sys.path.append(os.path.join(os.path.dirname(__file__), 'static', 'modules'))
+        from form_handler import FormHandler as _FormHandler
+        _seo = brand.get('seo') if isinstance(brand.get('seo'), dict) else {}
+        _kw = _seo.get('keywords') if isinstance(_seo.get('keywords'), list) else []
+        _scaffold = _FormHandler.createBrandConfig(brand, slug, _kw)
+        # NON-DESTRUCTIVE: the scaffold sits UNDER the caller's payload — every field
+        # the caller actually sent WINS (incl. the /new-theme skill's rich nested
+        # seo/pages/text/images/media and the DMS's carousClientId); the scaffold only
+        # fills sections that are MISSING. So a complete brand is left untouched (no
+        # regression for existing callers) and a minimal brand gets backfilled enough
+        # to render. `create_brand_config` is the same canonical builder the dashboard
+        # form path uses, so operator- and API-created previews stay consistent.
+        brand = deep_merge(_scaffold, brand)
+    except Exception:
+        app.logger.exception("Brand scaffold failed (slug=%s) — persisting caller payload as-is", slug)
+
     brand['slug'] = slug
     brand['themeId'] = safe_theme_id
     theme_obj = dict(brand.get('theme') or {})

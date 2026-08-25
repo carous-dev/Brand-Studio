@@ -114,6 +114,72 @@ export function loadBrandInventoryStrict(brand?: string): VehicleItem[] {
 }
 
 /**
+ * Live stock for a preview bound to a Carous dealer (demo accounts). Fetches the
+ * dealer's DMS-managed stock from the PUBLIC Carous endpoint by client_id — the
+ * same data the dealer's own website reads (`/v1/inventory/vehicles?client_id=`,
+ * a pull from their stock DB, unaffected by the demo marketplace sandbox). The
+ * Carous item shape already shares Brand Studio's VehicleItem field names
+ * (forecourt_price_gbp / odometer_reading_miles / fuel_type / …); we just
+ * reconcile the make_name/model_name + image[s] variants. Empty on any miss —
+ * NEVER falls back to the shared placeholder inventory.
+ */
+export async function loadCarousInventory(clientId?: string): Promise<VehicleItem[]> {
+  const id = String(clientId || '').trim()
+  if (!id) return []
+  const base = (process.env.CAROUS_API_BASE || 'https://api.carous.co.uk/v1').replace(/\/$/, '')
+  const url = `${base}/inventory/vehicles?client_id=${encodeURIComponent(id)}&types=car,van,bike&per_page=200&page=1`
+  try {
+    const res = await fetch(url, { cache: 'no-store', headers: { Accept: 'application/json' } })
+    if (!res.ok) {
+      console.warn(`[loadCarousInventory] ${res.status} for client ${id}`)
+      return []
+    }
+    const data = await res.json()
+    const items: any[] = Array.isArray(data) ? data : data.items || data.vehicles || []
+    return items.map((it) => ({
+      ...it,
+      registration: it.registration ?? it.reg,
+      make: it.make ?? it.make_name,
+      model: it.model ?? it.model_name,
+      year: it.year ?? it.year_of_manufacture,
+      price: it.price ?? it.forecourt_price_gbp,
+      forecourt_price_gbp: it.price ?? it.forecourt_price_gbp,
+      mileage: it.mileage ?? it.odometer_reading_miles,
+      odometer_reading_miles: it.mileage ?? it.odometer_reading_miles,
+      fuel_type: it.fuel_type ?? it.fuel,
+      transmission_type: it.transmission_type ?? it.trans,
+      images: Array.isArray(it.images) ? it.images : it.image ? [it.image] : [],
+      status: it.advert_status ?? it.status,
+    })) as VehicleItem[]
+  } catch (err) {
+    console.error(`[loadCarousInventory] failed for client ${id}:`, err)
+    return []
+  }
+}
+
+/**
+ * The inventory a rendered brand should show — the ONE entry point every page /
+ * API route should use. A Carous-bound preview (a DMS demo account, i.e. the
+ * brand has `carousClientId`) returns ONLY that dealer's live DMS stock — empty
+ * when they haven't added a car yet, and NEVER the shared placeholder
+ * `inventory.json`. Every other brand keeps the static behaviour (per-slug file,
+ * else the placeholder for prospect previews). `strict` skips the placeholder
+ * fallback for the non-Carous case (single-vehicle lookups).
+ */
+export async function resolveBrandInventory(brand?: string, opts?: { strict?: boolean }): Promise<VehicleItem[]> {
+  if (brand) {
+    try {
+      const { fetchBrandBySlug } = await import('./brandApi')
+      const cfg = await fetchBrandBySlug(brand)
+      if (cfg?.carousClientId) return await loadCarousInventory(cfg.carousClientId)
+    } catch (err) {
+      console.error(`[resolveBrandInventory] brand lookup failed for "${brand}":`, err)
+    }
+  }
+  return opts?.strict ? loadBrandInventoryStrict(brand) : loadInventoryByBrand(brand)
+}
+
+/**
  * Load all available inventories (main + all brand-specific)
  */
 export function loadAllInventories(): Map<string, VehicleItem[]> {

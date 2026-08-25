@@ -137,6 +137,10 @@ export type BrandConfig = {
   theme: ThemeConfig
   themeId?: string
   aaApprovedDealer?: boolean
+  /** When set, this preview is bound to a Carous dealer (e.g. a DMS demo account):
+   *  stock is live-fetched from the Carous API by this client_id and branding is
+   *  overlaid from the dealer's DMS Appearance settings — instead of static JSON. */
+  carousClientId?: string
 
   // Optional sections
   socialLinks?: BrandSocialLinks
