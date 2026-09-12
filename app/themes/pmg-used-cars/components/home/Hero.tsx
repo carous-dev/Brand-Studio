@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { BrandConfig } from "@/brands/types";
 import BrandMedia from "@/app/themes/components/BrandMedia";
 import mediaRecipe from "../../recipes/media-recipe.json";
+import { themeImageUrl } from "@/app/themes/lib/theme-images";
 import { resolveText } from "../../lib/brand-text";
 
 const Check = () => (
@@ -77,12 +78,15 @@ const SELECTS: Array<{ name: string; label: string; options: Array<{ label: stri
 ];
 
 export function Hero({ brand }: { brand: BrandConfig }) {
+  // Dashboard-set hero (brand.images.hero / brand.heroImage) → theme default.
+  const heroImage = themeImageUrl(mediaRecipe as any, brand, "hero");
   return (
     <section className="hero">
       <div className="hero-media">
-        {/* Cinematic hero clip on capable clients; the CSS background-image is
-            the poster still, so renderPosterFallback is off (no double-load).
-            Under reduced-motion / ≤640px / no clip, the background shows. */}
+        {heroImage ? <img className="hero-media-img" src={heroImage} alt="" /> : null}
+        {/* Cinematic hero clip on capable clients; the <img> above is the
+            poster still, so renderPosterFallback is off (no double-load).
+            Under reduced-motion / ≤640px / no clip, the image shows. */}
         <BrandMedia
           recipe={mediaRecipe as any}
           brand={brand}

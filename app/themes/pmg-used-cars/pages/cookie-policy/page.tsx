@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { dealer } from "../../data/site-config";
 import { resolveText } from "../../lib/brand-text";
+import { themeImageUrl } from "@/app/themes/lib/theme-images";
+import mediaRecipe from "../../recipes/media-recipe.json";
 import type { ThemePageProps } from "../../../types";
 import "../legal.css";
 
@@ -39,6 +41,11 @@ export default function CookiePolicyPage({ brand }: ThemePageProps) {
   return (
     <>
       <header className="legal-hero">
+        {/* Dashboard-set hero (brand.images.legal / brand.heroImage) → theme
+            default, a plain <img> under the scrim. */}
+        <div className="legal-hero-media" aria-hidden="true">
+          <img src={themeImageUrl(mediaRecipe as any, brand, "legal")} alt="" />
+        </div>
         <div className="legal-head">
           <p className="legal-kicker">{resolveText(brand, "cookieKicker")}</p>
           <h1>{resolveText(brand, "cookieTitle")}</h1>

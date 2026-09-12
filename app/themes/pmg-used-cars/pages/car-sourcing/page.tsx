@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { dealer } from "../../data/site-config";
 import { resolveText } from "../../lib/brand-text";
+import { themeImageUrl } from "@/app/themes/lib/theme-images";
+import mediaRecipe from "../../recipes/media-recipe.json";
 import type { ThemePageProps } from "../../../types";
 import "./car-sourcing.css";
 
@@ -183,6 +185,11 @@ export default function CarSourcingPage({ brand }: ThemePageProps) {
 
       {/* ── Hero ── */}
       <header className="ps-hero" aria-labelledby="ps-title">
+        {/* Dashboard-set hero (brand.images.carSourcing / brand.heroImage) →
+            theme default, a plain <img> under the scrim on .ps-hero-bg. */}
+        <div className="ps-hero-media" aria-hidden="true">
+          <img src={themeImageUrl(mediaRecipe as any, brand, "carSourcing")} alt="" />
+        </div>
         <div className="ps-hero-bg" aria-hidden="true" />
         <div className="pmg-shell">
           <div className="ps-hero-inner">

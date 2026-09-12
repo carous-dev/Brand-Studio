@@ -8,20 +8,37 @@
 /* ── Dark hero band (bg image + jet scrim), full-bleed above the prose ─────── */
 .legal-hero {
   position: relative;
+  isolation: isolate;
   background-color: var(--jet);
-  background-image:
-    linear-gradient(
-      100deg,
-      rgba(var(--jet-rgb), 0.96) 0%,
-      rgba(var(--jet-rgb), 0.9) 34%,
-      rgba(var(--jet-rgb), 0.68) 70%,
-      rgba(var(--jet-rgb), 0.52) 100%
-    ),
-    url("/themes/pmg-used-cars/images/image-2.png");
-  background-size: cover;
-  background-position: center right;
   color: var(--surface);
   overflow: hidden;
+}
+/* Hero photo — a plain <img> (dashboard override → theme default) rendered by
+   the legal pages, under the jet scrim on ::after. z-index -2 sits beneath the
+   -1 dot-grid (.legal-hero::after) and the content. */
+.legal-hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+.legal-hero-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center right;
+}
+.legal-hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    100deg,
+    rgba(var(--jet-rgb), 0.96) 0%,
+    rgba(var(--jet-rgb), 0.9) 34%,
+    rgba(var(--jet-rgb), 0.68) 70%,
+    rgba(var(--jet-rgb), 0.52) 100%
+  );
 }
 /* Faint technical grid, masked to a soft vignette. */
 .legal-hero::after {

@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import { dealer } from "../../data/site-config";
 import { resolveText } from "../../lib/brand-text";
+import { themeImageUrl } from "@/app/themes/lib/theme-images";
+import mediaRecipe from "../../recipes/media-recipe.json";
 import type { ThemePageProps } from "../../../types";
 import "./about.css";
 
@@ -141,6 +143,11 @@ export default function AboutPage({ brand }: ThemePageProps) {
 
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="ab-hero">
+        {/* Dashboard-set hero (brand.images.about / brand.heroImage) → theme
+            default, a plain <img> under the scrim. */}
+        <div className="ab-hero-media" aria-hidden="true">
+          <img src={themeImageUrl(mediaRecipe as any, brand, "about")} alt="" />
+        </div>
         <div className="ab-hero-glow" aria-hidden="true" />
         <div className="pmg-shell ab-hero-inner">
           <span className="ab-eyebrow">About {dealer.brandName}</span>

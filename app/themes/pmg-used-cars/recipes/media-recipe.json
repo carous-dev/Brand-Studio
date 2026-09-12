@@ -30,9 +30,21 @@
       "stockHint": "used car dealership forecourt cinematic"
     },
     {
+      "key": "inventoryHero",
+      "label": "Used cars page hero",
+      "page": "Used cars",
+      "role": "hero",
+      "aspect": "16:9",
+      "width": 1920,
+      "default": "/themes/pmg-used-cars/images/image-2.png",
+      "aiHint": "forecourt / stock line-up under a dark cinematic tone",
+      "unsplashHint": "used car dealership forecourt stock"
+    },
+    {
       "key": "about",
       "label": "About page hero",
       "page": "About",
+      "role": "hero",
       "aspect": "16:9",
       "width": 1600,
       "default": "/themes/pmg-used-cars/images/image-4.png",
@@ -73,6 +85,7 @@
       "key": "sellYourCar",
       "label": "Sell Your Car hero",
       "page": "Sell Your Car",
+      "role": "hero",
       "aspect": "16:9",
       "width": 1600,
       "default": "/themes/pmg-used-cars/images/image-2.png",
@@ -83,6 +96,7 @@
       "key": "carSourcing",
       "label": "Car Sourcing hero",
       "page": "Car Sourcing",
+      "role": "hero",
       "aspect": "16:9",
       "width": 1600,
       "default": "/themes/pmg-used-cars/images/image-3.png",
@@ -93,10 +107,22 @@
       "key": "contact",
       "label": "Contact hero",
       "page": "Contact",
+      "role": "hero",
       "aspect": "16:9",
       "width": 1600,
       "default": "/themes/pmg-used-cars/images/image-2.png",
       "aiHint": "the showroom / premises exterior",
+      "unsplashHint": "car showroom building exterior"
+    },
+    {
+      "key": "legal",
+      "label": "Legal pages hero (Privacy, Cookies)",
+      "page": "Legal",
+      "role": "hero",
+      "aspect": "16:9",
+      "width": 1600,
+      "default": "/themes/pmg-used-cars/images/image-2.png",
+      "aiHint": "the showroom / premises exterior, dark cinematic tone",
       "unsplashHint": "car showroom building exterior"
     }
   ]

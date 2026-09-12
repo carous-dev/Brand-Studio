@@ -75,22 +75,38 @@
 /* ── Hero ──────────────────────────────────────────────────── */
 .pmg-about .ab-hero {
   position: relative;
+  isolation: isolate;
   background-color: var(--jet);
-  background-image:
-    linear-gradient(
-      100deg,
-      rgba(var(--jet-rgb), 0.96) 0%,
-      rgba(var(--jet-rgb), 0.9) 34%,
-      rgba(var(--jet-rgb), 0.66) 68%,
-      rgba(var(--jet-rgb), 0.5) 100%
-    ),
-    var(--brand-image-about, none),
-    url("/themes/pmg-used-cars/images/image-4.png");
-  background-size: cover;
-  background-position: center right;
   color: var(--surface);
   overflow: hidden;
   padding: 64px 0 72px;
+}
+/* Hero photo — a plain <img> (dashboard override → theme default) rendered by
+   page.tsx, under the jet scrim on ::after. z-index -2 sits beneath the -1
+   dot-grid (.ab-hero::after) and the red glow. */
+.pmg-about .ab-hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+.pmg-about .ab-hero-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center right;
+}
+.pmg-about .ab-hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    100deg,
+    rgba(var(--jet-rgb), 0.96) 0%,
+    rgba(var(--jet-rgb), 0.9) 34%,
+    rgba(var(--jet-rgb), 0.66) 68%,
+    rgba(var(--jet-rgb), 0.5) 100%
+  );
 }
 .pmg-about .ab-hero-glow {
   position: absolute;

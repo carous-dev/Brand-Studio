@@ -70,20 +70,32 @@
   padding: 64px 0 62px;
   isolation: isolate;
 }
+/* Hero photo — a plain <img> (dashboard override → theme default) rendered by
+   page.tsx, beneath the jet scrim carried by .ps-hero-bg (z-index -1). */
+.pmg-sourcing .ps-hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+.pmg-sourcing .ps-hero-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
 .pmg-sourcing .ps-hero-bg {
   position: absolute;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image:
-    linear-gradient(
-      180deg,
-      rgba(var(--jet-rgb), 0.88) 0%,
-      rgba(var(--jet-rgb), 0.74) 42%,
-      rgba(var(--jet-rgb), 0.9) 100%
-    ),
-    var(--brand-image-car-sourcing, none),
-    url("/themes/pmg-used-cars/images/image-3.png");
+  background-image: linear-gradient(
+    180deg,
+    rgba(var(--jet-rgb), 0.88) 0%,
+    rgba(var(--jet-rgb), 0.74) 42%,
+    rgba(var(--jet-rgb), 0.9) 100%
+  );
   background-size: cover;
   background-position: center;
 }

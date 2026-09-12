@@ -4487,6 +4487,24 @@ def _resolve_preview_url_for_slug(slug: str, brand: Dict[str, Any]) -> str:
     return f'https://{slug}.{base}'
 
 
+@app.route('/api/v1/themes', methods=['GET'])
+def remote_list_themes():
+    """Active theme catalog for API-key clients — e.g. the DMS onboard wizard's
+    demo-template picker. Same data as the session-authed /api/themes, but
+    validated against `Authorization: Bearer <BRANDSTUDIO_API_KEY>` so
+    server-to-server callers don't need a dashboard login."""
+    auth_err = _require_brandstudio_api_key()
+    if auth_err is not None:
+        return auth_err
+
+    catalog = get_active_theme_catalog()
+    return jsonify({
+        'ok': True,
+        'themes': catalog.get('themes', []),
+        'defaultTheme': catalog.get('defaultTheme'),
+    }), 200
+
+
 @app.route('/api/v1/preview/create', methods=['POST'])
 def remote_create_preview():
     """
