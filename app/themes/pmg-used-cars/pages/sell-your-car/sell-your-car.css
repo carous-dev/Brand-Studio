@@ -76,20 +76,32 @@
   padding: 56px 0 60px;
   isolation: isolate;
 }
+/* Hero photo — a plain <img> (dashboard override → theme default) rendered by
+   page.tsx, beneath the jet scrim carried by .syc-hero-bg (z-index -1). */
+.pmg-syc .syc-hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+.pmg-syc .syc-hero-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
 .pmg-syc .syc-hero-bg {
   position: absolute;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image:
-    linear-gradient(
-      180deg,
-      rgba(var(--jet-rgb), 0.9) 0%,
-      rgba(var(--jet-rgb), 0.78) 44%,
-      rgba(var(--jet-rgb), 0.94) 100%
-    ),
-    var(--brand-image-sell-your-car, none),
-    url("/themes/pmg-used-cars/images/image-2.png");
+  background-image: linear-gradient(
+    180deg,
+    rgba(var(--jet-rgb), 0.9) 0%,
+    rgba(var(--jet-rgb), 0.78) 44%,
+    rgba(var(--jet-rgb), 0.94) 100%
+  );
   background-size: cover;
   background-position: center;
 }

@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { dealer } from "../../data/site-config";
 import { resolveText } from "../../lib/brand-text";
+import { themeImageUrl } from "@/app/themes/lib/theme-images";
+import mediaRecipe from "../../recipes/media-recipe.json";
 import type { ThemePageProps } from "../../../types";
 import "./contact.css";
 
@@ -133,6 +135,11 @@ export default function ContactPage({ brand }: ThemePageProps) {
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="ct-hero">
+        {/* Dashboard-set hero (brand.images.contact / brand.heroImage) → theme
+            default, a plain <img> under the scrim. */}
+        <div className="ct-hero-media" aria-hidden="true">
+          <img src={themeImageUrl(mediaRecipe as any, brand, "contact")} alt="" />
+        </div>
         <div className="pmg-shell ct-hero-inner">
           <span className="ct-kicker">{resolveText(brand, "contactHeroKicker")}</span>
           <h1 className="ct-hero-title">

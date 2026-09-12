@@ -15,6 +15,8 @@ import {
 import { dealer } from "../../data/site-config";
 import { SellYourCarMount } from "../../components/SellYourCarMount";
 import { resolveText } from "../../lib/brand-text";
+import { themeImageUrl } from "@/app/themes/lib/theme-images";
+import mediaRecipe from "../../recipes/media-recipe.json";
 import type { ThemePageProps } from "../../../types";
 import "./sell-your-car.css";
 
@@ -193,6 +195,11 @@ export default function SellYourCarPage({ brand }: ThemePageProps) {
       {/* ── Hero — jet banner, red glow. Standalone: the valuation widget lives
              in its own light section directly below (not floated on the dark). ── */}
       <header className="syc-hero" aria-labelledby="syc-title">
+        {/* Dashboard-set hero (brand.images.sellYourCar / brand.heroImage) →
+            theme default, a plain <img> under the scrim on .syc-hero-bg. */}
+        <div className="syc-hero-media" aria-hidden="true">
+          <img src={themeImageUrl(mediaRecipe as any, brand, "sellYourCar")} alt="" />
+        </div>
         <div className="syc-hero-bg" aria-hidden="true" />
         <div className="pmg-shell">
           <div className="syc-hero-copy">
