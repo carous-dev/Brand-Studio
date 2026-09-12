@@ -1,6 +1,8 @@
 import { GitCompareArrows, Heart, LayoutGrid, Rows3, Search, SlidersHorizontal } from "lucide-react";
 import { PER_PAGE } from "./_lib/types";
 import { resolveText } from "../../lib/brand-text";
+import { themeImageUrl } from "@/app/themes/lib/theme-images";
+import mediaRecipe from "../../recipes/media-recipe.json";
 import "./inventory.css";
 
 /** Card skeleton — identical markup/dimensions to the client SkeletonCard so the
@@ -32,6 +34,11 @@ export default function Loading() {
   return (
     <main className="pmg-inv-page" aria-busy="true">
       <section className="pmg-inv-hero">
+        {/* No brand in a route fallback → resolves the theme default still,
+            matching what the CSS background used to paint (no jet flash). */}
+        <div className="pmg-inv-hero-media" aria-hidden="true">
+          <img src={themeImageUrl(mediaRecipe as any, null, "inventoryHero")} alt="" />
+        </div>
         <div className="pmg-shell pmg-inv-hero-inner">
           <p className="pmg-inv-hero-eyebrow">{resolveText(null, "invRegionLabel")}</p>
           <h1 className="pmg-inv-hero-title">

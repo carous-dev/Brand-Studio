@@ -7,6 +7,8 @@ import { fetchFilterMeta, fetchInventory } from "./_lib/inventory";
 import { buildVehiclePermalink } from "../../lib/vehicle-links";
 import { readFilters, type RawSearchParams } from "./_lib/types";
 import { resolveText } from "../../lib/brand-text";
+import { themeImageUrl } from "@/app/themes/lib/theme-images";
+import mediaRecipe from "../../recipes/media-recipe.json";
 import "./inventory.css";
 
 const TOWN = dealer.address.town;
@@ -103,6 +105,11 @@ export default async function UsedCarsPage({ brand, searchParams }: PageProps) {
 
       <main className="pmg-inv-page">
         <section className="pmg-inv-hero">
+          {/* Dashboard-set hero (brand.images.inventoryHero / brand.heroImage)
+              → theme default, as a plain <img> under the scrim. */}
+          <div className="pmg-inv-hero-media" aria-hidden="true">
+            <img src={themeImageUrl(mediaRecipe as any, brand, "inventoryHero")} alt="" />
+          </div>
           <div className="pmg-shell pmg-inv-hero-inner">
             <p className="pmg-inv-hero-eyebrow">{resolveText(brand, "invRegionLabel")} · {TOWN}</p>
             <h1 className="pmg-inv-hero-title">
