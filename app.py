@@ -6380,6 +6380,152 @@ def toggle_user_status(user_id):
         print(f"[API USER STATUS] Error: {e}")
         return jsonify({'error': 'Failed to update user status', 'details': str(e)}), 500
 
+# API endpoint for updating a user's basic info (name, email, role, status)
+@app.route('/api/users/<int:user_id>', methods=['PUT'])
+@auth_manager.admin_required
+def update_user(user_id):
+    """Update a user's name, email, role and active status."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Request body is required'}), 400
+
+        name = (data.get('name') or '').strip()
+        email = (data.get('email') or '').strip().lower()
+
+        if not name:
+            return jsonify({'error': 'Name is required'}), 400
+        if not email:
+            return jsonify({'error': 'Email is required'}), 400
+
+        # Validate email format
+        import re
+        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_pattern, email):
+            return jsonify({'error': 'Invalid email format'}), 400
+
+        role = data.get('role')
+        valid_roles = ['admin', 'manager', 'editor', 'viewer']
+        if role is not None and role not in valid_roles:
+            return jsonify({'error': f'Invalid role. Must be one of: {", ".join(valid_roles)}'}), 400
+
+        # is_active may arrive as bool or "1"/"0"; normalise to int
+        has_status = 'is_active' in data
+        new_status = 1 if data.get('is_active') in (True, 1, '1') else 0
+
+        connection = get_db_connection()
+        if not connection:
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        with connection.cursor() as cursor:
+            # Ensure user exists
+            cursor.execute("SELECT id, email, role, is_active FROM auth_users WHERE id = %s", (user_id,))
+            user = cursor.fetchone()
+            if not user:
+                connection.close()
+                return jsonify({'error': 'User not found'}), 404
+
+            # Self-protection guards (mirror role/toggle endpoints)
+            if session.get('user_id') == user_id:
+                if role is not None and role != 'admin':
+                    connection.close()
+                    return jsonify({'error': 'Cannot remove your own admin role'}), 400
+                if has_status and new_status == 0:
+                    connection.close()
+                    return jsonify({'error': 'Cannot deactivate your own account'}), 400
+
+            # Ensure email isn't taken by a different user
+            cursor.execute("SELECT id FROM auth_users WHERE email = %s AND id != %s", (email, user_id))
+            if cursor.fetchone():
+                connection.close()
+                return jsonify({'error': 'Email already exists'}), 400
+
+            # Build the update dynamically so unspecified fields are left untouched
+            set_clauses = ['name = %s', 'email = %s']
+            params = [name, email]
+            if role is not None:
+                set_clauses.append('role = %s')
+                params.append(role)
+            if has_status:
+                set_clauses.append('is_active = %s')
+                params.append(new_status)
+            params.append(user_id)
+
+            base_sql = f"UPDATE auth_users SET {', '.join(set_clauses)}{{updated}} WHERE id = %s"
+            try:
+                cursor.execute(base_sql.format(updated=', updated_at = NOW()'), params)
+            except Exception as ie:
+                err_no = None
+                if hasattr(ie, 'args') and len(ie.args) > 0:
+                    try:
+                        err_no = int(ie.args[0])
+                    except Exception:
+                        err_no = None
+                if err_no == 1054:
+                    cursor.execute(base_sql.format(updated=''), params)
+                else:
+                    raise
+
+            connection.commit()
+
+        connection.close()
+
+        return jsonify({
+            'success': True,
+            'message': 'User information updated successfully',
+            'user': {
+                'id': user_id,
+                'name': name,
+                'email': email,
+                'role': role if role is not None else user['role'],
+                'is_active': bool(new_status) if has_status else bool(user['is_active'])
+            }
+        }), 200
+
+    except Exception as e:
+        print(f"[API UPDATE USER] Error: {e}")
+        return jsonify({'error': 'Failed to update user', 'details': str(e)}), 500
+
+
+# API endpoint for deleting a user
+@app.route('/api/users/<int:user_id>', methods=['DELETE'])
+@auth_manager.admin_required
+def delete_user(user_id):
+    """Delete a user."""
+    try:
+        connection = get_db_connection()
+        if not connection:
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        with connection.cursor() as cursor:
+            # Ensure user exists
+            cursor.execute("SELECT id, email FROM auth_users WHERE id = %s", (user_id,))
+            user = cursor.fetchone()
+            if not user:
+                connection.close()
+                return jsonify({'error': 'User not found'}), 404
+
+            # Prevent admin from deleting their own account
+            if session.get('user_id') == user_id:
+                connection.close()
+                return jsonify({'error': 'Cannot delete your own account'}), 400
+
+            cursor.execute("DELETE FROM auth_users WHERE id = %s", (user_id,))
+            connection.commit()
+
+        connection.close()
+
+        return jsonify({
+            'success': True,
+            'message': 'User deleted successfully',
+            'user_id': user_id
+        }), 200
+
+    except Exception as e:
+        print(f"[API DELETE USER] Error: {e}")
+        return jsonify({'error': 'Failed to delete user', 'details': str(e)}), 500
+
+
 # Admin user/role management (placeholder view)
 @app.route('/admin/users', methods=['GET'])
 @auth_manager.admin_required
